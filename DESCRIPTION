@@ -1,0 +1,13 @@
+Package: fairness_toolbox
+Type: Package
+Title: A Toolbox for Fairness Analysis in Machine Learning
+Version: 0.1.0
+Author: Your Name <your.email@example.com>
+Maintainer: Your Name <your.email@example.com>
+Description: A comprehensive toolbox for fairness-aware machine learning, including preprocessing, in-processing, and post-processing fairness methods, along with evaluation tools.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggplot2,
+    caret
