@@ -17,14 +17,14 @@ source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
 source("~/fairness_toolbox/data/data_generation.R")
 
 # Generate the dataset
-dataset <- create_dataset_1(seed = 1)
+dataset <- create_dataset_1(seed = 2)
 
-#Variablen
+#Setting variables fitting to the dataset
 vars = list(
-  feature_vars = c("income", "profession.Employee", "profession.Self-employed"),  # All non-protected variables
-  protected_vars = c("gender.Female", "gender.Male", "age"),            # Protected variables
+  feature_vars = c("income", "professionEmployee", "professionSelfemployed"),  # All non-protected variables
+  protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
   target_var = "damage",                            # Target variable
-  protected_vars_eval = c("gender.Female", "gender.Male", "age_group.<40", "age_group.40-60", "age_group.60+")            # Protected variables for evaluations (in groups)
+  protected_vars_eval = c("genderFemale", "genderMale", "age_group.<40", "age_group.40-60", "age_group.60+")            # Protected variables for evaluations (in groups)
 )
 
 # Control Object for Prototyping
@@ -37,16 +37,16 @@ control <- list(
   params = list(
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      data = data
+      data = dataset
     ),
     fairness = controller_fairness_post(
       predictions = NULL,
-      actuals = data[[vars$target_var]]
+      actuals = dataset[[vars$target_var]]
     ),
     eval = controller_evaluation(
       predictions = NULL,
-      actuals = data[[vars$target_var]],
-      protected_attribute = data[vars$protected_vars_eval],
+      actuals = dataset[[vars$target_var]],
+      protected_attribute = dataset[vars$protected_vars_eval],
       protected_name = vars$protected_vars_eval
     )
   )

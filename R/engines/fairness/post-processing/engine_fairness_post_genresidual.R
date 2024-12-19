@@ -1,13 +1,13 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Fairness Post-Processing Engine: Residual Adjustment
+#' Fairness Post-Processing Engine: General Residual Adjustment
 #'
 #' @param predictions A vector of predictions from the model.
 #' @param actuals A vector of actual observed values.
 #' @return A vector of adjusted predictions.
 #' @export
-engine_fairness_post_residual <- function(predictions, actuals) {
+engine_fairness_post_genresidual <- function(predictions, actuals) {
   residuals <- actuals - predictions
   predictions + mean(residuals)
 }
@@ -18,13 +18,13 @@ engine_fairness_post_residual <- function(predictions, actuals) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Fairness Post-Processing
+#' Wrapper for Fairness Post-Processing General Residual Adjustment
 #'
 #' @param control A list containing the fairness parameters and predictions.
 #' @param predictions A vector of predictions from the model.
 #' @return A vector of adjusted predictions.
 #' @export
-wrapper_fairness_post_residual <- function(control) {
+wrapper_fairness_post_henresidual <- function(control) {
   fairness_params <- control$params$fairness  # Accessing the fairness parameters
   if (is.null(fairness_params$predictions)) {
     stop("wrapper_fairness_post_residual: Missing required input: predictions")
@@ -34,7 +34,7 @@ wrapper_fairness_post_residual <- function(control) {
   }
   
   # Call the specific post-processing fairness engine
-  adjusted_predictions <- engine_fairness_post_residual(fairness_params$predictions, fairness_params$actuals)
+  adjusted_predictions <- engine_fairness_post_genresidual(fairness_params$predictions, fairness_params$actuals)
   return(adjusted_predictions)
 }
 #--------------------------------------------------------------------

@@ -13,7 +13,7 @@ create_dataset_1 <- function(seed) {
   set.seed(seed)
   
   data_1 <- data.frame(
-    profession = sample(c("Employee", "Self-employed"), data_points_count, replace = TRUE),
+    profession = sample(c("Employee", "Selfemployed"), data_points_count, replace = TRUE),
     income = rnorm(data_points_count, mean = 50000, sd = 10000),
     gender = sample(c("Male", "Female"), data_points_count, replace = TRUE),
     age = sample(18:65, data_points_count, replace = TRUE),

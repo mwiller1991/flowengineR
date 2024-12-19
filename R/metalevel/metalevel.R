@@ -49,4 +49,3 @@ run_workflow <- function(control) {
     evaluation = evaluation_results
   )
 }
-
