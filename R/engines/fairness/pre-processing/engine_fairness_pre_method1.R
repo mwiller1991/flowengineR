@@ -24,12 +24,12 @@ engine_fairness_pre_method1 <- function(data) {
 #' @export
 wrapper_fairness_pre_method1 <- function(control) {
   # Validate inputs for pre-processing fairness
-  if (is.null(control$data)) {
+  if (is.null(control$dataset)) {
     stop("wrapper_fairness_pre_method1: Missing required inputs: data")
   }
   
   # Call the specific pre-processing fairness engine
-  processed_data <- engine_fairness_pre_method1(control$data)
+  processed_data <- engine_fairness_pre_method1(control$dataset$train)
   control$params$train$data <- processed_data
   return(control)
 }

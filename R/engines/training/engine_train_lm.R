@@ -27,17 +27,14 @@ wrapper_train_lm <- function(control) {
   if (is.null(train_params$formula)) {
     stop("wrapper_train_lm: Missing required input: formula")
   }
-  if (is.null(train_params$data)) {
+  if (is.null(train_params$dataset)) {
     stop("wrapper_train_lm: Missing required input: data")
   }
   
   # Call the specific training engine
-  model <- engine_train_lm(train_params$formula, train_params$data)
+  model <- engine_train_lm(train_params$formula, train_params$data$train)
   
-  # Generate predictions
-  predictions <- predict(model, newdata = control$data)
-  
-  # Return both model and predictions
-  list(model = model, predictions = predictions)
+  # Return the trained model
+  list(model = model)
 }
 #--------------------------------------------------------------------

@@ -17,7 +17,7 @@ source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
 source("~/fairness_toolbox/data/data_generation.R")
 
 # Generate the dataset
-dataset <- create_dataset_1(seed = 2)
+dataset <- create_dataset_1(seed = 1)
 
 #Setting variables fitting to the dataset
 vars = list(
@@ -29,6 +29,11 @@ vars = list(
 
 # Control Object for Prototyping
 control <- list(
+  data = list(
+    full = dataset,    # Optional, falls Daten nicht getrennt übergeben werden
+    train = NULL,      # Training data
+    test = NULL        # Test data
+  ),
   model = "train_lm",
   fairness_pre = NULL,
   fairness_in = NULL,
@@ -37,15 +42,15 @@ control <- list(
   params = list(
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      data = dataset
+      data = NULL
     ),
     fairness = controller_fairness_post(
       predictions = NULL,
-      actuals = dataset[[vars$target_var]]
+      actuals = NULL
     ),
     eval = controller_evaluation(
       predictions = NULL,
-      actuals = dataset[[vars$target_var]],
+      actuals = NULL,
       protected_attribute = dataset[vars$protected_vars_eval],
       protected_name = vars$protected_vars_eval
     )
