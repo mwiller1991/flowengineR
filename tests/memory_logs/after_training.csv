@@ -1,6 +1,6 @@
 "Object","Size_MB"
-"control",0.41
+"control",0.54
 "model_output",0.3
-"split",0.15
-"model_driver",0.02
+"split",0.2
+"model_driver",0.05
 "predictions",0

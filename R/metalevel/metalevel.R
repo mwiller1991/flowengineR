@@ -16,7 +16,7 @@ log_memory_usage(env = environment(), label = "before_workflow_start")
   
   # 0. Automatic data splitting if needed
   if (is.null(control$data$train) || is.null(control$data$test)) {
-    message("Train and test data not provided. Splitting data automatically...")
+    message("[INFO] Train and test data not provided. Splitting data automatically 70/30...")
     split <- split_data(control$data$full)
     control$data$train <- split$train
     control$data$test <- split$test
@@ -51,7 +51,19 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
   } else {
     model_output <- model_driver(control)
   }
-  predictions <- as.numeric(predict(model_output$model, newdata = control$data$test))
+  
+    # Generate predictions based on output_type
+    if (is.null(control$output_type)) {
+      control$output_type <- "prob"
+      message("[INFO] output_type not specified. Defaulting to 'prob' for probability outputs.")
+    }
+    if (control$output_type == "prob") {
+      predictions <- as.numeric(predict(model_output$model, newdata = control$data$test, type = "response"))
+    } else if (control$output_type == "class") {
+      predictions <- predict(model_output$model, newdata = control$data$test, type = "class")
+    } else {
+      stop("Invalid output_type specified in control.")
+    }
   
 ###DEV Memory log after training (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_training")

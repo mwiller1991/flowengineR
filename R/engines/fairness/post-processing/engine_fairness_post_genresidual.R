@@ -35,6 +35,12 @@ wrapper_fairness_post_genresidual <- function(control) {
   
   # Call the specific post-processing fairness engine
   adjusted_predictions <- engine_fairness_post_genresidual(fairness_params$predictions, fairness_params$actuals)
+  
+  # Ensure probabilities are within [0, 1] if output_type is "prob"
+  if (control$output_type == "prob") {
+    adjusted_predictions <- pmax(pmin(adjusted_predictions, 1), 0)
+  }
+  
   return(adjusted_predictions)
 }
 #--------------------------------------------------------------------
