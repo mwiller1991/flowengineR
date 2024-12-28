@@ -16,6 +16,9 @@ source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
 # Load the data
 source("~/fairness_toolbox/data/data_generation.R")
 
+# Load the memory-size-logger
+source("~/fairness_toolbox/tests/memory_logging_dev.R")
+
 # Generate the dataset
 dataset <- create_dataset_1(seed = 1)
 

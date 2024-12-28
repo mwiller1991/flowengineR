@@ -9,6 +9,11 @@
 #' @return A list containing the trained model and predictions.
 #' @export
 run_workflow <- function(control) {
+  
+###DEV Initial memory log (remove before productive launch)###
+log_memory_usage(env = environment(), label = "before_workflow_start")
+###DEV-END (remove before productive launch)###
+  
   # 0. Automatic data splitting if needed
   if (is.null(control$data$train) || is.null(control$data$test)) {
     message("Train and test data not provided. Splitting data automatically...")
@@ -16,6 +21,10 @@ run_workflow <- function(control) {
     control$data$train <- split$train
     control$data$test <- split$test
   }
+  
+###DEV Memory log after data splitting (remove before productive launch)###
+log_memory_usage(env = environment(), label = "after_data_splitting")
+###DEV-END (remove before productive launch)###
   
   # 1. Assigning data in the meta-level
   # Ensure training data is available for training
@@ -30,6 +39,10 @@ run_workflow <- function(control) {
     control <- pre_fairness_driver(control)
   }
   
+###DEV Memory log after pre processing (remove before productive launch)###
+log_memory_usage(env = environment(), label = "after_preprocessing")
+###DEV-END (remove before productive launch)###
+  
   # 3. Training (with optional In-Processing Fairness)
   model_driver <- engines[[control$model]]
   if (!is.null(control$fairness_in)) {
@@ -40,12 +53,20 @@ run_workflow <- function(control) {
   }
   predictions <- as.numeric(predict(model_output$model, newdata = control$data$test))
   
+###DEV Memory log after training (remove before productive launch)###
+log_memory_usage(env = environment(), label = "after_training")
+###DEV-END (remove before productive launch)###
+  
   # 4. Fairness Post-Processing (optional)
   if (!is.null(control$fairness_post)) {
     control$params$fairness$predictions <- predictions
     post_fairness_driver <- engines[[control$fairness_post]]
     predictions <- post_fairness_driver(control)
   }
+  
+###DEV Memory log after post processing (remove before productive launch)###
+log_memory_usage(env = environment(), label = "after_postprocessing")
+###DEV-END (remove before productive launch)###
   
   # 5. Evaluation
   control$params$eval$eval_data <- cbind(
@@ -57,6 +78,10 @@ run_workflow <- function(control) {
     engines[[metric]](control)
   })
   names(evaluation_results) <- control$evaluation
+  
+###DEV Memory log after evaluation (remove before productive launch)###
+log_memory_usage(env = environment(), label = "after_evaluation")
+###DEV-END (remove before productive launch)###
   
   # Return results
   list(
