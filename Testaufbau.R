@@ -29,6 +29,7 @@ vars = list(
 
 # Control Object for Prototyping
 control <- list(
+  vars = vars,         # Include vars within control for consistency
   data = list(
     full = dataset,    # Optional, falls Daten nicht getrennt übergeben werden
     train = NULL,      # Training data
@@ -37,7 +38,7 @@ control <- list(
   model = "train_lm",
   fairness_pre = NULL,
   fairness_in = NULL,
-  fairness_post = "fairness_post_residual",
+  fairness_post = "fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_statisticalparity"),
   params = list(
     train = controller_training(
@@ -49,9 +50,7 @@ control <- list(
       actuals = NULL
     ),
     eval = controller_evaluation(
-      predictions = NULL,
-      actuals = NULL,
-      protected_attribute = dataset[vars$protected_vars_eval],
+      eval_data = NULL,
       protected_name = vars$protected_vars_eval
     )
   )
@@ -64,5 +63,4 @@ result <- run_workflow(control)
 # Output Results
 print(result$model)
 print(head(result$predictions))
-print(head(result$adjusted_predictions))
 print(result$evaluation)

@@ -9,21 +9,15 @@
 #' @param protected_name A vector of protected attribute names.
 #' @return A named list of Statistical Parity Difference values for each protected attribute.
 #' @export
-engine_eval_statisticalparity <- function(predictions, actuals, protected_attribute, protected_name) {
-  results <- sapply(seq_along(protected_name), function(i) {
-    attribute <- protected_attribute[[i]]
-    levels <- unique(attribute)
-    
-    if (length(levels) != 2) {
-      stop(paste("Statistical Parity requires binary attributes. Issue with:", protected_name[i]))
-    }
-    
-    # Calculate mean prediction for each group
-    group_means <- tapply(predictions, attribute, mean)
+engine_eval_statisticalparity <- function(eval_data, protected_name) {
+  # Calculate Statistical Parity for each protected attribute
+  results <- sapply(protected_name, function(attr_name) {
+    attribute <- eval_data[[attr_name]]
+    group_means <- tapply(eval_data$predictions, attribute, mean)
     spd <- abs(group_means[1] - group_means[2])  # Absolute difference
-    
     return(spd)
   })
+  
   names(results) <- protected_name
   return(results)
 }
@@ -43,14 +37,32 @@ wrapper_eval_statisticalparity <- function(control) {
   eval_params <- control$params$eval
   
   # Validate inputs
-  if (is.null(eval_params$predictions)) stop("Missing predictions for Statistical Parity")
-  if (is.null(eval_params$protected_attribute)) stop("Missing protected attributes for Statistical Parity")
+  
+  # Validate input: Check if eval_data exists and has the necessary structure
+  if (is.null(eval_params$eval_data)) {
+    stop("Statistical Parity Wrapper: 'eval_data' is missing.")
+  }
+  
+  # Validate input: Check for missing protected attributes
+  missing_columns <- setdiff(eval_params$protected_name, colnames(eval_params$eval_data))
+  if (length(missing_columns) > 0) {
+    stop(paste("Statistical Parity Wrapper: The following protected attributes are missing in 'eval_data':", 
+               paste(missing_columns, collapse = ", ")))
+  }
+  
+  # Validate input: Ensure all protected attributes are binary
+  non_binary_attributes <- sapply(eval_params$protected_name, function(attr_name) {
+    attribute <- eval_params$eval_data[[attr_name]]
+    length(unique(attribute)) != 2
+  })
+  if (any(non_binary_attributes)) {
+    stop(paste("Statistical Parity Wrapper: The following attributes are not binary:", 
+               paste(eval_params$protected_name[non_binary_attributes], collapse = ", ")))
+  }
   
   # Call the engine
-  engine_eval_statistical_parity(
-    predictions = eval_params$predictions,
-    actuals = eval_params$actuals,
-    protected_attribute = eval_params$protected_attribute,
+  engine_eval_statisticalparity(
+    eval_data = eval_params$eval_data,
     protected_name = eval_params$protected_name
   )
 }

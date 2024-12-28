@@ -7,7 +7,7 @@
 #' @param data A data frame containing the training data.
 #' @return A list containing the formula and data.
 #' @export
-controller_training <- function(formula, data) {
+controller_training <- function(formula, data = NULL) {
   list(
     formula = formula,
     data = data
@@ -43,7 +43,7 @@ controller_fairness_pre <- function(data) {
 #' @param actuals A vector of actual observed values.
 #' @return A list containing predictions and actual values for post-processing.
 #' @export
-controller_fairness_post <- function(predictions, actuals) {
+controller_fairness_post <- function(predictions = NULL, actuals = NULL) {
   list(
     predictions = predictions,
     actuals = actuals
@@ -62,11 +62,9 @@ controller_fairness_post <- function(predictions, actuals) {
 #' @param actuals A vector of actual observed values.
 #' @return A list containing predictions and actual values for evaluation.
 #' @export
-controller_evaluation <- function(predictions, actuals, protected_attribute, protected_name) {
+controller_evaluation <- function(eval_data = NULL, protected_name) {
   list(
-    predictions = predictions,
-    actuals = actuals,
-    protected_attribute = protected_attribute,
+    eval_data = eval_data,
     protected_name = protected_name
   )
 }

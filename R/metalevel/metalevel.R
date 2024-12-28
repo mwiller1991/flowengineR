@@ -22,9 +22,7 @@ run_workflow <- function(control) {
   control$params$train$data <- control$data$train
   
   # Ensure test data is available for fairness and evaluation
-  control$params$fairness$actuals <- control$data$test[[control$variable_config$target_var]]
-  control$params$eval$actuals <- control$data$test[[control$variable_config$target_var]]
-  control$params$eval$protected_attribute <- control$data$test[control$variable_config$protected_vars]
+  control$params$fairness$actuals <- control$data$test[[control$vars$target_var]]
   
   # 2. Fairness Pre-Processing (optional)
   if (!is.null(control$fairness_pre)) {
@@ -40,7 +38,7 @@ run_workflow <- function(control) {
   } else {
     model_output <- model_driver(control)
   }
-  predictions <- predict(model_output$model, newdata = control$data$test)
+  predictions <- as.numeric(predict(model_output$model, newdata = control$data$test))
   
   # 4. Fairness Post-Processing (optional)
   if (!is.null(control$fairness_post)) {
@@ -50,9 +48,13 @@ run_workflow <- function(control) {
   }
   
   # 5. Evaluation
-  control$params$eval$predictions <- predictions
+  control$params$eval$eval_data <- cbind(
+    predictions = predictions,
+    actuals = control$data$test[[control$vars$target_var]],
+    control$data$test[control$vars$protected_vars_eval]
+  )
   evaluation_results <- lapply(control$evaluation, function(metric) {
-    engines[[metric]](control$params$eval)
+    engines[[metric]](control)
   })
   names(evaluation_results) <- control$evaluation
   

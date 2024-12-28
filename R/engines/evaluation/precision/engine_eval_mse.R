@@ -25,14 +25,14 @@ engine_eval_mse <- function(predictions, actuals) {
 #' @export
 wrapper_eval_mse <- function(control) {
   eval_params <- control$params$eval  # Accessing the evaluation parameters
-  if (is.null(eval_params$predictions)) {
+  if (is.null(eval_params$eval_data$predictions)) {
     stop("wrapper_eval_mse: Missing required input: predictions")
   }
-  if (is.null(eval_params$actuals)) {
+  if (is.null(eval_params$eval_data$actuals)) {
     stop("wrapper_eval_mse: Missing required input: actuals")
   }
   
   # Call the specific evaluation engine
-  engine_eval_mse(eval_params$predictions, eval_params$actuals)
+  engine_eval_mse(eval_params$eval_data$predictions, eval_params$eval_data$actuals)
 }
 #--------------------------------------------------------------------
