@@ -64,3 +64,18 @@ result <- run_workflow(control)
 print(result$model)
 print(head(result$predictions))
 print(result$evaluation)
+
+
+# Run the full 3x Workflow
+result_full <- run_workflow_variants(control)
+
+# Output Results
+print(result_full$discriminationfree$model)
+print(result_full$bestestimate$model)
+print(result_full$unawareness$model)
+print(head(result_full$discriminationfree$predictions))
+print(head(result_full$bestestimate$predictions))
+print(head(result_full$unawareness$predictions))
+print(result_full$discriminationfree$evaluation)
+print(result_full$bestestimate$evaluation)
+print(result_full$unawareness$evaluation)

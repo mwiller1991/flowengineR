@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------
-### master workflow ###
+### single round master workflow ###
 #--------------------------------------------------------------------
 # Meta-level Workflow
 
@@ -64,6 +64,48 @@ run_workflow <- function(control) {
     predictions = predictions,
     evaluation = evaluation_results
   )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### full package master workflow ###
+#--------------------------------------------------------------------
+#' Run multiple workflow variants
+#'
+#' Executes the workflow in three variants: discrimination-free, best-estimate, and unawareness.
+#' @param control The control object containing all parameters.
+#' @return A list of results for each variant.
+#' @export
+run_workflow_variants <- function(control) {
+  results <- list()
+  
+  # 1. discrimination-free workflow
+  message("Running discrimination-free workflow...")
+  results$discriminationfree <- run_workflow(control)
+  
+  # 2. best-estimate workflow (no fairness adjustments)
+  message("Running best-estimate workflow (no fairness adjustments)...")
+  bestestimate_control <- control
+  bestestimate_control$fairness_pre <- NULL
+  bestestimate_control$fairness_in <- NULL
+  bestestimate_control$fairness_post <- NULL
+  results$bestestimate <- run_workflow(bestestimate_control)
+  
+  # 3. Unawareness workflow (removing protected variables)
+  message("Running unawareness workflow (removing protected variables)...")
+  unawareness_control <- control
+  unawareness_control$params$train$formula <- as.formula(paste(
+    control$vars$target_var, "~", paste(control$vars$feature_vars, collapse = " + ")
+  ))
+  unawareness_control$vars$feature_vars <- setdiff(
+    control$vars$feature_vars,
+    control$vars$protected_vars
+  )
+  results$unawareness <- run_workflow(unawareness_control)
+  
+  return(results)
 }
 #--------------------------------------------------------------------
 
