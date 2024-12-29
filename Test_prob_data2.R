@@ -32,19 +32,26 @@ vars = list(
 
 # Control Object for Prototyping
 control <- list(
+  global_seed = 1,
   vars = vars,         # Include vars within control for consistency
   data = list(
     full = dataset,    # Optional, falls Daten nicht getrennt übergeben werden
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  model = "train_lm",
+  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  train_model = "train_lm",
   output_type = "prob", # Add option for output type ("prob" or "class")
   fairness_pre = NULL,
   fairness_in = NULL,
   fairness_post = "fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_statisticalparity"),
   params = list(
+    split = controller_split(
+      split_ratio = 0.7,
+      cv_folds = 5,
+      seed = 123
+    ),
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
       data = NULL

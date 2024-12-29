@@ -1,29 +1,53 @@
 #--------------------------------------------------------------------
+### Workflow Execution with Splitting ###
+#--------------------------------------------------------------------
+#' Execute workflow with data splitting
+#'
+#' @param control A control list containing configuration parameters.
+#' @return Results of the workflow after splitting the data.
+#' @export
+run_workflow <- function(control) {
+  # Check for user-provided train-test split
+  if (!is.null(control$data$train) && !is.null(control$data$test)) {
+    message("[INFO] Using user-provided train-test split.")
+    return(run_workflow_single(control))
+  }
+  
+  # Default to random split if no split_method is specified
+  if (is.null(control$split_method)) {
+    message("[INFO] split_method not specified. Defaulting to 'split_random'.")
+    control$split_method <- "split_random"
+  }
+  
+  # Perform data splitting using the specified splitter engine
+  split_wrapper <- engines[[control$split_method]]
+  split_result <- split_wrapper(control)
+  
+  # The workflow results are generated within the splitter engine itself
+  # Return workflow results directly from the splitter
+  return(split_result)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### single round master workflow ###
 #--------------------------------------------------------------------
-# Meta-level Workflow
-
-#' Run the full workflow
+#' Run a single iteration of the workflow
 #'
 #' @param control A list containing all parameters for the workflow.
 #' @return A list containing the trained model and predictions.
 #' @export
-run_workflow <- function(control) {
+run_workflow_single <- function(control) {
   
-###DEV Initial memory log (remove before productive launch)###
-log_memory_usage(env = environment(), label = "before_workflow_start")
-###DEV-END (remove before productive launch)###
-  
-  # 0. Automatic data splitting if needed
+  # Check for Train-/Testdata
   if (is.null(control$data$train) || is.null(control$data$test)) {
-    message("[INFO] Train and test data not provided. Splitting data automatically 70/30...")
-    split <- split_data(control$data$full)
-    control$data$train <- split$train
-    control$data$test <- split$test
+    stop("[ERROR] Training and test data are missing. Please ensure data is split before execution.")
   }
   
 ###DEV Memory log after data splitting (remove before productive launch)###
-log_memory_usage(env = environment(), label = "after_data_splitting")
+log_memory_usage(env = environment(), label = "at_start")
 ###DEV-END (remove before productive launch)###
   
   # 1. Assigning data in the meta-level
@@ -44,7 +68,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
 ###DEV-END (remove before productive launch)###
   
   # 3. Training (with optional In-Processing Fairness)
-  model_driver <- engines[[control$model]]
+  model_driver <- engines[[control$train_model]]
   if (!is.null(control$fairness_in)) {
     in_fairness_driver <- engines[[control$fairness_in]]
     model_output <- in_fairness_driver(control, model_driver)
@@ -119,11 +143,11 @@ run_workflow_variants <- function(control) {
   results <- list()
   
   # 1. discrimination-free workflow
-  message("Running discrimination-free workflow...")
+  message("[INFO] Running discrimination-free workflow...")
   results$discriminationfree <- run_workflow(control)
   
   # 2. best-estimate workflow (no fairness adjustments)
-  message("Running best-estimate workflow (no fairness adjustments)...")
+  message("[INFO] Running best-estimate workflow (no fairness adjustments)...")
   bestestimate_control <- control
   bestestimate_control$fairness_pre <- NULL
   bestestimate_control$fairness_in <- NULL
@@ -131,39 +155,13 @@ run_workflow_variants <- function(control) {
   results$bestestimate <- run_workflow(bestestimate_control)
   
   # 3. Unawareness workflow (removing protected variables)
-  message("Running unawareness workflow (removing protected variables)...")
+  message("[INFO] Running unawareness workflow (removing protected variables)...")
   unawareness_control <- control
   unawareness_control$params$train$formula <- as.formula(paste(
     control$vars$target_var, "~", paste(control$vars$feature_vars, collapse = " + ")
   ))
-  unawareness_control$vars$feature_vars <- setdiff(
-    control$vars$feature_vars,
-    control$vars$protected_vars
-  )
   results$unawareness <- run_workflow(unawareness_control)
   
   return(results)
-}
-#--------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------
-### data splitter ###
-#--------------------------------------------------------------------
-#' Split Data into Training and Test Sets
-#'
-#' Splits the dataset into training and test sets based on a given ratio.
-#' @param data The full dataset as a data frame.
-#' @param split_ratio The ratio of data to use for training (default: 0.7).
-#' @param seed A random seed for reproducibility (default: 123).
-#' @return A list with two elements: train and test datasets.
-split_data <- function(data, split_ratio = 0.7, seed = 123) {
-  set.seed(seed)
-  train_indices <- sample(1:nrow(data), size = split_ratio * nrow(data))
-  list(
-    train = data[train_indices, ],
-    test = data[-train_indices, ]
-  )
 }
 #--------------------------------------------------------------------

@@ -33,7 +33,7 @@ log_memory_usage <- function(env = parent.frame(), label = "Memory Log", log_dir
   
   # Save the log to a file
   write.csv(log_df, file, row.names = FALSE)
-  message(sprintf("Memory log saved to: %s", file))
+  message(sprintf("[INFO] Memory log saved to: %s", file))
   
   return(log_df)
 }

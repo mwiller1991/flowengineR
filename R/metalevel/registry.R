@@ -34,7 +34,6 @@ register_engine <- function(engine_name, file_path) {
   })
 }
 
-
 # Load preinstalled Train-Engines 
 register_engine("train_lm", "~/fairness_toolbox/R/engines/training/engine_train_lm.R")
 
@@ -45,6 +44,10 @@ register_engine("fairness_post_genresidual", "~/fairness_toolbox/R/engines/fairn
 # Load preinstalled Evaluation-Engines
 register_engine("eval_mse", "~/fairness_toolbox/R/engines/evaluation/precision/engine_eval_mse.R")
 register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/evaluation/fairness/engine_eval_statisticalparity.R")
+
+# Load new Splitter-Engines
+register_engine("split_random", "~/fairness_toolbox/R/engines/split/engine_split_random.R")
+register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_cv.R")
 
 # Debugging: List registered engines
 print(names(engines))

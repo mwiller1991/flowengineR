@@ -1,4 +1,26 @@
 #--------------------------------------------------------------------
+### Controller for Split Inputs (supports multiple splitter engines)###
+#--------------------------------------------------------------------
+#' Controller for Split Inputs
+#'
+#' @param split_ratio The ratio for splitting the data (e.g., 0.7 for 70/30 split).
+#' @param cv_folds The number of folds for cross-validation.
+#' @param seed A random seed for reproducibility.
+#' @return A list containing the split configuration.
+#' @export
+controller_split <- function(split_ratio = NULL, cv_folds = NULL, seed = NULL) {
+  seed <- seed %||% control$global_seed %||% 123  # Default to global seed or 123 if none provided
+  list(
+    split_ratio = split_ratio,
+    cv_folds = cv_folds,
+    seed = seed
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### Controller: Input for Training (supports multiple training engines) ###
 #--------------------------------------------------------------------
 #' Controller for Training Inputs
