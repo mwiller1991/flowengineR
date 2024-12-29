@@ -1,3 +1,8 @@
+# Workflow Diagram
+
+Hier ist ein Diagramm, das den Workflow visualisiert:
+
+```mermaid
 graph TD
     %% Meta Level
     A(User Input: Control Object):::object ==> B[run_workflow]
