@@ -1,6 +1,3 @@
-# Flowchart metalevel
-
-```mermaid
 graph TD
     %% Meta Level
     A(User Input: Control Object):::object ==> B[run_workflow]
@@ -10,11 +7,9 @@ graph TD
     %% Splitter Layer
     subgraph Splitter Layer
         direction TB
-        
             Dec1 -->Ans2((No)):::no
             Dec1 -->Ans1((Yes)):::yes
         Ans2 -->|full dataset| F1[Splitter Engines]:::engine
-
     end
 
     %% Workflow inside run_workflow_single
@@ -67,6 +62,15 @@ graph TD
     %% Variants
     C -->|Configuration Variants| B
     B -->|Variant Results| C
+
+    %% Legend
+    subgraph Legend
+        direction TB
+        L1[Deciders: Gray Diamonds]:::decider
+        L2[Engines: Blue Rectangles]:::engine
+        L3[Objects: Purple Rectangles]:::object
+        L4[Functions of the package: Black Rectangles]
+    end
 
     %% Styling for engines
     classDef engine fill:#ADD8E6,stroke:#000,stroke-width:2px,color:#000;
