@@ -42,6 +42,7 @@ register_engine("fairness_pre_method1", "~/fairness_toolbox/R/engines/fairness/p
 register_engine("fairness_post_genresidual", "~/fairness_toolbox/R/engines/fairness/post-processing/engine_fairness_post_genresidual.R")
 
 # Load preinstalled Evaluation-Engines
+register_engine("eval_summarystats", "~/fairness_toolbox/R/engines/evaluation/general/engine_eval_summarystats.R")
 register_engine("eval_mse", "~/fairness_toolbox/R/engines/evaluation/precision/engine_eval_mse.R")
 register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/evaluation/fairness/engine_eval_statisticalparity.R")
 

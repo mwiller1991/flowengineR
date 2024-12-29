@@ -32,6 +32,44 @@ run_workflow <- function(control) {
 
 
 #--------------------------------------------------------------------
+### full package master workflow ###
+#--------------------------------------------------------------------
+#' Run multiple workflow variants
+#'
+#' Executes the workflow in three variants: discrimination-free, best-estimate, and unawareness.
+#' @param control The control object containing all parameters.
+#' @return A list of results for each variant.
+#' @export
+run_workflow_variants <- function(control) {
+  results <- list()
+  
+  # 1. discrimination-free workflow
+  message("[INFO] Running discrimination-free workflow...")
+  results$discriminationfree <- run_workflow(control)
+  
+  # 2. best-estimate workflow (no fairness adjustments)
+  message("[INFO] Running best-estimate workflow (no fairness adjustments)...")
+  bestestimate_control <- control
+  bestestimate_control$fairness_pre <- NULL
+  bestestimate_control$fairness_in <- NULL
+  bestestimate_control$fairness_post <- NULL
+  results$bestestimate <- run_workflow(bestestimate_control)
+  
+  # 3. Unawareness workflow (removing protected variables)
+  message("[INFO] Running unawareness workflow (removing protected variables)...")
+  unawareness_control <- control
+  unawareness_control$params$train$formula <- as.formula(paste(
+    control$vars$target_var, "~", paste(control$vars$feature_vars, collapse = " + ")
+  ))
+  results$unawareness <- run_workflow(unawareness_control)
+  
+  return(results)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### single round master workflow ###
 #--------------------------------------------------------------------
 #' Run a single iteration of the workflow
@@ -84,7 +122,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
     if (control$output_type == "prob") {
       predictions <- as.numeric(predict(model_output$model, newdata = control$data$test, type = "response"))
     } else if (control$output_type == "class") {
-      predictions <- predict(model_output$model, newdata = control$data$test, type = "class")
+      predictions <- as.numeric(predict(model_output$model, newdata = control$data$test, type = "class"))
     } else {
       stop("Invalid output_type specified in control.")
     }
@@ -97,7 +135,7 @@ log_memory_usage(env = environment(), label = "after_training")
   if (!is.null(control$fairness_post)) {
     control$params$fairness$predictions <- predictions
     post_fairness_driver <- engines[[control$fairness_post]]
-    predictions <- post_fairness_driver(control)
+    predictions <- as.numeric(post_fairness_driver(control))
   }
   
 ###DEV Memory log after post processing (remove before productive launch)###
@@ -106,7 +144,7 @@ log_memory_usage(env = environment(), label = "after_postprocessing")
   
   # 5. Evaluation
   control$params$eval$eval_data <- cbind(
-    predictions = predictions,
+    predictions = as.numeric(predictions),
     actuals = control$data$test[[control$vars$target_var]],
     control$data$test[control$vars$protected_vars_eval]
   )
@@ -125,43 +163,5 @@ log_memory_usage(env = environment(), label = "after_evaluation")
     predictions = predictions,
     evaluation = evaluation_results
   )
-}
-#--------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------
-### full package master workflow ###
-#--------------------------------------------------------------------
-#' Run multiple workflow variants
-#'
-#' Executes the workflow in three variants: discrimination-free, best-estimate, and unawareness.
-#' @param control The control object containing all parameters.
-#' @return A list of results for each variant.
-#' @export
-run_workflow_variants <- function(control) {
-  results <- list()
-  
-  # 1. discrimination-free workflow
-  message("[INFO] Running discrimination-free workflow...")
-  results$discriminationfree <- run_workflow(control)
-  
-  # 2. best-estimate workflow (no fairness adjustments)
-  message("[INFO] Running best-estimate workflow (no fairness adjustments)...")
-  bestestimate_control <- control
-  bestestimate_control$fairness_pre <- NULL
-  bestestimate_control$fairness_in <- NULL
-  bestestimate_control$fairness_post <- NULL
-  results$bestestimate <- run_workflow(bestestimate_control)
-  
-  # 3. Unawareness workflow (removing protected variables)
-  message("[INFO] Running unawareness workflow (removing protected variables)...")
-  unawareness_control <- control
-  unawareness_control$params$train$formula <- as.formula(paste(
-    control$vars$target_var, "~", paste(control$vars$feature_vars, collapse = " + ")
-  ))
-  results$unawareness <- run_workflow(unawareness_control)
-  
-  return(results)
 }
 #--------------------------------------------------------------------

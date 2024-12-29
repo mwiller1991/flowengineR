@@ -2,6 +2,7 @@
 library(ggplot2)
 library(caret)
 library(magrittr)
+library(moments)
 
 
 # Load the Controller Functions
@@ -39,13 +40,13 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  split_method = "split_random",   # Method for splitting (e.g., "split_random" or "split_cv")
   train_model = "train_lm",
   output_type = "prob", # Add option for output type ("prob" or "class")
   fairness_pre = NULL,
   fairness_in = NULL,
   fairness_post = "fairness_post_genresidual",
-  evaluation = list("eval_mse", "eval_statisticalparity"),
+  evaluation = list("eval_summarystats", "eval_mse", "eval_statisticalparity"),
   params = list(
     split = controller_split(
       split_ratio = 0.7,
