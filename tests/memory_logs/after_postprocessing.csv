@@ -1,6 +1,6 @@
 "Object","Size_MB"
 "control",0.54
 "model_output",0.35
-"post_fairness_driver",0.07
-"model_driver",0.05
+"model_driver",0.08
+"post_fairness_driver",0.02
 "predictions",0

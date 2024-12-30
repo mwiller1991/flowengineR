@@ -24,6 +24,7 @@ engine_train_lm <- function(formula, data) {
 #' @export
 wrapper_train_lm <- function(control) {
   train_params <- control$params$train  # Accessing the training parameters
+  
   if (is.null(train_params$formula)) {
     stop("wrapper_train_lm: Missing required input: formula")
   }
@@ -31,10 +32,41 @@ wrapper_train_lm <- function(control) {
     stop("wrapper_train_lm: Missing required input: data")
   }
   
+  # Merge user-provided hyperparameters with defaults
+  hyperparameters <- merge_with_defaults(train_params$hyperparameters, default_hyperparameters_lm())
+  
+  # Track training time
+  start_time <- Sys.time()
+  
   # Call the specific training engine
   model <- engine_train_lm(train_params$formula, train_params$data)
   
-  # Return the trained model
-  list(model = model)
+  training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
+  
+  # Standardized output
+  initialize_output_train(
+    model = model,
+    model_type = "lm",
+    training_time = training_time,
+    formula = train_params$formula,
+    hyperparameters = hyperparameters,
+    specific_output = NULL  # No specific output for linear models
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### default hyperparams ###
+#--------------------------------------------------------------------
+#' Default Hyperparameters for Linear Model
+#'
+#' Default hyperparameters for the linear model (lm).
+#'
+#' @return A list of default hyperparameters.
+#' @export
+default_hyperparameters_lm <- function() {
+  list()  # lm does not require hyperparameters
 }
 #--------------------------------------------------------------------
