@@ -1,39 +1,126 @@
 #--------------------------------------------------------------------
 ### registry for engines ###
 #--------------------------------------------------------------------
-# Registry for Engines
-
-#' Register and load engines for the fairness toolbox
+#--------------------------------------------------------------------
+#' Register an Engine
 #'
-#' This function registers all available engines by dynamically sourcing the relevant files.
+#' Registers an engine by sourcing its file, validating it, and adding it to the global registry.
+#' The function dynamically derives wrapper, default hyperparameters, and validation functions based on the file name.
 #'
-#' @export
-engines <- list()
-
-#' Helper function to load and register engines from files
-#'
-#' @param engine_name The name of the engine to register.
+#' @param engine_name The name of the engine (e.g., "train_lm").
 #' @param file_path The file path to the engine definition.
-#' @return Updates the global `engines` list with the registered engine.
+#'
+#' @return Registers the engine in the global registry if validation passes.
 #' @export
 register_engine <- function(engine_name, file_path) {
   tryCatch({
-    # Load the file
-    source(file_path, local = FALSE)  # Load functions into the global environment
+    # Derive engine type from the engine name
+    engine_type <- strsplit("train_lm", "_")[[1]][1]  # Extract "train", "split", etc.
     
-    # Check if the wrapper exists
-    wrapper_name <- paste0("wrapper_", engine_name)
-    if (exists(wrapper_name, envir = .GlobalEnv)) {
-      .GlobalEnv$engines[[engine_name]] <- get(wrapper_name, envir = .GlobalEnv)  # Update in the global environment
-      message(paste("Registered engine:", engine_name))
-    } else {
-      stop(paste("Function", wrapper_name, "not found in file:", file_path))
+    # Source the engine file
+    source(file_path, local = FALSE)
+    
+    # Dynamically construct function names
+    wrapper_function_name <- paste0("wrapper_", engine_name)
+    engine_function_name <- paste0("engine_", engine_name)
+    default_hyperparameters_function_name <- paste0("default_hyperparameters_", engine_name)
+    validate_function_name <- paste0("validate_engine_", engine_type)
+    
+    # Check if all required functions exist
+    if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
+      stop(paste("Engine function", engine_function_name, "not found in file:", file_path))
     }
+    if (!exists(wrapper_function_name, mode = "function", envir = .GlobalEnv)) {
+      stop(paste("Wrapper function", wrapper_function_name, "not found in file:", file_path))
+    }
+    if (!exists(default_hyperparameters_function_name, mode = "function", envir = .GlobalEnv)) {
+      stop(paste("Default hyperparameters function", default_hyperparameters_function_name, "not found in file:", file_path))
+    }
+    if (!exists(validate_function_name, mode = "function", envir = .GlobalEnv)) {
+      stop(paste("Validation function", validate_function_name, "not found for engine type:", engine_type))
+    }
+    
+    # Get the functions
+    wrapper_function <- get(wrapper_function_name, envir = .GlobalEnv)
+    default_hyperparameters_function <- get(default_hyperparameters_function_name, envir = .GlobalEnv)
+    validate_function <- get(validate_function_name, envir = .GlobalEnv)
+    
+    # Validate the engine
+    validate_function(wrapper_function, default_hyperparameters_function)
+    
+    # Register the engine
+    engines[[engine_name]] <- wrapper_function
+    message(paste("Engine registered successfully:", engine_name, "as type:", engine_type))
+    
   }, error = function(e) {
-    warning(paste("Failed to register engine:", engine_name, "->", e$message))
+    warning(paste("Failed to register engine from file:", file_path, "->", e$message))
   })
 }
+#--------------------------------------------------------------------
 
+
+
+#--------------------------------------------------------------------
+### validate-function for training-engines ###
+#--------------------------------------------------------------------
+#--------------------------------------------------------------------
+#' Validate a Training Engine
+#'
+#' Validates a training engine by performing a dummy test run and ensuring required outputs are present.
+#'
+#' @param wrapper_function The wrapper function for the training engine.
+#' @param default_hyperparameters_function The function providing default hyperparameters for the engine.
+#'
+#' @return TRUE if the engine passes validation, otherwise an error is raised.
+#' @export
+validate_engine_train <- function(wrapper_function, default_hyperparameters_function) {
+  # Create dummy data
+  dummy_data <- data.frame(
+    x = rnorm(100),
+    y = rnorm(100)
+  )
+  dummy_formula <- y ~ x
+  
+  # Create a dummy control object
+  dummy_control <- list(
+    params = list(
+      train = list(
+        formula = dummy_formula,
+        data = dummy_data,
+        hyperparameters = default_hyperparameters_function()  # Use default hyperparameters
+      )
+    )
+  )
+  
+  # Call the wrapper and validate the output
+  output <- tryCatch({
+    wrapper_function(dummy_control)
+  }, error = function(e) {
+    stop(paste("Training engine validation failed:", e$message))
+  })
+  
+  # Required fields for training engines
+  required_fields <- c("model", "model_type", "training_time", "formula")
+  missing_fields <- setdiff(required_fields, names(output))
+  if (length(missing_fields) > 0) {
+    stop(paste("Training engine output missing required fields:", paste(missing_fields, collapse = ", ")))
+  }
+  
+  # Check training time
+  if (!is.numeric(output$training_time) || output$training_time <= 0) {
+    stop("Training time is either missing or not valid (must be a positive number).")
+  }
+  
+  message("Training engine validated successfully.")
+  return(TRUE)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### load preinstalled package-engines ###
+#--------------------------------------------------------------------
 # Load preinstalled Train-Engines 
 register_engine("train_lm", "~/fairness_toolbox/R/engines/training/engine_train_lm.R")
 

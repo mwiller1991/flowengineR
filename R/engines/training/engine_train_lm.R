@@ -66,7 +66,7 @@ wrapper_train_lm <- function(control) {
 #'
 #' @return A list of default hyperparameters.
 #' @export
-default_hyperparameters_lm <- function() {
+default_hyperparameters_train_lm <- function() {
   list()  # lm does not require hyperparameters
 }
 #--------------------------------------------------------------------
