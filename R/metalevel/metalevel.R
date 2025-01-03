@@ -133,9 +133,16 @@ log_memory_usage(env = environment(), label = "after_training")
   
   # 4. Fairness Post-Processing (optional)
   if (!is.null(control$fairness_post)) {
-    control$params$fairness$predictions <- predictions
+    
+    control$params$fairness_post$fairness_post_data <- cbind(
+      predictions = as.numeric(predictions),
+      actuals = control$data$test[[control$vars$target_var]],
+      control$data$test[control$vars$protected_vars_binary]
+    )
+    
     post_fairness_driver <- engines[[control$fairness_post]]
-    predictions <- as.numeric(post_fairness_driver(control))
+    post_fairness_output <- post_fairness_driver(control)
+    predictions <- as.numeric(post_fairness_output$adjusted_predictions)
   }
   
 ###DEV Memory log after post processing (remove before productive launch)###
@@ -146,7 +153,7 @@ log_memory_usage(env = environment(), label = "after_postprocessing")
   control$params$eval$eval_data <- cbind(
     predictions = as.numeric(predictions),
     actuals = control$data$test[[control$vars$target_var]],
-    control$data$test[control$vars$protected_vars_eval]
+    control$data$test[control$vars$protected_vars_binary]
   )
   evaluation_results <- lapply(control$evaluation, function(metric) {
     engines[[metric]](control)

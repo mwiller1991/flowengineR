@@ -25,14 +25,21 @@ controller_split <- function(split_ratio = NULL, cv_folds = NULL, seed = NULL) {
 #--------------------------------------------------------------------
 #' Controller for Training Inputs
 #'
+#' Creates standardized input for training engines. Ensures all necessary fields are included for processing.
+#'
+#' **Standardized Input:**
+#' - `formula`: A formula specifying the model structure.
+#' - `params`: Optional hyperparameters for the training engine.
+#'
 #' @param formula A formula specifying the model structure.
-#' @param data A data frame containing the training data.
-#' @return A list containing the formula and data.
+#' @param hyperparameters A list of additional hyperparameters for the training engine.
+#'
+#' @return A standardized list for training input.
 #' @export
-controller_training <- function(formula, data = NULL) {
+controller_training <- function(formula, params = NULL) {
   list(
     formula = formula,
-    data = data
+    params = params
   )
 }
 #--------------------------------------------------------------------
@@ -61,14 +68,23 @@ controller_fairness_pre <- function(data) {
 #--------------------------------------------------------------------
 #' Controller for Fairness Post-Processing Inputs
 #'
-#' @param predictions A vector of predictions from the model.
-#' @param actuals A vector of actual observed values.
-#' @return A list containing predictions and actual values for post-processing.
+#' Creates standardized input for fairness post-processing engines. 
+#' Ensures all necessary fields are included for processing.
+#'
+#' **Standardized Input:**
+#' - `protected_name`: Names of the protected attributes.
+#' - `params`: Optional parameters for the fairness post-processing engine.
+#'
+#' @param fairness_post_data A data frame containing predictions, actuals, and protected attributes.
+#' @param protected_name A character vector of protected attribute names.
+#' @param params A list of additional parameters for the fairness engine.
+#'
+#' @return A standardized list for fairness post-processing.
 #' @export
-controller_fairness_post <- function(predictions = NULL, actuals = NULL) {
+controller_fairness_post <- function(fairness_post_data, protected_name, params = list()) {
   list(
-    predictions = predictions,
-    actuals = actuals
+    protected_name = protected_name,
+    params = params
   )
 }
 #--------------------------------------------------------------------

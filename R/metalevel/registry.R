@@ -12,10 +12,19 @@
 #'
 #' @return Registers the engine in the global registry if validation passes.
 #' @export
+#' 
+engines <- list()
+
 register_engine <- function(engine_name, file_path) {
   tryCatch({
     # Derive engine type from the engine name
-    engine_type <- strsplit("train_lm", "_")[[1]][1]  # Extract "train", "split", etc.
+    engine_type <- strsplit(engine_name, "_")[[1]]
+    
+    if (engine_type[1] == "fairness") {
+      full_engine_type <- paste(engine_type[1], engine_type[2], sep = "_")  # Combine "fairness" with "post", "pre", or "in"
+    } else {
+      full_engine_type <- engine_type[1]  # For other types like "train", "split"
+    }
     
     # Source the engine file
     source(file_path, local = FALSE)
@@ -23,8 +32,8 @@ register_engine <- function(engine_name, file_path) {
     # Dynamically construct function names
     wrapper_function_name <- paste0("wrapper_", engine_name)
     engine_function_name <- paste0("engine_", engine_name)
-    default_hyperparameters_function_name <- paste0("default_hyperparameters_", engine_name)
-    validate_function_name <- paste0("validate_engine_", engine_type)
+    default_params_function_name <- paste0("default_params_", engine_name)
+    validate_function_name <- paste0("validate_engine_", full_engine_type)
     
     # Check if all required functions exist
     if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
@@ -33,29 +42,37 @@ register_engine <- function(engine_name, file_path) {
     if (!exists(wrapper_function_name, mode = "function", envir = .GlobalEnv)) {
       stop(paste("Wrapper function", wrapper_function_name, "not found in file:", file_path))
     }
-    if (!exists(default_hyperparameters_function_name, mode = "function", envir = .GlobalEnv)) {
-      stop(paste("Default hyperparameters function", default_hyperparameters_function_name, "not found in file:", file_path))
+    if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
+      stop(paste("Default params function", default_params_function_name, "not found in file:", file_path))
     }
     if (!exists(validate_function_name, mode = "function", envir = .GlobalEnv)) {
-      stop(paste("Validation function", validate_function_name, "not found for engine type:", engine_type))
+      stop(paste("Validation function", validate_function_name, "not found for engine type:", full_engine_type))
     }
     
     # Get the functions
     wrapper_function <- get(wrapper_function_name, envir = .GlobalEnv)
-    default_hyperparameters_function <- get(default_hyperparameters_function_name, envir = .GlobalEnv)
+    default_params_function <- get(default_params_function_name, envir = .GlobalEnv)
     validate_function <- get(validate_function_name, envir = .GlobalEnv)
     
     # Validate the engine
-    validate_function(wrapper_function, default_hyperparameters_function)
+    validate_function(wrapper_function, default_params_function)
     
     # Register the engine
-    engines[[engine_name]] <- wrapper_function
-    message(paste("Engine registered successfully:", engine_name, "as type:", engine_type))
+    .GlobalEnv$engines[[engine_name]] <- wrapper_function
+    message(paste("Engine registered successfully:", engine_name, "as type:", full_engine_type))
     
   }, error = function(e) {
     warning(paste("Failed to register engine from file:", file_path, "->", e$message))
   })
 }
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### load validate_engines-functions ###
+#--------------------------------------------------------------------
+source("~/fairness_toolbox/R/metalevel/subregistry_validate_engines.R")
 #--------------------------------------------------------------------
 
 

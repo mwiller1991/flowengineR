@@ -36,3 +36,13 @@ wrapper_eval_mse <- function(control) {
   engine_eval_mse(eval_params$eval_data$predictions, eval_params$eval_data$actuals)
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### default params ###
+#--------------------------------------------------------------------
+default_params_eval_mse <- function() {
+  list()  # MSE evaluation does not require specific parameters
+}
+#--------------------------------------------------------------------

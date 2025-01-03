@@ -72,6 +72,16 @@ wrapper_split_cv <- function(control) {
 
 
 #--------------------------------------------------------------------
+### default params ###
+#--------------------------------------------------------------------
+default_params_split_cv <- function() {
+  list()  # MSE evaluation does not require specific parameters
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### helper for aggregation ###
 #--------------------------------------------------------------------
 #' Aggregate Results from Cross-Validation

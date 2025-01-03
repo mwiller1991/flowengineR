@@ -13,12 +13,13 @@ source("~/fairness_toolbox/R/metalevel/helper.R")
 
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
-
-# Load the Engine Registry
-source("~/fairness_toolbox/R/metalevel/registry.R")
+source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
+
+# Load the Engine Registry
+source("~/fairness_toolbox/R/metalevel/registry.R")
 
 # Load the data
 source("~/fairness_toolbox/data/data_generation.R")
@@ -34,7 +35,7 @@ vars = list(
   feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
   protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
   target_var = "default",                            # Target variable
-  protected_vars_eval = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
+  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
 )
 
 # Control Object for Prototyping
@@ -61,15 +62,15 @@ control <- list(
     ),
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      data = NULL
+      #data = NULL -> sollte unnötig werden
     ),
-    fairness = controller_fairness_post(
-      predictions = NULL,
-      actuals = NULL
+    fairness_post = controller_fairness_post(
+      #fairness_post_data = NULL, -> sollte unnötig werden
+      protected_name = vars$protected_vars_binary
     ),
     eval = controller_evaluation(
       eval_data = NULL,
-      protected_name = vars$protected_vars_eval
+      protected_name = vars$protected_vars_binary
     )
   )
 )

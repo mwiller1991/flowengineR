@@ -67,3 +67,13 @@ wrapper_eval_statisticalparity <- function(control) {
   )
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### default params ###
+#--------------------------------------------------------------------
+default_params_eval_statisticalparity <- function() {
+  list()  # MSE evaluation does not require specific parameters
+}
+#--------------------------------------------------------------------

@@ -33,7 +33,7 @@ wrapper_train_lm <- function(control) {
   }
   
   # Merge user-provided hyperparameters with defaults
-  hyperparameters <- merge_with_defaults(train_params$hyperparameters, default_hyperparameters_lm())
+  hyperparameters <- merge_with_defaults(train_params$params, default_params_train_lm())
   
   # Track training time
   start_time <- Sys.time()
@@ -47,10 +47,9 @@ wrapper_train_lm <- function(control) {
   initialize_output_train(
     model = model,
     model_type = "lm",
-    training_time = training_time,
     formula = train_params$formula,
     hyperparameters = hyperparameters,
-    specific_output = NULL  # No specific output for linear models
+    specific_output = list(training_time = training_time)
   )
 }
 #--------------------------------------------------------------------
@@ -60,13 +59,22 @@ wrapper_train_lm <- function(control) {
 #--------------------------------------------------------------------
 ### default hyperparams ###
 #--------------------------------------------------------------------
-#' Default Hyperparameters for Linear Model
+#' Default Parameters for Training Engines: LM
 #'
-#' Default hyperparameters for the linear model (lm).
+#' Provides default parameters for training engines. These parameters are specific to each engine and define optional values required for execution.
 #'
-#' @return A list of default hyperparameters.
+#' **Purpose:**
+#' - Defines engine-specific parameters that are optional but can be adjusted for specific use cases.
+#' - These parameters are **not covered by the base fields in the `controller_training` function**, which include:
+#'   - `formula`: A formula specifying the model structure.
+#'   - `data`: A data frame containing the training data.
+#' - **Additional Parameters:**
+#'   - None for this engine; it relies entirely on the base fields from the controller.
+#' - Ensures default parameters are used when none are provided in the `control` object.
+#'
+#' @return A list of default hyperparameters for the training engine.
 #' @export
-default_hyperparameters_train_lm <- function() {
-  list()  # lm does not require hyperparameters
+default_params_train_lm <- function() {
+  list()  # This engine does not require specific parameters
 }
 #--------------------------------------------------------------------

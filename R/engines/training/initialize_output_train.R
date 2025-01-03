@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------
-### helper fpr trainer-engines ###
+### helper for trainer-engines ###
 #--------------------------------------------------------------------
 #' Helper Function: Initialize Output for Training Engines
 #'
@@ -12,17 +12,18 @@
 #' 
 #' @return A list containing standardized output fields for the training engine.
 #' @export
-initialize_output_train <- function(model, model_type, training_time, formula, hyperparameters, specific_output = NULL) {
+initialize_output_train <- function(model, model_type, formula, hyperparameters, specific_output = NULL) {
   # Base fields: Required for all engines
   output <- list(
     model = model,
     model_type = model_type,
-    training_time = training_time,
-    formula = formula,
-    hyperparameters = hyperparameters
+    formula = formula
   )
   
   # Add optional fields if provided
+  if (!is.null(hyperparameters)) {
+    output$hyperparameters <- hyperparameters
+  }
   if (!is.null(specific_output)) {
     output$specific_output <- specific_output
   }

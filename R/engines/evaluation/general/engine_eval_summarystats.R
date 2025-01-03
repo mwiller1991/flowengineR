@@ -51,3 +51,13 @@ wrapper_eval_summarystats <- function(control) {
   return(stats_result)
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### default params ###
+#--------------------------------------------------------------------
+default_params_eval_summarystats <- function() {
+  list()  # MSE evaluation does not require specific parameters
+}
+#--------------------------------------------------------------------
