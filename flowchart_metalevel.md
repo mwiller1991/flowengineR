@@ -8,7 +8,7 @@ graph TD
     A(User Input: Control Object):::object ==> B[run_workflow]
     A ==> C[run_workflow_variants]
     B -->|full dataset| Dec1{User split delivered?}:::decider
-    
+
     %% Splitter Layer
     subgraph Splitter Layer
         direction TB
@@ -25,33 +25,54 @@ graph TD
         D -->|raw data| Dec2{Fairness-Pre-Precessing Active?}:::decider
             Dec2 -->Ans3((Yes)):::yes
         Ans3 --> E2[Fairness-Pre-Precessing Engine]:::engine
-        E2 -->|Preprocessed data| E3
+        E2 -->|data including Preprocessed data| T1
             Dec2 -->Ans4((No)):::no
-        Ans4 -->|raw Data| E3[Training Engine]:::engine
-        
+
         %% Embedded In-Processing
         subgraph Training Process
-            E3 -->|model| Dec3{Fairness-In-Precessing Active?}:::decider
+            subgraph Training Engines
+            direction TB
+                Ans4 -->|data| T1[Standardized Inputs: formula, data, params]:::input_style
+                T1 --> E3[Training Engine]:::engine
+                C3[function: controller_train]:::controller_style -->|rest| T1
+                E3 --> OF3[function: initialize_output_train]:::output_style
+                OF3 --> T2[Standardized Outputs: model, model_type, training_time, specific_output]:::input_style
+            end
+            T2 -->|model| Dec3{Fairness-In-Precessing Active?}:::decider
                 Dec3 -->Ans5((Yes)):::yes
             Ans5-->|model| E4[Fairness-In-Precessing Engine]:::engine
                 Dec3 -->Ans6((No)):::no
             E4 --> |adjusted model|RP(Predictions):::object
             Ans6 -->|model| RP
         end
-        
+
+            %% Integrated Fairness Post-Processing Subgraph
+        subgraph Fairness Post-Processing Engines
+            direction TB
+            Ans7 -->|fairness_post_data including Raw Predictions| FP1[Standardized Inputs: fairness_post_data, params, protected_name]:::input_style
+            FP1 --> E5[Fairness-Post-Precessing Engine]:::engine
+            C5[function: controller_fairness_post]:::controller_style -->|rest| FP1
+            E5 --> OF5[function: initialize_output_fairness_post]:::output_style
+            OF5 --> FP3[Standardized Outputs: adjusted_predictions, method, input_data, specific_output]:::input_style
+        end
+
         %% Decision for Predictions
         RP --> Dec4{Fairness-Post-Precessing Active?}:::decider
             Dec4 -->Ans7((Yes)):::yes
-        Ans7 -->|Raw Predictions| E5[Fairness-Post-Precessing Engine]:::engine
+        
             Dec4 -->Ans8((No)):::no
         Ans8 -->|Raw Predictions| E6[Evaluation Engine]:::engine
         
-
         %% Intermediate Results generation
-        E5 -->|Adjusted Predictions| IR(Intermediate Results):::object
+        T2 --> |standardized output| IR(Intermediate Results):::object
+        FP3 -->|standardized output| IR
         E6 -->|Metrics| IR
         Ans8 -->|Raw Predictions| IR
     end
+
+    %% Connectiong control-objekt (user-input) to controller_functions
+    A -->|input| C3
+    A -->|input| C5
 
     %% Feedback loop to the Splitter
     IR -->|Intermediate Results| F1
@@ -63,22 +84,34 @@ graph TD
     B ==> I(Final Results: Models, Predictions, Metrics):::object
     C ==>|Multiple variants results| I
 
-
     %% Variants
-    C -->|Configuration Variants| B
-    B -->|Variant Results| C
+    C --> |Configuration Variants|B
+    B --> |Variants Results|C
 
     %% Legend
     subgraph Legend
         direction TB
-        L1[Deciders: Gray Diamonds]:::decider
-        L2[Engines: Blue Rectangles]:::engine
-        L3[Objects: Purple Rectangles]:::object
-        L4[Functions of the package: Black Rectangles]
+        Obj[Object: Data or Results]:::object
+        Dec{Decision: Condition to Proceed}:::decider
+        Eng[Engine: Processing Component]:::engine
+        Ctr[Controller: Manages Inputs]:::controller_style
+        IO1[Input: Standardized Input Formats]:::input_style
+        IO2[Output: Standardized Output Formats]:::output_style
+        Y((Yes: Positive Decision)):::yes
+        N((No: Negative Decision)):::no
     end
 
     %% Styling for engines
     classDef engine fill:#ADD8E6,stroke:#000,stroke-width:2px,color:#000;
+
+    %% Styling for controller
+    classDef controller_style fill:#FFE4B5,stroke:#000,stroke-width:2px,color:#000;
+
+    %% Styling for output function
+    classDef output_style fill:#32CD32,stroke:#000,stroke-width:2px,color:#000;
+
+    %% Styling for inputs/outputs
+    classDef input_style fill:#FFB6C1,stroke:#000,stroke-width:2px,color:#000;
 
     %% Styling for deciders
     classDef decider fill:#D3D3D3,stroke:#000,stroke-width:2px,color:#000;
