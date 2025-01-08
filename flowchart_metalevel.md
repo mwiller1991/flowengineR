@@ -109,8 +109,8 @@ graph TD
         Dec{Decision: Condition to Proceed}:::decider
         Eng[Engine: Processing Component]:::engine
         Ctr[Controller: Manages Inputs]:::controller_style
-        IO1[Input: Standardized Input Formats]:::input_style
-        IO2[Output: Standardized Output Formats]:::output_style
+        IO1[Inputs/Outputs: Standardized Input/Output Formats]:::input_style
+        IO2[Output-function: Output-function Formats]:::output_style
         Y((Yes: Positive Decision)):::yes
         N((No: Negative Decision)):::no
     end
