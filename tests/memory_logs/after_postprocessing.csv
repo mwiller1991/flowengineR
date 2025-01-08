@@ -1,5 +1,6 @@
 "Object","Size_MB"
 "control",0.58
+"results",0.39
 "output_train",0.35
 "driver_fairness_post",0.1
 "driver_train",0.08

@@ -84,6 +84,9 @@ run_workflow_single <- function(control) {
     stop("[ERROR] Training and test data are missing. Please ensure data is split before execution.")
   }
   
+  # Initialize results list
+  results <- list()
+  
 ###DEV Memory log after data splitting (remove before productive launch)###
 log_memory_usage(env = environment(), label = "at_start")
 ###DEV-END (remove before productive launch)###
@@ -91,9 +94,6 @@ log_memory_usage(env = environment(), label = "at_start")
   # 1. Assigning data in the meta-level
   # Ensure training data is available for training
   control$params$train$data <- control$data$train
-  
-  # Ensure test data is available for fairness and evaluation
-  control$params$fairness$actuals <- control$data$test[[control$vars$target_var]]
   
   # 2. Fairness Pre-Processing (optional)
   if (!is.null(control$fairness_pre)) {
@@ -110,7 +110,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
   driver_train <- engines[[control$train_model]]
   if (!is.null(control$fairness_in)) {
     driver_fairness_in <- engines[[control$fairness_in]]
-    output_train <- driver_fairness_in(control, driver_train)
+    output_fairness_in <- driver_fairness_in(control, driver_train)
   } else {
     output_train <- driver_train(control)
   }
@@ -130,6 +130,9 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
   
     # Add predictions to the training-output
     output_train$predictions <- predictions
+    
+    # Add train to the output
+    results$output_train <- output_train
   
 ###DEV Memory log after training (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_training")
@@ -147,6 +150,8 @@ log_memory_usage(env = environment(), label = "after_training")
     driver_fairness_post <- engines[[control$fairness_post]]
     output_fairness_post <- driver_fairness_post(control)
     predictions <- as.numeric(output_fairness_post$adjusted_predictions)
+    
+    results$output_fairness_post <- output_fairness_post
   }
   
 ###DEV Memory log after post processing (remove before productive launch)###
@@ -154,25 +159,25 @@ log_memory_usage(env = environment(), label = "after_postprocessing")
 ###DEV-END (remove before productive launch)###
   
   # 5. Evaluation
-  control$params$eval$eval_data <- cbind(
-    predictions = as.numeric(predictions),
-    actuals = as.numeric(control$data$test[[control$vars$target_var]]),
-    control$data$test[control$vars$protected_vars_binary]
-  )
-  output_eval <- lapply(control$evaluation, function(metric) {
-    engines[[metric]](control)
-  })
-  names(output_eval) <- control$evaluation
+  if (!is.null(control$evaluation)) {
+    control$params$eval$eval_data <- cbind(
+      predictions = predictions,
+      actuals = control$data$test[[control$vars$target_var]],
+      control$data$test[control$vars$protected_vars_binary]
+    )
+    
+    output_eval <- lapply(control$evaluation, function(metric) {
+      engines[[metric]](control)
+    })
+    names(output_eval) <- control$evaluation
+    results$output_eval <- output_eval
+  }
   
 ###DEV Memory log after evaluation (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_evaluation")
 ###DEV-END (remove before productive launch)###
   
   # Return results
-  list(
-    output_train = output_train,
-    output_fairness_post = output_fairness_post,
-    output_eval = output_eval
-  )
+  return(results)
 }
 #--------------------------------------------------------------------
