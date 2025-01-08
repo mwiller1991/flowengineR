@@ -20,12 +20,12 @@ run_workflow <- function(control) {
   }
   
   # Perform data splitting using the specified splitter engine
-  split_wrapper <- engines[[control$split_method]]
-  split_result <- split_wrapper(control)
+  driver_split <- engines[[control$split_method]]
+  output_split <- driver_split(control)
   
   # The workflow results are generated within the splitter engine itself
   # Return workflow results directly from the splitter
-  return(split_result)
+  return(output_split)
 }
 #--------------------------------------------------------------------
 
@@ -97,8 +97,9 @@ log_memory_usage(env = environment(), label = "at_start")
   
   # 2. Fairness Pre-Processing (optional)
   if (!is.null(control$fairness_pre)) {
-    pre_fairness_driver <- engines[[control$fairness_pre]]
-    control <- pre_fairness_driver(control)
+    driver_fairness_pre <- engines[[control$fairness_pre]]
+    control <- driver_fairness_pre(control) #-> Change later on just for the changed predictions after remodelling the pre-methods
+    #place an standardized output rigth here
   }
   
 ###DEV Memory log after pre processing (remove before productive launch)###
@@ -106,12 +107,12 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
 ###DEV-END (remove before productive launch)###
   
   # 3. Training (with optional In-Processing Fairness)
-  model_driver <- engines[[control$train_model]]
+  driver_train <- engines[[control$train_model]]
   if (!is.null(control$fairness_in)) {
-    in_fairness_driver <- engines[[control$fairness_in]]
-    model_output <- in_fairness_driver(control, model_driver)
+    driver_fairness_in <- engines[[control$fairness_in]]
+    output_train <- driver_fairness_in(control, driver_train)
   } else {
-    model_output <- model_driver(control)
+    output_train <- driver_train(control)
   }
   
     # Generate predictions based on output_type
@@ -120,12 +121,15 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
       message("[INFO] output_type not specified. Defaulting to 'prob' for probability outputs.")
     }
     if (control$output_type == "prob") {
-      predictions <- as.numeric(predict(model_output$model, newdata = control$data$test, type = "response"))
+      predictions <- as.numeric(predict(output_train$model, newdata = control$data$test, type = "response"))
     } else if (control$output_type == "class") {
-      predictions <- as.numeric(predict(model_output$model, newdata = control$data$test, type = "class"))
+      predictions <- as.numeric(predict(output_train$model, newdata = control$data$test, type = "class"))
     } else {
       stop("Invalid output_type specified in control.")
     }
+  
+    # Add predictions to the training-output
+    output_train$predictions <- predictions
   
 ###DEV Memory log after training (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_training")
@@ -140,9 +144,9 @@ log_memory_usage(env = environment(), label = "after_training")
       control$data$test[control$vars$protected_vars_binary]
     )
     
-    post_fairness_driver <- engines[[control$fairness_post]]
-    post_fairness_output <- post_fairness_driver(control)
-    predictions <- as.numeric(post_fairness_output$adjusted_predictions)
+    driver_fairness_post <- engines[[control$fairness_post]]
+    output_fairness_post <- driver_fairness_post(control)
+    predictions <- as.numeric(output_fairness_post$adjusted_predictions)
   }
   
 ###DEV Memory log after post processing (remove before productive launch)###
@@ -152,13 +156,13 @@ log_memory_usage(env = environment(), label = "after_postprocessing")
   # 5. Evaluation
   control$params$eval$eval_data <- cbind(
     predictions = as.numeric(predictions),
-    actuals = control$data$test[[control$vars$target_var]],
+    actuals = as.numeric(control$data$test[[control$vars$target_var]]),
     control$data$test[control$vars$protected_vars_binary]
   )
-  evaluation_results <- lapply(control$evaluation, function(metric) {
+  output_eval <- lapply(control$evaluation, function(metric) {
     engines[[metric]](control)
   })
-  names(evaluation_results) <- control$evaluation
+  names(output_eval) <- control$evaluation
   
 ###DEV Memory log after evaluation (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_evaluation")
@@ -166,9 +170,9 @@ log_memory_usage(env = environment(), label = "after_evaluation")
   
   # Return results
   list(
-    model = model_output$model,
-    predictions = predictions,
-    evaluation = evaluation_results
+    output_train = output_train,
+    output_fairness_post = output_fairness_post,
+    output_eval = output_eval
   )
 }
 #--------------------------------------------------------------------

@@ -75,6 +75,6 @@ wrapper_fairness_post_genresidual <- function(control) {
 #' @return A list of default parameters for the fairness post-processing engine.
 #' @export
 default_params_fairness_post_genresidual <- function() {
-  list()  # This engine does not require specific parameters
+  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

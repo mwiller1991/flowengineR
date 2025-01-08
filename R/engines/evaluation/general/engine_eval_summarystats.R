@@ -58,6 +58,6 @@ wrapper_eval_summarystats <- function(control) {
 ### default params ###
 #--------------------------------------------------------------------
 default_params_eval_summarystats <- function() {
-  list()  # MSE evaluation does not require specific parameters
+  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

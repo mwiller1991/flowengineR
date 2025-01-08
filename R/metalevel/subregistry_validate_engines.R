@@ -98,7 +98,7 @@ validate_engine_fairness_post <- function(wrapper_function, default_params_funct
   })
   
   # Required fields for fairness post-processing engines
-  required_fields <- c("adjusted_predictions", "method", "input_data", "protected_attributes", "params")
+  required_fields <- c("adjusted_predictions", "method", "input_data", "protected_attributes")
   missing_fields <- setdiff(required_fields, names(output))
   if (length(missing_fields) > 0) {
     stop(paste("Fairness post-processing engine output missing required fields:", paste(missing_fields, collapse = ", ")))

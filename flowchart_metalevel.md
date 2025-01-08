@@ -44,9 +44,10 @@ graph TD
                 Dec3 -->Ans6((No)):::no
             E4 --> |adjusted model|RP(Predictions):::object
             Ans6 -->|model| RP
+            RP --> |predictions|T2
         end
 
-            %% Integrated Fairness Post-Processing Subgraph
+        %% Integrated Fairness Post-Processing Subgraph
         subgraph Fairness Post-Processing Engines
             direction TB
             Ans7 -->|fairness_post_data including Raw Predictions| FP1[Standardized Inputs: fairness_post_data, params, protected_name]:::input_style
@@ -56,23 +57,36 @@ graph TD
             OF5 --> FP3[Standardized Outputs: adjusted_predictions, method, input_data, specific_output]:::input_style
         end
 
-        %% Decision for Predictions
+        %% Decision after Predictions
         RP --> Dec4{Fairness-Post-Precessing Active?}:::decider
             Dec4 -->Ans7((Yes)):::yes
-        
             Dec4 -->Ans8((No)):::no
-        Ans8 -->|Raw Predictions| E6[Evaluation Engine]:::engine
+        Ans8 -->|raw redictions| Dec5{Evaluation in use?}:::decider
+            FP3 -->|adjusted predictions| Dec5
+            Dec5 -->Ans9((Yes)):::yes
+            Dec5 -->Ans10((No)):::no
+
+
+        %% Integrated Eval Subgraph
+        subgraph Evaluations Engines
+            Ans9 -->|eval_data including raw or adjusted predictions| Ev1[Standardized Inputs: eval_data, params, protected_name]:::input_style
+            Ev1 --> E6[Evaluation Engine]:::engine
+            C6[function: controller_evaluation]:::controller_style -->|rest| Ev1
+            E6 --> OF6[function: initialize_output_eval]:::output_style
+            OF6 --> Ev3[Standardized Outputs: metrics, eval_type, input_data, protected_attributes, params, specific_output]:::input_style
+        end
         
         %% Intermediate Results generation
         T2 --> |standardized output| IR(Intermediate Results):::object
         FP3 -->|standardized output| IR
-        E6 -->|Metrics| IR
-        Ans8 -->|Raw Predictions| IR
+        Ev3 -->|standardized output| IR
+
     end
 
     %% Connectiong control-objekt (user-input) to controller_functions
     A -->|input| C3
     A -->|input| C5
+    A -->|input| C6
 
     %% Feedback loop to the Splitter
     IR -->|Intermediate Results| F1

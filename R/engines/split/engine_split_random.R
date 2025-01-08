@@ -68,6 +68,6 @@ wrapper_split_random <- function(control) {
 ### default params ###
 #--------------------------------------------------------------------
 default_params_split_random <- function() {
-  list()  # MSE evaluation does not require specific parameters
+  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

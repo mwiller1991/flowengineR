@@ -81,7 +81,7 @@ controller_fairness_pre <- function(data) {
 #'
 #' @return A standardized list for fairness post-processing.
 #' @export
-controller_fairness_post <- function(fairness_post_data, protected_name, params = list()) {
+controller_fairness_post <- function(fairness_post_data, protected_name, params = NULL) {
   list(
     protected_name = protected_name,
     params = params
@@ -96,14 +96,22 @@ controller_fairness_post <- function(fairness_post_data, protected_name, params 
 #--------------------------------------------------------------------
 #' Controller for Evaluation Inputs
 #'
-#' @param predictions A vector of predictions from the model.
-#' @param actuals A vector of actual observed values.
-#' @return A list containing predictions and actual values for evaluation.
+#' Creates standardized input for evaluation engines. 
+#' Ensures all necessary fields are included for processing.
+#'
+#' **Standardized Input:**
+#' - `protected_name`: Names of the protected attributes.
+#' - `params`: Optional parameters for the evaluation engine.
+#'
+#' @param protected_name A character vector of protected attribute names.
+#' @param params A list of additional parameters for the evaluation engine.
+#'
+#' @return A standardized list for evaluation engines.
 #' @export
-controller_evaluation <- function(eval_data = NULL, protected_name) {
+controller_evaluation <- function(protected_name, params = NULL) {
   list(
-    eval_data = eval_data,
-    protected_name = protected_name
+    protected_name = protected_name,
+    params = params
   )
 }
 #--------------------------------------------------------------------

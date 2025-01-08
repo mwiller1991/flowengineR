@@ -23,7 +23,7 @@
 #'
 #' @return A standardized list containing the output fields.
 #' @export
-initialize_output_fairness_post <- function(adjusted_predictions, method, input_data, protected_attributes, params, specific_output = NULL) {
+initialize_output_fairness_post <- function(adjusted_predictions, method, input_data, protected_attributes, params = NULL, specific_output = NULL) {
   # Base fields: Required for all engines
   output <- list(
     adjusted_predictions = adjusted_predictions,

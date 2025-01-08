@@ -14,6 +14,7 @@ source("~/fairness_toolbox/R/metalevel/helper.R")
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
+source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -53,7 +54,7 @@ control <- list(
   fairness_pre = NULL,
   fairness_in = NULL,
   fairness_post = "fairness_post_genresidual",
-  evaluation = list("eval_summarystats", "eval_mse", "eval_statisticalparity"),
+  evaluation = list("eval_mse"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
       split_ratio = 0.7,
@@ -61,15 +62,12 @@ control <- list(
       seed = 123
     ),
     train = controller_training(
-      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      #data = NULL -> sollte unnötig werden
+      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+")))
     ),
     fairness_post = controller_fairness_post(
-      #fairness_post_data = NULL, -> sollte unnötig werden
       protected_name = vars$protected_vars_binary
     ),
     eval = controller_evaluation(
-      eval_data = NULL,
       protected_name = vars$protected_vars_binary
     )
   )

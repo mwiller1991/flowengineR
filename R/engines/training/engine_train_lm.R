@@ -75,6 +75,6 @@ wrapper_train_lm <- function(control) {
 #' @return A list of default hyperparameters for the training engine.
 #' @export
 default_params_train_lm <- function() {
-  list()  # This engine does not require specific parameters
+  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

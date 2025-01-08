@@ -1,5 +1,5 @@
 "Object","Size_MB"
 "control",0.54
-"model_output",0.31
-"model_driver",0.08
+"output_train",0.35
+"driver_train",0.08
 "predictions",0
