@@ -50,7 +50,7 @@ wrapper_eval_mse <- function(control) {
     eval_type = "mse_eval",
     input_data = eval_params$eval_data,
     protected_attributes = eval_params$protected_attributes,
-    params = params,
+    params = NULL,  # No specific params for MSE evaluation
     specific_output = NULL  # No specific output for MSE evaluation
   )
 }

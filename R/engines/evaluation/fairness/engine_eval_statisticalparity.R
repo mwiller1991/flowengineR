@@ -3,9 +3,7 @@
 #--------------------------------------------------------------------
 #' Evaluation Engine: Statistical Parity Difference
 #'
-#' @param predictions A vector of model predictions.
-#' @param actuals A vector of observed values (optional, not used here).
-#' @param protected_attribute A data frame of protected attributes.
+#' @param eval_data A data frame containing predictions and protected attributes.
 #' @param protected_name A vector of protected attribute names.
 #' @return A named list of Statistical Parity Difference values for each protected attribute.
 #' @export
@@ -30,40 +28,49 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #--------------------------------------------------------------------
 #' Wrapper for Statistical Parity Difference Evaluation
 #'
+#' Handles input validation, calls the Statistical Parity engine, and creates standardized output.
+#'
 #' @param control A list containing evaluation parameters, including predictions and protected attributes.
-#' @return A named list of Statistical Parity Difference values.
+#' @return A standardized list containing the evaluation results.
 #' @export
 wrapper_eval_statisticalparity <- function(control) {
   eval_params <- control$params$eval
   
   # Validate inputs
-  
-  # Validate input: Check if eval_data exists and has the necessary structure
   if (is.null(eval_params$eval_data)) {
     stop("Statistical Parity Wrapper: 'eval_data' is missing.")
   }
   
-  # Validate input: Check for missing protected attributes
+  # Validate protected attributes
   missing_columns <- setdiff(eval_params$protected_name, colnames(eval_params$eval_data))
   if (length(missing_columns) > 0) {
-    stop(paste("Statistical Parity Wrapper: The following protected attributes are missing in 'eval_data':", 
+    stop(paste("Statistical Parity Wrapper: Missing protected attributes:", 
                paste(missing_columns, collapse = ", ")))
   }
   
-  # Validate input: Ensure all protected attributes are binary
   non_binary_attributes <- sapply(eval_params$protected_name, function(attr_name) {
     attribute <- eval_params$eval_data[[attr_name]]
     length(unique(attribute)) != 2
   })
   if (any(non_binary_attributes)) {
-    stop(paste("Statistical Parity Wrapper: The following attributes are not binary:", 
+    stop(paste("Statistical Parity Wrapper: Non-binary protected attributes:", 
                paste(eval_params$protected_name[non_binary_attributes], collapse = ", ")))
   }
   
   # Call the engine
-  engine_eval_statisticalparity(
+  spd_results <- engine_eval_statisticalparity(
     eval_data = eval_params$eval_data,
     protected_name = eval_params$protected_name
+  )
+  
+  # Standardized output
+  initialize_output_eval(
+    metrics = list(spd = spd_results),
+    eval_type = "statistical_parity_eval",
+    input_data = eval_params$eval_data,
+    protected_attributes = eval_params$protected_name,
+    params = NULL,  # No specific params for SP evaluation
+    specific_output = NULL  # No specific output for SP evaluation
   )
 }
 #--------------------------------------------------------------------
@@ -73,7 +80,20 @@ wrapper_eval_statisticalparity <- function(control) {
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
+#' Default Parameters for Evaluation Engine: Statitical parity
+#'
+#' Provides default parameters for the MSE evaluation engine.
+#'
+#' **Purpose:**
+#' - Defines engine-specific parameters that are optional but can be adjusted for specific use cases.
+#' - Ensures default parameters are used when none are provided in the `control` object.
+#'
+#' **Additional Parameters:**
+#' - None for this engine; it relies entirely on the base fields from the controller.
+#'
+#' @return A list of default parameters for the MSE evaluation engine.
+#' @export
 default_params_eval_statisticalparity <- function() {
-  list()  # MSE evaluation does not require specific parameters
+  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

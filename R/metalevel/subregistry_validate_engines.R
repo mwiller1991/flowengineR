@@ -178,8 +178,8 @@ validate_engine_eval <- function(wrapper_function, default_params_function) {
   dummy_predictions <- rnorm(100, mean = 0.5, sd = 0.1)
   dummy_actuals <- rbinom(100, size = 1, prob = 0.5)
   dummy_protected_attributes <- data.frame(
-    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),
-    A2 = sample(c("A2_1", "A2_2", "A2_3"), 100, replace = TRUE)
+    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),  # Binär
+    A2 = sample(c("A2_1", "A2_2"), 100, replace = TRUE)   # Binär
   )
   
   # Create a dummy control object using the controller function
@@ -188,14 +188,14 @@ validate_engine_eval <- function(wrapper_function, default_params_function) {
     params = list(
       eval = controller_evaluation(
         protected_name = names(dummy_protected_attributes),
-        params = default_params_function()  # Use default parameters
+        params = NULL #default_params_function()  # Use default parameters
       )
     )
   )
   # Manually add `eval_data` to the `eval` list
   dummy_control$params$eval$eval_data <- cbind(
     predictions = as.numeric(dummy_predictions),
-    actuals = dummy_actuals,
+    actuals = as.numeric(dummy_actuals),
     dummy_protected_attributes
   )
   
