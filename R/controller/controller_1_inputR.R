@@ -101,10 +101,10 @@ controller_fairness_post <- function(fairness_post_data, protected_name, params 
 #'
 #' **Standardized Input:**
 #' - `protected_name`: Names of the protected attributes.
-#' - `params`: Optional parameters for the evaluation engine.
+#' - `params`: A named list where keys are engine names and values are their specific parameters in another list (optional).
 #'
 #' @param protected_name A character vector of protected attribute names.
-#' @param params A list of additional parameters for the evaluation engine.
+#' @param params A named list of additional parameters for specific evaluation engines (optional).
 #'
 #' @return A standardized list for evaluation engines.
 #' @export

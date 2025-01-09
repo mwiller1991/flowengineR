@@ -36,7 +36,9 @@ wrapper_eval_mse <- function(control) {
   }
   
   # Merge optional parameters with defaults
-  params <- merge_with_defaults(eval_params$params, default_params_eval_mse())
+  #This is just for Test-Purposes -> This engine has no params
+  specific_params <- eval_params$params[["eval_mse"]] %||% list()
+  params <- merge_with_defaults(specific_params, default_params_eval_mse())
   
   # Call the specific evaluation engine
   mse <- engine_eval_mse(
@@ -50,7 +52,7 @@ wrapper_eval_mse <- function(control) {
     eval_type = "mse_eval",
     input_data = eval_params$eval_data,
     protected_attributes = eval_params$protected_attributes,
-    params = NULL,  # No specific params for MSE evaluation
+    params = params,  # No specific params for MSE evaluation
     specific_output = NULL  # No specific output for MSE evaluation
   )
 }
@@ -75,6 +77,7 @@ wrapper_eval_mse <- function(control) {
 #' @return A list of default parameters for the MSE evaluation engine.
 #' @export
 default_params_eval_mse <- function() {
-  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  #This is just for Test-Purposes
+  list(weighting_factor = 1, adjustment_factor = 0)  # This engine does not require specific parameters -> for any other engine would be a list() necessary
 }
 #--------------------------------------------------------------------

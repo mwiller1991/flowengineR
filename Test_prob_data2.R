@@ -54,7 +54,7 @@ control <- list(
   fairness_pre = NULL,
   fairness_in = NULL,
   fairness_post = "fairness_post_genresidual",
-  evaluation = list("eval_mse"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
+  evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
       split_ratio = 0.7,
@@ -68,7 +68,11 @@ control <- list(
       protected_name = vars$protected_vars_binary
     ),
     eval = controller_evaluation(
-      protected_name = vars$protected_vars_binary
+      protected_name = vars$protected_vars_binary,
+      params = list(
+        eval_mse = list(weighting_factor = 0.5), #Example for Test
+        eval_statisticalparity = list(threshold = 0.1) #Example for Test
+      )
     )
   )
 )
