@@ -166,15 +166,64 @@ validate_engine_fairness_in <- function(wrapper_function, default_params_functio
 #--------------------------------------------------------------------
 #' Validate an Evaluation Engine
 #'
-#' Validates an evaluation engine.
+#' Validates an evaluation engine by performing a dummy test run and ensuring required outputs are present.
 #'
 #' @param wrapper_function The wrapper function for the evaluation engine.
 #' @param default_params_function The function providing default parameters for the engine.
 #'
-#' @return TRUE if the engine passes validation.
+#' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
 validate_engine_eval <- function(wrapper_function, default_params_function) {
-  message("Evaluation engine validation passed (Dummy).")
+  # Create dummy data for predictions and actuals
+  dummy_predictions <- rnorm(100, mean = 0.5, sd = 0.1)
+  dummy_actuals <- rbinom(100, size = 1, prob = 0.5)
+  dummy_protected_attributes <- data.frame(
+    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),
+    A2 = sample(c("A2_1", "A2_2", "A2_3"), 100, replace = TRUE)
+  )
+  
+  # Create a dummy control object using the controller function
+  dummy_control <- list(
+    output_type = "prob",
+    params = list(
+      eval = controller_evaluation(
+        protected_name = names(dummy_protected_attributes),
+        params = default_params_function()  # Use default parameters
+      )
+    )
+  )
+  # Manually add `eval_data` to the `eval` list
+  dummy_control$params$eval$eval_data <- cbind(
+    predictions = as.numeric(dummy_predictions),
+    actuals = dummy_actuals,
+    dummy_protected_attributes
+  )
+  
+  # Call the wrapper and validate the output
+  output <- tryCatch({
+    wrapper_function(dummy_control)
+  }, error = function(e) {
+    stop(paste("Evaluation engine validation failed:", e$message))
+  })
+  
+  # Required fields for evaluation engines
+  required_fields <- c("metrics", "eval_type", "input_data")
+  missing_fields <- setdiff(required_fields, names(output))
+  if (length(missing_fields) > 0) {
+    stop(paste("Evaluation engine output missing required fields:", paste(missing_fields, collapse = ", ")))
+  }
+  
+  # Check metrics
+  if (!is.list(output$metrics) || length(output$metrics) == 0) {
+    stop("Metrics must be a non-empty list.")
+  }
+  
+  # Check eval_type
+  if (!is.character(output$eval_type) || length(output$eval_type) != 1) {
+    stop("Eval_type must be a single character string.")
+  }
+  
+  message("Evaluation engine validated successfully.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
