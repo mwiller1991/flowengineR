@@ -51,7 +51,7 @@ wrapper_split_random <- function(control) {
   control$data$test <- split$test
   
   # Call the single workflow for the random split
-  workflow_results <- list(run_workflow_single(control))
+  workflow_results <- list("random" = run_workflow_single(control))
   
   # Return standardized output
   return(list(

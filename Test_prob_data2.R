@@ -49,12 +49,12 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  split_method = "split_random",   # Method for splitting (e.g., "split_random" or "split_cv")
   train_model = "train_lm",
   output_type = "prob", # Add option for output type ("prob" or "class")
   fairness_pre = "fairness_pre_resampling",
   fairness_in = NULL,
-  fairness_post = NULL, #"fairness_post_genresidual"
+  fairness_post = "fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
