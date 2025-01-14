@@ -1,11 +1,22 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Linear Model Training Engine
+#' Training Engine: Linear Model
 #'
-#' @param formula A formula specifying the model structure.
-#' @param data A data frame containing the training data.
-#' @return A trained linear model object.
+#' Fits a linear model using the specified formula and data.
+#'
+#' **Inputs:**
+#' - `formula`: The formula specifying the model structure.
+#' - `data`: The data frame containing the training data.
+#'
+#' **Outputs (passed to wrapper):**
+#' - `model`: The trained linear model object.
+#' - `model_type`: A string identifying the model type ("lm").
+#' - `specific_output`: Training-specific outputs such as training time.
+#'
+#' @param formula The formula specifying the model structure.
+#' @param data The data frame containing the training data.
+#' @return A list containing the trained model and metadata.
 #' @export
 engine_train_lm <- function(formula, data) {
   lm(formula, data = data)

@@ -3,8 +3,27 @@
 #--------------------------------------------------------------------
 #' Evaluation Engine: Summary Statistics
 #'
-#' @param predictions A vector of predictions from the model.
-#' @return A list of summary statistics including mean, median, sd, var, quantiles, etc.
+#' Computes summary statistics for the given predictions.
+#'
+#' **Inputs:**
+#' - `predictions`: A numeric vector of predicted values.
+#'
+#' **Outputs (passed to wrapper):**
+#' - `metrics`: A list containing summary statistics, including:
+#'   - `mean`: Mean of the predictions.
+#'   - `median`: Median of the predictions.
+#'   - `sd`: Standard deviation.
+#'   - `var`: Variance.
+#'   - `min`: Minimum value.
+#'   - `max`: Maximum value.
+#'   - `quantile_25`: 25th percentile.
+#'   - `quantile_75`: 75th percentile.
+#'   - `iqr`: Interquartile range.
+#'   - `skewness`: Skewness of the predictions.
+#'   - `kurtosis`: Kurtosis of the predictions.
+#'
+#' @param predictions A numeric vector of predicted values.
+#' @return A list containing the computed summary statistics.
 #' @export
 engine_eval_summarystats <- function(predictions) {
   stats <- c(

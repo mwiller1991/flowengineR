@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------
-### helper for trainer-engines ###
+### helper for Post-Processing Engines ###
 #--------------------------------------------------------------------
 #' Initialize Output for Fairness Post-Processing
 #'

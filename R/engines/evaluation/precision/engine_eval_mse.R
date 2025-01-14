@@ -3,9 +3,18 @@
 #--------------------------------------------------------------------
 #' Evaluation Engine: Mean Squared Error
 #'
-#' @param predictions A vector of predictions from the model.
-#' @param actuals A vector of actual observed values.
-#' @return The mean squared error between predictions and actuals.
+#' Calculates the Mean Squared Error (MSE) between predictions and actual values.
+#'
+#' **Inputs:**
+#' - `predictions`: A numeric vector of predicted values.
+#' - `actuals`: A numeric vector of actual observed values.
+#'
+#' **Outputs (passed to wrapper):**
+#' - `metrics`: A list containing the MSE value.
+#'
+#' @param predictions A numeric vector of predicted values.
+#' @param actuals A numeric vector of actual observed values.
+#' @return A list containing the MSE metric.
 #' @export
 engine_eval_mse <- function(predictions, actuals) {
   # Calculate Mean Squared Error between predictions and actual values

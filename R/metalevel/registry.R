@@ -84,7 +84,7 @@ source("~/fairness_toolbox/R/metalevel/subregistry_validate_engines.R")
 register_engine("train_lm", "~/fairness_toolbox/R/engines/training/engine_train_lm.R")
 
 # Load preinstalled Fairness-Engines 
-register_engine("fairness_pre_method1", "~/fairness_toolbox/R/engines/fairness/pre-processing/engine_fairness_pre_method1.R")
+register_engine("fairness_pre_resampling", "~/fairness_toolbox/R/engines/fairness/pre-processing/engine_fairness_pre_resampling.R")
 register_engine("fairness_post_genresidual", "~/fairness_toolbox/R/engines/fairness/post-processing/engine_fairness_post_genresidual.R")
 
 # Load preinstalled Evaluation-Engines

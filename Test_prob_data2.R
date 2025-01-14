@@ -12,6 +12,7 @@ source("~/fairness_toolbox/R/metalevel/metalevel.R")
 source("~/fairness_toolbox/R/metalevel/helper.R")
 
 # Load the initiate output Functions
+source("~/fairness_toolbox/R/engines/fairness/pre-processing/initialize_output_fairness_pre.R")
 source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
@@ -51,15 +52,22 @@ control <- list(
   split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
   train_model = "train_lm",
   output_type = "prob", # Add option for output type ("prob" or "class")
-  fairness_pre = NULL,
+  fairness_pre = "fairness_pre_resampling",
   fairness_in = NULL,
-  fairness_post = "fairness_post_genresidual",
+  fairness_post = NULL, #"fairness_post_genresidual"
   evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
       split_ratio = 0.7,
       cv_folds = 5,
       seed = 123
+    ),
+    fairness_pre = controller_fairness_pre(
+      protected_attributes = vars$protected_vars,
+      target_var = vars$target_var,
+      params =   list(
+        method = "undersampling"
+      )
     ),
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+")))

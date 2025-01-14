@@ -3,9 +3,19 @@
 #--------------------------------------------------------------------
 #' Evaluation Engine: Statistical Parity Difference
 #'
+#' Computes the Statistical Parity Difference (SPD) for each protected attribute.
+#'
+#' **Inputs:**
+#' - `eval_data`: A data frame containing:
+#'   - `predictions`: A numeric vector of predicted values.
+#'   - `protected_attributes`: One or more columns representing protected groups.
+#'
+#' **Outputs (passed to wrapper):**
+#' - `metrics`: A list containing SPD values for each protected attribute, calculated as the absolute difference between group means.
+#'
 #' @param eval_data A data frame containing predictions and protected attributes.
-#' @param protected_name A vector of protected attribute names.
-#' @return A named list of Statistical Parity Difference values for each protected attribute.
+#' @param protected_name A character vector specifying the names of protected attributes.
+#' @return A list containing the SPD values for each protected attribute.
 #' @export
 engine_eval_statisticalparity <- function(eval_data, protected_name) {
   # Calculate Statistical Parity for each protected attribute

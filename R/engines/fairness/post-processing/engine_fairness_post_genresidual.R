@@ -3,9 +3,18 @@
 #--------------------------------------------------------------------
 #' Fairness Post-Processing Engine: General Residual Adjustment
 #'
-#' @param predictions A vector of predictions from the model.
-#' @param actuals A vector of actual observed values.
-#' @return A vector of adjusted predictions.
+#' Adjusts predictions based on residuals to improve fairness.
+#'
+#' **Inputs:**
+#' - `predictions`: A numeric vector of predicted values.
+#' - `actuals`: A numeric vector of actual observed values.
+#'
+#' **Outputs (passed to wrapper):**
+#' - `adjusted_predictions`: A numeric vector of adjusted predictions.
+#'
+#' @param predictions A numeric vector of predicted values.
+#' @param actuals A numeric vector of actual observed values.
+#' @return A list containing adjusted predictions.
 #' @export
 engine_fairness_post_genresidual <- function(predictions, actuals) {
   residuals <- actuals - predictions

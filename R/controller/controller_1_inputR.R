@@ -51,12 +51,25 @@ controller_training <- function(formula, params = NULL) {
 #--------------------------------------------------------------------
 #' Controller for Fairness Pre-Processing Inputs
 #'
-#' @param data A data frame containing the input data.
-#' @return A list containing the input data for fairness pre-processing.
+#' Creates standardized input for fairness pre-processing engines.
+#' Ensures all necessary fields are included for processing.
+#'
+#' **Standardized Input:**
+#' - `protected_attributes`: Names of the protected attributes.
+#' - `target_var`: The name of the target variable.
+#' - `params`: Optional parameters for the fairness pre-processing engine.
+#'
+#' @param protected_attributes A character vector of protected attribute names.
+#' @param target_var The name of the target variable.
+#' @param params A list of additional parameters for the fairness pre-processing engine.
+#'
+#' @return A standardized list for fairness pre-processing input.
 #' @export
-controller_fairness_pre <- function(data) {
+controller_fairness_pre <- function(protected_attributes, target_var, params = NULL) {
   list(
-    data = data
+    protected_attributes = protected_attributes,
+    target_var = target_var,
+    params = params
   )
 }
 #--------------------------------------------------------------------

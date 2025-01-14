@@ -91,15 +91,20 @@ run_workflow_single <- function(control) {
 log_memory_usage(env = environment(), label = "at_start")
 ###DEV-END (remove before productive launch)###
   
-  # 1. Assigning data in the meta-level
+  # 1. Assigning data in the meta-level (for the case no Pre-Processing is operated)
   # Ensure training data is available for training
   control$params$train$data <- control$data$train
   
   # 2. Fairness Pre-Processing (optional)
   if (!is.null(control$fairness_pre)) {
+    control$params$fairness_pre$data <- control$data$train
     driver_fairness_pre <- engines[[control$fairness_pre]]
-    control <- driver_fairness_pre(control) #-> Change later on just for the changed predictions after remodelling the pre-methods
-    #place an standardized output rigth here
+    output_fairness_pre <- driver_fairness_pre(control) #-> Change later on just for the changed predictions after remodelling the pre-methods
+    
+    # Overwrite data by preprocessed data
+    control$params$train$data <- output_fairness_pre$preprocessed_data
+    
+    results$output_fairness_pre <- output_fairness_pre
   }
   
 ###DEV Memory log after pre processing (remove before productive launch)###

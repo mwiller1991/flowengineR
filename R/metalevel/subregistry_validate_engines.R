@@ -126,15 +126,61 @@ validate_engine_fairness_post <- function(wrapper_function, default_params_funct
 #--------------------------------------------------------------------
 #' Validate a Fairness Pre-Processing Engine
 #'
-#' Validates a fairness pre-processing engine.
+#' Validates a fairness pre-processing engine by performing a dummy test run and ensuring required outputs are present.
 #'
 #' @param wrapper_function The wrapper function for the fairness pre-processing engine.
 #' @param default_params_function The function providing default parameters for the engine.
 #'
-#' @return TRUE if the engine passes validation.
+#' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
 validate_engine_fairness_pre <- function(wrapper_function, default_params_function) {
-  message("Fairness pre-processing engine validation passed (Dummy).")
+  # Create dummy data for protected attributes and target variable
+  dummy_protected_attributes <- data.frame(
+    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),
+    A2 = sample(c("A2_1", "A2_2"), 100, replace = TRUE)
+  )
+  dummy_target_var <- rbinom(100, size = 1, prob = 0.5)
+  dummy_data <- cbind(dummy_protected_attributes, target_var = dummy_target_var)
+  
+  # Create a dummy control object using the controller function
+  dummy_control <- list(
+    params = list(
+      fairness_pre = controller_fairness_pre(
+        protected_attributes = names(dummy_protected_attributes),
+        target_var = "target_var",
+        params = NULL #default_params_function()  # Use default parameters
+      )
+    )
+  )
+  
+  # Manually add `fairness_post_data` to the `fairness_post` list
+  dummy_control$params$fairness_pre$data <- dummy_data
+  
+  # Call the wrapper and validate the output
+  output <- tryCatch({
+    wrapper_function(dummy_control)
+  }, error = function(e) {
+    stop(paste("Fairness pre-processing engine validation failed:", e$message))
+  })
+  
+  # Required fields for fairness pre-processing engines
+  required_fields <- c("preprocessed_data", "method")
+  missing_fields <- setdiff(required_fields, names(output))
+  if (length(missing_fields) > 0) {
+    stop(paste("Fairness pre-processing engine output missing required fields:", paste(missing_fields, collapse = ", ")))
+  }
+  
+  # Check transformed data
+  if (!is.data.frame(output$preprocessed_data)) {
+    stop("Preprocessed data must be a data frame.")
+  }
+  
+  # Check method
+  if (!is.character(output$method) || length(output$method) != 1) {
+    stop("Method must be a single character string.")
+  }
+  
+  message("Fairness pre-processing engine validated successfully.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
