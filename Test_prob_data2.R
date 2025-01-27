@@ -51,7 +51,7 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  split_method = "split_random",   # Method for splitting (e.g., "split_random" or "split_cv")
   train_model = "train_glm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -79,8 +79,8 @@ control <- list(
       target_var = vars$target_var,
       params =   list(
         learning_rate = 0.1,
-        num_epochs = 100,
-        num_adversary_steps = 5
+        num_epochs = 1000,
+        num_adversary_steps = 10
       )
     ),
     fairness_post = controller_fairness_post(

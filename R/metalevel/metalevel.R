@@ -61,6 +61,9 @@ run_workflow_variants <- function(control) {
   unawareness_control$params$train$formula <- as.formula(paste(
     control$vars$target_var, "~", paste(control$vars$feature_vars, collapse = " + ")
   ))
+  unawareness_control$fairness_pre <- NULL
+  unawareness_control$fairness_in <- NULL
+  unawareness_control$fairness_post <- NULL
   results$unawareness <- run_workflow(unawareness_control)
   
   return(results)
