@@ -36,9 +36,10 @@ controller_split <- function(split_ratio = NULL, cv_folds = NULL, seed = NULL) {
 #'
 #' @return A standardized list for training input.
 #' @export
-controller_training <- function(formula, params = NULL) {
+controller_training <- function(formula, norm_data = TRUE, params = NULL) {
   list(
     formula = formula,
+    norm_data = norm_data,
     params = params
   )
 }
@@ -69,6 +70,37 @@ controller_fairness_pre <- function(protected_attributes, target_var, params = N
   list(
     protected_attributes = protected_attributes,
     target_var = target_var,
+    params = params
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Controller for Fairness In-Processing Inputs ###
+#--------------------------------------------------------------------
+#' Controller for Fairness In-Processing Inputs
+#'
+#' Creates standardized input for fairness in-processing engines.
+#' Ensures all necessary fields are included for processing.
+#'
+#' **Standardized Input:**
+#' - `protected_attributes`: Names of the protected attributes.
+#' - `target_var`: The name of the target variable.
+#' - `params`: Optional parameters for the fairness in-processing engine.
+#'
+#' @param protected_attributes A character vector of protected attribute names.
+#' @param target_var The name of the target variable.
+#' @param params A list of additional parameters for the fairness in-processing engine.
+#'
+#' @return A standardized list for fairness in-processing input.
+#' @export
+controller_fairness_in <- function(protected_attributes, target_var, norm_data = TRUE, params = NULL) {
+  list(
+    protected_attributes = protected_attributes,
+    target_var = target_var,
+    norm_data = norm_data,
     params = params
   )
 }

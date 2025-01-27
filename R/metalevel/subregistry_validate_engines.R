@@ -29,7 +29,7 @@ validate_engine_train <- function(wrapper_function, default_params_function) {
     )
   )
   # Manually add `data` to the `train` list
-  dummy_control$params$train$data <- dummy_data
+  dummy_control$params$train$data$normalized <- dummy_data
   
   # Call the wrapper and validate the output
   output <- tryCatch({
@@ -148,7 +148,7 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
       fairness_pre = controller_fairness_pre(
         protected_attributes = names(dummy_protected_attributes),
         target_var = "target_var",
-        params = NULL #default_params_function()  # Use default parameters
+        params = default_params_function()  # Use default parameters
       )
     )
   )
@@ -200,7 +200,7 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
 #' @return TRUE if the engine passes validation.
 #' @export
 validate_engine_fairness_in <- function(wrapper_function, default_params_function) {
-  message("Fairness in-processing engine validation passed (Dummy).")
+  message("Fairness in-processing engines do not support validation due to complexity.")
   return(TRUE)
 }
 #--------------------------------------------------------------------

@@ -107,43 +107,91 @@ log_memory_usage(env = environment(), label = "at_start")
     results$output_fairness_pre <- output_fairness_pre
   }
   
+  # 3. Normalizing data
+  control$data$full <- list(original = control$data$full,
+                            normalized = normalize_data(control$data$full, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+                        )
+  control$data$train <- list(original = control$data$train,
+                             normalized = normalize_data(control$data$train, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  )
+  control$data$test <- list(original = control$data$test,
+                            normalized = normalize_data(control$data$test, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  )
+  control$params$train$data <- list(original = control$params$train$data,
+                                    normalized = normalize_data(control$params$train$data, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  )
+  
+  
 ###DEV Memory log after pre processing (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_preprocessing")
 ###DEV-END (remove before productive launch)###
   
-  # 3. Training (with optional In-Processing Fairness)
+  # 4.1 Training (Base)
   driver_train <- engines[[control$train_model]]
-  if (!is.null(control$fairness_in)) {
-    driver_fairness_in <- engines[[control$fairness_in]]
-    output_fairness_in <- driver_fairness_in(control, driver_train)
-  } else {
-    output_train <- driver_train(control)
-  }
   
+    # Always do the base training
+    output_train <- driver_train(control)
+    
+    # Choosing testdata for 4.1 und 4.2 for prediction (normalized/original)
+    if (control$params$train$norm_data == TRUE) {
+      testdata <- control$data$test$normalized
+    } else if (control$params$train$norm_data == FALSE) {
+      testdata <- control$data$test$original
+    } else {
+      stop("Normalization is not properly choosen.")
+    }
+    
     # Generate predictions based on output_type
     if (is.null(control$output_type)) {
-      control$output_type <- "prob"
-      message("[INFO] output_type not specified. Defaulting to 'prob' for probability outputs.")
+      control$output_type <- "response"
+      message("[INFO] output_type not specified. Defaulting to 'response' for outputs.")
     }
     if (control$output_type == "prob") {
-      predictions <- as.numeric(predict(output_train$model, newdata = control$data$test, type = "response"))
-    } else if (control$output_type == "class") {
-      predictions <- as.numeric(predict(output_train$model, newdata = control$data$test, type = "class"))
+      predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "prob"))
+    } else if (control$output_type == "response") {
+      predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "response"))
+        if (control$params$train$norm_data == TRUE) {
+          predictions <- denormalize_predictions(predictions, control$data$test$original, control$vars$target_var)
+        }
     } else {
       stop("Invalid output_type specified in control.")
     }
-  
+    
     # Add predictions to the training-output
     output_train$predictions <- predictions
     
     # Add train to the output
     results$output_train <- output_train
   
+  # 4.2 Training (with In-Processing Fairness)
+  if (!is.null(control$fairness_in)) {
+    driver_fairness_in <- engines[[control$fairness_in]]
+    output_fairness_in <- driver_fairness_in(control, driver_train)
+    
+      # Generate predictions for In-Processing based on output_type
+      if (control$output_type == "prob") {
+        predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "prob"))
+      } else if (control$output_type == "response") {
+        predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "response"))
+          if (control$params$train$norm_data == TRUE) {
+            predictions <- denormalize_predictions(predictions, control$data$test$original, control$vars$target_var)
+          }
+      } else {
+        stop("Invalid output_type specified in control.")
+      }
+      
+      # Add predictions to the training-output
+      output_fairness_in$predictions <- predictions
+      
+      # Add train to the output
+      results$output_fairness_in <- output_fairness_in
+  }
+  
 ###DEV Memory log after training (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_training")
 ###DEV-END (remove before productive launch)###
   
-  # 4. Fairness Post-Processing (optional)
+  # 5. Fairness Post-Processing (optional)
   if (!is.null(control$fairness_post)) {
     
     control$params$fairness_post$fairness_post_data <- cbind(
@@ -163,12 +211,12 @@ log_memory_usage(env = environment(), label = "after_training")
 log_memory_usage(env = environment(), label = "after_postprocessing")
 ###DEV-END (remove before productive launch)###
   
-  # 5. Evaluation
+  # 6. Evaluation
   if (!is.null(control$evaluation)) {
     control$params$eval$eval_data <- cbind(
       predictions = predictions,
-      actuals = control$data$test[[control$vars$target_var]],
-      control$data$test[control$vars$protected_vars_binary]
+      actuals = control$data$test$original[[control$vars$target_var]],
+      control$data$test$original[control$vars$protected_vars_binary]
     )
     
     output_eval <- lapply(control$evaluation, function(metric) {

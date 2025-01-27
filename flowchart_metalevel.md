@@ -35,25 +35,44 @@ graph TD
             E2 --> OF2[function: initialize_output_fairness_pre]:::output_style
             OF2 --> FPr2[Standardized Outputs with defaults: preprocessed_data, method, params = NULL, specific_output = NULL]:::input_style
         end
+        
+        %% Normalizing data
+        subgraph Normalizing data
+        direction TB
+            FPr2 -->|Preprocessed data| Hlp1[function: normalize_data]:::helper_style
+            Ans4 -->|data| Hlp1
+        end
 
         %% Embedded Training-Processing
         subgraph Training Process
             subgraph Training Engines
             direction TB
-                FPr2 -->|Preprocessed data| T1[Standardized Outputs: model, model_type, training_time, specific_output]:::input_style
-                Ans4 -->|data| T1[Standardized Inputs: formula, data, params]:::input_style
+                Hlp1 -->|original and normalized data| T1[Standardized Inputs: formula, data, norm_data, params]:::input_style
                 T1 --> E3[Training Engine]:::engine
                 C3[function: controller_train]:::controller_style -->|rest| T1
                 E3 --> OF3[function: initialize_output_train]:::output_style
                 OF3 --> T2[Standardized Outputs with defaults: model, model_type, formula, predictions = NULL, hyperparameters = NULL, specific_output = NULL]:::input_style
             end
+
             T2 -->|model| Dec3{Fairness-In-Precessing Active?}:::decider
-                Dec3 -->Ans5((Yes)):::yes
-            Ans5-->|model| E4[Fairness-In-Precessing Engine]:::engine
-                Dec3 -->Ans6((No)):::no
-            E4 --> |adjusted model|RP(Predictions):::object
+            Dec3 -->Ans5((Yes)):::yes
+
+            subgraph In-Processing Engines
+            direction TB
+                Ans5-->|driver_train and control_for_training| FIn1[Standardized Inputs: driver_train, data, protected_attribute_names, params, control_for_training]:::input_style
+                Hlp1 -->|original and normalized data| FIn1
+                FIn1 --> E4[Fairness-In-Precessing Engine]:::engine
+                C4[function: controller_fairness_in]:::controller_style -->|rest| FIn1
+                E4 --> OF4[function: initialize_output_fairness_in]:::output_style
+                OF4 --> FIn2[Standardized Outputs with defaults: adjusted_model, model_type, predictions = NULL, params = NULL, specific_output = NULL]:::input_style
+            end
+
+            Dec3 -->Ans6((No)):::no
+            FIn2 --> |adjusted model|RP(Predictions):::object
             Ans6 -->|model| RP
+
             RP --> |predictions|T2
+            RP --> |predictions|FIn2
         end
 
         %% Integrated Fairness Post-Processing Subgraph
@@ -88,6 +107,7 @@ graph TD
         %% Intermediate Results generation
         FPr2 -->|standardized output| IR(Intermediate Results):::object
         T2 --> |standardized output| IR
+        FIn2 --> |standardized output| IR
         FP2 -->|standardized output| IR
         Ev2 -->|standardized output| IR
         
@@ -97,6 +117,7 @@ graph TD
     %% Connectiong control-objekt (user-input) to controller_functions
     A -->|input| C2
     A -->|input| C3
+    A -->|input| C4
     A -->|input| C5
     A -->|input| C6
 
@@ -114,39 +135,45 @@ graph TD
     C --> |Configuration Variants|B
     B --> |Variants Results|C
 
-    %% Legend
-    subgraph Legend
-        direction TB
-        Obj[Object: Data or Results]:::object
-        Dec{Decision: Condition to Proceed}:::decider
-        Eng[Engine: Processing Component]:::engine
-        Ctr[Controller: Manages Inputs]:::controller_style
-        IO1[Input: Standardized Input Formats]:::input_style
-        IO2[Output: Standardized Output Formats]:::output_style
-        Y((Yes: Positive Decision)):::yes
-        N((No: Negative Decision)):::no
-    end
 
-    %% Styling for engines
-    classDef engine fill:#ADD8E6,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for controller
-    classDef controller_style fill:#FFE4B5,stroke:#000,stroke-width:2px,color:#000;
+%% Legend
+subgraph Legend
+    direction TB
+    Obj[Object: Data or Results]:::object
+    Dec{Decision: Condition to Proceed}:::decider
+    Eng[Engine: Processing Component]:::engine
+    Ctr[Controller: Manages Inputs]:::controller_style
+    IO1[Input: Standardized Input Formats]:::input_style
+    IO2[Output: Standardized Output Formats]:::output_style
+    Hlp[Helper: Supporting Function]:::helper_style
+    Y((Yes: Positive Decision)):::yes
+    N((No: Negative Decision)):::no
+end
 
-    %% Styling for output function
-    classDef output_style fill:#32CD32,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for engines
+classDef engine fill:#ADD8E6,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for inputs/outputs
-    classDef input_style fill:#FFB6C1,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for controller
+classDef controller_style fill:#FFE4B5,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for deciders
-    classDef decider fill:#D3D3D3,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for output function
+classDef output_style fill:#32CD32,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for Yes
-    classDef yes fill:#90EE90,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for inputs/outputs
+classDef input_style fill:#FFB6C1,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for No
-    classDef no fill:#FFCCCB,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for deciders
+classDef decider fill:#D3D3D3,stroke:#000,stroke-width:2px,color:#000;
 
-    %% Styling for objects
-    classDef object fill:#D8BFD8,stroke:#000,stroke-width:2px,color:#000;
+%% Styling for Yes
+classDef yes fill:#90EE90,stroke:#000,stroke-width:2px,color:#000;
+
+%% Styling for No
+classDef no fill:#FFCCCB,stroke:#000,stroke-width:2px,color:#000;
+
+%% Styling for objects
+classDef object fill:#D8BFD8,stroke:#000,stroke-width:2px,color:#000;
+
+%% Styling for helper-function
+classDef helper_style fill:#D5B3E6,stroke:#000,stroke-width:2px,color:#000;

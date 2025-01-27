@@ -3,6 +3,7 @@ library(ggplot2)
 library(caret)
 library(magrittr)
 library(moments)
+library(dplyr)
 
 
 # Load the Controller Functions
@@ -14,6 +15,7 @@ source("~/fairness_toolbox/R/metalevel/helper.R")
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/fairness/pre-processing/initialize_output_fairness_pre.R")
 source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
+source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fairness_in.R")
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
 
@@ -49,12 +51,12 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_random",   # Method for splitting (e.g., "split_random" or "split_cv")
-  train_model = "train_lm",
-  output_type = "prob", # Add option for output type ("prob" or "class")
-  fairness_pre = "fairness_pre_resampling",
-  fairness_in = NULL,
-  fairness_post = "fairness_post_genresidual",
+  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  train_model = "train_glm",
+  output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
+  fairness_pre = NULL, #"fairness_pre_resampling",
+  fairness_in = "fairness_in_adversialdebiasing",
+  fairness_post = NULL, #"fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
@@ -71,6 +73,15 @@ control <- list(
     ),
     train = controller_training(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+")))
+    ),
+    fairness_in = controller_fairness_in(
+      protected_attributes = vars$protected_vars,
+      target_var = vars$target_var,
+      params =   list(
+        learning_rate = 0.1,
+        num_epochs = 100,
+        num_adversary_steps = 5
+      )
     ),
     fairness_post = controller_fairness_post(
       protected_name = vars$protected_vars_binary

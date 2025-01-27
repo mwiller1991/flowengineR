@@ -81,10 +81,10 @@ wrapper_fairness_pre_resampling <- function(control) {
   }
   
   # Merge optional parameters with defaults
-  params <- merge_with_defaults(pre_params$params, default_params_pre_resampling())
+  params <- merge_with_defaults(pre_params$params, default_params_fairness_pre_resampling())
   
   # Call the specific resampling engine
-  engine_output <- engine_pre_resampling(
+  engine_output <- engine_fairness_pre_resampling(
     data = pre_params$data,
     target_var = pre_params$target_var,
     params = params
