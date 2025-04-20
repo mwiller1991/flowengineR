@@ -5,24 +5,49 @@ Hier ist ein Diagramm, das den Workflow visualisiert:
 ```mermaid
 graph TD
     %% Meta Level
-    A(User Input: Control Object):::object ==> B[run_workflow]
-    A ==> C[run_workflow_variants]
-    B -->|full dataset| Dec1{User split delivered?}:::decider
+    A(User Input: Control Object):::object ==> B[fairness_workflow-function]
+    A ==> C[run_workflow_variants-function]
+    C --> |calls 3x| B
 
-    %% Splitter Layer
-    subgraph Splitter Layer
+    %% fairness_workflow internal structure
+    subgraph fairness_workflow
         direction TB
-            Dec1 -->Ans2((No)):::no
-            Dec1 -->Ans1((Yes)):::yes
-        Ans2 -->|full dataset| F1[Splitter Engines]:::engine
+        B -->|calls| Dec1{User split delivered?}:::decider
+        B -->|calls| Re1[Standardized Inputs: xxx]:::input_style
+            %% Splitter
+        subgraph Splitter
+            direction TB
+                Dec1 -->Ans2((No)):::no
+                Dec1 -->Ans1((Yes)):::yes
+            Ans2 -->|full dataset| Sp1[Standardized Inputs: data, protected_attributes, target_var, params]:::input_style
+            Ans1 -->|seperated dataset, dummy engine = userdefined| Sp1
+            Sp1 --> E1[Split Engine]:::engine
+            C1[function: controller_split]:::controller_style -->|rest| Sp1
+            E1 --> OF1[function: initialize_output_split]:::output_style
+            OF1 --> Sp2[Standardized Outputs with defaults: split_type, splits, seed, params = NULL, specific_output = NULL]:::input_style
+        end
+        Sp2 -->|splits| IR1[split_output]:::object
+        IR1 -->|splits| I
+        WR[workflow_results]:::object -->|results for each split| I
+        WR --> AGG[aggregate_results]:::helper_style
+        AGG --> AR[aggregated_results]:::object
+        AR --> I
+        subgraph Reporting
+            direction TB
+            C7[function: controller_split]:::controller_style -->|rest| Re1
+            Re1 --> E7[Reporting Engine]:::engine
+            E7 --> OF7[function: initialize_output_reporting]:::output_style
+            OF7 --> Re2[Standardized Outputs with defaults: xxx]:::input_style
+        end
+        Re2 --> I(Final Results: Models, Predictions, Metrics):::object
+
     end
 
     %% Workflow inside run_workflow_single
     subgraph Workflow in run_workflow_single
         direction TB
-        Ans1 -->|splited dataset| D[run_workflow_single]
-        F1 -->|splited dataset| D
-        D -->|raw data| Dec2{Fairness-Pre-Precessing Active?}:::decider
+        IR1 -->|splited dataset in loops| D[run_workflow_single]
+        D[run_workflow_single] -->|raw data| Dec2{Fairness-Pre-Precessing Active?}:::decider
             Dec2 -->Ans3((Yes)):::yes
             Dec2 -->Ans4((No)):::no
 
@@ -115,17 +140,16 @@ graph TD
     end
 
     %% Connectiong control-objekt (user-input) to controller_functions
+    A -->|input| C1
     A -->|input| C2
     A -->|input| C3
     A -->|input| C4
     A -->|input| C5
     A -->|input| C6
+    A -->|input| C7
 
     %% Feedback loop to the Splitter
-    IR -->|Intermediate Results| F1
-
-    %% Pass final results back to run_workflow
-    F1 -->|Aggregated Results| B
+    IR -->|Results for each split| WR[workflow_results]:::object
 
     %% Outputs
     B ==> I(Final Results: Models, Predictions, Metrics):::object
