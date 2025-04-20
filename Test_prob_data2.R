@@ -13,6 +13,7 @@ source("~/fairness_toolbox/R/metalevel/metalevel.R")
 source("~/fairness_toolbox/R/metalevel/helper.R")
 
 # Load the initiate output Functions
+source("~/fairness_toolbox/R/engines/split/initialize_output_split.R")
 source("~/fairness_toolbox/R/engines/fairness/pre-processing/initialize_output_fairness_pre.R")
 source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fairness_in.R")
@@ -47,22 +48,23 @@ control <- list(
   global_seed = 1,
   vars = vars,         # Include vars within control for consistency
   data = list(
-    full = dataset,    # Optional, falls Daten nicht getrennt übergeben werden
-    train = NULL,      # Training data
-    test = NULL        # Test data
+    full = dataset,    # Optional, if splitter engine is used
+    train = split_output$splits$fold1$train,      # Training data
+    test = split_output$splits$fold1$test        # Test data
   ),
-  split_method = "split_random",   # Method for splitting (e.g., "split_random" or "split_cv")
-  train_model = "train_glm",
+  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
-  fairness_in = "fairness_in_adversialdebiasing",
-  fairness_post = NULL, #"fairness_post_genresidual",
+  fairness_in = NULL, #"fairness_in_adversialdebiasing",
+  fairness_post = "fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   params = list(
     split = controller_split(
-      split_ratio = 0.7,
-      cv_folds = 5,
-      seed = 123
+      seed = 123,
+      target_var = vars$target_var,
+      params =   list(cv_folds = 6
+      )
     ),
     fairness_pre = controller_fairness_pre(
       protected_attributes = vars$protected_vars,
@@ -72,7 +74,8 @@ control <- list(
       )
     ),
     train = controller_training(
-      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+")))
+      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
+      norm_data = TRUE
     ),
     fairness_in = controller_fairness_in(
       protected_attributes = vars$protected_vars,
@@ -98,7 +101,8 @@ control <- list(
 
 
 # Run the Workflow
-result <- run_workflow(control)
+result <- fairness_workflow(control)
+result_full <- fairness_workflow_variants(control)
 
 # Output-Funktionen -> das werden mal Reporting-Engines
 # Funktion zur strukturierten Anzeige der Split-Engine-Ergebnisse

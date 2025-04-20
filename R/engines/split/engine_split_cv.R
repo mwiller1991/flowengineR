@@ -3,16 +3,27 @@
 #--------------------------------------------------------------------
 #' Cross-Validation Split Engine
 #'
+#' Creates stratified k-fold cross-validation indices.
+#'
 #' @param data A data frame to be split into folds.
 #' @param target_var The name of the target variable for stratified sampling.
 #' @param cv_folds The number of folds for cross-validation.
 #' @param seed A random seed for reproducibility.
-#' @return A list containing indices for each fold.
+#' @return A list of train/test split indices per fold.
 #' @export
 engine_split_cv <- function(data, target_var, cv_folds, seed) {
   set.seed(seed)
   folds <- caret::createFolds(data[[target_var]], k = cv_folds, list = TRUE)
-  return(folds)
+  names(folds) <- paste0("fold", seq_along(folds))
+  
+  split_list <- lapply(folds, function(test_idx) {
+    list(
+      train = data[-test_idx, ],
+      test = data[test_idx, ]
+    )
+  })
+  
+  return(split_list)
 }
 #--------------------------------------------------------------------
 
@@ -24,48 +35,42 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #' Wrapper for Cross-Validation Split Engine
 #'
 #' @param control A list containing control parameters and dataset.
-#' @return A standardized list containing splits, workflow results, and aggregated results.
+#' @return A standardized splitter output object with multiple splits.
 #' @export
 wrapper_split_cv <- function(control) {
   split_params <- control$params$split
+  
   if (is.null(control$data$full)) {
     stop("wrapper_split_cv: Missing required input: full dataset")
   }
-  if (is.null(control$vars$target_var)) {
-    stop("wrapper_split_cv: Missing required input: target variable")
+  if (is.null(split_params$target_var)) {
+    stop("wrapper_split_cv: target_var must be provided via controller_split.")
   }
   
-  # Default values
-  split_params$cv_folds <- split_params$cv_folds %||% 5  # Default to 5 folds if not provided
+  # Merge default parameters
+  params <- merge_with_defaults(split_params$params, default_params_split_cv())
   
-  message(sprintf("[INFO] Performing %d-fold cross-validation with seed %d", split_params$cv_folds, split_params$seed))
+  message(sprintf("[INFO] Performing %d-fold cross-validation with seed %d", params$cv_folds, split_params$seed))
   
-  # Call the engine
-  folds <- engine_split_cv(
+  # Call CV splitter engine
+  splits <- engine_split_cv(
     data = control$data$full,
-    target_var = control$vars$target_var,
-    cv_folds = split_params$cv_folds,
+    target_var = split_params$target_var,
+    cv_folds = params$cv_folds,
     seed = split_params$seed
   )
   
-  # Run the workflow for each fold
-  workflow_results <- lapply(folds, function(indices) {
-    control$data$train <- control$data$full[-indices, ]
-    control$data$test <- control$data$full[indices, ]
-    
-    # Call the single workflow
-    run_workflow_single(control)
-  })
-  
-  # Aggregate results for CV
-  aggregated_results <- aggregate_results(workflow_results)
-  
-  # Return standardized output
-  return(list(
-    splits = folds,
-    workflow_results = workflow_results,
-    aggregated_results = aggregated_results
-  ))
+  # Standardized output
+  initialize_output_split(
+    split_type = "cv",
+    splits = splits,
+    seed = split_params$seed,
+    params = params,
+    specific_output = list(
+      folds = length(splits),
+      stratified_on = split_params$target_var
+    )
+  )
 }
 #--------------------------------------------------------------------
 
@@ -74,29 +79,24 @@ wrapper_split_cv <- function(control) {
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
-default_params_split_cv <- function() {
-  list()  # MSE evaluation does not require specific parameters
-}
-#--------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------
-### helper for aggregation ###
-#--------------------------------------------------------------------
-#' Aggregate Results from Cross-Validation
+#' Default Parameters for Splitter Engines: CV
 #'
-#' @param results A list of results from each fold.
-#' @return A list containing aggregated evaluation metrics.
+#' Provides default parameters for splitter engines. These parameters are specific to each engine and define optional values required for execution.
+#'
+#' **Purpose:**
+#' - Defines engine-specific parameters that are optional but can be adjusted for specific use cases.
+#' - These parameters are **not covered by the base fields in the `controller_split` function**, which include:
+#'   - `seed`: Random seed to ensure reproducibility (default: 123).
+#'   - `target_var`: Target variable used for stratification.
+#' - **Additional Parameters:**
+#'   - `cv_folds`: Number of folds to create (default: 5).
+#' - Ensures default parameters are used when none are provided in the `control` object.
+#'
+#' @return A list of default parameters for the splitter engine.
 #' @export
-aggregate_results <- function(results) {
-  aggregated_evaluation <- lapply(names(results[[1]]$evaluation), function(metric) {
-    sapply(results, function(res) res$evaluation[[metric]]) %>% mean()
-  })
-  names(aggregated_evaluation) <- names(results[[1]]$evaluation)
+default_params_split_cv <- function() {
   list(
-    model = results[[1]]$model, # Example: the model from the first fold
-    evaluation = aggregated_evaluation
+    cv_folds = 5  # Default to 5-fold CV
   )
 }
 #--------------------------------------------------------------------

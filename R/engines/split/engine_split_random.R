@@ -30,35 +30,31 @@ engine_split_random <- function(data, split_ratio, seed) {
 #' @export
 wrapper_split_random <- function(control) {
   split_params <- control$params$split
+  
   if (is.null(control$data$full)) {
     stop("wrapper_split_random: Missing required input: full dataset")
   }
   
-  # Default values
-  split_params$split_ratio <- split_params$split_ratio %||% 0.7  # Default to 70% training data if not provided
+  # Merge default parameters
+  params <- merge_with_defaults(split_params$params, default_params_split_random())
   
-  message(sprintf("[INFO] Performing random split with training ratio %.2f and seed %d", split_params$split_ratio, split_params$seed))
+  message(sprintf("[INFO] Performing random split with training ratio %.2f and seed %d", params$split_ratio, split_params$seed))
   
   # Call the random split engine
   split <- engine_split_random(
     data = control$data$full,
-    split_ratio = split_params$split_ratio,
+    split_ratio = params$split_ratio,
     seed = split_params$seed
   )
   
-  # Update control with the split data
-  control$data$train <- split$train
-  control$data$test <- split$test
-  
-  # Call the single workflow for the random split
-  workflow_results <- list("random" = run_workflow_single(control))
-  
-  # Return standardized output
-  return(list(
-    splits = list(random_split = split),
-    workflow_results = workflow_results,
-    aggregated_results = aggregate_results(workflow_results)
-  ))
+  # Standardized output
+  initialize_output_split(
+    split_type = "random",
+    splits = list(random = split),
+    seed = split_params$seed,
+    params = params,
+    specific_output = NULL  # No specific output for general residual method
+  )
 }
 #--------------------------------------------------------------------
 
@@ -67,8 +63,24 @@ wrapper_split_random <- function(control) {
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
+#' Default Parameters for Splitter Engines: Random
+#'
+#' Provides default parameters for splitter engines. These parameters are specific to each engine and define optional values required for execution.
+#'
+#' **Purpose:**
+#' - Defines engine-specific parameters that are optional but can be adjusted for specific use cases.
+#' - These parameters are **not covered by the base fields in the `controller_split` function**, which include:
+#'   - `seed`: Random seed to ensure reproducibility (default: 123).
+#'   - `data`: A data frame containing the input dataset.
+#' - **Additional Parameters:**
+#'   - `split_ratio`: Proportion of data to be used for training (default: 0.7).
+#' - Ensures default parameters are used when none are provided in the `control` object.
+#'
+#' @return A list of default parameters for the splitter engine.
+#' @export
 default_params_split_random <- function() {
-  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  list(
+    split_ratio = 0.7   # Default 70% training
+  )
 }
 #--------------------------------------------------------------------
-

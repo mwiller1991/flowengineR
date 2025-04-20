@@ -1,32 +1,42 @@
 #--------------------------------------------------------------------
-### Workflow Execution with Splitting ###
+### Master-function ###
 #--------------------------------------------------------------------
-#' Execute workflow with data splitting
+#' Execute Full Fairness Workflow across Data Splits
 #'
-#' @param control A control list containing configuration parameters.
-#' @return Results of the workflow after splitting the data.
+#' Orchestrates the complete fairness-aware modeling pipeline, including:
+#' - Splitting via splitter engine
+#' - Iterative execution of run_workflow_single() per split
+#' - Aggregation of evaluation results
+#' - Reporting und Publishing
+#'
+#' @param control A list containing all control parameters and configurations.
+#' @return A standardized workflow result with all sub-results embedded.
 #' @export
-run_workflow <- function(control) {
-  # Check for user-provided train-test split
-  if (!is.null(control$data$train) && !is.null(control$data$test)) {
-    message("[INFO] Using user-provided train-test split.")
-    return(run_workflow_single(control))
-  }
+fairness_workflow <- function(control) {
   
-  # Default to random split if no split_method is specified
-  if (is.null(control$split_method)) {
-    message("[INFO] split_method not specified. Defaulting to 'split_random'.")
-    control$split_method <- "split_random"
-  }
+  # 1. Call splitter engine
+  split_engine <- engines[[control$split_method]]
+  split_output <- split_engine(control)
   
-  # Perform data splitting using the specified splitter engine
-  driver_split <- engines[[control$split_method]]
-  output_split <- driver_split(control)
+  # 2. Iterate over all splits
+  workflow_results <- lapply(split_output$splits, function(split) {
+    control$data$train <- split$train
+    control$data$test <- split$test
+    run_workflow_single(control)
+  })
   
-  # The workflow results are generated within the splitter engine itself
-  # Return workflow results directly from the splitter
-  return(output_split)
+  # 3. Aggregate results (e.g. metrics)
+  aggregated_results <- aggregate_results(workflow_results)
+  
+  # 4. Return full structured result
+  list(
+    split_output = split_output,
+    workflow_results = workflow_results,
+    aggregated_results = aggregated_results,
+    reporting = list()  # Placeholder for future reporting engines
+  )
 }
+#--------------------------------------------------------------------
 #--------------------------------------------------------------------
 
 
@@ -40,12 +50,12 @@ run_workflow <- function(control) {
 #' @param control The control object containing all parameters.
 #' @return A list of results for each variant.
 #' @export
-run_workflow_variants <- function(control) {
+fairness_workflow_variants <- function(control) {
   results <- list()
   
   # 1. discrimination-free workflow
   message("[INFO] Running discrimination-free workflow...")
-  results$discriminationfree <- run_workflow(control)
+  results$discriminationfree <- fairness_workflow(control)
   
   # 2. best-estimate workflow (no fairness adjustments)
   message("[INFO] Running best-estimate workflow (no fairness adjustments)...")
@@ -53,7 +63,7 @@ run_workflow_variants <- function(control) {
   bestestimate_control$fairness_pre <- NULL
   bestestimate_control$fairness_in <- NULL
   bestestimate_control$fairness_post <- NULL
-  results$bestestimate <- run_workflow(bestestimate_control)
+  results$bestestimate <- fairness_workflow(bestestimate_control)
   
   # 3. Unawareness workflow (removing protected variables)
   message("[INFO] Running unawareness workflow (removing protected variables)...")
@@ -64,7 +74,7 @@ run_workflow_variants <- function(control) {
   unawareness_control$fairness_pre <- NULL
   unawareness_control$fairness_in <- NULL
   unawareness_control$fairness_post <- NULL
-  results$unawareness <- run_workflow(unawareness_control)
+  results$unawareness <- fairness_workflow(unawareness_control)
   
   return(results)
 }
@@ -110,18 +120,27 @@ log_memory_usage(env = environment(), label = "at_start")
     results$output_fairness_pre <- output_fairness_pre
   }
   
-  # 3. Normalizing data
-  control$data$full <- list(original = control$data$full,
-                            normalized = normalize_data(control$data$full, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
-                        )
-  control$data$train <- list(original = control$data$train,
-                             normalized = normalize_data(control$data$train, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  # 3. Normalization based on training data parameters
+  # Compute min-max parameters only from the (possibly preprocessed) training data
+  norm_params <- compute_minmax_params(
+    data = control$params$train$data,
+    feature_names = c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var)
   )
-  control$data$test <- list(original = control$data$test,
-                            normalized = normalize_data(control$data$test, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  
+  # Apply the same normalization to train, test, and control$params$train$data
+  control$data$train <- list(
+    original = control$data$train,
+    normalized = apply_minmax_params(control$data$train, norm_params)
   )
-  control$params$train$data <- list(original = control$params$train$data,
-                                    normalized = normalize_data(control$params$train$data, c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var))
+  
+  control$data$test <- list(
+    original = control$data$test,
+    normalized = apply_minmax_params(control$data$test, norm_params)
+  )
+  
+  control$params$train$data <- list(
+    original = control$params$train$data,
+    normalized = apply_minmax_params(control$params$train$data, norm_params)
   )
   
   
@@ -135,7 +154,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
     # Always do the base training
     output_train <- driver_train(control)
     
-    # Choosing testdata for 4.1 und 4.2 for prediction (normalized/original)
+    # Choosing testdata for 4.1, 4.2 and 5 for prediction (normalized/original)
     if (control$params$train$norm_data == TRUE) {
       testdata <- control$data$test$normalized
     } else if (control$params$train$norm_data == FALSE) {
@@ -154,7 +173,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
     } else if (control$output_type == "response") {
       predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "response"))
         if (control$params$train$norm_data == TRUE) {
-          predictions <- denormalize_predictions(predictions, control$data$test$original, control$vars$target_var)
+          predictions <- denormalize_predictions(predictions, control$vars$target_var, norm_params)
         }
     } else {
       stop("Invalid output_type specified in control.")
@@ -177,7 +196,7 @@ log_memory_usage(env = environment(), label = "after_preprocessing")
       } else if (control$output_type == "response") {
         predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "response"))
           if (control$params$train$norm_data == TRUE) {
-            predictions <- denormalize_predictions(predictions, control$data$test$original, control$vars$target_var)
+            predictions <- denormalize_predictions(predictions, control$vars$target_var, norm_params)
           }
       } else {
         stop("Invalid output_type specified in control.")
@@ -199,8 +218,8 @@ log_memory_usage(env = environment(), label = "after_training")
     
     control$params$fairness_post$fairness_post_data <- cbind(
       predictions = as.numeric(predictions),
-      actuals = control$data$test[[control$vars$target_var]],
-      control$data$test[control$vars$protected_vars_binary]
+      actuals = testdata[[control$vars$target_var]],
+      testdata[control$vars$protected_vars_binary]
     )
     
     driver_fairness_post <- engines[[control$fairness_post]]
@@ -232,6 +251,17 @@ log_memory_usage(env = environment(), label = "after_postprocessing")
 ###DEV Memory log after evaluation (remove before productive launch)###
 log_memory_usage(env = environment(), label = "after_evaluation")
 ###DEV-END (remove before productive launch)###
+
+
+  # Save normalization parameters only if normalization was applied
+  if (isTRUE(control$params$train$norm_data)) {
+    results$normalization <- list(
+      params = norm_params,
+      method = "minmax",
+      based_on = "train_data",
+      feature_names = c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var)
+    )
+  }
   
   # Return results
   return(results)

@@ -95,6 +95,7 @@ register_engine("eval_mse", "~/fairness_toolbox/R/engines/evaluation/precision/e
 register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/evaluation/fairness/engine_eval_statisticalparity.R")
 
 # Load new Splitter-Engines
+register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_userdefined.R")
 register_engine("split_random", "~/fairness_toolbox/R/engines/split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_cv.R")
 

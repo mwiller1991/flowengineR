@@ -3,17 +3,25 @@
 #--------------------------------------------------------------------
 #' Controller for Split Inputs
 #'
-#' @param split_ratio The ratio for splitting the data (e.g., 0.7 for 70/30 split).
-#' @param cv_folds The number of folds for cross-validation.
-#' @param seed A random seed for reproducibility.
-#' @return A list containing the split configuration.
+#' Creates a minimal and generic input structure for splitter engines.
+#' This structure supports any splitter type by separating general inputs from engine-specific parameters.
+#'
+#' **Standardized Input:**
+#' - `seed`: Random seed for reproducibility (optional).
+#' - `target_var`: Target variable used in stratified or CV-based splitting.
+#' - `params`: Named list of engine-specific parameters.
+#'
+#' @param seed Optional random seed for reproducibility.
+#' @param target_var Character string specifying the target variable (used e.g. in CV).
+#' @param params A named list of additional engine-specific parameters.
+#'
+#' @return A standardized list containing splitter input.
 #' @export
-controller_split <- function(split_ratio = NULL, cv_folds = NULL, seed = NULL) {
-  seed <- seed %||% control$global_seed %||% 123  # Default to global seed or 123 if none provided
+controller_split <- function(seed = 123, target_var, params = list()) {
   list(
-    split_ratio = split_ratio,
-    cv_folds = cv_folds,
-    seed = seed
+    seed = seed,
+    target_var = target_var,
+    params = params
   )
 }
 #--------------------------------------------------------------------

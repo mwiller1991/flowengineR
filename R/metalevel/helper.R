@@ -22,20 +22,47 @@ merge_with_defaults <- function(user_hyperparameters, default_hyperparameters) {
 #--------------------------------------------------------------------
 # Helper Function to Normalize Data
 #--------------------------------------------------------------------
-#' Helper Function to Normalize Data
+#' Compute Min-Max Normalization Parameters
 #'
-#' Normalizes numeric columns in a dataset to a range of [0, 1].
+#' @param data A data frame with training data.
+#' @param feature_names A character vector with names of features to normalize.
 #'
-#' @param data A data frame containing the dataset to normalize.
-#' @param feature_names A character vector specifying the columns to normalize.
-#'
-#' @return A data frame with normalized columns.
-#' @export
-normalize_data <- function(data, feature_names) {
+#' @return A named list with min and max per feature.
+compute_minmax_params <- function(data, feature_names) {
+  params <- list()
   for (feature in feature_names) {
     if (is.numeric(data[[feature]])) {
-      data[[feature]] <- (data[[feature]] - min(data[[feature]], na.rm = TRUE)) /
-        (max(data[[feature]], na.rm = TRUE) - min(data[[feature]], na.rm = TRUE))
+      params[[feature]] <- list(
+        min = min(data[[feature]], na.rm = TRUE),
+        max = max(data[[feature]], na.rm = TRUE)
+      )
+    }
+  }
+  return(params)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+# Helper Function to Normalize Data
+#--------------------------------------------------------------------
+#' Apply Min-Max Normalization using Precomputed Parameters
+#'
+#' @param data A data frame to normalize.
+#' @param params A list of min/max values per feature.
+#'
+#' @return A normalized data frame.
+apply_minmax_params <- function(data, params) {
+  for (feature in names(params)) {
+    if (is.numeric(data[[feature]])) {
+      min_val <- params[[feature]]$min
+      max_val <- params[[feature]]$max
+      if (max_val - min_val != 0) {
+        data[[feature]] <- (data[[feature]] - min_val) / (max_val - min_val)
+      } else {
+        data[[feature]] <- 0  # oder NA, wenn du lieber Fehler werfen willst
+      }
     }
   }
   return(data)
@@ -88,10 +115,10 @@ select_training_data <- function(norm_data, data) {
 #'
 #' @return A numeric vector of predictions transformed back to the original scale.
 #' @export
-denormalize_predictions <- function(predictions, original_data, feature_name) {
+denormalize_predictions <- function(predictions, feature_name, norm_params) {
   # Extract the min and max values from the original data
-  min_original <- min(original_data[[feature_name]], na.rm = TRUE)
-  max_original <- max(original_data[[feature_name]], na.rm = TRUE)
+  min_original <- norm_params[[feature_name]]$min
+  max_original <- norm_params[[feature_name]]$max
   
   # Transform predictions back to the original scale
   predictions_original_scale <- predictions * (max_original - min_original) + min_original
@@ -99,3 +126,66 @@ denormalize_predictions <- function(predictions, original_data, feature_name) {
   return(predictions_original_scale)
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### helper for aggregation ###
+#--------------------------------------------------------------------
+#' Helper Function: Aggregate Evaluation Metrics across Splits
+#'
+#' Aggregates both flat and nested evaluation metrics across multiple splits.
+#'
+#' @param workflow_results A list of results from `run_workflow_single()` per split.
+#' @return A named list of aggregated metrics.
+#' @export
+#--------------------------------------------------------------------
+aggregate_results <- function(workflow_results) {
+  
+  collected_metrics <- list()
+  
+  for (i in seq_along(workflow_results)) {
+    result <- workflow_results[[i]]
+    
+    if (is.null(result$output_eval)) next
+    
+    for (eval_method in names(result$output_eval)) {
+      eval_metrics <- result$output_eval[[eval_method]]$metrics
+      for (metric_name in names(eval_metrics)) {
+        collected_metrics[[metric_name]] <- append(collected_metrics[[metric_name]], list(eval_metrics[[metric_name]]))
+      }
+    }
+  }
+  
+  aggregated <- list()
+  
+  for (metric_name in names(collected_metrics)) {
+    values <- collected_metrics[[metric_name]]
+    
+    # Fall: Nested Metriken (wie summary_stats)
+    if (is.list(values[[1]]) && !is.null(names(values[[1]]))) {
+      df <- do.call(rbind, lapply(values, function(x) as.data.frame(t(unlist(x)))))
+      nested_agg <- lapply(names(df), function(submetric) {
+        subvals <- df[[submetric]]
+        list(
+          mean = mean(subvals, na.rm = TRUE),
+          sd = sd(subvals, na.rm = TRUE)
+        )
+      })
+      names(nested_agg) <- names(df)
+      aggregated[[metric_name]] <- nested_agg
+      
+    } else {
+      # Fall: einfache numerische Metrik (z. B. mse, stat_parity)
+      values <- unlist(values)
+      aggregated[[metric_name]] <- list(
+        mean = mean(values, na.rm = TRUE),
+        sd = sd(values, na.rm = TRUE),
+        min = min(values, na.rm = TRUE),
+        max = max(values, na.rm = TRUE)
+      )
+    }
+  }
+  
+  return(aggregated)
+}
