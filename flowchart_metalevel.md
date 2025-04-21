@@ -27,7 +27,7 @@ graph TD
     subgraph fairness_workflow
         direction TB
         B -->|calls| Dec1{User split delivered?}:::decider
-        B -->|calls| Re1[Standardized Inputs: xxx]:::input_style
+        B -->|calls| Re1[Standardized Inputs: workflow_results, split_output, alias, params]:::input_style
             %% Splitter
         subgraph Splitter
             direction TB
@@ -48,12 +48,14 @@ graph TD
         AR --> I
         subgraph Reporting
             direction TB
-            C7[function: controller_split]:::controller_style -->|rest| Re1
+            C7[function: controller_split]:::controller_style -->|params| Re1
             Re1 --> E7[Reporting Engine]:::engine
             E7 --> OF7[function: initialize_output_reporting]:::output_style
-            OF7 --> Re2[Standardized Outputs with defaults: xxx]:::input_style
+            OF7 --> Re2[Standardized Outputs with defaults: report_object, report_type, input_data, params = NULL, specific_output = NULL]:::input_style
         end
-        Re2 --> I(Final Results: Models, Predictions, Metrics):::object
+        WR -->|workflow_results| Re1
+        IR1 -->|split_output| Re1
+        Re2 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
     end
 
     %% Workflow inside run_workflow_single

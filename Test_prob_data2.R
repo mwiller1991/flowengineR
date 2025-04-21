@@ -19,6 +19,7 @@ source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fairness_in.R")
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
+source("~/fairness_toolbox/R/engines/reporting/initialize_output_report.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -49,8 +50,8 @@ control <- list(
   vars = vars,         # Include vars within control for consistency
   data = list(
     full = dataset,    # Optional, if splitter engine is used
-    train = split_output$splits$fold1$train,      # Training data
-    test = split_output$splits$fold1$test        # Test data
+    train = NULL,      # Training data
+    test = NULL        # Test data
   ),
   split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
   train_model = "train_lm",
@@ -58,7 +59,13 @@ control <- list(
   fairness_pre = NULL, #"fairness_pre_resampling",
   fairness_in = NULL, #"fairness_in_adversialdebiasing",
   fairness_post = "fairness_post_genresidual",
-  evaluation = list("eval_mse", "eval_summarystats"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
+  evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
+  reporting = list(
+    gender_box_raw = "report_boxplot_predictions",
+    gender_box_adjusted = "report_boxplot_predictions",
+    age_box = "report_boxplot_predictions",
+    metrics_table = "report_table_splitmetrics"
+  ),
   params = list(
     split = controller_split(
       seed = 123,
@@ -95,6 +102,14 @@ control <- list(
         eval_mse = list(weighting_factor = 0.5), #Example for Test
         eval_statisticalparity = list(threshold = 0.1) #Example for Test
       )
+    ),
+    report = controller_reporting(
+      params = list(
+        gender_box_raw = list(group_var = "genderMale", source = "train"),
+        gender_box_adjusted = list(group_var = "genderMale", source = "post"),
+        age_box = list(group_var = "age_group.50+"),
+        metrics_table = list(metrics = c("mse", "statisticalparity", "summarystats"))
+      )
     )
   )
 )
@@ -102,79 +117,8 @@ control <- list(
 
 # Run the Workflow
 result <- fairness_workflow(control)
+result$reporting$metrics_table$report_object
+result$reporting$gender_box_raw$report_object
+View(result$reporting$gender_box_adjusted$report_object)
+
 result_full <- fairness_workflow_variants(control)
-
-# Output-Funktionen -> das werden mal Reporting-Engines
-# Funktion zur strukturierten Anzeige der Split-Engine-Ergebnisse
-print_split_results <- function(result) {
-  cat("\n=== Split-Engine Ergebnisse ===\n")
-  
-  # Anzeige der Splits
-  if (!is.null(result$splits)) {
-    cat("\n== Datenaufteilung ==\n")
-    cat("Trainingsdaten:", nrow(result$splits$random_split$train), "Zeilen\n")
-    cat("Testdaten:", nrow(result$splits$random_split$test), "Zeilen\n")
-  }
-  
-  # Anzeige der Workflow-Ergebnisse
-  if (!is.null(result$workflow_results)) {
-    cat("\n== Workflow-Ergebnisse pro Split ==\n")
-    for (split_name in names(result$workflow_results)) {
-      cat("\n=== Ergebnisse für Split:", split_name, "===\n")
-      split_result <- result$workflow_results[[split_name]]
-      print_workflow_results(split_result)
-    }
-  }
-  
-  # Anzeige der aggregierten Ergebnisse
-  if (!is.null(result$aggregated_results)) {
-    cat("\n== Aggregierte Ergebnisse ==\n")
-    print(result$aggregated_results)
-  }
-  
-  cat("\n=========================================\n")
-}
-
-
-print_workflow_results <- function(result) {
-  if (!is.null(result$output_train)) {
-    cat("\n== Trainingsergebnisse ==\n")
-    cat("Modelltyp:", result$output_train$model_type, "\n")
-    cat("Formel:", deparse(result$output_train$formula), "\n")
-    if (!is.null(result$output_train$hyperparameters)) {
-      cat("Hyperparameter:\n")
-      print(result$output_train$hyperparameters)
-    }
-    cat("Trainingszeit:", result$output_train$training_time, "Sekunden\n")
-    cat("Beispiel Vorhersagen:\n")
-    print(head(result$output_train$predictions))
-  }
-  
-  if (!is.null(result$output_fairness_post)) {
-    cat("\n== Fairness Post-Processing ==\n")
-    cat("Methode:", result$output_fairness_post$method, "\n")
-    cat("Beispiel angepasste Vorhersagen:\n")
-    print(head(result$output_fairness_post$adjusted_predictions))
-  }
-  
-  if (!is.null(result$output_eval)) {
-    cat("\n== Evaluationsergebnisse ==\n")
-    for (metric_name in names(result$output_eval)) {
-      cat("Metrik:", metric_name, "\n")
-      print(result$output_eval[[metric_name]]$metrics)
-    }
-  }
-}
-
-
-# Beispiel: Ergebnisse ausgeben
-print_split_results(result)
-
-
-
-
-# Run the full 3x Workflow
-result_full <- run_workflow_variants(control)
-
-# Output Results
-#noch offen

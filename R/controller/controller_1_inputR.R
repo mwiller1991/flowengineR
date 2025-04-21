@@ -168,3 +168,29 @@ controller_evaluation <- function(protected_name, params = NULL) {
   )
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Controller: Input for Reporting (supports multiple evaluation engines) ###
+#--------------------------------------------------------------------
+#' Controller for Reporting Inputs (multi-instance support)
+#'
+#' Creates standardized input for multiple reporting engines.
+#' Allows specifying individual parameters per named reporting instance.
+#'
+#' **Standardized Input:**
+#' - `params`: A named list of parameter lists, where names are reporting aliases (e.g., "gender_box").
+#'   Each alias is mapped to a specific reporting engine name via `control$reporting`.
+#'
+#' @param params A named list of reporting parameter lists. 
+#'               Each name should match an alias from `control$reporting`.
+#'
+#' @return A standardized list for reporting input.
+#' @export
+controller_reporting <- function(params = NULL) {
+  list(
+    params = params
+  )
+}
+#--------------------------------------------------------------------

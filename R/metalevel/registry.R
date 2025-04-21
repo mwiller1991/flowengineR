@@ -23,7 +23,7 @@ register_engine <- function(engine_name, file_path) {
     if (engine_type[1] == "fairness") {
       full_engine_type <- paste(engine_type[1], engine_type[2], sep = "_")  # Combine "fairness" with "post", "pre", or "in"
     } else {
-      full_engine_type <- engine_type[1]  # For other types like "train", "split"
+      full_engine_type <- engine_type[1]  # For other types like "train", "split", "report"
     }
     
     # Source the engine file
@@ -94,10 +94,14 @@ register_engine("eval_summarystats", "~/fairness_toolbox/R/engines/evaluation/ge
 register_engine("eval_mse", "~/fairness_toolbox/R/engines/evaluation/precision/engine_eval_mse.R")
 register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/evaluation/fairness/engine_eval_statisticalparity.R")
 
-# Load new Splitter-Engines
-register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_userdefined.R")
+# Load preinstalled Splitter-Engines
+register_engine("split_userdefined", "~/fairness_toolbox/R/engines/split/engine_split_userdefined.R")
 register_engine("split_random", "~/fairness_toolbox/R/engines/split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_cv.R")
+
+# Load preinstalled Reporting-Engines
+register_engine("report_table_splitmetrics", "~/fairness_toolbox/R/engines/reporting/engine_report_table_splitmetrics.R")
+register_engine("report_boxplot_predictions", "~/fairness_toolbox/R/engines/reporting/engine_report_boxplot_predictions.R")
 
 # Debugging: List registered engines
 print(names(engines))

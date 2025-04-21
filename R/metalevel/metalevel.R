@@ -28,15 +28,37 @@ fairness_workflow <- function(control) {
   # 3. Aggregate results (e.g. metrics)
   aggregated_results <- aggregate_results(workflow_results)
   
+  # 4. Reporting (optional)
+  reporting_results <- NULL
+  if (!is.null(control$reporting)) {
+    reporting_results <- list()
+    
+    for (alias in names(control$reporting)) {
+      engine_name <- control$reporting[[alias]]
+      if (!engine_name %in% names(engines)) {
+        warning(sprintf("[WARNING] Reporting engine '%s' not found. Skipping alias '%s'.", engine_name, alias))
+        next
+      }
+      
+      message(sprintf("[INFO] Running reporting engine '%s' for alias '%s'...", engine_name, alias))
+      
+      reporting_results[[alias]] <- engines[[engine_name]](
+        control = control,
+        workflow_results = workflow_results,
+        split_output = split_output,
+        alias = alias
+      )
+    }
+  }
+  
   # 4. Return full structured result
   list(
     split_output = split_output,
     workflow_results = workflow_results,
     aggregated_results = aggregated_results,
-    reporting = list()  # Placeholder for future reporting engines
+    reporting = reporting_results
   )
 }
-#--------------------------------------------------------------------
 #--------------------------------------------------------------------
 
 

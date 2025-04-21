@@ -293,3 +293,23 @@ validate_engine_split <- function(wrapper_function, default_params_function) {
   return(TRUE)
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Validation for Reporting ###
+#--------------------------------------------------------------------
+#' Validate a Reporting Engine (Generic for Table, Plot, etc.)
+#'
+#' Validate a Reporting Engine (Generic for Table, Plot, etc.)
+#' 
+#' @param wrapper_function The wrapper function for the splitter engine.
+#' @param default_params_function The function providing default parameters for the engine.
+#'
+#' @return TRUE if the engine passes validation.
+#' @export
+validate_engine_report <- function(wrapper_function, default_params_function) {
+  message("Splitter engine validation passed (Dummy).")
+  return(TRUE)
+}
+#--------------------------------------------------------------------

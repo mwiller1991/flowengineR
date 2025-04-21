@@ -27,7 +27,7 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
   })
   
   names(results) <- protected_name
-  return(results)
+  return(as.list(results))
 }
 #--------------------------------------------------------------------
 

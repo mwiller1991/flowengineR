@@ -1,7 +1,7 @@
 "Object","Size_MB"
-"control",0.93
-"output_train",0.36
-"results",0.36
+"control",0.94
+"output_train",0.41
+"results",0.41
 "driver_train",0.09
 "testdata",0.03
 "norm_params",0.01
