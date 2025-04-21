@@ -5,9 +5,23 @@ Hier ist ein Diagramm, das den Workflow visualisiert:
 ```mermaid
 graph TD
     %% Meta Level
-    A(User Input: Control Object):::object ==> B[fairness_workflow-function]
-    A ==> C[run_workflow_variants-function]
-    C --> |calls 3x| B
+    Input(User Input: Control Object):::object ==> B[fairness_workflow-function]
+    Input ==> C[fairness_workflow_variants-function]
+
+    %% fairness_workflow_variants internal structure
+    subgraph fairness_workflow_variants
+        direction LR
+        C --> Input1[original control]:::object
+        Input1 -->|modifying| Input2[bestestimate_control]:::object
+        Input1 -->|modifying| Input3[unawareness_control]:::object
+        Input1 --> Loop1[Loop-function]:::helper_style
+        Input2 --> Loop1
+        Input3 --> Loop1
+        Loop1 -->|final results per loop| I2(Final Results: Models, Predictions, Metrics per run):::object
+    end
+
+    Loop1 -->|calling per calibration variant| B
+    B -->|returning results| Loop1
 
     %% fairness_workflow internal structure
     subgraph fairness_workflow
@@ -40,7 +54,6 @@ graph TD
             OF7 --> Re2[Standardized Outputs with defaults: xxx]:::input_style
         end
         Re2 --> I(Final Results: Models, Predictions, Metrics):::object
-
     end
 
     %% Workflow inside run_workflow_single
@@ -140,24 +153,16 @@ graph TD
     end
 
     %% Connectiong control-objekt (user-input) to controller_functions
-    A -->|input| C1
-    A -->|input| C2
-    A -->|input| C3
-    A -->|input| C4
-    A -->|input| C5
-    A -->|input| C6
-    A -->|input| C7
+    Input -->|input| C1
+    Input -->|input| C2
+    Input -->|input| C3
+    Input -->|input| C4
+    Input -->|input| C5
+    Input -->|input| C6
+    Input -->|input| C7
 
-    %% Feedback loop to the Splitter
+    %% Feedback loop to the fairness_workflow
     IR -->|Results for each split| WR[workflow_results]:::object
-
-    %% Outputs
-    B ==> I(Final Results: Models, Predictions, Metrics):::object
-    C ==>|Multiple variants results| I
-
-    %% Variants
-    C --> |Configuration Variants|B
-    B --> |Variants Results|C
 
 
 
