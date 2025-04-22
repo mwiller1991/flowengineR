@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Reporting Engine: Table of Evaluation Metrics per Split
+#' Reportelement Engine: Table of Evaluation Metrics per Split
 #'
 #' Creates a data.frame summarizing selected evaluation metrics for each split.
 #'
@@ -13,7 +13,7 @@
 #' @param metrics A vector of metric names to extract (e.g., c("mse", "statistical_parity")).
 #' @return A data.frame with one row per split and one column per selected metric.
 #' @export
-engine_report_table_splitmetrics <- function(workflow_results, metrics) {
+engine_reportelement_table_splitmetrics <- function(workflow_results, metrics) {
   result_rows <- lapply(names(workflow_results), function(split_name) {
     split_result <- workflow_results[[split_name]]
     
@@ -25,12 +25,10 @@ engine_report_table_splitmetrics <- function(workflow_results, metrics) {
       
       value_list <- eval_result$metrics
       
-      # If metrics contains only one named entry, and that entry is itself a list, go one level deeper
       if (length(value_list) == 1 && is.list(value_list[[1]])) {
         value_list <- value_list[[1]]
       }
       
-      # Now extract all named numeric values
       for (subname in names(value_list)) {
         value <- value_list[[subname]]
         if (is.numeric(value) && length(value) == 1) {
@@ -48,37 +46,40 @@ engine_report_table_splitmetrics <- function(workflow_results, metrics) {
 }
 #--------------------------------------------------------------------
 
+
+
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Reporting Engine: Table of Evaluation Metrics
+#' Wrapper for Reportelement Engine: Table of Evaluation Metrics
 #'
 #' Extracts parameters for the specified alias and calls the engine with cleaned input.
 #'
 #' @param control The control object containing user configurations.
 #' @param workflow_results A named list of workflow results for each split.
-#' @param alias A character string identifying this specific instance of the reporting engine.
+#' @param split_output Optional split metadata (unused here).
+#' @param alias A character string identifying this specific reportelement instance.
 #'
-#' @return A standardized reporting output list.
+#' @return A standardized reportelement output list.
 #' @export
-wrapper_report_table_splitmetrics <- function(control, workflow_results, split_output, alias = NULL) {
-  report_params <- control$params$report  # Accessing the report parameters
-  if (is.null(alias)) stop("Reporting alias must be specified.")
+wrapper_reportelement_table_splitmetrics <- function(control, workflow_results, split_output, alias = NULL) {
+  report_params <- control$params$reportelement  # Access reportelement params
+  if (is.null(alias)) stop("Reportelement alias must be specified.")
   
   # Merge optional parameters with defaults
-  params <- merge_with_defaults(report_params$params[[alias]], default_params_report_table_splitmetrics())
+  params <- merge_with_defaults(report_params$params[[alias]], default_params_reportelement_table_splitmetrics())
   
-  
-  # Run reporting engine
-  table <- engine_report_table_splitmetrics(
+  # Run reportelement engine
+  table <- engine_reportelement_table_splitmetrics(
     workflow_results = workflow_results,
     metrics = params$metrics
   )
   
   # Initialize standardized output
-  initialize_output_report(
-    report_object = table,
-    report_type = "table_splitmetrics",
+  initialize_output_reportelement(
+    type = "table",
+    content = table,
+    compatible_formats = c("pdf", "html", "excel", "json"),
     input_data = names(workflow_results),
     params = params,
     specific_output = list(
@@ -94,11 +95,11 @@ wrapper_report_table_splitmetrics <- function(control, workflow_results, split_o
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
-#' Default Parameters for Reporting Engine: Table of Split Metrics
+#' Default Parameters for Reportelement Engine: Table of Split Metrics
 #'
 #' @return A list of default parameters.
 #' @export
-default_params_report_table_splitmetrics <- function() {
+default_params_reportelement_table_splitmetrics <- function() {
   list(
     metrics = c("summarystats")
   )

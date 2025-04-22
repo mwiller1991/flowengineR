@@ -19,7 +19,7 @@ source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fairness_in.R")
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
-source("~/fairness_toolbox/R/engines/reporting/initialize_output_report.R")
+source("~/fairness_toolbox/R/engines/reporting/initialize_output_reportelement.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -60,11 +60,11 @@ control <- list(
   fairness_in = NULL, #"fairness_in_adversialdebiasing",
   fairness_post = "fairness_post_genresidual",
   evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
-  reporting = list(
-    gender_box_raw = "report_boxplot_predictions",
-    gender_box_adjusted = "report_boxplot_predictions",
-    age_box = "report_boxplot_predictions",
-    metrics_table = "report_table_splitmetrics"
+  reportelement = list(
+    gender_box_raw = "reportelement_boxplot_predictions",
+    gender_box_adjusted = "reportelement_boxplot_predictions",
+    age_box = "reportelement_boxplot_predictions",
+    metrics_table = "reportelement_table_splitmetrics"
   ),
   params = list(
     split = controller_split(
@@ -103,7 +103,7 @@ control <- list(
         eval_statisticalparity = list(threshold = 0.1) #Example for Test
       )
     ),
-    report = controller_reporting(
+    reportelement = controller_reportelement(
       params = list(
         gender_box_raw = list(group_var = "genderMale", source = "train"),
         gender_box_adjusted = list(group_var = "genderMale", source = "post"),
@@ -117,8 +117,8 @@ control <- list(
 
 # Run the Workflow
 result <- fairness_workflow(control)
-result$reporting$metrics_table$report_object
-result$reporting$gender_box_raw$report_object
-View(result$reporting$gender_box_adjusted$report_object)
+result$reportelements$metrics_table$content
+result$reportelements$gender_box_raw$content
+View(result$reportelements$metrics_table$content)
 
 result_full <- fairness_workflow_variants(control)

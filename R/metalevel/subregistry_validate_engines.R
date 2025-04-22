@@ -297,19 +297,19 @@ validate_engine_split <- function(wrapper_function, default_params_function) {
 
 
 #--------------------------------------------------------------------
-### Validation for Reporting ###
+### Validation for Reportelement Engines ###
 #--------------------------------------------------------------------
-#' Validate a Reporting Engine (Generic for Table, Plot, etc.)
+#' Validate a Reportelement Engine (Dummy Placeholder)
 #'
-#' Validate a Reporting Engine (Generic for Table, Plot, etc.)
-#' 
-#' @param wrapper_function The wrapper function for the splitter engine.
+#' Currently a dummy function. Can be extended later to check for standardized output.
+#'
+#' @param wrapper_function The wrapper function for the reportelement engine.
 #' @param default_params_function The function providing default parameters for the engine.
 #'
-#' @return TRUE if the engine passes validation.
+#' @return TRUE if the dummy test passes (always TRUE currently).
 #' @export
-validate_engine_report <- function(wrapper_function, default_params_function) {
-  message("Splitter engine validation passed (Dummy).")
+validate_engine_reportelement <- function(wrapper_function, default_params_function) {
+  message("Reportelement engine validation passed (Dummy).")
   return(TRUE)
 }
 #--------------------------------------------------------------------

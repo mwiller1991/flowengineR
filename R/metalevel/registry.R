@@ -99,9 +99,9 @@ register_engine("split_userdefined", "~/fairness_toolbox/R/engines/split/engine_
 register_engine("split_random", "~/fairness_toolbox/R/engines/split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/split/engine_split_cv.R")
 
-# Load preinstalled Reporting-Engines
-register_engine("report_table_splitmetrics", "~/fairness_toolbox/R/engines/reporting/engine_report_table_splitmetrics.R")
-register_engine("report_boxplot_predictions", "~/fairness_toolbox/R/engines/reporting/engine_report_boxplot_predictions.R")
+# Load preinstalled Reportelement-Engines
+register_engine("reportelement_table_splitmetrics", "~/fairness_toolbox/R/engines/reporting/engine_reportelement_table_splitmetrics.R")
+register_engine("reportelement_boxplot_predictions", "~/fairness_toolbox/R/engines/reporting/engine_reportelement_boxplot_predictions.R")
 
 # Debugging: List registered engines
 print(names(engines))

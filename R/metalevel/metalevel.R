@@ -28,21 +28,21 @@ fairness_workflow <- function(control) {
   # 3. Aggregate results (e.g. metrics)
   aggregated_results <- aggregate_results(workflow_results)
   
-  # 4. Reporting (optional)
-  reporting_results <- NULL
-  if (!is.null(control$reporting)) {
-    reporting_results <- list()
+  # 4. Reportelements (optional)
+  reportelements_results <- NULL
+  if (!is.null(control$reportelement)) {
+    reportelements_results <- list()
     
-    for (alias in names(control$reporting)) {
-      engine_name <- control$reporting[[alias]]
+    for (alias in names(control$reportelement)) {
+      engine_name <- control$reportelement[[alias]]
       if (!engine_name %in% names(engines)) {
-        warning(sprintf("[WARNING] Reporting engine '%s' not found. Skipping alias '%s'.", engine_name, alias))
+        warning(sprintf("[WARNING] Reportelement engine '%s' not found. Skipping alias '%s'.", engine_name, alias))
         next
       }
       
-      message(sprintf("[INFO] Running reporting engine '%s' for alias '%s'...", engine_name, alias))
+      message(sprintf("[INFO] Running reportelement engine '%s' for alias '%s'...", engine_name, alias))
       
-      reporting_results[[alias]] <- engines[[engine_name]](
+      reportelements_results[[alias]] <- engines[[engine_name]](
         control = control,
         workflow_results = workflow_results,
         split_output = split_output,
@@ -56,7 +56,7 @@ fairness_workflow <- function(control) {
     split_output = split_output,
     workflow_results = workflow_results,
     aggregated_results = aggregated_results,
-    reporting = reporting_results
+    reportelements = reportelements_results
   )
 }
 #--------------------------------------------------------------------

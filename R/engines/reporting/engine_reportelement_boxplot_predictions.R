@@ -1,17 +1,19 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Engine for Reporting: Boxplot of Predictions by Group
+#' Reportelement Engine: Boxplot of Predictions by Group
 #'
 #' Aggregates predictions from all splits and generates a ggplot2 boxplot
 #' grouped by the specified binary group variable (e.g., "genderMale").
 #'
 #' @param workflow_results A named list of workflow results per split.
+#' @param split_output A list of split metadata (incl. test data per split).
 #' @param group_var A character string specifying the grouping variable.
+#' @param source One of "train", "post", or "inproc".
 #'
 #' @return A ggplot2 object showing grouped boxplots.
 #' @export
-engine_report_boxplot_predictions <- function(workflow_results, split_output, group_var, source) {
+engine_reportelement_boxplot_predictions <- function(workflow_results, split_output, group_var, source) {
   combined <- do.call(rbind, lapply(names(workflow_results), function(split) {
     split_result <- workflow_results[[split]]
     test_data <- split_output[[split]]$test
@@ -51,33 +53,35 @@ engine_report_boxplot_predictions <- function(workflow_results, split_output, gr
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Boxplot Reporting Engine
+#' Wrapper for Reportelement Engine: Boxplot of Predictions
 #'
-#' Handles control input and initializes standardized reporting output.
+#' Handles control input and initializes standardized reportelement output.
 #'
 #' @param control The control object.
 #' @param workflow_results The list of workflow results.
-#' @param alias Alias for this reporting instance.
+#' @param split_output Output of the splitter engine.
+#' @param alias Alias for this reportelement instance.
 #'
-#' @return A standardized list containing the ggplot object.
+#' @return A standardized reportelement output list.
 #' @export
-wrapper_report_boxplot_predictions <- function(control, workflow_results, split_output, alias = NULL) {
-  report_params <- control$params$report  # Accessing the report parameters
-  if (is.null(alias)) stop("Reporting alias must be specified.")
+wrapper_reportelement_boxplot_predictions <- function(control, workflow_results, split_output, alias = NULL) {
+  report_params <- control$params$reportelement
+  if (is.null(alias)) stop("Reportelement alias must be specified.")
   
   # Merge optional parameters with defaults
-  params <- merge_with_defaults(report_params$params[[alias]], default_params_report_boxplot_predictions())
+  params <- merge_with_defaults(report_params$params[[alias]], default_params_reportelement_boxplot_predictions())
   
-  plot <- engine_report_boxplot_predictions(
+  plot <- engine_reportelement_boxplot_predictions(
     workflow_results = workflow_results,
     split_output = split_output$splits,
     group_var = params$group_var,
     source = params$source
   )
   
-  initialize_output_report(
-    report_object = plot,
-    report_type = "boxplot_predictions",
+  initialize_output_reportelement(
+    type = "plot",
+    content = plot,
+    compatible_formats = c("pdf", "html"),
     input_data = names(workflow_results),
     params = params,
     specific_output = list(
@@ -94,11 +98,11 @@ wrapper_report_boxplot_predictions <- function(control, workflow_results, split_
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
-#' Default Parameters for Boxplot Reporting Engine
+#' Default Parameters for Reportelement Engine: Boxplot Predictions
 #'
-#' @return A list with default group_var.
+#' @return A list with default values.
 #' @export
-default_params_report_boxplot_predictions <- function() {
+default_params_reportelement_boxplot_predictions <- function() {
   list(
     source = "train"  # can be "train", "post", or "inproc"
   )
