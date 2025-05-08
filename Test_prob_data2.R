@@ -20,6 +20,7 @@ source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fa
 source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
 source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
 source("~/fairness_toolbox/R/engines/reporting/reportelement/initialize_output_reportelement.R")
+source("~/fairness_toolbox/R/engines/reporting/report/initialize_output_report.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -65,7 +66,10 @@ control <- list(
     gender_box_adjusted = "reportelement_boxplot_predictions",
     age_box = "reportelement_boxplot_predictions",
     metrics_table = "reportelement_table_splitmetrics",
-    mse_text = "reportelement_text_msesummary"
+    text_mse_summary = "reportelement_text_msesummary"
+  ),
+  report = list(
+    modelsummary = "report_modelsummary"
   ),
   params = list(
     split = controller_split(
@@ -110,7 +114,12 @@ control <- list(
         gender_box_adjusted = list(group_var = "genderMale", source = "post"),
         age_box = list(group_var = "age_group.50+"),
         metrics_table = list(metrics = c("mse", "statisticalparity", "summarystats")),
-        mse_text = list()
+        text_mse_summary = list()
+      )
+    ),
+    report = controller_report(
+      params = list(
+        modelsummary = list(mse_text = "text_mse_summary", gender_box = "gender_box_adjusted", age_box = "age_box", metrics_table = "metrics_table")
       )
     )
   )

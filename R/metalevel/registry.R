@@ -104,6 +104,9 @@ register_engine("reportelement_table_splitmetrics", "~/fairness_toolbox/R/engine
 register_engine("reportelement_boxplot_predictions", "~/fairness_toolbox/R/engines/reporting/reportelement/engine_reportelement_boxplot_predictions.R")
 register_engine("reportelement_text_msesummary", "~/fairness_toolbox/R/engines/reporting/reportelement/engine_reportelement_text_msesummary.R")
 
+# Load preinstalled Reportelement-Engines
+register_engine("report_modelsummary", "~/fairness_toolbox/R/engines/reporting/report/engine_report_modelsummary.R")
+
 # Debugging: List registered engines
 print(names(engines))
 #--------------------------------------------------------------------

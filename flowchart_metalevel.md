@@ -28,6 +28,7 @@ graph TD
         direction TB
         B -->|calls| Dec1{User split delivered?}:::decider
         B -->|calls| Re1[Standardized Inputs: workflow_results, split_output, alias, params]:::input_style
+        B -->|calls| R1[Standardized Inputs: reportelement_results, alias, params]:::input_style
             %% Splitter
         subgraph Splitter
             direction TB
@@ -46,16 +47,32 @@ graph TD
         WR --> AGG[aggregate_results]:::helper_style
         AGG --> AR[aggregated_results]:::object
         AR --> I
-        subgraph Reporting
+
+        subgraph reportelement
             direction TB
-            C7[function: controller_split]:::controller_style -->|params| Re1
-            Re1 --> E7[Reporting Engine]:::engine
-            E7 --> OF7[function: initialize_output_reporting]:::output_style
+            C7[function: controller_reportelement]:::controller_style -->|params| Re1
+            Re1 --> E7[Reportelement Engine]:::engine
+            E7 --> OF7[function: initialize_output_reportelement]:::output_style
             OF7 --> Re2[Standardized Outputs with defaults: report_object, report_type, input_data, params = NULL, specific_output = NULL]:::input_style
         end
+
         WR -->|workflow_results| Re1
         IR1 -->|split_output| Re1
-        Re2 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
+        Re2 -->|standardized output| ReEl1[reportelement_results]:::object
+
+        subgraph report
+            direction TB
+            C8[function: controller_report]:::controller_style -->|params| R1
+            R1 --> E8[Report Engine]:::engine
+            E8 --> OF8[function: initialize_output_report]:::output_style
+            OF8 --> R2[Standardized Outputs with defaults: report_title, report_type, compatible_formats, sections, params = NULL, specific_output = NULL]:::input_style
+        end
+
+        ReEl1 -->|reportelement_results| R1
+        R2 -->|standardized output| RRes1[report_results]:::object
+
+        ReEl1 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
+        RRes1 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
     end
 
     %% Workflow inside run_workflow_single

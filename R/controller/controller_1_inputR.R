@@ -193,3 +193,28 @@ controller_reportelement <- function(params = NULL) {
   )
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Controller: Input for Report Definitions (multi-instance support) ###
+#--------------------------------------------------------------------
+#' Controller for Report Inputs
+#'
+#' Creates standardized input structure for reports.
+#' Allows specifying individual parameters per named report alias.
+#'
+#' **Standardized Input:**
+#' - `params`: A named list of parameter lists, where names are report aliases (e.g., "modelsummary").
+#'   Each alias is mapped to a specific report engine via `control$report`.
+#'
+#' @param params A named list of parameter lists. Each name should match an alias from `control$report`.
+#'
+#' @return A standardized list for report input.
+#' @export
+controller_report <- function(params = NULL) {
+  list(
+    params = params
+  )
+}
+#--------------------------------------------------------------------
