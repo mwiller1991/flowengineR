@@ -79,7 +79,7 @@ wrapper_reportelement_table_splitmetrics <- function(control, workflow_results, 
   initialize_output_reportelement(
     type = "table",
     content = table,
-    compatible_formats = c("pdf", "html", "excel", "json"),
+    compatible_formats = c("pdf", "html", "xlsx", "json"),
     input_data = names(workflow_results),
     params = params,
     specific_output = list(

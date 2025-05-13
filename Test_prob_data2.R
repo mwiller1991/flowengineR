@@ -1,10 +1,16 @@
+# install required libraries
+install.packages("tinytex")
+tinytex::install_tinytex()
+
+
 # Load required libraries
 library(ggplot2)
 library(caret)
 library(magrittr)
 library(moments)
 library(dplyr)
-
+library(rmarkdown)
+library(openxlsx)
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/metalevel/metalevel.R")
@@ -13,14 +19,15 @@ source("~/fairness_toolbox/R/metalevel/metalevel.R")
 source("~/fairness_toolbox/R/metalevel/helper.R")
 
 # Load the initiate output Functions
-source("~/fairness_toolbox/R/engines/split/initialize_output_split.R")
-source("~/fairness_toolbox/R/engines/fairness/pre-processing/initialize_output_fairness_pre.R")
-source("~/fairness_toolbox/R/engines/training/initialize_output_train.R")
-source("~/fairness_toolbox/R/engines/fairness/in-processing/initialize_output_fairness_in.R")
-source("~/fairness_toolbox/R/engines/fairness/post-processing/initialize_output_fairness_post.R")
-source("~/fairness_toolbox/R/engines/evaluation/initialize_output_eval.R")
-source("~/fairness_toolbox/R/engines/reporting/reportelement/initialize_output_reportelement.R")
-source("~/fairness_toolbox/R/engines/reporting/report/initialize_output_report.R")
+source("~/fairness_toolbox/R/engines/1_split/initialize_output_split.R")
+source("~/fairness_toolbox/R/engines/2_training/initialize_output_train.R")
+source("~/fairness_toolbox/R/engines/3_fairness/3_1_pre-processing/initialize_output_fairness_pre.R")
+source("~/fairness_toolbox/R/engines/3_fairness/3_2_in-processing/initialize_output_fairness_in.R")
+source("~/fairness_toolbox/R/engines/3_fairness/3_3_post-processing/initialize_output_fairness_post.R")
+source("~/fairness_toolbox/R/engines/4_evaluation/initialize_output_eval.R")
+source("~/fairness_toolbox/R/engines/5_reporting/5_1_reportelement/initialize_output_reportelement.R")
+source("~/fairness_toolbox/R/engines/5_reporting/5_2_report/initialize_output_report.R")
+source("~/fairness_toolbox/R/engines/5_reporting/5_3_publish/initialize_output_publish.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -71,6 +78,11 @@ control <- list(
   report = list(
     modelsummary = "report_modelsummary"
   ),
+  publish = list(
+    pdf_basis_test_report = "publish_pdf_basis",
+    pdf_basis_test_singleelement = "publish_pdf_basis",
+    excel_basis_test_singleelement = "publish_excel_basis"
+  ),
   params = list(
     split = controller_split(
       seed = 123,
@@ -120,6 +132,14 @@ control <- list(
     report = controller_report(
       params = list(
         modelsummary = list(mse_text = "text_mse_summary", gender_box = "gender_box_adjusted", age_box = "age_box", metrics_table = "metrics_table")
+      )
+    ),
+    publish = controller_publish(
+      output_folder = "~/fairness_toolbox/tests/publish_exports", 
+      params = list(
+        pdf_basis_test_singleelement = list(obj_name = "text_mse_summary", obj_type = "reportelement"),
+        pdf_basis_test_report = list(obj_name = "modelsummary", obj_type = "report"),
+        excel_basis_test_singleelement = list(obj_name = "metrics_table", obj_type = "reportelement")
       )
     )
   )

@@ -18,6 +18,7 @@ fairness_workflow <- function(control) {
   split_engine <- engines[[control$split_method]]
   split_output <- split_engine(control)
   
+  
   # 2. Iterate over all splits
   workflow_results <- lapply(split_output$splits, function(split) {
     control$data$train <- split$train
@@ -25,8 +26,10 @@ fairness_workflow <- function(control) {
     run_workflow_single(control)
   })
   
+  
   # 3. Aggregate results (e.g. metrics)
   aggregated_results <- aggregate_results(workflow_results)
+  
   
   # 4. Reportelements (optional)
   reportelements_results <- NULL
@@ -51,6 +54,7 @@ fairness_workflow <- function(control) {
     }
   }
   
+  
   # 5. Reports (optional)
   reports_results <- NULL
   if (!is.null(control$report)) {
@@ -73,13 +77,69 @@ fairness_workflow <- function(control) {
     }
   }
   
+  
+  # 6. Publishing (optional)
+  publishing_results <- list()
+  
+  if (!is.null(control$publish)) {
+    for (alias_publish in names(control$publish)) {
+      
+      publish_info <- control$params$publish$params[[alias_publish]]
+      obj_type <- publish_info$obj_type
+      obj_name <- publish_info$obj_name
+      file_path <- file.path(control$params$publish$output_folder, alias_publish)
+      
+      if (obj_type == "report") {
+        object <- reports_results[[obj_name]]
+      } else if (obj_type == "reportelement") {
+        object <- reportelements_results[[obj_name]]
+      } else {
+        warning(sprintf("[WARNING] Unknown publish type for '%s': %s", alias_publish, obj_type))
+        next
+      }
+      
+      # reportelement to synthetic report
+      if (obj_type == "reportelement") {
+        compatible_formats <- object$compatible_formats
+        object <- initialize_output_report(
+          report_title = paste("Export:", alias_publish),
+          report_type = "single_element",
+          compatible_formats = compatible_formats,
+          sections = list(list(
+            heading = alias_publish,
+            content = list(object)
+          ))
+        )
+      }
+      
+      engine_name <- control$publish[[alias_publish]]
+        
+        if (!engine_name %in% names(engines)) {
+          warning(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name))
+          next
+        }
+        
+        message(sprintf("[INFO] Publishing '%s' with engine '%s'...", alias_publish, engine_name))
+        
+        publishing_results[[alias_publish]] <- engines[[engine_name]](
+          control = control,
+          object = object,
+          file_path = file_path,
+          alias_publish  = alias_publish
+        )
+    }
+  }
+  
+  
+  
   # 7. Return full structured result
   list(
     split_output = split_output,
     workflow_results = workflow_results,
     aggregated_results = aggregated_results,
     reportelements = reportelements_results,
-    reports = reports_results
+    reports = reports_results,
+    publishing = publishing_results
   )
 }
 #--------------------------------------------------------------------

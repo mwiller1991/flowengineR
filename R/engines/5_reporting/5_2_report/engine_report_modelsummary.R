@@ -16,7 +16,7 @@
 #' @export
 engine_report_modelsummary <- function(reportelements, params) {
   
-  mse_text <- reportelements_results[[params$mse_text]]
+  mse_text <- reportelements[[params$mse_text]]
   gender_plot <- reportelements[[params$gender_box]]
   age_plot <- reportelements[[params$age_box]]
   metrics <- reportelements[[params$metrics_table]]

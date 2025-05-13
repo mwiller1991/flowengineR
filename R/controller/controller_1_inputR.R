@@ -218,3 +218,30 @@ controller_report <- function(params = NULL) {
   )
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Controller: Input for Publisher Parameters (multi-instance support) ###
+#--------------------------------------------------------------------
+#' Controller for Publisher Parameters
+#'
+#' Creates standardized input for publishing engines.
+#' Includes a global output folder and per-alias publishing settings.
+#'
+#' **Standardized Input:**
+#' - `output_folder`: Global target folder for all export files.
+#' - `params`: A named list of parameter lists, where names are publishing aliases.
+#'
+#' @param output_folder A character string indicating the base folder for all exports.
+#' @param params A named list of parameter lists. Each name should match a publishing alias.
+#'
+#' @return A standardized list for publisher configuration.
+#' @export
+controller_publish <- function(output_folder = NULL, params = NULL) {
+  list(
+    output_folder = output_folder,
+    params = params
+  )
+}
+#--------------------------------------------------------------------
