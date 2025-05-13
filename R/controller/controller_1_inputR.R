@@ -1,5 +1,31 @@
 #--------------------------------------------------------------------
-### Controller for Split Inputs (supports multiple splitter engines)###
+### Controller: Input for Variable Definition ###
+#--------------------------------------------------------------------
+#' Controller for Variable Definitions
+#'
+#' Creates a standardized list of variables used in the workflow, including features, protected attributes,
+#' target variables, and grouped protected attributes.
+#'
+#' @param feature_vars Character vector of input features used for training.
+#' @param protected_vars Character vector of protected attributes used in fairness processing.
+#' @param target_var Name of the target variable.
+#' @param protected_vars_binary Character vector of protected attributes in binary/grouped form for evaluation.
+#'
+#' @return A standardized list of variables for the workflow.
+#' @export
+controller_vars <- function(feature_vars, protected_vars, target_var, protected_vars_binary) {
+  list(
+    feature_vars = feature_vars,
+    protected_vars = protected_vars,
+    target_var = target_var,
+    protected_vars_binary = protected_vars_binary
+  )
+}
+#--------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------
+### Controller: Split Inputs (supports multiple splitter engines)###
 #--------------------------------------------------------------------
 #' Controller for Split Inputs
 #'
@@ -86,7 +112,7 @@ controller_fairness_pre <- function(protected_attributes, target_var, params = N
 
 
 #--------------------------------------------------------------------
-### Controller for Fairness In-Processing Inputs ###
+### Controller: Fairness In-Processing Inputs ###
 #--------------------------------------------------------------------
 #' Controller for Fairness In-Processing Inputs
 #'

@@ -45,7 +45,7 @@ source("~/fairness_toolbox/tests/memory_logging_dev.R")
 dataset <- create_dataset_2(seed = 1)
 
 #Setting variables fitting to the dataset
-vars = list(
+vars = controller_vars(
   feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
   protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
   target_var = "default",                            # Target variable
