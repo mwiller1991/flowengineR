@@ -11,7 +11,16 @@
 #'
 #' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
-validate_engine_train <- function(wrapper_function, default_params_function) {
+validate_engine_train <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control"),
+    expected_output_initializer = "initialize_output_train"
+  )
+  
+  # --- functional check ---
   # Create dummy data
   dummy_data <- data.frame(
     x = rnorm(100),
@@ -70,7 +79,16 @@ validate_engine_train <- function(wrapper_function, default_params_function) {
 #'
 #' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
-validate_engine_fairness_post <- function(wrapper_function, default_params_function) {
+validate_engine_fairness_post <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control"),
+    expected_output_initializer = "initialize_output_fairness_post"
+  )
+  
+  # --- functional check ---
   # Create dummy data for predictions and actuals
   dummy_predictions <- rnorm(100, mean = 0.5, sd = 0.1)
   dummy_actuals <- rbinom(100, size = 1, prob = 0.5)
@@ -145,7 +163,16 @@ validate_engine_fairness_post <- function(wrapper_function, default_params_funct
 #'
 #' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
-validate_engine_fairness_pre <- function(wrapper_function, default_params_function) {
+validate_engine_fairness_pre <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control"),
+    expected_output_initializer = "initialize_output_pre"
+  )
+  
+  # --- functional check ---
   # Create dummy data for protected attributes and target variable
   dummy_protected_attributes <- data.frame(
     A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),
@@ -217,8 +244,17 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
 #'
 #' @return TRUE if the engine passes validation.
 #' @export
-validate_engine_fairness_in <- function(wrapper_function, default_params_function) {
-  message("[INFO] Fairness in-processing engines do not support validation due to complexity.")
+validate_engine_fairness_in <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control", "driver_train"),
+    expected_output_initializer = "initialize_output_fairness_in"
+  )
+  
+  # --- functional check ---
+  message("[INFO] Fairness in-processing engines do not support functional validation due to complexity.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -237,7 +273,16 @@ validate_engine_fairness_in <- function(wrapper_function, default_params_functio
 #'
 #' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
-validate_engine_eval <- function(wrapper_function, default_params_function) {
+validate_engine_eval <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control"),
+    expected_output_initializer = "initialize_output_eval"
+  )
+  
+  # --- functional check ---
   # Create dummy data for predictions and actuals
   dummy_predictions <- rnorm(100, mean = 0.5, sd = 0.1)
   dummy_actuals <- rbinom(100, size = 1, prob = 0.5)
@@ -313,7 +358,16 @@ validate_engine_eval <- function(wrapper_function, default_params_function) {
 #'
 #' @return TRUE if the engine passes validation, otherwise an error is raised.
 #' @export
-validate_engine_split <- function(wrapper_function, default_params_function) {
+validate_engine_split <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control"),
+    expected_output_initializer = "initialize_output_split"
+  )
+  
+  # --- functional check ---
   # Create dummy dataset
   dummy_data <- data.frame(
     y = rbinom(100, 1, 0.5),
@@ -377,19 +431,26 @@ validate_engine_split <- function(wrapper_function, default_params_function) {
 
 
 #--------------------------------------------------------------------
-### validation for splitter ###
-#--------------------------------------------------------------------
-#' Validate a Splitter Engine
+#' Validate a Reportelement Engine (Structure Only)
 #'
-#' Validates a splitter engine.
+#' Validates a reportelement engine based on presence of required functions,
+#' expected input signature, and output initialization call.
 #'
-#' @param wrapper_function The wrapper function for the splitter engine.
-#' @param default_params_function The function providing default parameters for the engine.
+#' @param wrapper_function The wrapper function.
+#' @param default_params_function The default params function.
 #'
-#' @return TRUE if the engine passes validation.
+#' @return TRUE if structure is valid, error otherwise.
 #' @export
-validate_engine_split_dummy <- function(wrapper_function, default_params_function) {
-  message("[SUCCESS] Splitter engine validation passed (Dummy).")
+validate_engine_reportelement <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control", "workflow_results", "split_output", "alias"),
+    expected_output_initializer = "initialize_output_reportelement"
+  )
+  
+  message("[SUCCESS] Reportelement engine structure validated.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -397,19 +458,27 @@ validate_engine_split_dummy <- function(wrapper_function, default_params_functio
 
 
 #--------------------------------------------------------------------
-### Validation for Reportelement Engines ###
-#--------------------------------------------------------------------
-#' Validate a Reportelement Engine (Dummy Placeholder)
+#' Validate a Report Engine (Structure Only)
 #'
-#' Currently a dummy function. Can be extended later to check for standardized output.
+#' Validates a report engine based on presence of required functions,
+#' expected input signature, and output initialization call.
 #'
-#' @param wrapper_function The wrapper function for the reportelement engine.
-#' @param default_params_function The function providing default parameters for the engine.
+#' @param wrapper_function The wrapper function.
+#' @param default_params_function The default params function.
+#' @param engine_name The name of the engine (without "wrapper_").
 #'
-#' @return TRUE if the dummy test passes (always TRUE currently).
+#' @return TRUE if structure is valid, error otherwise.
 #' @export
-validate_engine_reportelement <- function(wrapper_function, default_params_function) {
-  message("[SUCCESS] Reportelement engine validation passed (Dummy).")
+validate_engine_report <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control", "reportelements", "alias_report"),
+    expected_output_initializer = "initialize_output_report"
+  )
+  
+  message("[SUCCESS] Report engine structure validated.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -417,39 +486,27 @@ validate_engine_reportelement <- function(wrapper_function, default_params_funct
 
 
 #--------------------------------------------------------------------
-### Validation for Report Engines ###
-#--------------------------------------------------------------------
-#' Validate a Report Engine (Dummy Placeholder)
+#' Validate a Publish Engine (Structure Only)
 #'
-#' Currently a dummy function. Can be extended later to check for standardized output.
+#' Validates a publish engine based on presence of required functions,
+#' expected input signature, and output initialization call.
 #'
-#' @param wrapper_function The wrapper function for the reportelement engine.
-#' @param default_params_function The function providing default parameters for the engine.
+#' @param wrapper_function The wrapper function.
+#' @param default_params_function The default params function.
+#' @param engine_name The name of the engine (without "wrapper_").
 #'
-#' @return TRUE if the dummy test passes (always TRUE currently).
+#' @return TRUE if structure is valid, error otherwise.
 #' @export
-validate_engine_report <- function(wrapper_function, default_params_function) {
-  message("[SUCCESS] Report engine validation passed (Dummy).")
-  return(TRUE)
-}
-#--------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------
-### Validation for Publish Engines ###
-#--------------------------------------------------------------------
-#' Validate a Publish Engine (Dummy Placeholder)
-#'
-#' Currently a dummy function. Can be extended later to check for standardized output.
-#'
-#' @param wrapper_function The wrapper function for the reportelement engine.
-#' @param default_params_function The function providing default parameters for the engine.
-#'
-#' @return TRUE if the dummy test passes (always TRUE currently).
-#' @export
-validate_engine_publish <- function(wrapper_function, default_params_function) {
-  message("[SUCCESS] Report engine validation passed (Dummy).")
+validate_engine_publish <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control", "object", "file_path", "alias_publish"),
+    expected_output_initializer = "initialize_output_publish"
+  )
+  
+  message("[SUCCESS] Publish engine structure validated.")
   return(TRUE)
 }
 #--------------------------------------------------------------------

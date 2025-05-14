@@ -58,7 +58,7 @@ register_engine <- function(engine_name, file_path) {
     validate_function <- get(validate_function_name, envir = .GlobalEnv)
     
     # Validate the engine
-    validate_function(wrapper_function, default_params_function)
+    validate_function(wrapper_function, default_params_function, engine_name)
     
     # Register the engine
     .GlobalEnv$engines[[engine_name]] <- wrapper_function

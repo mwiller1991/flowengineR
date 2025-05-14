@@ -189,3 +189,56 @@ aggregate_results <- function(workflow_results) {
   
   return(aggregated)
 }
+#--------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------
+### helper for aggregation ###
+#--------------------------------------------------------------------
+#' Internal Helper: Validate Engine Structure
+#'
+#' Validates structural consistency of an engine wrapper function.
+#'
+#' @param wrapper_function The wrapper function.
+#' @param engine_name The short engine name, e.g., "train_glm".
+#' @param expected_args A character vector of expected formal argument names.
+#' @param expected_output_initializer The name of the expected initialize_output_* function.
+#'
+#' @return TRUE if structure is valid, error otherwise.
+#' @export
+#' #--------------------------------------------------------------------
+validate_engine_structure <- function(wrapper_function, engine_name, expected_args, expected_output_initializer) {
+  wrapper_function_name <- paste0("wrapper_", engine_name)
+  engine_function_name <- paste0("engine_", engine_name)
+  default_params_function_name <- paste0("default_params_", engine_name)
+  
+  # Check existence of required functions
+  if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
+    stop(paste("[WARNING] Engine function", engine_function_name, "not found in global environment."))
+  }
+  if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
+    stop(paste("[WARNING] Default params function", default_params_function_name, "not found in global environment."))
+  }
+  if (!is.function(wrapper_function)) stop("[WARNING] Wrapper is not a function.")
+  if (!is.function(get(engine_function_name))) stop("[WARNING] Engine is not a function.")
+  if (!is.function(get(default_params_function_name))) stop("[WARNING] Default params is not a function.")
+  
+  # Check wrapper function arguments
+  actual_args <- names(formals(wrapper_function))
+  if (!identical(actual_args, expected_args)) {
+    warning(sprintf(
+      "[INFO] Wrapper arguments do not match expected signature. Expected: %s, Found: %s",
+      paste(expected_args, collapse = ", "),
+      paste(actual_args, collapse = ", ")
+    ))
+  }
+  
+  # Check if output initializer is called
+  wrapper_body <- deparse(body(wrapper_function))
+  if (!any(grepl(expected_output_initializer, wrapper_body))) {
+    warning(sprintf("[INFO] Wrapper does not call %s. Please ensure standardized output.", expected_output_initializer))
+  }
+  
+  return(TRUE)
+}
+#--------------------------------------------------------------------
