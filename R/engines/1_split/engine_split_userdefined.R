@@ -27,6 +27,11 @@ engine_split_userdefined <- function(train, test) {
 #' @return A standardized splitter output object with the provided data.
 #' @export
 wrapper_split_userdefined <- function(control) {
+  # Signal to validation system that this wrapper should be skipped
+  if (isTRUE(control$internal_skip_validation)) {
+    return(list(skip_validation = TRUE))
+  }
+  
   if (is.null(control$data$train) || is.null(control$data$test)) {
     stop("wrapper_split_userdefined: Both train and test data must be provided in control$data.")
   }

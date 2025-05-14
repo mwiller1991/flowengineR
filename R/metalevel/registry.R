@@ -15,6 +15,9 @@
 #' 
 engines <- list()
 
+engine_name <- "split_userdefined"
+file_path <- "~/fairness_toolbox/R/engines/1_split/engine_split_userdefined.R"
+
 register_engine <- function(engine_name, file_path) {
   tryCatch({
     # Derive engine type from the engine name
@@ -59,10 +62,11 @@ register_engine <- function(engine_name, file_path) {
     
     # Register the engine
     .GlobalEnv$engines[[engine_name]] <- wrapper_function
-    message(paste("Engine registered successfully:", engine_name, "as type:", full_engine_type))
+    message(paste("[SUCCESS] Engine registered successfully:", engine_name, "as type:", full_engine_type))
+    message("---------------------------------------------------------------------------------------------")
     
   }, error = function(e) {
-    warning(paste("Failed to register engine from file:", file_path, "->", e$message))
+    warning(paste("[WARNING] Failed to register engine from file:", file_path, "->", e$message))
   })
 }
 #--------------------------------------------------------------------
@@ -80,8 +84,12 @@ source("~/fairness_toolbox/R/metalevel/subregistry_validate_engines.R")
 #--------------------------------------------------------------------
 ### load preinstalled package-engines ###
 #--------------------------------------------------------------------
-# Load preinstalled Splitter-Engines
+# Load preinstalled Splitter-Engines (without validation)
+#Sys.setenv(VALIDATE_MODE = "TRUE")
 register_engine("split_userdefined", "~/fairness_toolbox/R/engines/1_split/engine_split_userdefined.R")
+#Sys.unsetenv("VALIDATE_MODE")
+
+# Load preinstalled Splitter-Engines
 register_engine("split_random", "~/fairness_toolbox/R/engines/1_split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_cv.R")
 
