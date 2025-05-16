@@ -84,12 +84,9 @@ source("~/fairness_toolbox/R/metalevel/subregistry_validate_engines.R")
 #--------------------------------------------------------------------
 ### load preinstalled package-engines ###
 #--------------------------------------------------------------------
-# Load preinstalled Splitter-Engines (without validation)
-#Sys.setenv(VALIDATE_MODE = "TRUE")
-register_engine("split_userdefined", "~/fairness_toolbox/R/engines/1_split/engine_split_userdefined.R")
-#Sys.unsetenv("VALIDATE_MODE")
 
 # Load preinstalled Splitter-Engines
+register_engine("split_userdefined", "~/fairness_toolbox/R/engines/1_split/engine_split_userdefined.R")
 register_engine("split_random", "~/fairness_toolbox/R/engines/1_split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_cv.R")
 
