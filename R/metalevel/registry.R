@@ -90,6 +90,9 @@ register_engine("split_userdefined", "~/fairness_toolbox/R/engines/1_split/engin
 register_engine("split_random", "~/fairness_toolbox/R/engines/1_split/engine_split_random.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_cv.R")
 
+# Load preinstalled execution-Engines
+register_engine("execution_sequential", "~/fairness_toolbox/R/engines/2_execution/engine_execution_sequential.R")
+
 # Load preinstalled Train-Engines 
 register_engine("train_lm", "~/fairness_toolbox/R/engines/2_training/engine_train_lm.R")
 register_engine("train_glm", "~/fairness_toolbox/R/engines/2_training/engine_train_glm.R")

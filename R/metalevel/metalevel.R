@@ -20,15 +20,16 @@ fairness_workflow <- function(control) {
   
   
   # 2. Iterate over all splits
-  workflow_results <- lapply(split_output$splits, function(split) {
-    control$data$train <- split$train
-    control$data$test <- split$test
-    run_workflow_single(control)
-  })
+  if (is.null(control$execution)) {
+    message("[INFO] No execution engine specified. Using 'execution_sequential' as default.")
+    control$execution <- "execution_sequential"
+  }
+  execution_engine <- engines[[control$execution]]
+  execution_output <- execution_engine(control, split_output)
   
   
   # 3. Aggregate results (e.g. metrics)
-  aggregated_results <- aggregate_results(workflow_results)
+  aggregated_results <- aggregate_results(execution_output$workflow_results)
   
   
   # 4. Reportelements (optional)
@@ -47,7 +48,7 @@ fairness_workflow <- function(control) {
       
       reportelements_results[[alias]] <- engines[[engine_name]](
         control = control,
-        workflow_results = workflow_results,
+        workflow_results = execution_output$workflow_results,
         split_output = split_output,
         alias = alias
       )
@@ -131,11 +132,10 @@ fairness_workflow <- function(control) {
   }
   
   
-  
   # 7. Return full structured result
   list(
     split_output = split_output,
-    workflow_results = workflow_results,
+    execution_output = execution_output,
     aggregated_results = aggregated_results,
     reportelements = reportelements_results,
     reports = reports_results,

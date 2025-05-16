@@ -431,6 +431,8 @@ validate_engine_split <- function(wrapper_function, default_params_function, eng
 
 
 #--------------------------------------------------------------------
+### validation for reportelement ###
+#--------------------------------------------------------------------
 #' Validate a Reportelement Engine (Structure Only)
 #'
 #' Validates a reportelement engine based on presence of required functions,
@@ -457,6 +459,8 @@ validate_engine_reportelement <- function(wrapper_function, default_params_funct
 
 
 
+#--------------------------------------------------------------------
+### validation for report ###
 #--------------------------------------------------------------------
 #' Validate a Report Engine (Structure Only)
 #'
@@ -486,6 +490,8 @@ validate_engine_report <- function(wrapper_function, default_params_function, en
 
 
 #--------------------------------------------------------------------
+### validation for publish ###
+#--------------------------------------------------------------------
 #' Validate a Publish Engine (Structure Only)
 #'
 #' Validates a publish engine based on presence of required functions,
@@ -507,6 +513,36 @@ validate_engine_publish <- function(wrapper_function, default_params_function, e
   )
   
   message("[SUCCESS] Publish engine structure validated.")
+  return(TRUE)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### validation for execution ###
+#--------------------------------------------------------------------
+#' Validate an Execution Engine (Structure Only)
+#'
+#' Validates an execution engine based on presence of required arguments
+#' and expected output structure.
+#'
+#' @param wrapper_function The wrapper function.
+#' @param default_params_function The default params function.
+#' @param engine_name The name of the engine (without "wrapper_").
+#'
+#' @return TRUE if structure is valid, error otherwise.
+#' @export
+validate_engine_execution <- function(wrapper_function, default_params_function, engine_name) {
+  # --- structural check ---
+  validate_engine_structure(
+    wrapper_function = wrapper_function,
+    engine_name = engine_name,
+    expected_args = c("control", "split_output"),
+    expected_output_initializer = "initialize_output_execution"
+  )
+  
+  message("[SUCCESS] Execution engine structure validated.")
   return(TRUE)
 }
 #--------------------------------------------------------------------

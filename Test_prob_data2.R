@@ -20,6 +20,7 @@ source("~/fairness_toolbox/R/metalevel/helper.R")
 
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/1_split/initialize_output_split.R")
+source("~/fairness_toolbox/R/engines/2_execution/initialize_output_execution.R")
 source("~/fairness_toolbox/R/engines/2_training/initialize_output_train.R")
 source("~/fairness_toolbox/R/engines/3_fairness/3_1_pre-processing/initialize_output_fairness_pre.R")
 source("~/fairness_toolbox/R/engines/3_fairness/3_2_in-processing/initialize_output_fairness_in.R")
@@ -62,6 +63,7 @@ control <- list(
     test = NULL        # Test data
   ),
   split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
+  execution = "execution_sequential",
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
