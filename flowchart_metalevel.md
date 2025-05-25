@@ -5,7 +5,11 @@ Hier ist ein Diagramm, das den Workflow visualisiert:
 ```mermaid
 graph TD
     %% Meta Level
-    Input(User Input: Control Object):::object ==> B[fairness_workflow-function]
+    UserInput(User Input) ==> Input
+    Input(Control Object):::object ==> B[fairness_workflow-function]
+    UserInput(User Input) --> Input4
+    Input4(Vars):::object --> C12[function: controller_vars]:::controller_style
+        C12 -->|properly formated variables| Input
     Input ==> C[fairness_workflow_variants-function]
 
     %% fairness_workflow_variants internal structure
@@ -17,7 +21,7 @@ graph TD
         Input1 --> Loop1[Loop-function]:::helper_style
         Input2 --> Loop1
         Input3 --> Loop1
-        Loop1 -->|final results per loop| I2(Final Results: Models, Predictions, Metrics per run):::object
+        Loop1 -->|final results per loop| FR2(Final Results: Models, Predictions, Metrics per run):::object
     end
 
     Loop1 -->|calling per calibration variant| B
@@ -27,11 +31,7 @@ graph TD
     subgraph fairness_workflow
         direction TB
         B -->|calls| Dec1{User split delivered?}:::decider
-        B -->|calls| Re1[Standardized Inputs: workflow_results, split_output, alias, params]:::input_style
-        B -->|calls| R1[Standardized Inputs: reportelement_results, alias_report, params]:::input_style
-        B -->|calls| P1[Standardized Inputs: object, file_path, alias_publish, params]:::input_style
 
-            %% Splitter
         subgraph Splitter
             direction TB
                 Dec1 -->Ans2((No)):::no
@@ -44,31 +44,54 @@ graph TD
             OF1 --> Sp2[Standardized Outputs with defaults: split_type, splits, seed, params = NULL, specific_output = NULL]:::input_style
         end
         Sp2 -->|splits| IR1[split_output]:::object
-        IR1 -->|splits| I
-        WR[workflow_results]:::object -->|results for each split| I
-        WR --> AGG[aggregate_results]:::helper_style
-        AGG --> AR[aggregated_results]:::object
-        AR --> I
+        IR1 -->|splits| IR(Intermediate Results):::object
+
+        subgraph execution
+            direction TB
+            C10[function: controller_execution]:::controller_style -->|params| Ex1
+            Ex1 --> E10[Execution Engine]:::engine
+            E10 --> OF10[function: initialize_output_execution]:::output_style
+            OF10 --> Ex2[Standardized Outputs with defaults: execution_type, workflow_results, params = NULL, specific_output = NULL, continue_workflow = TRUE]:::input_style
+        end
+
+        IR1 -->|split_output| Ex1[Standardized Inputs: split_output, params]:::input_style
+        Ex2 -->|execution results| IR2[execution results]:::object
+        IR2 -->|execution results| IR
+    
+    end
+
+    IR -->|specific format for smooth transition| C11[function: controller_resume_execution]:::controller_style
+    Dec9{Manuell restart after external calculation like with SLURM needed?}:::decider
+                        Dec9 -->Ans17((No -> Workflow did start automatically)):::no
+                        Dec9 -->Ans18((Yes)):::yes -->|call function manuelly| E
+                        E[function: resume_fairness_workflow]:::controller_style --> B2
+                        Ans18 -->Hlp2
+
+    Hlp2[Helper: Prepare Resume Object, Engine specific needed]:::helper_style --> C11
+
+    %% continue_fairness_workflow internal structure
+    subgraph continue_fairness_workflow
+        C11 ==> B2[continue_fairness_workflow-function]
+        B2 -->|calls| Re1[Standardized Inputs: workflow_results, split_output, alias, params]:::input_style
 
         subgraph reportelement
             direction TB
-            C7[function: controller_reportelement]:::controller_style -->|params| Re1
+            C7[function: controller_reportelement]:::controller_style -->|params| Re1[Standardized Inputs: workflow_results, split_output, alias, params]:::input_style
             Re1 --> E7[Reportelement Engine]:::engine
             E7 --> OF7[function: initialize_output_reportelement]:::output_style
             OF7 --> Re2[Standardized Outputs with defaults: report_object, report_type, input_data, params = NULL, specific_output = NULL]:::input_style
         end
 
-        WR -->|workflow_results| Dec6{Reportingelements used?}:::decider
+        B2 --> Dec6{Reportingelements used?}:::decider
             Dec6 -->Ans11((Yes)):::yes
             Dec6 -->Ans12((No)):::no
         Ans11 -->|workflow_results| Re1
 
-        IR1 -->|split_output| Re1
         Re2 -->|standardized output| ReEl1[reportelement_results]:::object
 
         subgraph report
             direction TB
-            C8[function: controller_report]:::controller_style -->|params| R1
+            C8[function: controller_report]:::controller_style -->|params| R1[Standardized Inputs: reportelement_results, alias_report, params]:::input_style
             R1 --> E8[Report Engine]:::engine
             E8 --> OF8[function: initialize_output_report]:::output_style
             OF8 --> R2[Standardized Outputs with defaults: report_title, report_type, compatible_formats, sections, params = NULL, specific_output = NULL]:::input_style
@@ -83,7 +106,7 @@ graph TD
 
         subgraph publishing
             direction TB
-            C9[function: controller_publish]:::controller_style -->|params| P1
+            C9[function: controller_publish]:::controller_style -->|params| P1[Standardized Inputs: object, file_path, alias_publish, params]:::input_style
             P1 --> E9[Publishing Engine]:::engine
             E9 --> OF9[function: initialize_output_publish]:::output_style
             OF9 --> P2[Standardized Outputs with defaults: alias, type, engine, path, success = NA, params = NULL, specific_output = NULL]:::input_style
@@ -97,16 +120,21 @@ graph TD
 
         E9 -->|file output| RP1[external report file]:::object
 
-        ReEl1 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
-        RRes1 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
-        P2 -->|standardized output| I(Final Results: Models, Predictions, Metrics):::object
-    
+        ReEl1 -->|standardized output| FR(Final Results: Models, Predictions, Metrics):::object
+        RRes1 -->|standardized output| FR
+        P2 -->|standardized output| FR
+
+                IR -->|all results from first workflow| FR
+        IR --> AGG[aggregate_results]:::helper_style
+        AGG --> AR[aggregated_results]:::object
+        AR --> FR
+
     end
 
     %% Workflow inside run_workflow_single
     subgraph Workflow in run_workflow_single
         direction TB
-        IR1 -->|splited dataset in loops| D[run_workflow_single]
+        E10 -->|splited dataset executed as the engine specifies, can be outside of R like with SLURM| D[run_workflow_single]
         D[run_workflow_single] -->|raw data| Dec2{Fairness-Pre-Precessing Active?}:::decider
             Dec2 -->Ans3((Yes)):::yes
             Dec2 -->Ans4((No)):::no
@@ -190,14 +218,15 @@ graph TD
         end
         
         %% Intermediate Results generation
-        FPr2 -->|standardized output| IR(Intermediate Results):::object
-        T2 --> |standardized output| IR
-        FIn2 --> |standardized output| IR
-        FP2 -->|standardized output| IR
-        Ev2 -->|standardized output| IR
-        
+        FPr2 -->|standardized output| SR(Results per Split):::object
+        T2 --> |standardized output| SR
+        FIn2 --> |standardized output| SR
+        FP2 -->|standardized output| SR
+        Ev2 -->|standardized output| SR
 
     end
+
+    SR -->|workflow_results per split| IR2
 
     %% Connectiong control-objekt (user-input) to controller_functions
     Input -->|input| C1
@@ -209,9 +238,7 @@ graph TD
     Input -->|input| C7
     Input -->|input| C8
     Input -->|input| C9
-
-    %% Feedback loop to the fairness_workflow
-    IR -->|Results for each split| WR[workflow_results]:::object
+    Input -->|input| C10
 
 
 

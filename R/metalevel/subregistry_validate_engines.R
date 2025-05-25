@@ -546,3 +546,62 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
   return(TRUE)
 }
 #--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### validation for Workflow Resumption ###
+#--------------------------------------------------------------------
+#--------------------------------------------------------------------
+#' Validate Resume Object for Workflow Resumption
+#'
+#' Ensures that the object passed to `resume_fairness_workflow()` contains
+#' all required fields with correct types and structure.
+#'
+#' @param resume_object A list created via `controller_resume_execution()`.
+#'
+#' @return TRUE if structure is valid, otherwise throws an informative error.
+#' @export
+validate_resume_object <- function(resume_object) {
+  if (!is.list(resume_object)) {
+    stop("[Resume Validation] The resume object must be a list.")
+  }
+  
+  # --- Check presence of required fields ---
+  required_fields <- c("control", "split_output", "execution_output")
+  missing_fields <- setdiff(required_fields, names(resume_object))
+  if (length(missing_fields) > 0) {
+    stop(sprintf("[Resume Validation] Missing required fields: %s", paste(missing_fields, collapse = ", ")))
+  }
+  
+  # --- Check control structure ---
+  control <- resume_object$control
+  if (!is.list(control)) {
+    stop("[Resume Validation] 'control' must be a list.")
+  }
+  
+  # --- Check split_output structure ---
+  split_output <- resume_object$split_output
+  if (!is.list(split_output) || is.null(split_output$splits)) {
+    stop("[Resume Validation] 'split_output' must be a list with a 'splits' element.")
+  }
+  if (!is.list(split_output$splits)) {
+    stop("[Resume Validation] 'split_output$splits' must be a list.")
+  }
+  
+  # --- Check execution_output structure ---
+  exec <- resume_object$execution_output
+  expected_exec_fields <- c("workflow_results", "execution_type", "continue_workflow")
+  missing_exec <- setdiff(expected_exec_fields, names(exec))
+  if (length(missing_exec) > 0) {
+    stop(sprintf("[Resume Validation] 'execution_output' is missing required fields: %s", paste(missing_exec, collapse = ", ")))
+  }
+  
+  # --- Check workflow_results ---
+  if (!is.list(exec$workflow_results)) {
+    stop("[Resume Validation] 'execution_output$workflow_results' must be a list of workflow results.")
+  }
+  
+  return(TRUE)
+}
+#--------------------------------------------------------------------

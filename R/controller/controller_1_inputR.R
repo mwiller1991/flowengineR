@@ -55,6 +55,31 @@ controller_split <- function(seed = 123, target_var, params = list()) {
 
 
 #--------------------------------------------------------------------
+### Controller: Input for Execution Engine ###
+#--------------------------------------------------------------------
+#' Controller for Execution Engine Inputs
+#'
+#' Prepares standardized input for execution engines. This includes optional parameters
+#' such as the execution engine to use, storage folder, and parallelization-specific settings.
+#'
+#' @param params Named list of engine-specific parameters (optional).
+#'
+#' **Common Parameters (within `params`)**
+#' - `output_folder`: Folder where RDS files should be written for external engines (e.g., SLURM).
+#' - Further parameters depend on the selected execution engine.
+#'
+#' @return A standardized list to be stored in `control$execution`.
+#' @export
+controller_execution <- function(method = "execution_sequential", params = list()) {
+  list(
+    params = params
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### Controller: Input for Training (supports multiple training engines) ###
 #--------------------------------------------------------------------
 #' Controller for Training Inputs
@@ -268,6 +293,42 @@ controller_publish <- function(output_folder = NULL, params = NULL) {
   list(
     output_folder = output_folder,
     params = params
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Controller: Resuming Fairness Workflow after External Execution ###
+#--------------------------------------------------------------------
+#' Controller for Resuming Fairness Workflow after External Execution
+#'
+#' This controller prepares a standardized resume object, which contains
+#' the original control configuration, the splitter output, and the
+#' externally computed workflow results (e.g., from SLURM jobs).
+#'
+#' This structure ensures that `resume_fairness_workflow()` can be used
+#' in a consistent and extendable way across different execution types.
+#'
+#' @param control The original control object used in the workflow.
+#' @param split_output The output object returned by the splitter engine.
+#' @param workflow_results A list of `run_workflow_single()` results, typically loaded from disk.
+#' @param metadata (Optional) A named list of additional metadata, e.g., runtime info, engine identifiers, tags.
+#'
+#' @return A structured list to be passed to `resume_fairness_workflow()`.
+#' @export
+controller_resume_execution <- function(control, split_output, workflow_results, metadata = NULL) {
+  list(
+    control = control,
+    split_output = split_output,
+    execution_output = initialize_output_execution(
+      execution_type = "external",
+      workflow_results = workflow_results,
+      params = NULL,
+      specific_output = metadata,
+      continue_workflow = TRUE
+    )
   )
 }
 #--------------------------------------------------------------------

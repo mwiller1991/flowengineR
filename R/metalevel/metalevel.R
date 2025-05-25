@@ -1,16 +1,13 @@
 #--------------------------------------------------------------------
-### Master-function ###
+### Master-function: Preparation Phase ###
 #--------------------------------------------------------------------
-#' Execute Full Fairness Workflow across Data Splits
+#' Execute Initial Fairness Workflow (up to execution)
 #'
-#' Orchestrates the complete fairness-aware modeling pipeline, including:
-#' - Splitting via splitter engine
-#' - Iterative execution of run_workflow_single() per split
-#' - Aggregation of evaluation results
-#' - Reporting und Publishing
+#' Handles splitting and delegates to execution engine. 
+#' If execution is external (e.g. SLURM), the function returns early.
 #'
 #' @param control A list containing all control parameters and configurations.
-#' @return A standardized workflow result with all sub-results embedded.
+#' @return A partial result containing split and execution output.
 #' @export
 fairness_workflow <- function(control) {
   
@@ -18,21 +15,52 @@ fairness_workflow <- function(control) {
   split_engine <- engines[[control$split_method]]
   split_output <- split_engine(control)
   
-  
-  # 2. Iterate over all splits
+  # 2. Choose execution engine
   if (is.null(control$execution)) {
     message("[INFO] No execution engine specified. Using 'execution_sequential' as default.")
     control$execution <- "execution_sequential"
   }
+  
   execution_engine <- engines[[control$execution]]
   execution_output <- execution_engine(control, split_output)
   
+  # 3. Check for external execution and return early
+  if (!isTRUE(execution_output$continue_workflow)) {
+    message("[INFO] Execution engine does not continue workflow. Returning after execution.")
+    return(list(
+      split_output = split_output,
+      execution_output = execution_output,
+      aggregated_results = NULL,
+      reportelements = NULL,
+      reports = NULL,
+      publishing = NULL
+    ))
+  }
   
-  # 3. Aggregate results (e.g. metrics)
-  aggregated_results <- aggregate_results(execution_output$workflow_results)
+  # 4. Continue workflow
+  continue_fairness_workflow(control, split_output, execution_output)
+}
+#--------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------
+### Continuation Function after Execution ###
+#--------------------------------------------------------------------
+#' Continue Workflow after Execution
+#'
+#' Processes the results from the execution engine (aggregation, reporting, publishing).
+#'
+#' @param control A list containing control parameters and configuration.
+#' @param split_output The result of the splitter engine.
+#' @param execution_output The result of the execution engine.
+#' @return A completed workflow result object.
+#' @export
+continue_fairness_workflow <- function(control, split_output, execution_output) {
   
+  workflow_results <- execution_output$workflow_results
+  aggregated_results <- aggregate_results(workflow_results)
   
-  # 4. Reportelements (optional)
+  # 1. Reportelements (optional)
   reportelements_results <- NULL
   if (!is.null(control$reportelement)) {
     reportelements_results <- list()
@@ -48,15 +76,14 @@ fairness_workflow <- function(control) {
       
       reportelements_results[[alias]] <- engines[[engine_name]](
         control = control,
-        workflow_results = execution_output$workflow_results,
+        workflow_results = workflow_results,
         split_output = split_output,
         alias = alias
       )
     }
   }
   
-  
-  # 5. Reports (optional)
+  # 2. Reports (optional)
   reports_results <- NULL
   if (!is.null(control$report)) {
     reports_results <- list()
@@ -78,10 +105,8 @@ fairness_workflow <- function(control) {
     }
   }
   
-  
-  # 6. Publishing (optional)
+  # 3. Publishing (optional)
   publishing_results <- list()
-  
   if (!is.null(control$publish)) {
     for (alias_publish in names(control$publish)) {
       
@@ -114,32 +139,59 @@ fairness_workflow <- function(control) {
       }
       
       engine_name <- control$publish[[alias_publish]]
-        
-        if (!engine_name %in% names(engines)) {
-          warning(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name))
-          next
-        }
-        
-        message(sprintf("[INFO] Publishing '%s' with engine '%s'...", alias_publish, engine_name))
-        
-        publishing_results[[alias_publish]] <- engines[[engine_name]](
-          control = control,
-          object = object,
-          file_path = file_path,
-          alias_publish  = alias_publish
-        )
+      if (!engine_name %in% names(engines)) {
+        warning(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name))
+        next
+      }
+      
+      message(sprintf("[INFO] Publishing '%s' with engine '%s'...", alias_publish, engine_name))
+      
+      publishing_results[[alias_publish]] <- engines[[engine_name]](
+        control = control,
+        object = object,
+        file_path = file_path,
+        alias_publish  = alias_publish
+      )
     }
   }
   
-  
-  # 7. Return full structured result
-  list(
+  # Final result
+  return(list(
     split_output = split_output,
     execution_output = execution_output,
     aggregated_results = aggregated_results,
     reportelements = reportelements_results,
     reports = reports_results,
     publishing = publishing_results
+  ))
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+#' Resume a Fairness Workflow from External Execution Output
+#'
+#' Resumes the fairness workflow by calling `continue_fairness_workflow()` with a
+#' structured resume object that contains the original control, split information,
+#' and externally precomputed results (e.g., via SLURM or other deferred execution).
+#'
+#' @param resume_object A list created by `controller_resume_execution()` containing
+#'   - `control`: The original control object.
+#'   - `split_output`: The split output from the splitter engine.
+#'   - `execution_output`: A valid execution engine output containing `workflow_results`.
+#'
+#' @return The full result of `continue_fairness_workflow()`, including aggregation,
+#' reporting and publishing.
+#' @export
+resume_fairness_workflow <- function(resume_object) {
+  #validation
+  validate_resume_object(resume_object)
+  
+  continue_fairness_workflow(
+    control = resume_object$control,
+    split_output = resume_object$split_output,
+    execution_output = resume_object$execution_output
   )
 }
 #--------------------------------------------------------------------

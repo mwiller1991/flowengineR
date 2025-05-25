@@ -50,6 +50,7 @@ wrapper_execution_sequential <- function(control, split_output) {
     execution_type = "sequential",
     workflow_results = workflow_results,
     params = params,
+    continue_workflow = TRUE,
     specific_output = list(n_splits = length(split_output))
   )
 }

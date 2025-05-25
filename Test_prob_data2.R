@@ -17,6 +17,7 @@ source("~/fairness_toolbox/R/metalevel/metalevel.R")
 
 # Load the helper Functions
 source("~/fairness_toolbox/R/metalevel/helper.R")
+source("~/fairness_toolbox/R/engines/2_execution/helper_execution_resume.R")
 
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/1_split/initialize_output_split.R")
@@ -42,6 +43,9 @@ source("~/fairness_toolbox/data/data_generation.R")
 # Load the memory-size-logger
 source("~/fairness_toolbox/tests/memory_logging_dev.R")
 
+# Load the slurm-tester
+source("~/fairness_toolbox/tests/SLURM/slurm_testinR/simulate_slurm_run.R")
+
 # Generate the dataset
 dataset <- create_dataset_2(seed = 1)
 
@@ -63,7 +67,7 @@ control <- list(
     test = NULL        # Test data
   ),
   split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
-  execution = "execution_sequential",
+  execution = "execution_slurm_array", #execution_sequential
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -90,6 +94,11 @@ control <- list(
       seed = 123,
       target_var = vars$target_var,
       params =   list(cv_folds = 6
+      )
+    ),
+    execution = controller_execution(
+      params = list(
+        output_folder = "~/fairness_toolbox/tests/SLURM/slurm_inputs"
       )
     ),
     fairness_pre = controller_fairness_pre(
@@ -150,6 +159,23 @@ control <- list(
 
 # Run the Workflow
 result <- fairness_workflow(control)
+
+simulate_slurm_run(
+  control_path = "~/fairness_toolbox/tests/SLURM/slurm_inputs/control_base.rds",
+  split_output_path = "~/fairness_toolbox/tests/SLURM/slurm_inputs/split_output.rds",
+  result_dir = "~/fairness_toolbox/tests/SLURM/slurm_outputs"
+  )
+
+resume_object <- prepare_resume_from_slurm_array(
+                    control_path = "~/fairness_toolbox/tests/SLURM/slurm_inputs/control_base.rds",
+                    split_output_path = "~/fairness_toolbox/tests/SLURM/slurm_inputs/split_output.rds",
+                    result_dir = "~/fairness_toolbox/tests/SLURM/slurm_outputs",
+                    metadata = list(engine = "SLURM_ARRAY", timestamp = Sys.time())
+                  )
+  
+result <- resume_fairness_workflow(resume_object)
+
+
 result$reportelements$metrics_table$content
 result$reportelements$gender_box_raw$content
 result$reportelements$mse_text$content
