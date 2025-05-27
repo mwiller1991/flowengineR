@@ -1,24 +1,24 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Pre-Processing Engine: Resampling
+#' Fairness Pre-Processing Engine: Resampling
 #'
-#' Performs resampling (oversampling or undersampling) to balance the target variable distribution.
+#' Applies resampling (oversampling or undersampling) to balance class distribution in the target variable.
 #'
-#' **Inputs:**
-#' - `data`: The input data frame to be processed.
-#' - `target_var`: The name of the target variable for resampling.
-#' - `params`: A list of parameters including the resampling method ("oversampling" or "undersampling").
+#' **Inputs (passed to engine via wrapper):**
+#' - `data`: The input data frame to be resampled.
+#' - `target_var`: Character string specifying the target variable.
+#' - `params`: List of engine-specific parameters, e.g., `method = "oversampling"` or `"undersampling"`.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `transformed_data`: The resampled data frame.
-#' - `specific_output`: A list containing:
-#'   - `original_counts`: Original class distribution before resampling.
-#'   - `new_counts`: Class distribution after resampling.
+#' **Output (returned to wrapper):**
+#' - A list containing:
+#'   - `preprocessed_data`: The resampled data frame.
+#'   - `specific_output`: Metadata including original and new class distributions.
 #'
 #' @param data The input data frame.
 #' @param target_var The name of the target variable.
 #' @param params A list of parameters for resampling.
+#'
 #' @return A list containing the resampled data and optional statistics.
 #' @export
 engine_fairness_pre_resampling <- function(data, target_var, params) {
@@ -65,10 +65,26 @@ engine_fairness_pre_resampling <- function(data, target_var, params) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Pre-Processing Resampling
+#' Wrapper for Fairness Pre-Processing Engine: Resampling
 #'
-#' @param control A list containing the data, target variable, and parameters.
-#' @return A standardized output list containing the resampled data and metadata.
+#' Validates and prepares standardized inputs, merges default and user-defined parameters,
+#' and invokes the resampling engine. Wraps the result using `initialize_output_pre()`.
+#'
+#' **Standardized Inputs:**
+#' - `control$params$fairness_pre$data`: Input data to be resampled.
+#' - `control$params$fairness_pre$target_var`: Target variable to be balanced.
+#' - `control$params$fairness_pre$protected_attributes`: Names of protected variables (not used by this engine).
+#' - `control$params$fairness_pre$params`: Optional engine-specific parameters (e.g., `method`).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_pre()`:
+#'   - `preprocessed_data`: The resampled dataset.
+#'   - `method`: Set to `"resampling"`.
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: Original and new class distributions.
+#'
+#' @param control A standardized control object (see `controller_fairness_pre()`).
+#' @return A standardized fairness pre-processing output.
 #' @export
 wrapper_fairness_pre_resampling <- function(control) {
   pre_params <- control$params$fairness_pre  # Access pre-processing parameters

@@ -3,19 +3,20 @@
 #--------------------------------------------------------------------
 #' Execution Engine: SLURM Array Preparation
 #'
-#' Prepares split definitions and control structure for SLURM array batch processing.
-#' Does not execute any splits directly.
+#' Prepares split definitions and the control object for execution via SLURM array jobs.
+#' This engine itself does not perform any execution; all processing is handled externally.
 #'
-#' **Inputs:**
-#' - `control`: The full control object.
-#' - `split_output`: Output from the splitter engine, including all splits.
+#' **Inputs (passed to engine via wrapper):**
+#' - `control`: The full control object containing workflow configuration.
+#' - `split_output`: Output from the splitter engine, containing all data splits.
 #'
-#' **Outputs (passed to wrapper):**
-#' - Metadata including number of splits and storage location.
+#' **Output (returned to wrapper):**
+#' - A placeholder list indicating that SLURM preparation was handled in the wrapper.
 #'
 #' @param control A list containing all workflow parameters and inputs.
 #' @param split_output A list of splits from the splitter engine.
-#' @return Metadata placeholder; execution handled externally.
+#'
+#' @return A placeholder list indicating deferred execution.
 #' @export
 engine_execution_slurm_array <- function(control, split_output) {
   # No-op placeholder – actual work is done in the wrapper
@@ -30,13 +31,26 @@ engine_execution_slurm_array <- function(control, split_output) {
 #--------------------------------------------------------------------
 #' Wrapper for Execution Engine: SLURM Array Preparation
 #'
-#' Stores control and split definitions to disk so that each split can be
-#' executed individually via SLURM array jobs. Does not perform execution.
+#' Prepares files for distributed execution via SLURM array jobs by storing the control object
+#' and split definitions to disk. This wrapper does not execute any models directly.
 #'
-#' @param control The control object used throughout the workflow.
-#' @param split_output The result of the splitter engine.
+#' **Standardized Inputs:**
+#' - `control$params$execution$params`: List of execution-specific parameters (e.g., `output_folder`).
+#' - `control`: The full control object to be serialized.
+#' - `split_output`: The result from the splitter engine containing multiple data splits.
 #'
-#' @return A standardized execution output object indicating deferred execution.
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_execution()`:
+#'   - `execution_type`: "slurm_array".
+#'   - `workflow_results`: `NULL` (execution deferred).
+#'   - `params`: Merged parameter list.
+#'   - `continue_workflow`: `FALSE`, indicating that manual resumption is required.
+#'   - `specific_output`: Metadata including output folder and number of splits.
+#'
+#' @param control A standardized control object (see `controller_execution()`).
+#' @param split_output A list of splits from the splitter engine.
+#'
+#' @return A standardized execution output indicating that external SLURM execution is required.
 #' @export
 wrapper_execution_slurm_array <- function(control, split_output) {
   # Merge optional parameters
@@ -73,9 +87,18 @@ wrapper_execution_slurm_array <- function(control, split_output) {
 #--------------------------------------------------------------------
 #' Default Parameters for Execution Engine: SLURM Array
 #'
-#' Defines the default parameters used during SLURM array preparation.
+#' Provides default parameters for the `execution_slurm_array` engine.
+#' These parameters are used to configure where the control object and
+#' split definitions are written before external execution via SLURM array jobs.
 #'
-#' @return A named list of default parameters.
+#' **Purpose:**
+#' - Defines engine-specific parameters required for preparing the SLURM job infrastructure.
+#' - Used by the wrapper to write all required files to disk.
+#'
+#' **Default Parameters:**
+#' - `output_folder`: Directory where the control and split files are stored (default: `"slurm_inputs"`).
+#'
+#' @return A named list of default parameters for the SLURM array execution engine.
 #' @export
 default_params_execution_slurm_array <- function() {
   list(

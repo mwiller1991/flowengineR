@@ -36,7 +36,7 @@ graph TD
             direction TB
                 Dec1 -->Ans2((No)):::no
                 Dec1 -->Ans1((Yes)):::yes
-            Ans2 -->|full dataset| Sp1[Standardized Inputs: data, protected_attributes, target_var, params]:::input_style
+            Ans2 -->|full dataset| Sp1[Standardized Inputs: data, seed, protected_attributes, target_var, params]:::input_style
             Ans1 -->|seperated dataset, dummy engine = userdefined| Sp1
             Sp1 --> E1[Split Engine]:::engine
             C1[function: controller_split]:::controller_style -->|rest| Sp1
@@ -54,7 +54,7 @@ graph TD
             OF10 --> Ex2[Standardized Outputs with defaults: execution_type, workflow_results, params = NULL, specific_output = NULL, continue_workflow = TRUE]:::input_style
         end
 
-        IR1 -->|split_output| Ex1[Standardized Inputs: split_output, params]:::input_style
+        IR1 -->|split_output| Ex1[Standardized Inputs: control, split_output, params]:::input_style
         Ex2 -->|execution results| IR2[execution results]:::object
         IR2 -->|execution results| IR
     
@@ -139,8 +139,8 @@ graph TD
             Dec2 -->Ans3((Yes)):::yes
             Dec2 -->Ans4((No)):::no
 
-        %% Embedded In-Processing Engine
-        subgraph Fairness In-Processing Engines
+        %% Embedded Pre-Processing Engine
+        subgraph Fairness Pre-Processing Engines
         direction TB
             Ans3 -->|data| FPr1[Standardized Inputs: data, protected_attributes, target_var, params]:::input_style
             FPr1 --> E2[Fairness-Pre-Precessing Engine]:::engine

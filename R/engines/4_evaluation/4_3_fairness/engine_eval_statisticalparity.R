@@ -1,20 +1,23 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Evaluation Engine: Statistical Parity Difference
+#' Evaluation Engine: Statistical Parity Difference (SPD)
 #'
-#' Computes the Statistical Parity Difference (SPD) for each protected attribute.
+#' Computes the absolute Statistical Parity Difference (SPD) for each protected attribute.
+#' The SPD is defined as the absolute difference in mean predicted values between the two groups.
 #'
-#' **Inputs:**
+#' **Inputs (passed to engine via wrapper):**
 #' - `eval_data`: A data frame containing:
-#'   - `predictions`: A numeric vector of predicted values.
-#'   - `protected_attributes`: One or more columns representing protected groups.
+#'     - `predictions`: A numeric vector of predicted values.
+#'     - Protected attribute columns.
+#' - `protected_name`: Character vector of protected attribute names.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `metrics`: A list containing SPD values for each protected attribute, calculated as the absolute difference between group means.
+#' **Output (returned to wrapper):**
+#' - A named list with SPD values for each protected attribute.
 #'
 #' @param eval_data A data frame containing predictions and protected attributes.
 #' @param protected_name A character vector specifying the names of protected attributes.
+#'
 #' @return A list containing the SPD values for each protected attribute.
 #' @export
 engine_eval_statisticalparity <- function(eval_data, protected_name) {
@@ -36,12 +39,27 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Statistical Parity Difference Evaluation
+#' Wrapper for Evaluation Engine: Statistical Parity Difference (SPD)
 #'
-#' Handles input validation, calls the Statistical Parity engine, and creates standardized output.
+#' Validates and prepares standardized inputs, checks for binary attributes,
+#' and invokes the SPD engine. Wraps the result using `initialize_output_eval()`.
 #'
-#' @param control A list containing evaluation parameters, including predictions and protected attributes.
-#' @return A standardized list containing the evaluation results.
+#' **Standardized Inputs:**
+#' - `control$params$eval$eval_data`: Data frame including predictions and protected attributes.
+#' - `control$params$eval$protected_name`: Character vector of protected attribute names.
+#' - `control$params$eval$params`: Optional engine-specific parameters (not used by this engine).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_eval()`:
+#'   - `metrics`: Named list `spd` with SPD values per protected attribute.
+#'   - `eval_type`: Set to `"statistical_parity_eval"`.
+#'   - `input_data`: Original evaluation data.
+#'   - `protected_attributes`: Names of protected attributes.
+#'   - `params`: Set to `NULL`.
+#'   - `specific_output`: `NULL`.
+#'
+#' @param control A standardized control object (see `controller_evaluation()`).
+#' @return A standardized evaluation output object.
 #' @export
 wrapper_eval_statisticalparity <- function(control) {
   eval_params <- control$params$eval

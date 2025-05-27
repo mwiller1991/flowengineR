@@ -1,31 +1,34 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' In-Processing Engine: Adversarial Debiasing
+#' Fairness In-Processing Engine: Adversarial Debiasing
 #'
-#' Implements adversarial debiasing by coordinating the training of a main model
-#' with adversarial feedback to minimize bias while predicting the target variable.
+#' Trains a main prediction model alongside an adversarial model to reduce bias with respect to protected attributes.
 #'
-#' **Inputs:**
+#' **Inputs (passed to engine via wrapper):**
 #' - `driver_train`: The training engine function for the main model.
-#' - `data`: The training dataset.
-#' - `protected_attributes`: A character vector specifying the names of protected attributes.
-#' - `params`: A list of parameters, including:
-#'   - `learning_rate`: Learning rate for adversarial updates.
-#'   - `num_epochs`: Number of training epochs.
-#'   - `control_for_training`: Control object for flexibility in accessing additional parameters.
+#' - `data`: Training data used for both the main model and adversarial component.
+#' - `protected_attribute_names`: Character vector of protected attribute names.
+#' - `learning_rate`: Learning rate for adversarial updates.
+#' - `num_epochs`: Number of full training cycles.
+#' - `num_adversary_steps`: Number of adversarial updates per epoch.
+#' - `control_for_training`: Full control object for passing training-related configurations.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `adjusted_model`: The adjusted main model after adversarial debiasing.
-#' - `specific_output`: Additional method-specific outputs, such as adversarial performance metrics.
+#' **Output (returned to wrapper):**
+#' - A list containing:
+#'   - `adjusted_model`: The retrained main model.
+#'   - `adversary_model`: Internally fitted adversary.
+#'   - `adversary_loss`: Per-epoch tracking of adversarial loss.
 #'
 #' @param driver_train The training engine function for the main model.
 #' @param data The training dataset.
-#' @param protected_attributes A character vector specifying protected attributes.
-#' @param target_var The target variable to predict.
-#' @param params A list of additional parameters for the engine.
-#' @param control_for_training A control object containing workflow details.
-#' @return A standardized list containing the adjusted model and metadata.
+#' @param protected_attribute_names Character vector specifying protected attributes.
+#' @param learning_rate Learning rate for adversarial updates.
+#' @param num_epochs Number of training epochs.
+#' @param num_adversary_steps Number of adversarial update steps per epoch.
+#' @param control_for_training A control object containing training configuration.
+#'
+#' @return A list containing the adjusted model and metadata.
 #' @export
 engine_fairness_in_adversialdebiasing <- function(driver_train, data, protected_attribute_names, learning_rate, num_epochs, num_adversary_steps, control_for_training) {
   # Initialize adversary
@@ -204,13 +207,29 @@ engine_fairness_in_adversialdebiasing <- function(driver_train, data, protected_
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for In-Processing Adversarial Debiasing
+#' Wrapper for Fairness In-Processing Engine: Adversarial Debiasing
 #'
-#' Coordinates the main model training with adversarial debiasing using the specified engine.
+#' Validates and prepares standardized inputs, merges default and user-defined parameters,
+#' and invokes the adversarial debiasing engine. Wraps the result using `initialize_output_fairness_in()`.
 #'
-#' @param control A list containing workflow control parameters.
-#' @param driver_train The training engine function for the main model.
-#' @return A list containing the adjusted model and additional outputs.
+#' **Standardized Inputs:**
+#' - `control$params$train$data`: Original and/or normalized training dataset.
+#' - `control$params$train$norm_data`: Logical flag indicating whether to use normalized data.
+#' - `control$params$fairness_in$protected_attributes`: Character vector of protected attribute names.
+#' - `control$params$fairness_in$target_var`: Target variable to be predicted.
+#' - `control$params$fairness_in$params`: Optional engine-specific parameters (e.g., `learning_rate`, `num_epochs`, `num_adversary_steps`).
+#' - `driver_train`: The training engine function used to train the main model (passed directly to the engine).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_fairness_in()`:
+#'   - `adjusted_model`: The debiased model object.
+#'   - `model_type`: Set to `"Adversarial Debiasing"`.
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: Includes training duration, fitted adversary model, and loss metrics.
+#'
+#' @param control A standardized control object (see `controller_fairness_in()`).
+#' @param driver_train The training engine function used to train the main model.
+#' @return A standardized fairness in-processing output.
 #' @export
 wrapper_fairness_in_adversialdebiasing <- function(control, driver_train) {
   in_params <- control$params$fairness_in  # Access in-processing parameters

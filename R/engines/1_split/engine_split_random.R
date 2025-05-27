@@ -1,11 +1,22 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Random Split Engine
+#' Split Engine: Random Split
+#'
+#' Randomly splits the dataset into training and test sets using a specified ratio and seed.
+#'
+#' **Inputs (passed to engine via wrapper):**
+#' - `data`: A data frame to be split.
+#' - `split_ratio`: Proportion of data to use for training (between 0 and 1).
+#' - `seed`: Integer seed for reproducibility.
+#'
+#' **Output (returned to wrapper):**
+#' - A list with elements `train` and `test`, each containing a subset of the data.
 #'
 #' @param data A data frame to be split.
 #' @param split_ratio The ratio of data to use for training.
 #' @param seed A random seed for reproducibility.
+#'
 #' @return A list containing train and test data splits.
 #' @export
 engine_split_random <- function(data, split_ratio, seed) {
@@ -23,10 +34,27 @@ engine_split_random <- function(data, split_ratio, seed) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Random Split Engine
+#' Wrapper for Split Engine: Random Split
 #'
-#' @param control A list containing control parameters and dataset.
-#' @return A standardized list containing splits, fold results, and aggregated results.
+#' Validates and prepares standardized inputs, merges default and user-defined hyperparameters,
+#' and invokes the random split engine. Returns standardized output using `initialize_output_split()`.
+#'
+#' **Standardized Inputs:**
+#' - `control$params$split$seed`: Seed for reproducibility.
+#' - `control$params$split$target_var`: (Not used in this engine, but present for compatibility).
+#' - `control$params$split$params`: Optional user-specified parameters (e.g., `split_ratio`).
+#' - `control$data$full`: Full dataset to be split.
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_split()`:
+#'   - `split_type`: "random".
+#'   - `splits`: Named list with one element `random` containing `train`/`test`.
+#'   - `seed`: Used seed.
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: `NULL` (no additional metadata for this engine).
+#'
+#' @param control A standardized control object (see `controller_split()`).
+#' @return A standardized splitter output object with train/test split.
 #' @export
 wrapper_split_random <- function(control) {
   split_params <- control$params$split

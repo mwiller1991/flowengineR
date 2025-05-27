@@ -3,17 +3,18 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Sequential Split Execution
 #'
-#' Applies `run_workflow_single()` over all data splits sequentially.
+#' Executes the workflow sequentially over all predefined data splits by calling `run_workflow_single()` for each split.
 #'
-#' **Inputs:**
-#' - `control`: The full control object.
-#' - `split_output`: Output from the splitter engine, including all splits.
+#' **Inputs (passed to engine via wrapper):**
+#' - `control`: The full control object with all configurations.
+#' - `split_output`: Output from the splitter engine, containing a list of splits.
 #'
-#' **Outputs (passed to wrapper):**
-#' - A list of individual workflow results, one per split.
+#' **Output (returned to wrapper):**
+#' - A list of results, each returned from one `run_workflow_single()` call per split.
 #'
 #' @param control A list containing all workflow parameters and inputs.
 #' @param split_output A list of splits from the splitter engine.
+#'
 #' @return A list of results from each `run_workflow_single()` call.
 #' @export
 engine_execution_sequential <- function(control, split_output) {
@@ -32,12 +33,25 @@ engine_execution_sequential <- function(control, split_output) {
 #--------------------------------------------------------------------
 #' Wrapper for Execution Engine: Sequential Split Execution
 #'
-#' Wraps the `engine_execution_sequential` function for standardized use in the workflow.
+#' Prepares standardized inputs and invokes the sequential execution engine. Wraps results using `initialize_output_execution()`.
 #'
-#' @param control The control object used throughout the workflow.
-#' @param split_output The result of the splitter engine.
+#' **Standardized Inputs:**
+#' - `control$params$execution$params`: Optional execution-related parameters (currently unused).
+#' - `control`: Full control object with configuration and data.
+#' - `split_output`: Output list from the splitter engine, containing all data splits.
 #'
-#' @return A list of results from all splits.
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_execution()`:
+#'   - `execution_type`: "sequential".
+#'   - `workflow_results`: List of per-split results.
+#'   - `params`: Merged parameter list.
+#'   - `continue_workflow`: Set to `TRUE`.
+#'   - `specific_output`: Metadata such as number of splits.
+#'
+#' @param control A standardized control object (see `controller_execution()`).
+#' @param split_output A list containing the results from the splitter engine.
+#'
+#' @return A standardized execution result list.
 #' @export
 wrapper_execution_sequential <- function(control, split_output) {
   # Merge optional parameters with defaults (if needed in future engines)
@@ -61,17 +75,21 @@ wrapper_execution_sequential <- function(control, split_output) {
 #--------------------------------------------------------------------
 ### default params ###
 #--------------------------------------------------------------------
-#' Default Parameters for Execution Engine: Sequential Split Execution
+#' Default Parameters for Execution Engine: Sequential
 #'
-#' Provides default parameters for execution engines. These parameters are specific to sequential execution
-#' and currently not required.
+#' Provides default parameters for the `execution_sequential` engine.
+#' This engine executes all splits one after another in a single R session.
 #'
 #' **Purpose:**
-#' - Defines engine-specific parameters that are optional but can be adjusted for future use.
+#' - Defines engine-specific parameters (if any) that can be customized.
+#' - Ensures a consistent interface across all execution engines.
 #'
-#' @return A list of default parameters for the execution engine.
+#' **Default Parameters:**
+#' - (None required for sequential execution; returns an empty list.)
+#'
+#' @return An empty named list of parameters for the sequential execution engine.
 #' @export
 default_params_execution_sequential <- function() {
-  list()  # No parameters required for sequential execution
+  list()
 }
 #--------------------------------------------------------------------

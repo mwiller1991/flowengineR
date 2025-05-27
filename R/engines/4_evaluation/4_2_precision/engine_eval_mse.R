@@ -1,20 +1,21 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Evaluation Engine: Mean Squared Error
+#' Evaluation Engine: Mean Squared Error (MSE)
 #'
-#' Calculates the Mean Squared Error (MSE) between predictions and actual values.
+#' Calculates the Mean Squared Error (MSE) between predicted and actual values.
 #'
-#' **Inputs:**
+#' **Inputs (passed to engine via wrapper):**
 #' - `predictions`: A numeric vector of predicted values.
 #' - `actuals`: A numeric vector of actual observed values.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `metrics`: A list containing the MSE value.
+#' **Output (returned to wrapper):**
+#' - A numeric value representing the MSE.
 #'
 #' @param predictions A numeric vector of predicted values.
 #' @param actuals A numeric vector of actual observed values.
-#' @return A list containing the MSE metric.
+#'
+#' @return A single numeric value: the mean squared error.
 #' @export
 engine_eval_mse <- function(predictions, actuals) {
   # Calculate Mean Squared Error between predictions and actual values
@@ -27,12 +28,28 @@ engine_eval_mse <- function(predictions, actuals) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Evaluation: Mean Squared Error
+#' Wrapper for Evaluation Engine: Mean Squared Error (MSE)
 #'
-#' Handles input validation, calls the MSE evaluation engine, and creates standardized output.
+#' Validates and prepares standardized inputs, applies default parameters,
+#' and invokes the MSE evaluation engine. Wraps the result using `initialize_output_eval()`.
 #'
-#' @param control A list containing the evaluation parameters and data.
-#' @return A standardized list containing the evaluation results.
+#' **Standardized Inputs:**
+#' - `control$params$eval$eval_data$predictions`: Numeric vector of predicted values.
+#' - `control$params$eval$eval_data$actuals`: Numeric vector of actual observed values.
+#' - `control$params$eval$protected_attributes`: Names of protected attributes (optional, included in output).
+#' - `control$params$eval$params$eval_mse`: Optional engine-specific parameters (not required by this engine).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_eval()`:
+#'   - `metrics`: Named list with entry `mse`, holding the MSE value.
+#'   - `eval_type`: Set to `"mse_eval"`.
+#'   - `input_data`: Original input used for evaluation.
+#'   - `protected_attributes`: Passed through from control (if present).
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: `NULL`.
+#'
+#' @param control A standardized control object (see `controller_evaluation()`).
+#' @return A standardized evaluation output object.
 #' @export
 wrapper_eval_mse <- function(control) {
   eval_params <- control$params$eval  # Accessing the evaluation parameters

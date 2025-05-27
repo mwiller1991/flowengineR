@@ -1,14 +1,24 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Cross-Validation Split Engine
+#' Split Engine: Cross-Validation (CV)
 #'
-#' Creates stratified k-fold cross-validation indices.
+#' Creates stratified k-fold cross-validation indices using the specified target variable and number of folds.
+#'
+#' **Inputs (passed to engine via wrapper):**
+#' - `data`: A data frame to be split.
+#' - `target_var`: Character string, target variable for stratified splitting.
+#' - `cv_folds`: Number of folds for cross-validation.
+#' - `seed`: Integer seed for reproducibility.
+#'
+#' **Output (returned to wrapper):**
+#' - A list of train/test split pairs.
 #'
 #' @param data A data frame to be split into folds.
 #' @param target_var The name of the target variable for stratified sampling.
 #' @param cv_folds The number of folds for cross-validation.
 #' @param seed A random seed for reproducibility.
+#'
 #' @return A list of train/test split indices per fold.
 #' @export
 engine_split_cv <- function(data, target_var, cv_folds, seed) {
@@ -32,9 +42,26 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Cross-Validation Split Engine
+#' Wrapper for Split Engine: Cross-Validation (CV)
 #'
-#' @param control A list containing control parameters and dataset.
+#' Validates and prepares standardized inputs, merges default and user-defined hyperparameters,
+#' and invokes the CV split engine. Returns standardized output using `initialize_output_split()`.
+#'
+#' **Standardized Inputs:**
+#' - `control$params$split$seed`: Seed for reproducibility.
+#' - `control$params$split$target_var`: Target variable for stratified splitting.
+#' - `control$params$split$params`: Optional user-specified parameters (e.g., `cv_folds`).
+#' - `control$data$full`: Full dataset to be split.
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_split()`:
+#'   - `split_type`: "cv".
+#'   - `splits`: List of split definitions.
+#'   - `seed`: Used seed.
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: Metadata such as number of folds and stratification variable.
+#'
+#' @param control A standardized control object (see `controller_split()`).
 #' @return A standardized splitter output object with multiple splits.
 #' @export
 wrapper_split_cv <- function(control) {

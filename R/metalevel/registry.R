@@ -93,6 +93,7 @@ register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_c
 # Load preinstalled execution-Engines
 register_engine("execution_sequential", "~/fairness_toolbox/R/engines/2_execution/engine_execution_sequential.R")
 register_engine("execution_slurm_array", "~/fairness_toolbox/R/engines/2_execution/engine_execution_slurm_array.R")
+register_engine("execution_batchtools_local", "~/fairness_toolbox/R/engines/2_execution/engine_execution_batchtools_local.R")
 
 # Load preinstalled Train-Engines 
 register_engine("train_lm", "~/fairness_toolbox/R/engines/2_training/engine_train_lm.R")

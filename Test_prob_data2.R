@@ -11,6 +11,7 @@ library(moments)
 library(dplyr)
 library(rmarkdown)
 library(openxlsx)
+library(batchtools)
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/metalevel/metalevel.R")
@@ -67,7 +68,7 @@ control <- list(
     test = NULL        # Test data
   ),
   split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
-  execution = "execution_slurm_array", #execution_sequential
+  execution = "execution_batchtools_local", #execution_sequential
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -98,7 +99,8 @@ control <- list(
     ),
     execution = controller_execution(
       params = list(
-        output_folder = "~/fairness_toolbox/tests/SLURM/slurm_inputs"
+        registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry",
+        resources = list(ncpus = 1, memory = 2048, walltime = 3600)
       )
     ),
     fairness_pre = controller_fairness_pre(

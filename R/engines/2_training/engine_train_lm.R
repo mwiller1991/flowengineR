@@ -5,18 +5,17 @@
 #'
 #' Fits a linear model using the specified formula and data.
 #'
-#' **Inputs:**
-#' - `formula`: The formula specifying the model structure.
-#' - `data`: The data frame containing the training data.
+#' **Inputs (passed to engine via wrapper):**
+#' - `formula`: A formula specifying the model structure.
+#' - `data`: A data frame containing the training data.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `model`: The trained linear model object.
-#' - `model_type`: A string identifying the model type ("lm").
-#' - `specific_output`: Training-specific outputs such as training time.
+#' **Output (returned to wrapper):**
+#' - A fitted model object of class `"lm"` as returned by `stats::lm()`.
 #'
-#' @param formula The formula specifying the model structure.
-#' @param data The data frame containing the training data.
-#' @return A list containing the trained model and metadata.
+#' @param formula Model formula.
+#' @param data Training data as data.frame.
+#'
+#' @return A fitted model object of class `"lm"`.
 #' @export
 engine_train_lm <- function(formula, data) {
   lm(formula, data = data)
@@ -28,10 +27,27 @@ engine_train_lm <- function(formula, data) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Linear Model Training
+#' Wrapper for Training Engine: Linear Model (LM)
 #'
-#' @param control A list containing the training formula and data.
-#' @return A list containing the trained model and its summary.
+#' Validates and prepares standardized inputs, merges default and user-defined hyperparameters,
+#' and invokes the LM training engine. Returns standardized output using `initialize_output_train()`.
+#'
+#' **Standardized Inputs:**
+#' - `control$params$train$formula`: A formula specifying the model structure.
+#' - `control$params$train$data`: Named list with training data (`original` and/or `normalized`).
+#' - `control$params$train$norm_data`: Logical flag indicating whether to use normalized data.
+#' - `control$params$train$params`: Optional user-specified hyperparameters (none used by default).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A structured list created by `initialize_output_train()`:
+#'   - `model`: Fitted model object.
+#'   - `model_type`: Identifier string ("lm").
+#'   - `formula`: Used training formula.
+#'   - `hyperparameters`: Merged hyperparameter set (typically empty).
+#'   - `specific_output`: Training duration and optional metadata.
+#'
+#' @param control A standardized control object (see `controller_training()`).
+#' @return A standardized output list structured via `initialize_output_train()`.
 #' @export
 wrapper_train_lm <- function(control) {
   train_params <- control$params$train  # Accessing the training parameters

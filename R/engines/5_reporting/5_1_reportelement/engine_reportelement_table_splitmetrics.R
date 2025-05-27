@@ -3,15 +3,19 @@
 #--------------------------------------------------------------------
 #' Reportelement Engine: Table of Evaluation Metrics per Split
 #'
-#' Creates a data.frame summarizing selected evaluation metrics for each split.
+#' Aggregates selected evaluation metrics from each split and compiles them into a data.frame.
 #'
-#' **Input:**
-#' - `workflow_results`: List of workflow results per split.
-#' - `metrics`: Vector of metrics to extract for each split.
+#' **Inputs (passed to engine via wrapper):**
+#' - `workflow_results`: Named list of workflow results per split.
+#' - `metrics`: Character vector of metric identifiers to extract (e.g., `"mse"`, `"summarystats"`).
+#'
+#' **Output (returned to wrapper):**
+#' - A data.frame with one row per split and one column per extracted metric.
 #'
 #' @param workflow_results A named list of workflow results (from multiple splits).
-#' @param metrics A vector of metric names to extract (e.g., c("mse", "statistical_parity")).
-#' @return A data.frame with one row per split and one column per selected metric.
+#' @param metrics A character vector of metric names to extract.
+#'
+#' @return A data.frame summarizing the selected metrics per split.
 #' @export
 engine_reportelement_table_splitmetrics <- function(workflow_results, metrics) {
   result_rows <- lapply(names(workflow_results), function(split_name) {
@@ -51,17 +55,34 @@ engine_reportelement_table_splitmetrics <- function(workflow_results, metrics) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Reportelement Engine: Table of Evaluation Metrics
+#' Wrapper for Reportelement Engine: Table of Evaluation Metrics per Split
 #'
-#' Extracts parameters for the specified alias and calls the engine with cleaned input.
+#' Validates and prepares standardized inputs, merges default and user-defined parameters,
+#' and invokes the table engine. Wraps the result using `initialize_output_reportelement()`.
 #'
-#' @param control The control object containing user configurations.
-#' @param workflow_results A named list of workflow results for each split.
-#' @param split_output Optional split metadata (unused here).
-#' @param alias A character string identifying this specific reportelement instance.
+#' **Standardized Inputs:**
+#' - `control$params$reportelement$params[[alias]]`: Named list of engine-specific parameters (e.g., `metrics`).
+#' - `workflow_results`: List of workflow results per split.
+#' - `split_output`: Output of the splitter engine (not used by this engine, included for compatibility).
+#' - `alias`: Character string identifying the reportelement instance.
 #'
-#' @return A standardized reportelement output list.
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_reportelement()`:
+#'   - `type`: `"table"`.
+#'   - `content`: data.frame of split-wise metrics.
+#'   - `compatible_formats`: c("pdf", "html", "xlsx", "json").
+#'   - `input_data`: Names of splits used.
+#'   - `params`: Merged parameter list.
+#'   - `specific_output`: Metadata including `n_splits` and `alias`.
+#'
+#' @param control A standardized control object (see `controller_reportelement()`).
+#' @param workflow_results Named list of workflow results.
+#' @param split_output Output list from the splitter engine (not used here).
+#' @param alias Unique identifier for this reportelement instance.
+#'
+#' @return A standardized reportelement output object.
 #' @export
+
 wrapper_reportelement_table_splitmetrics <- function(control, workflow_results, split_output, alias = NULL) {
   report_params <- control$params$reportelement  # Access reportelement params
   if (is.null(alias)) stop("Reportelement alias must be specified.")
@@ -97,7 +118,19 @@ wrapper_reportelement_table_splitmetrics <- function(control, workflow_results, 
 #--------------------------------------------------------------------
 #' Default Parameters for Reportelement Engine: Table of Split Metrics
 #'
-#' @return A list of default parameters.
+#' Provides default parameters for the `reportelement_table_splitmetrics` engine.
+#' These parameters determine which evaluation metrics are included in the summary table.
+#'
+#' **Purpose:**
+#' - Specifies which metrics to extract and display per split.
+#' - Allows modular extension by adding other registered metric types.
+#'
+#' **Default Parameters:**
+#' - `metrics`: A character vector of metric types to include in the table.
+#'     - `"summarystats"` (default): summary statistics like mean, sd, min, etc.
+#'     - Additional types may include `"mse"`, `"fairness"`, etc., depending on availability.
+#'
+#' @return A named list of default parameters for the split metrics reportelement engine.
 #' @export
 default_params_reportelement_table_splitmetrics <- function() {
   list(

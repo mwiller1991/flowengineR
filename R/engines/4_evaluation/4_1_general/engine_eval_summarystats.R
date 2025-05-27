@@ -3,26 +3,16 @@
 #--------------------------------------------------------------------
 #' Evaluation Engine: Summary Statistics
 #'
-#' Computes summary statistics for the given predictions.
+#' Computes basic statistical properties of the given predictions to evaluate their distribution.
 #'
-#' **Inputs:**
+#' **Inputs (passed to engine via wrapper):**
 #' - `predictions`: A numeric vector of predicted values.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `metrics`: A list containing summary statistics, including:
-#'   - `mean`: Mean of the predictions.
-#'   - `median`: Median of the predictions.
-#'   - `sd`: Standard deviation.
-#'   - `var`: Variance.
-#'   - `min`: Minimum value.
-#'   - `max`: Maximum value.
-#'   - `quantile_25`: 25th percentile.
-#'   - `quantile_75`: 75th percentile.
-#'   - `iqr`: Interquartile range.
-#'   - `skewness`: Skewness of the predictions.
-#'   - `kurtosis`: Kurtosis of the predictions.
+#' **Output (returned to wrapper):**
+#' - A named list of summary statistics, including mean, median, standard deviation, variance, percentiles, skewness, and kurtosis.
 #'
 #' @param predictions A numeric vector of predicted values.
+#'
 #' @return A list containing the computed summary statistics.
 #' @export
 engine_eval_summarystats <- function(predictions) {
@@ -50,12 +40,26 @@ engine_eval_summarystats <- function(predictions) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Summary Statistics Evaluation
+#' Wrapper for Evaluation Engine: Summary Statistics
 #'
-#' Handles input validation, calls the Summary Statistics engine, and creates standardized output.
+#' Validates and prepares standardized inputs, invokes the summary statistics engine,
+#' and wraps the result using `initialize_output_eval()`.
 #'
-#' @param control A list containing predictions and other evaluation parameters.
-#' @return A standardized list containing the evaluation results.
+#' **Standardized Inputs:**
+#' - `control$params$eval$eval_data$predictions`: A numeric vector of predicted values to be evaluated.
+#' - `control$params$eval$protected_name`: Names of protected attributes (not used by this engine).
+#' - `control$params$eval$params`: Optional engine-specific parameters (none used by this engine).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_eval()`:
+#'   - `metrics`: A named list with one entry `summary_stats`, containing the computed statistics.
+#'   - `eval_type`: Set to `"summarystats_eval"`.
+#'   - `input_data`: The evaluation input data object.
+#'   - `params`: Set to `NULL`.
+#'   - `specific_output`: Set to `NULL`.
+#'
+#' @param control A standardized control object (see `controller_evaluation()`).
+#' @return A standardized evaluation output object.
 #' @export
 wrapper_eval_summarystats <- function(control) {
   eval_params <- control$params$eval

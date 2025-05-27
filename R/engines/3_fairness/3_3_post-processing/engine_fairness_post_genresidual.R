@@ -3,18 +3,19 @@
 #--------------------------------------------------------------------
 #' Fairness Post-Processing Engine: General Residual Adjustment
 #'
-#' Adjusts predictions based on residuals to improve fairness.
+#' Adjusts predictions by applying the mean residual to improve group-level fairness.
 #'
-#' **Inputs:**
+#' **Inputs (passed to engine via wrapper):**
 #' - `predictions`: A numeric vector of predicted values.
-#' - `actuals`: A numeric vector of actual observed values.
+#' - `actuals`: A numeric vector of observed target values.
 #'
-#' **Outputs (passed to wrapper):**
-#' - `adjusted_predictions`: A numeric vector of adjusted predictions.
+#' **Output (returned to wrapper):**
+#' - A numeric vector of adjusted predictions.
 #'
 #' @param predictions A numeric vector of predicted values.
 #' @param actuals A numeric vector of actual observed values.
-#' @return A list containing adjusted predictions.
+#'
+#' @return A numeric vector of adjusted predictions.
 #' @export
 engine_fairness_post_genresidual <- function(predictions, actuals) {
   residuals <- actuals - predictions
@@ -27,10 +28,29 @@ engine_fairness_post_genresidual <- function(predictions, actuals) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Fairness Post-Processing General Residual Adjustment
+#' Wrapper for Fairness Post-Processing Engine: General Residual Adjustment
 #'
-#' @param control A list containing the fairness parameters and predictions.
-#' @return A vector of adjusted predictions.
+#' Validates and prepares standardized inputs, applies default parameters,
+#' and invokes the general residual post-processing engine.
+#' Returns a standardized output using `initialize_output_fairness_post()`.
+#'
+#' **Standardized Inputs:**
+#' - `control$params$fairness_post$fairness_post_data$predictions`: Original prediction values.
+#' - `control$params$fairness_post$fairness_post_data$actuals`: Observed target values.
+#' - `control$params$fairness_post$protected_name`: Names of protected attributes.
+#' - `control$params$fairness_post$params`: Optional engine-specific parameters (none used by this engine).
+#'
+#' **Standardized Output (returned to framework):**
+#' - A list structured via `initialize_output_fairness_post()`:
+#'   - `adjusted_predictions`: The fairness-adjusted predictions.
+#'   - `method`: Set to `"general_residual"`.
+#'   - `input_data`: Original prediction and actual data.
+#'   - `protected_attributes`: Names of protected attributes.
+#'   - `params`: Merged parameter list (empty for this engine).
+#'   - `specific_output`: `NULL`.
+#'
+#' @param control A standardized control object (see `controller_fairness_post()`).
+#' @return A standardized fairness post-processing output.
 #' @export
 wrapper_fairness_post_genresidual <- function(control) {
   fairness_post_params <- control$params$fairness_post  # Accessing the fairness parameters
