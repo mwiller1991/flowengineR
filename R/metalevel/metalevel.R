@@ -24,6 +24,12 @@ fairness_workflow <- function(control) {
   execution_engine <- engines[[control$execution]]
   execution_output <- execution_engine(control, split_output)
   
+    # for adaptive procedures, where the split is done in the wrapper
+    if (!is.null(execution_output$specific_output$split_output)) {
+      split_output <- execution_output$specific_output$split_output
+      execution_output$specific_output$split_output <- NULL
+    }
+  
   # 3. Check for external execution and return early
   if (!isTRUE(execution_output$continue_workflow)) {
     message("[INFO] Execution engine does not continue workflow. Returning after execution.")

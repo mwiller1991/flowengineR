@@ -88,38 +88,40 @@ source("~/fairness_toolbox/R/metalevel/subregistry_validate_engines.R")
 # Load preinstalled Splitter-Engines
 register_engine("split_userdefined", "~/fairness_toolbox/R/engines/1_split/engine_split_userdefined.R")
 register_engine("split_random", "~/fairness_toolbox/R/engines/1_split/engine_split_random.R")
+register_engine("split_random_stratified", "~/fairness_toolbox/R/engines/1_split/engine_split_random_stratified.R")
 register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_cv.R")
 
 # Load preinstalled execution-Engines
 register_engine("execution_sequential", "~/fairness_toolbox/R/engines/2_execution/engine_execution_sequential.R")
 register_engine("execution_slurm_array", "~/fairness_toolbox/R/engines/2_execution/engine_execution_slurm_array.R")
 register_engine("execution_batchtools_local", "~/fairness_toolbox/R/engines/2_execution/engine_execution_batchtools_local.R")
+register_engine("execution_adaptive_sequential_stability", "~/fairness_toolbox/R/engines/2_execution/engine_execution_adaptive_sequential_stability.R")
 
 # Load preinstalled Train-Engines 
-register_engine("train_lm", "~/fairness_toolbox/R/engines/2_training/engine_train_lm.R")
-register_engine("train_glm", "~/fairness_toolbox/R/engines/2_training/engine_train_glm.R")
+register_engine("train_lm", "~/fairness_toolbox/R/engines/3_training/engine_train_lm.R")
+register_engine("train_glm", "~/fairness_toolbox/R/engines/3_training/engine_train_glm.R")
 
 # Load preinstalled Fairness-Engines 
-register_engine("fairness_pre_resampling", "~/fairness_toolbox/R/engines/3_fairness/3_1_pre-processing/engine_fairness_pre_resampling.R")
-register_engine("fairness_in_adversialdebiasing", "~/fairness_toolbox/R/engines/3_fairness/3_2_in-processing/engine_fairness_in_adversialdebiasing.R")
-register_engine("fairness_post_genresidual", "~/fairness_toolbox/R/engines/3_fairness/3_3_post-processing/engine_fairness_post_genresidual.R")
+register_engine("fairness_pre_resampling", "~/fairness_toolbox/R/engines/4_fairness/4_1_pre-processing/engine_fairness_pre_resampling.R")
+register_engine("fairness_in_adversialdebiasing", "~/fairness_toolbox/R/engines/4_fairness/4_2_in-processing/engine_fairness_in_adversialdebiasing.R")
+register_engine("fairness_post_genresidual", "~/fairness_toolbox/R/engines/4_fairness/4_3_post-processing/engine_fairness_post_genresidual.R")
 
 # Load preinstalled Evaluation-Engines
-register_engine("eval_summarystats", "~/fairness_toolbox/R/engines/4_evaluation/4_1_general/engine_eval_summarystats.R")
-register_engine("eval_mse", "~/fairness_toolbox/R/engines/4_evaluation/4_2_precision/engine_eval_mse.R")
-register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/4_evaluation/4_3_fairness/engine_eval_statisticalparity.R")
+register_engine("eval_summarystats", "~/fairness_toolbox/R/engines/5_evaluation/5_1_general/engine_eval_summarystats.R")
+register_engine("eval_mse", "~/fairness_toolbox/R/engines/5_evaluation/5_2_precision/engine_eval_mse.R")
+register_engine("eval_statisticalparity", "~/fairness_toolbox/R/engines/5_evaluation/5_3_fairness/engine_eval_statisticalparity.R")
 
 # Load preinstalled Reportelement-Engines
-register_engine("reportelement_table_splitmetrics", "~/fairness_toolbox/R/engines/5_reporting/5_1_reportelement/engine_reportelement_table_splitmetrics.R")
-register_engine("reportelement_boxplot_predictions", "~/fairness_toolbox/R/engines/5_reporting/5_1_reportelement/engine_reportelement_boxplot_predictions.R")
-register_engine("reportelement_text_msesummary", "~/fairness_toolbox/R/engines/5_reporting/5_1_reportelement/engine_reportelement_text_msesummary.R")
+register_engine("reportelement_table_splitmetrics", "~/fairness_toolbox/R/engines/6_reporting/6_1_reportelement/engine_reportelement_table_splitmetrics.R")
+register_engine("reportelement_boxplot_predictions", "~/fairness_toolbox/R/engines/6_reporting/6_1_reportelement/engine_reportelement_boxplot_predictions.R")
+register_engine("reportelement_text_msesummary", "~/fairness_toolbox/R/engines/6_reporting/6_1_reportelement/engine_reportelement_text_msesummary.R")
 
 # Load preinstalled Report-Engines
-register_engine("report_modelsummary", "~/fairness_toolbox/R/engines/5_reporting/5_2_report/engine_report_modelsummary.R")
+register_engine("report_modelsummary", "~/fairness_toolbox/R/engines/6_reporting/6_2_report/engine_report_modelsummary.R")
 
 # Load preinstalled Publish-Engines
-register_engine("publish_pdf_basis", "~/fairness_toolbox/R/engines/5_reporting/5_3_publish/engine_publish_pdf_basis.R")
-register_engine("publish_excel_basis", "~/fairness_toolbox/R/engines/5_reporting/5_3_publish/engine_publish_excel_basis.R")
+register_engine("publish_pdf_basis", "~/fairness_toolbox/R/engines/6_reporting/6_3_publish/engine_publish_pdf_basis.R")
+register_engine("publish_excel_basis", "~/fairness_toolbox/R/engines/6_reporting/6_3_publish/engine_publish_excel_basis.R")
 
 # Debugging: List registered engines
 print(names(engines))

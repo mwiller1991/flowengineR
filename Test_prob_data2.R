@@ -19,18 +19,19 @@ source("~/fairness_toolbox/R/metalevel/metalevel.R")
 # Load the helper Functions
 source("~/fairness_toolbox/R/metalevel/helper.R")
 source("~/fairness_toolbox/R/engines/2_execution/helper_execution_resume.R")
+source("~/fairness_toolbox/R/engines/2_execution/helper_execution_stability_checks.R")
 
 # Load the initiate output Functions
 source("~/fairness_toolbox/R/engines/1_split/initialize_output_split.R")
 source("~/fairness_toolbox/R/engines/2_execution/initialize_output_execution.R")
-source("~/fairness_toolbox/R/engines/2_training/initialize_output_train.R")
-source("~/fairness_toolbox/R/engines/3_fairness/3_1_pre-processing/initialize_output_fairness_pre.R")
-source("~/fairness_toolbox/R/engines/3_fairness/3_2_in-processing/initialize_output_fairness_in.R")
-source("~/fairness_toolbox/R/engines/3_fairness/3_3_post-processing/initialize_output_fairness_post.R")
-source("~/fairness_toolbox/R/engines/4_evaluation/initialize_output_eval.R")
-source("~/fairness_toolbox/R/engines/5_reporting/5_1_reportelement/initialize_output_reportelement.R")
-source("~/fairness_toolbox/R/engines/5_reporting/5_2_report/initialize_output_report.R")
-source("~/fairness_toolbox/R/engines/5_reporting/5_3_publish/initialize_output_publish.R")
+source("~/fairness_toolbox/R/engines/3_training/initialize_output_train.R")
+source("~/fairness_toolbox/R/engines/4_fairness/4_1_pre-processing/initialize_output_fairness_pre.R")
+source("~/fairness_toolbox/R/engines/4_fairness/4_2_in-processing/initialize_output_fairness_in.R")
+source("~/fairness_toolbox/R/engines/4_fairness/4_3_post-processing/initialize_output_fairness_post.R")
+source("~/fairness_toolbox/R/engines/5_evaluation/initialize_output_eval.R")
+source("~/fairness_toolbox/R/engines/6_reporting/6_1_reportelement/initialize_output_reportelement.R")
+source("~/fairness_toolbox/R/engines/6_reporting/6_2_report/initialize_output_report.R")
+source("~/fairness_toolbox/R/engines/6_reporting/6_3_publish/initialize_output_publish.R")
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/controller/controller_1_inputR.R")
@@ -67,8 +68,8 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_cv",   # Method for splitting (e.g., "split_random" or "split_cv")
-  execution = "execution_batchtools_local", #execution_sequential
+  split_method = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
+  execution = "execution_adaptive_sequential_stability", #execution_sequential
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -94,13 +95,18 @@ control <- list(
     split = controller_split(
       seed = 123,
       target_var = vars$target_var,
-      params =   list(cv_folds = 6
+      params =   list(split_ratio = 0.6
       )
     ),
     execution = controller_execution(
-      params = list(
-        registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry",
-        resources = list(ncpus = 1, memory = 2048, walltime = 3600)
+      params =   list(
+        metric_name = "mse",
+        metric_source = "eval_mse",
+        stability_strategy = "cohen_absolute",
+        threshold = 0.2,
+        window = 3,
+        min_splits = 5,
+        max_splits = 50
       )
     ),
     fairness_pre = controller_fairness_pre(

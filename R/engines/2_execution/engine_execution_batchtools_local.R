@@ -120,7 +120,7 @@ wrapper_execution_batchtools_local <- function(control, split_output) {
 #' @export
 default_params_execution_batchtools_local <- function() {
   list(
-    registry_folder = "bt_registry",
+    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry", # later just: bt_registry
     seed = 123,
     required_packages = character(0),
     resources = list(ncpus = 1, memory = 2048, walltime = 3600)

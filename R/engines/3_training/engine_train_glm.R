@@ -8,7 +8,7 @@
 #' **Inputs (passed to engine via wrapper):**
 #' - `formula`: A formula specifying the model structure.
 #' - `data`: A data frame containing the training data.
-#' - `weights`: A numeric vector of observation weights.
+#' - `sample_weight`: A numeric vector of observation weights.
 #' - `family`: A GLM family object (e.g., `gaussian()` or `binomial()`).
 #'
 #' **Output (returned to wrapper):**
@@ -17,12 +17,12 @@
 #' @param formula Model formula.
 #' @param family GLM family object.
 #' @param data Training data as data.frame.
-#' @param weights Numeric vector of observation weights.
+#' @param sample_weight Numeric vector of observation weights.
 #'
 #' @return A fitted model object of class `"glm"`.
 #' @export
-engine_train_glm <- function(formula, family, data, weights) {
-  glm(formula = formula, family = family, data = data, weights = weights)
+engine_train_glm <- function(formula, family, data, sample_weight) {
+  glm(formula = formula, family = family, data = data, weights = sample_weight)
 }
 #--------------------------------------------------------------------
 
@@ -68,7 +68,10 @@ wrapper_train_glm <- function(control) {
   hyperparameters <- merge_with_defaults(train_params$params, default_params_train_glm())
   
   # Extract weights from params or set equal weights
-  hyperparameters$weights <- hyperparameters$weights %||% rep(1, nrow(train_data))
+  if (is.null(hyperparameters$sample_weight)) {
+    hyperparameters$sample_weight <- rep(1, nrow(train_data))
+  }
+  train_data$sample_weight <- hyperparameters$sample_weight
   
   # Track training time
   start_time <- Sys.time()
@@ -78,7 +81,7 @@ wrapper_train_glm <- function(control) {
     formula = train_params$formula,
     family = hyperparameters$family,
     data = train_data,
-    weights = hyperparameters$weights
+    sample_weight = hyperparameters$sample_weight
   )
   
   training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
@@ -108,7 +111,7 @@ wrapper_train_glm <- function(control) {
 #'   - `data`: A data frame containing the training data.
 #'   
 #' - **Additional Parameters:**
-#'   - `weights`: A vector of weights for the training data. Must have same length as train dataset (default: equal weights -> in Wrapper).
+#'   - `sample_weight`: A vector of weights for the training data. Must have same length as train dataset (default: equal weights -> in Wrapper).
 #'   - `family`: The family of the GLM (default: Gaussian).
 #' - Ensures default parameters are used when none are provided in the `control` object.
 #'
@@ -116,7 +119,7 @@ wrapper_train_glm <- function(control) {
 #' @export
 default_params_train_glm <- function() {
   list(
-    weights = NULL,  # If not set by user, will be set in the wrapper directly in the dataset
+    sample_weight = NULL,  # If not set by user, will be set in the wrapper directly in the dataset
     family = gaussian()  # Default family: Gaussian
   )
 }
