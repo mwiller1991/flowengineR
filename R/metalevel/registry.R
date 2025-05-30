@@ -92,10 +92,14 @@ register_engine("split_random_stratified", "~/fairness_toolbox/R/engines/1_split
 register_engine("split_cv", "~/fairness_toolbox/R/engines/1_split/engine_split_cv.R")
 
 # Load preinstalled execution-Engines
-register_engine("execution_sequential", "~/fairness_toolbox/R/engines/2_execution/engine_execution_sequential.R")
-register_engine("execution_slurm_array", "~/fairness_toolbox/R/engines/2_execution/engine_execution_slurm_array.R")
-register_engine("execution_batchtools_local", "~/fairness_toolbox/R/engines/2_execution/engine_execution_batchtools_local.R")
-register_engine("execution_adaptive_sequential_stability", "~/fairness_toolbox/R/engines/2_execution/engine_execution_adaptive_sequential_stability.R")
+register_engine("execution_basic_sequential", "~/fairness_toolbox/R/engines/2_execution/2_1_basic/engine_execution_basic_sequential.R")
+register_engine("execution_basic_slurm_array", "~/fairness_toolbox/R/engines/2_execution/2_1_basic/engine_execution_basic_slurm_array.R")
+register_engine("execution_basic_batchtools_local", "~/fairness_toolbox/R/engines/2_execution/2_1_basic/engine_execution_basic_batchtools_local.R")
+register_engine("execution_basic_batchtools_multicore", "~/fairness_toolbox/R/engines/2_execution/2_1_basic/engine_execution_basic_batchtools_multicore.R")
+register_engine("execution_adaptive_output_sequential", "~/fairness_toolbox/R/engines/2_execution/2_2_adaptive_output/engine_execution_adaptive_output_sequential.R")
+register_engine("execution_adaptive_output_batchtools_multicore", "~/fairness_toolbox/R/engines/2_execution/2_2_adaptive_output/engine_execution_adaptive_output_batchtools_multicore.R")
+register_engine("execution_adaptive_output_batchtools_slurm", "~/fairness_toolbox/R/engines/2_execution/2_2_adaptive_output/engine_execution_adaptive_output_batchtools_slurm.R")
+register_engine("execution_adaptive_input_scalar_sequential", "~/fairness_toolbox/R/engines/2_execution/2_3_adaptive_input/engine_execution_adaptive_input_scalar_sequential.R")
 
 # Load preinstalled Train-Engines 
 register_engine("train_lm", "~/fairness_toolbox/R/engines/3_training/engine_train_lm.R")

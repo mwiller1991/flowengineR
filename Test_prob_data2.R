@@ -2,7 +2,6 @@
 install.packages("tinytex")
 tinytex::install_tinytex()
 
-
 # Load required libraries
 library(ggplot2)
 library(caret)
@@ -69,7 +68,7 @@ control <- list(
     test = NULL        # Test data
   ),
   split_method = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
-  execution = "execution_adaptive_sequential_stability", #execution_sequential
+  execution = "execution_adaptive_output_batchtools_multicore", #execution_sequential #execution_adaptive_sequential_stability
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -95,7 +94,8 @@ control <- list(
     split = controller_split(
       seed = 123,
       target_var = vars$target_var,
-      params =   list(split_ratio = 0.6
+      params =   list(split_ratio = 0.6,
+                      cv_folds = 5
       )
     ),
     execution = controller_execution(

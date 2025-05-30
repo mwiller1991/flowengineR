@@ -1,10 +1,10 @@
 "Object","Size_MB"
-"control",0.96
-"results",0.43
-"output_train",0.41
+"control",0.9
+"results",0.36
+"output_train",0.31
 "driver_fairness_post",0.1
 "driver_train",0.09
-"testdata",0.03
-"output_fairness_post",0.02
+"testdata",0.08
+"output_fairness_post",0.05
 "norm_params",0.01
 "predictions",0
