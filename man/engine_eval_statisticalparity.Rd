@@ -34,4 +34,7 @@ The SPD is defined as the absolute difference in mean predicted values between t
 \item A named list with SPD values for each protected attribute.
 }
 }
+\seealso{
+\code{\link[=wrapper_eval_statisticalparity]{wrapper_eval_statisticalparity()}}
+}
 \keyword{internal}

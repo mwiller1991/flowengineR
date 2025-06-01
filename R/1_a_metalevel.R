@@ -32,29 +32,34 @@
 #' @return A structured list containing at least `split_output` and `execution_output`. Additional elements may be included depending on the workflow stage.
 #' @export
 fairness_workflow <- function(control) {
+  log_msg("[MASTER] Initializing control object with defaults...", level = "info", control = control)
+  control <- complete_control_with_defaults(control)
   
   # 1. Call splitter engine
+  log_msg(paste0("[MASTER] Using split engine: ", control$split_method), level = "info", control = control)
+  control$params$split$target_var <- control$data$vars$target_var
   split_engine <- engines[[control$split_method]]
   split_output <- split_engine(control)
   
   # 2. Choose execution engine
   if (is.null(control$execution)) {
-    message("[INFO] No execution engine specified. Using 'execution_sequential' as default.")
+    log_msg("[MASTER] No execution engine specified. Using 'execution_sequential' as default.", level = "warn", control = control)
     control$execution <- "execution_sequential"
   }
   
+  log_msg(paste0("[MASTER] Using execution engine: ", control$execution), level = "info", control = control)
   execution_engine <- engines[[control$execution]]
   execution_output <- execution_engine(control, split_output)
   
-    # for adaptive procedures, where the split is done in the wrapper
-    if (!is.null(execution_output$specific_output$split_output)) {
-      split_output <- execution_output$specific_output$split_output
-      execution_output$specific_output$split_output <- NULL
-    }
+  # for adaptive procedures, where the split is done in the wrapper
+  if (!is.null(execution_output$specific_output$split_output)) {
+    split_output <- execution_output$specific_output$split_output
+    execution_output$specific_output$split_output <- NULL
+  }
   
-  # 3. Check for external execution and return early
+  # 3. Early return (external execution)
   if (!isTRUE(execution_output$continue_workflow)) {
-    message("[INFO] Execution engine does not continue workflow. Returning after execution.")
+    log_msg("[MASTER] Execution completed externally. Returning early.", level = "info", control = control)
     return(list(
       split_output = split_output,
       execution_output = execution_output,
@@ -66,6 +71,7 @@ fairness_workflow <- function(control) {
   }
   
   # 4. Continue workflow
+  log_msg("[MASTER] Proceeding to reporting and publishing...", level = "info", control = control)
   continue_fairness_workflow(control, split_output, execution_output)
 }
 #--------------------------------------------------------------------
@@ -106,24 +112,22 @@ fairness_workflow <- function(control) {
 #' @return A named list containing the full workflow results, including aggregation, reports and published outputs.
 #' @export
 continue_fairness_workflow <- function(control, split_output, execution_output) {
-  
+  log_msg("[CONTINUE] Aggregating workflow results...", level = "info", control = control)
   workflow_results <- execution_output$workflow_results
   aggregated_results <- aggregate_results(workflow_results)
   
   # 1. Reportelements (optional)
   reportelements_results <- NULL
   if (!is.null(control$reportelement)) {
+    log_msg("[CONTINUE] Generating reportelements...", level = "info", control = control)
     reportelements_results <- list()
-    
     for (alias in names(control$reportelement)) {
       engine_name <- control$reportelement[[alias]]
       if (!engine_name %in% names(engines)) {
-        warning(sprintf("[WARNING] Reportelement engine '%s' not found. Skipping alias '%s'.", engine_name, alias))
+        log_msg(sprintf("[WARNING] Reportelement engine '%s' not found. Skipping alias '%s'.", engine_name, alias), level = "warn", control = control)
         next
       }
-      
-      message(sprintf("[INFO] Running reportelement engine '%s' for alias '%s'...", engine_name, alias))
-      
+      log_msg(sprintf("[CONTINUE] Running reportelement engine '%s' for alias '%s'...", engine_name, alias), level = "debug", control = control)
       reportelements_results[[alias]] <- engines[[engine_name]](
         control = control,
         workflow_results = workflow_results,
@@ -136,17 +140,15 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
   # 2. Reports (optional)
   reports_results <- NULL
   if (!is.null(control$report)) {
+    log_msg("[CONTINUE] Generating full reports...", level = "info", control = control)
     reports_results <- list()
-    
     for (alias_report in names(control$report)) {
       engine_name <- control$report[[alias_report]]
       if (!engine_name %in% names(engines)) {
-        warning(sprintf("[WARNING] Report engine '%s' not found. Skipping alias '%s'.", engine_name, alias_report))
+        log_msg(sprintf("[WARNING] Report engine '%s' not found. Skipping alias '%s'.", engine_name, alias_report), level = "warn", control = control)
         next
       }
-      
-      message(sprintf("[INFO] Running report engine '%s' for alias '%s'...", engine_name, alias_report))
-      
+      log_msg(sprintf("[CONTINUE] Running report engine '%s' for alias '%s'...", engine_name, alias_report), level = "debug", control = control)
       reports_results[[alias_report]] <- engines[[engine_name]](
         control = control,
         reportelements = reportelements_results,
@@ -158,8 +160,8 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
   # 3. Publishing (optional)
   publishing_results <- list()
   if (!is.null(control$publish)) {
+    log_msg("[CONTINUE] Running publishing engines...", level = "info", control = control)
     for (alias_publish in names(control$publish)) {
-      
       publish_info <- control$params$publish$params[[alias_publish]]
       obj_type <- publish_info$obj_type
       obj_name <- publish_info$obj_name
@@ -170,11 +172,10 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
       } else if (obj_type == "reportelement") {
         object <- reportelements_results[[obj_name]]
       } else {
-        warning(sprintf("[WARNING] Unknown publish type for '%s': %s", alias_publish, obj_type))
+        log_msg(sprintf("[WARNING] Unknown publish type for '%s': %s", alias_publish, obj_type), level = "warn", control = control)
         next
       }
       
-      # reportelement to synthetic report
       if (obj_type == "reportelement") {
         compatible_formats <- object$compatible_formats
         object <- initialize_output_report(
@@ -190,12 +191,11 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
       
       engine_name <- control$publish[[alias_publish]]
       if (!engine_name %in% names(engines)) {
-        warning(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name))
+        log_msg(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name), level = "warn", control = control)
         next
       }
       
-      message(sprintf("[INFO] Publishing '%s' with engine '%s'...", alias_publish, engine_name))
-      
+      log_msg(sprintf("[CONTINUE] Publishing '%s' with engine '%s'...", alias_publish, engine_name), level = "debug", control = control)
       publishing_results[[alias_publish]] <- engines[[engine_name]](
         control = control,
         object = object,
@@ -205,7 +205,7 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
     }
   }
   
-  # Final result
+  log_msg("[CONTINUE] Workflow fully completed.", level = "info", control = control)
   return(list(
     split_output = split_output,
     execution_output = execution_output,
@@ -250,9 +250,8 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
 #' @return A named list as returned by `continue_fairness_workflow()`, including all optional post-processing results.
 #' @export
 resume_fairness_workflow <- function(resume_object) {
-  #validation
   validate_resume_object(resume_object)
-  
+  log_msg("[RESUME] Resuming workflow after external execution...", level = "info", control = resume_object$control)
   continue_fairness_workflow(
     control = resume_object$control,
     split_output = resume_object$split_output,
@@ -279,7 +278,7 @@ resume_fairness_workflow <- function(resume_object) {
 #' **Inputs:**
 #' - `control$data$train`: Training data (data.frame).
 #' - `control$data$test`: Test data (data.frame).
-#' - `control$vars`: List with `feature_vars`, `target_var`, `protected_vars`, `protected_vars_binary`.
+#' - `control$data$vars`: List with `feature_vars`, `target_var`, `protected_vars`, `protected_vars_binary`.
 #' - `control$params$train`: Model training configuration.
 #' - `control$output_type`: Either `"response"` or `"prob"` (default: `"response"`).
 #' - Optional modules:
@@ -307,179 +306,152 @@ resume_fairness_workflow <- function(resume_object) {
 #' @return A list containing model results, predictions, fairness modules, and evaluations.
 #' @export
 run_workflow_single <- function(control) {
-  
-  # Check for Train-/Testdata
+
+  log_msg("[SINGLE] Starting single workflow iteration...", level = "info", control = control)
+
   if (is.null(control$data$train) || is.null(control$data$test)) {
     stop("[ERROR] Training and test data are missing. Please ensure data is split before execution.")
+  } else {
+    log_msg("[SINGLE] Train/test data successfully detected.", level = "info", control = control)
   }
-  
-  # Initialize results list
+
   results <- list()
-  
-###DEV Memory log after data splitting (remove before productive launch)###
-log_memory_usage(env = environment(), label = "at_start")
-###DEV-END (remove before productive launch)###
-  
-  # 1. Assigning data in the meta-level (for the case no Pre-Processing is operated)
-  # Ensure training data is available for training
+
+  # Step 1: Assign raw training data
   control$params$train$data <- control$data$train
-  
-  # 2. Fairness Pre-Processing (optional)
+
+  # Step 2: Fairness Pre-Processing
   if (!is.null(control$fairness_pre)) {
+    log_msg(paste0("[SINGLE] Running fairness pre-processing: ", control$fairness_pre), level = "info", control = control)
     control$params$fairness_pre$data <- control$data$train
+    control$params$fairness_pre$protected_attributes <- control$data$vars$protected_vars
+    control$params$fairness_pre$target_var <- control$data$vars$target_var
     driver_fairness_pre <- engines[[control$fairness_pre]]
-    output_fairness_pre <- driver_fairness_pre(control) #-> Change later on just for the changed predictions after remodelling the pre-methods
-    
-    # Overwrite data by preprocessed data
+    output_fairness_pre <- driver_fairness_pre(control)
     control$params$train$data <- output_fairness_pre$preprocessed_data
-    
     results$output_fairness_pre <- output_fairness_pre
+    log_msg("[SINGLE] Fairness pre-processing completed.", level = "debug", control = control)
   }
-  
-  # 3. Normalization based on training data parameters
-  # Compute min-max parameters only from the (possibly preprocessed) training data
+
+  # Step 3: Normalization
+  log_msg("[SINGLE] Normalizing datasets (based on training)...", level = "info", control = control)
   norm_params <- compute_minmax_params(
     data = control$params$train$data,
-    feature_names = c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var)
+    feature_names = c(control$data$vars$feature_vars, control$data$vars$protected_vars, control$data$vars$target_var)
   )
-  
-  # Apply the same normalization to train, test, and control$params$train$data
   control$data$train <- list(
     original = control$data$train,
     normalized = apply_minmax_params(control$data$train, norm_params)
   )
-  
   control$data$test <- list(
     original = control$data$test,
     normalized = apply_minmax_params(control$data$test, norm_params)
   )
-  
   control$params$train$data <- list(
     original = control$params$train$data,
     normalized = apply_minmax_params(control$params$train$data, norm_params)
   )
-  
-  
-###DEV Memory log after pre processing (remove before productive launch)###
-log_memory_usage(env = environment(), label = "after_preprocessing")
-###DEV-END (remove before productive launch)###
-  
-  # 4.1 Training (Base)
+  log_msg("[SINGLE] Normalization complete.", level = "debug", control = control)
+
+  # Step 4.1: Base Training
+  log_msg(paste0("[SINGLE] Training base model: ", control$train_model), level = "info", control = control)
   driver_train <- engines[[control$train_model]]
-  
-    # Always do the base training
-    output_train <- driver_train(control)
-    
-    # Choosing testdata for 4.1, 4.2 and 5 for prediction (normalized/original)
+  output_train <- driver_train(control)
+
+  # Step 4.2: Select prediction data
+  if (control$params$train$norm_data == TRUE) {
+    testdata <- control$data$test$normalized
+  } else if (control$params$train$norm_data == FALSE) {
+    testdata <- control$data$test$original
+  } else {
+    stop("Normalization is not properly choosen.")
+  }
+
+  if (is.null(control$output_type)) {
+    control$output_type <- "response"
+    log_msg("[SINGLE] output_type not specified. Defaulting to 'response'.", level = "warn", control = control)
+  }
+
+  # Step 4.3: Prediction
+  log_msg("[SINGLE] Generating predictions from base model...", level = "debug", control = control)
+  if (control$output_type == "prob") {
+    predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "prob"))
+  } else if (control$output_type == "response") {
+    predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "response"))
     if (control$params$train$norm_data == TRUE) {
-      testdata <- control$data$test$normalized
-    } else if (control$params$train$norm_data == FALSE) {
-      testdata <- control$data$test$original
-    } else {
-      stop("Normalization is not properly choosen.")
+      predictions <- denormalize_predictions(predictions, control$data$vars$target_var, norm_params)
     }
-    
-    # Generate predictions based on output_type
-    if (is.null(control$output_type)) {
-      control$output_type <- "response"
-      message("[INFO] output_type not specified. Defaulting to 'response' for outputs.")
-    }
+  } else {
+    stop("Invalid output_type specified in control.")
+  }
+  output_train$predictions <- predictions
+  results$output_train <- output_train
+
+  # Step 4.4: In-Processing Fairness
+  if (!is.null(control$fairness_in)) {
+    log_msg(paste0("[SINGLE] Running in-processing fairness: ", control$fairness_in), level = "info", control = control)
+    control$params$fairness_in$protected_attributes <- control$data$vars$protected_vars
+    control$params$fairness_in$target_var <- control$data$vars$target_var
+    driver_fairness_in <- engines[[control$fairness_in]]
+    output_fairness_in <- driver_fairness_in(control, driver_train)
     if (control$output_type == "prob") {
-      predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "prob"))
+      predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "prob"))
     } else if (control$output_type == "response") {
-      predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "response"))
-        if (control$params$train$norm_data == TRUE) {
-          predictions <- denormalize_predictions(predictions, control$vars$target_var, norm_params)
-        }
+      predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "response"))
+      if (control$params$train$norm_data == TRUE) {
+        predictions <- denormalize_predictions(predictions, control$data$vars$target_var, norm_params)
+      }
     } else {
       stop("Invalid output_type specified in control.")
     }
-    
-    # Add predictions to the training-output
-    output_train$predictions <- predictions
-    
-    # Add train to the output
-    results$output_train <- output_train
-  
-  # 4.2 Training (with In-Processing Fairness)
-  if (!is.null(control$fairness_in)) {
-    driver_fairness_in <- engines[[control$fairness_in]]
-    output_fairness_in <- driver_fairness_in(control, driver_train)
-    
-      # Generate predictions for In-Processing based on output_type
-      if (control$output_type == "prob") {
-        predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "prob"))
-      } else if (control$output_type == "response") {
-        predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "response"))
-          if (control$params$train$norm_data == TRUE) {
-            predictions <- denormalize_predictions(predictions, control$vars$target_var, norm_params)
-          }
-      } else {
-        stop("Invalid output_type specified in control.")
-      }
-      
-      # Add predictions to the training-output
-      output_fairness_in$predictions <- predictions
-      
-      # Add train to the output
-      results$output_fairness_in <- output_fairness_in
+    output_fairness_in$predictions <- predictions
+    results$output_fairness_in <- output_fairness_in
+    log_msg("[SINGLE] In-processing fairness completed.", level = "debug", control = control)
   }
-  
-###DEV Memory log after training (remove before productive launch)###
-log_memory_usage(env = environment(), label = "after_training")
-###DEV-END (remove before productive launch)###
-  
-  # 5. Fairness Post-Processing (optional)
+
+  # Step 5: Post-Processing Fairness
   if (!is.null(control$fairness_post)) {
-    
+    log_msg(paste0("[SINGLE] Running post-processing fairness: ", control$fairness_post), level = "info", control = control)
     control$params$fairness_post$fairness_post_data <- cbind(
       predictions = as.numeric(predictions),
-      actuals = testdata[[control$vars$target_var]],
-      testdata[control$vars$protected_vars_binary]
+      actuals = testdata[[control$data$vars$target_var]],
+      testdata[control$data$vars$protected_vars_binary]
     )
-    
+    control$params$fairness_post$protected_name <- control$data$vars$protected_vars_binary
     driver_fairness_post <- engines[[control$fairness_post]]
     output_fairness_post <- driver_fairness_post(control)
     predictions <- as.numeric(output_fairness_post$adjusted_predictions)
-    
     results$output_fairness_post <- output_fairness_post
+    log_msg("[SINGLE] Post-processing fairness completed.", level = "debug", control = control)
   }
-  
-###DEV Memory log after post processing (remove before productive launch)###
-log_memory_usage(env = environment(), label = "after_postprocessing")
-###DEV-END (remove before productive launch)###
-  
-  # 6. Evaluation
+
+  # Step 6: Evaluation
   if (!is.null(control$evaluation)) {
+    log_msg("[SINGLE] Running evaluation step...", level = "info", control = control)
     control$params$eval$eval_data <- cbind(
       predictions = predictions,
-      actuals = control$data$test$original[[control$vars$target_var]],
-      control$data$test$original[control$vars$protected_vars_binary]
+      actuals = control$data$test$original[[control$data$vars$target_var]],
+      control$data$test$original[control$data$vars$protected_vars_binary]
     )
-    
+    control$params$eval$protected_name <- control$data$vars$protected_vars_binary
     output_eval <- lapply(control$evaluation, function(metric) {
       engines[[metric]](control)
     })
     names(output_eval) <- control$evaluation
     results$output_eval <- output_eval
+    log_msg("[SINGLE] Evaluation completed.", level = "debug", control = control)
   }
-  
-###DEV Memory log after evaluation (remove before productive launch)###
-log_memory_usage(env = environment(), label = "after_evaluation")
-###DEV-END (remove before productive launch)###
 
-
-  # Save normalization parameters only if normalization was applied
   if (isTRUE(control$params$train$norm_data)) {
     results$normalization <- list(
       params = norm_params,
       method = "minmax",
       based_on = "train_data",
-      feature_names = c(control$vars$feature_vars, control$vars$protected_vars, control$vars$target_var)
+      feature_names = c(control$data$vars$feature_vars, control$data$vars$protected_vars, control$data$vars$target_var)
     )
   }
-  
-  # Return results
+
+  log_msg("[SINGLE] Workflow iteration completed. Returning results.", level = "info", control = control)
   return(results)
 }
 #--------------------------------------------------------------------

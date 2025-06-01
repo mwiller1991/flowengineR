@@ -105,6 +105,8 @@ wrapper_train_glm <- function(control) {
   }
   train_data$sample_weight <- hyperparameters$sample_weight
   
+  log_msg("[TRAIN] Starting GLM training...", level = "info", control = control)
+  
   # Track training time
   start_time <- Sys.time()
   
@@ -117,6 +119,9 @@ wrapper_train_glm <- function(control) {
   )
   
   training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
+  
+  log_msg(sprintf("[TRAIN] GLM training finished in %.2f seconds.", training_time),
+          level = "info", control = control)
   
   # Standardized output
   initialize_output_train(

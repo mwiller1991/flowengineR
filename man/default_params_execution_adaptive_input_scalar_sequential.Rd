@@ -26,4 +26,7 @@ Controls the scalar parameter search loop to optimize an evaluation metric.
 \item \code{max_iterations}: Max allowed steps.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_input_scalar_sequential]{wrapper_execution_adaptive_input_scalar_sequential()}}
+}
 \keyword{internal}

@@ -49,6 +49,11 @@ engine_split_userdefined <- function(train, test) {
 #' - No randomness, splitting, or stratification is performed. The datasets must be fully specified.
 #' - Internally sets `internal_skip_validation = TRUE` to exclude engine from automatic validation checks.
 #'
+#' **Workflow Integration:**
+#' - `target_var` is **automatically resolved** from `control$data$vars$target_var` 
+#'   if not provided explicitly in the controller.
+#' - This allows users to define `target_var` only once in `controller_vars()`.
+#'
 #' **Example Control Snippet:**
 #' ```
 #' control$split_method <- "split_userdefined"
@@ -94,7 +99,7 @@ wrapper_split_userdefined <- function(control) {
     stop("wrapper_split_userdefined: Both train and test data must be provided in control$data.")
   }
   
-  message("[INFO] Using user-provided train/test split.")
+  log_msg("[SPLIT] Using user-provided train/test data (no internal split performed).", level = "info", control = control)
   
   # Call dummy engine for completeness
   split <- engine_split_userdefined(train = control$data$train, test = control$data$test)
@@ -131,6 +136,6 @@ wrapper_split_userdefined <- function(control) {
 #' @return `NULL`, as no parameters are needed.
 #' @keywords internal
 default_params_split_userdefined <- function() {
-  NULL
+  list()
 }
 #--------------------------------------------------------------------

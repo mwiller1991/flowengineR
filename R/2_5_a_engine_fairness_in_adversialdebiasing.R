@@ -215,24 +215,27 @@ engine_fairness_in_adversialdebiasing <- function(driver_train, data, protected_
 #' and invokes the adversarial debiasing engine. Wraps the result using `initialize_output_fairness_in()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$train$data`: Original and/or normalized training dataset (injected by workflow).
-#' - `control$params$train$norm_data`: Logical flag indicating whether to use normalized data.
-#' - `control$params$fairness_in$protected_attributes`: Character vector of protected attribute names.
-#' - `control$params$fairness_in$target_var`: Target variable to be predicted.
-#' - `control$params$fairness_in$params`: Optional engine-specific parameters.
-#' - `driver_train`: The training engine function for the main model (passed by workflow).
+#' - `control$params$train$data`: Training dataset (original or normalized).
+#' - `control$params$train$norm_data`: Logical flag indicating whether normalized data should be used.
+#' - `control$params$fairness_in$protected_attributes`: Character vector of protected attributes.  
+#'   → Auto-filled from `control$vars$protected_vars` via `autofill_controllers_from_vars()`.
+#' - `control$params$fairness_in$params`: Named list of engine-specific parameters.
+#' - `driver_train`: Training engine function for the main model (provided by the workflow).
 #'
 #' **Engine-Specific Parameters (`control$params$fairness_in$params`):**
 #' - `learning_rate` *(numeric)*: Learning rate for adversarial updates (default: 0.01).
 #' - `num_epochs` *(integer)*: Number of training epochs (default: 10).
-#' - `num_adversary_steps` *(integer)*: Number of adversarial updates per epoch (default: 3).
+#' - `num_adversary_steps` *(integer)*: Number of adversarial update steps per epoch (default: 3).
+#'
+#' **Variable Handling:**
+#' - The wrapper assumes that `protected_attributes` and `target_var` are injected via `autofill_controllers_from_vars()`.
+#' - These fields are **required** by the engine but should **not be set manually**.
 #'
 #' **Example Control Snippet:**
-#' ```
+#' ```r
 #' control$fairness_in <- "fairness_in_adversialdebiasing"
 #' control$params$fairness_in <- controller_fairness_in(
-#'   protected_attributes = c("gender", "race"),
-#'   target_var = "outcome",
+#'   norm_data = TRUE,
 #'   params = list(
 #'     learning_rate = 0.01,
 #'     num_epochs = 10,
@@ -245,14 +248,14 @@ engine_fairness_in_adversialdebiasing <- function(driver_train, data, protected_
 #' See full template in `inst/templates_control/5_a_template_fairness_in_adversialdebiasing.R`
 #'
 #' **Standardized Output (returned to framework):**
-#' - A list structured via `initialize_output_fairness_in()`:
-#'   - `adjusted_model`: The debiased model object.
-#'   - `model_type`: `"Adversarial Debiasing"`.
-#'   - `params`: Merged parameter list.
-#'   - `specific_output`: Includes:
-#'       - `training_time`: Duration in seconds.
-#'       - `adversary_model`: Internally learned adversary.
-#'       - `adversary_loss`: Per-epoch loss metrics.
+#' A list structured via `initialize_output_fairness_in()`:
+#' - `adjusted_model`: The debiased main model.
+#' - `model_type`: `"Adversarial Debiasing"`.
+#' - `params`: Merged engine parameters.
+#' - `specific_output`: Includes:
+#'     - `training_time`: Duration of training (in seconds).
+#'     - `adversary_model`: Internally trained adversarial component.
+#'     - `adversary_loss`: Per-epoch loss history.
 #'
 #' @seealso 
 #'   [engine_fairness_in_adversialdebiasing()],  
@@ -261,8 +264,9 @@ engine_fairness_in_adversialdebiasing <- function(driver_train, data, protected_
 #'   [controller_fairness_in()],  
 #'   Template: `inst/templates_control/5_a_template_fairness_in_adversialdebiasing.R`
 #'
-#' @param control A standardized control object (see `controller_fairness_in()`).
+#' @param control A standardized control object. Must include `control$vars` and a valid `control$params$fairness_in`.
 #' @param driver_train A training engine function used to train the main model.
+#' 
 #' @return A standardized fairness in-processing output.
 #' @keywords internal
 wrapper_fairness_in_adversialdebiasing <- function(control, driver_train) {
@@ -279,6 +283,12 @@ wrapper_fairness_in_adversialdebiasing <- function(control, driver_train) {
   # Merge optional parameters with defaults
   params <- merge_with_defaults(in_params$params, default_params_fairness_in_adversialdebiasing())
   
+  # Logging start
+  log_msg(sprintf(
+    "[IN] Starting adversarial debiasing (%d epochs, %d steps/epoch, lr = %.4f)...",
+    params$num_epochs, params$num_adversary_steps, params$learning_rate
+  ), level = "info", control = control)
+  
   # Track training time
   start_time <- Sys.time()
   
@@ -294,6 +304,9 @@ wrapper_fairness_in_adversialdebiasing <- function(control, driver_train) {
   )
   
   training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
+  
+  log_msg(sprintf("[IN] Adversarial training complete (%.2fs)", training_time),
+          level = "info", control = control)
   
   # Standardized output
   initialize_output_fairness_in(

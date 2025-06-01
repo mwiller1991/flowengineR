@@ -50,10 +50,13 @@ See full template in \verb{inst/templates_control/2_1_a_template_control_executi
 A list structured via \code{initialize_output_execution()}:
 \itemize{
 \item \code{execution_type}: \code{"basic_sequential"}
-\item \code{workflow_results}: List of results from \code{run_workflow_single()} per split.
-\item \code{params}: Merged parameter list (currently empty).
-\item \code{continue_workflow}: \code{TRUE}
-\item \code{specific_output}: \code{list(n_splits = number_of_splits)}
+\item \code{workflow_results}: List of results from each split (output of \code{run_workflow_single()})
+\item \code{params}: Engine parameters (merged default and user-defined)
+\item \code{continue_workflow}: \code{TRUE} (execution completed within wrapper)
+\item \code{specific_output}: List with:
+\itemize{
+\item \code{n_splits}: Number of executed splits
+}
 }
 }
 \seealso{

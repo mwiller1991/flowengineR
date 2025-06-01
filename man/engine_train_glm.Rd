@@ -35,4 +35,7 @@ Fits a generalized linear model based on the provided formula, data, weights, an
 \item A fitted model object of class \code{"glm"} as returned by \code{stats::glm()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_train_glm]{wrapper_train_glm()}}
+}
 \keyword{internal}

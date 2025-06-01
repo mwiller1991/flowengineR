@@ -118,9 +118,11 @@ wrapper_publish_excel_basis <- function(control, object, file_path, alias_publis
   if (is.null(alias_publish)) stop("Publish alias must be specified.")
   
   publish_params <- control$params$publish$params[[alias_publish]]
+  log_msg(sprintf("[PUBLISH] Starting Excel export for alias '%s'...", alias_publish), level = "info", control = control)
   
   # Check format compatibility
   if (!"xlsx" %in% object$compatible_formats) {
+    log_msg("[PUBLISH] Excel format not supported by the given object.", level = "warn", control = control)
     return(initialize_output_publish(
       alias = alias_publish,
       type = publish_params$obj_type,
@@ -138,8 +140,10 @@ wrapper_publish_excel_basis <- function(control, object, file_path, alias_publis
         file_path = file_path,
         params = publish_params$params
       )
+      log_msg(sprintf("[PUBLISH] Excel export completed: %s", result_path), level = "info", control = control)
       list(success = TRUE, path = result_path, specific_output = NULL)
     }, error = function(e) {
+      log_msg(sprintf("[PUBLISH] Excel export failed: %s", e$message), level = "error", control = control)
       list(success = FALSE, path = paste0(file_path, ".xlsx"), specific_output = list(error = e$message))
     })
     

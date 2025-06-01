@@ -19,21 +19,45 @@ and wraps the result using \code{initialize_output_eval()}.
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$eval$eval_data$predictions}: A numeric vector of predicted values to be evaluated.
+\item \code{control$params$eval$eval_data$predictions}: Numeric vector of predictions (automatically provided by workflow).
 \item \code{control$params$eval$protected_name}: Names of protected attributes (not used by this engine).
-\item \code{control$params$eval$params}: Optional engine-specific parameters (none used by this engine).
+\item \code{control$params$eval$params}: Optional engine-specific parameters (none used here).
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$eval$params}):}
+\itemize{
+\item None. This engine performs statistical evaluation using fixed metrics.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_summarystats"
+control$params$eval <- controller_evaluation(
+  protected_name = c("gender")
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/7_1_a_template_eval_summarystats.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_eval()}:
 \itemize{
-\item A list structured via \code{initialize_output_eval()}:
+\item \code{metrics}: List with entry \code{summary_stats}, containing:
 \itemize{
-\item \code{metrics}: A named list with one entry \code{summary_stats}, containing the computed statistics.
-\item \code{eval_type}: Set to \code{"summarystats_eval"}.
-\item \code{input_data}: The evaluation input data object.
-\item \code{params}: Set to \code{NULL}.
-\item \code{specific_output}: Set to \code{NULL}.
+\item \code{mean}, \code{median}, \code{sd}, \code{var}, \code{min}, \code{max}, \code{quantile_25}, \code{quantile_75}, \code{iqr}, \code{skewness}, \code{kurtosis}, \code{range}
+}
+\item \code{eval_type}: \code{"summarystats_eval"}
+\item \code{input_data}: Original evaluation input (predictions etc.)
+\item \code{params}: \code{NULL} (no tunable parameters)
+\item \code{specific_output}: \code{NULL}
 }
 }
+\seealso{
+\code{\link[=engine_eval_summarystats]{engine_eval_summarystats()}},
+\code{\link[=default_params_eval_summarystats]{default_params_eval_summarystats()}},
+\code{\link[=initialize_output_eval]{initialize_output_eval()}},
+\code{\link[=controller_evaluation]{controller_evaluation()}},
+Template: \verb{inst/templates_control/7_1_a_template_eval_summarystats.R}
 }
 \keyword{internal}

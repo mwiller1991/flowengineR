@@ -24,4 +24,7 @@ Provides default parameters for the MSE evaluation engine.
 \item None for this engine; it relies entirely on the base fields from the controller.
 }
 }
+\seealso{
+\code{\link[=wrapper_eval_mse]{wrapper_eval_mse()}}
+}
 \keyword{internal}

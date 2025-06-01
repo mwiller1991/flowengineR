@@ -26,4 +26,7 @@ Computes basic statistical properties of the given predictions to evaluate their
 \item A named list of summary statistics, including mean, median, standard deviation, variance, percentiles, skewness, and kurtosis.
 }
 }
+\seealso{
+\code{\link[=wrapper_eval_summarystats]{wrapper_eval_summarystats()}}
+}
 \keyword{internal}

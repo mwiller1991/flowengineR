@@ -26,4 +26,7 @@ Computes and formats a text summary of the average Mean Squared Error (MSE) acro
 \item A character string summarizing the average MSE.
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_text_msesummary]{wrapper_reportelement_text_msesummary()}}
+}
 \keyword{internal}

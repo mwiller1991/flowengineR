@@ -33,23 +33,34 @@ engine_fairness_post_genresidual <- function(predictions, actuals) {
 #' Wrapper for Fairness Post-Processing Engine: General Residual Adjustment
 #'
 #' Validates and prepares standardized inputs, applies default parameters,
-#' and invokes the general residual post-processing engine.
+#' and invokes the residual-based post-processing engine.
 #' Returns a standardized output using `initialize_output_fairness_post()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$fairness_post$fairness_post_data$predictions`: Vector of original model predictions (injected by workflow).
-#' - `control$params$fairness_post$fairness_post_data$actuals`: Vector of true observed values (injected by workflow).
-#' - `control$params$fairness_post$protected_name`: Names of protected attributes (used for tracking only).
-#' - `control$params$fairness_post$params`: Optional engine-specific parameters (none used by this engine).
+#' - `control$params$fairness_post$fairness_post_data$predictions`: Numeric vector of model predictions (injected by workflow).
+#' - `control$params$fairness_post$fairness_post_data$actuals`: Numeric vector of true observed values (injected by workflow).
+#' - `control$params$fairness_post$protected_name`: Character vector of protected attribute names (binary).  
+#'   Auto-filled from `control$vars$protected_vars_binary` via `autofill_controllers_from_vars()`.
+#' - `control$params$fairness_post$params`: Optional engine-specific parameters (not used here).
+#'
+#' **Binary Attribute Requirement:**
+#' - All protected attributes listed in `protected_name` must be binary (e.g., 0/1, TRUE/FALSE).
+#' - Post-processing engines in fairnessToolbox are not designed for multi-class or continuous protected attributes.
+#' - Binary transformation must be performed during setup (e.g. via `controller_vars(protected_vars_binary = ...)`).
 #'
 #' **Engine-Specific Parameters (`control$params$fairness_post$params`):**
-#' - None. This engine performs a generic residual-based adjustment without tunable settings.
+#' - None. This engine performs a fixed residual adjustment and requires no tunable settings.
+#' 
+#' **Workflow Integration:**
+#' - `protected_name` are **automatically filled** based on `control$vars`.
+#' - These inputs must be respected by all engines but **do not need to be set manually** in the controller.
+#' - This wrapper ensures these values are passed correctly to the engine.
 #'
 #' **Example Control Snippet:**
-#' ```
+#' ```r
 #' control$fairness_post <- "fairness_post_genresidual"
 #' control$params$fairness_post <- controller_fairness_post(
-#'   protected_name = c("gender")
+#'   params = list()
 #' )
 #' ```
 #'
@@ -57,13 +68,13 @@ engine_fairness_post_genresidual <- function(predictions, actuals) {
 #' See full template in `inst/templates_control/6_a_template_fairness_post_genresidual.R`
 #'
 #' **Standardized Output (returned to framework):**
-#' A list structured via `initialize_output_fairness_post()`:
-#' - `adjusted_predictions`: Residual-adjusted prediction vector.
-#' - `method`: `"general_residual"`.
-#' - `input_data`: List with `predictions` and `actuals`.
-#' - `protected_attributes`: Passed through from control object.
-#' - `params`: Empty list (no tunable settings).
-#' - `specific_output`: `NULL`.
+#' - A list structured via `initialize_output_fairness_post()`:
+#'   - `adjusted_predictions`: Residual-adjusted prediction vector.
+#'   - `method`: `"general_residual"`.
+#'   - `input_data`: List with `predictions` and `actuals`.
+#'   - `protected_attributes`: Names of protected attributes used (binary).
+#'   - `params`: Final parameter list (empty for this engine).
+#'   - `specific_output`: `NULL`
 #'
 #' @seealso 
 #'   [engine_fairness_post_genresidual()],  
@@ -72,7 +83,7 @@ engine_fairness_post_genresidual <- function(predictions, actuals) {
 #'   [controller_fairness_post()],  
 #'   Template: `inst/templates_control/6_a_template_fairness_post_genresidual.R`
 #'
-#' @param control A standardized control object (see `controller_fairness_post()`).
+#' @param control A standardized control object (must include `control$vars` and a valid `control$params$fairness_post`).
 #' @return A standardized fairness post-processing output.
 #' @keywords internal
 wrapper_fairness_post_genresidual <- function(control) {
@@ -84,6 +95,8 @@ wrapper_fairness_post_genresidual <- function(control) {
     stop("wrapper_fairness_post_residual: Missing required input: actuals")
   }
   
+  log_msg("[POST] Starting general residual adjustment...", level = "info", control = control)
+  
   # Merge optional parameters with defaults
   params <- merge_with_defaults(fairness_post_params$params, default_params_fairness_post_genresidual())
   
@@ -94,6 +107,8 @@ wrapper_fairness_post_genresidual <- function(control) {
   if (control$output_type == "prob") {
     adjusted_predictions <- pmax(pmin(adjusted_predictions, 1), 0)
   }
+  
+  log_msg("[POST] Adjustment complete.", level = "info", control = control)
   
   # Standardized output
   initialize_output_fairness_post(
@@ -129,6 +144,6 @@ wrapper_fairness_post_genresidual <- function(control) {
 #' @return A list of default parameters for the fairness post-processing engine.
 #' @keywords internal
 default_params_fairness_post_genresidual <- function() {
-  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  list()
 }
 #--------------------------------------------------------------------

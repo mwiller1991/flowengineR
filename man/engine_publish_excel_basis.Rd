@@ -32,4 +32,7 @@ Writes a structured report object to an Excel file (.xlsx) using the \code{openx
 \item A character string with the path to the successfully created \code{.xlsx} file.
 }
 }
+\seealso{
+\code{\link[=wrapper_publish_excel_basis]{wrapper_publish_excel_basis()}}
+}
 \keyword{internal}

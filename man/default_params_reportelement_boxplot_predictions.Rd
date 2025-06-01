@@ -31,4 +31,7 @@ These parameters define which prediction source is used for the boxplot.
 }
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_boxplot_predictions]{wrapper_reportelement_boxplot_predictions()}}
+}
 \keyword{internal}

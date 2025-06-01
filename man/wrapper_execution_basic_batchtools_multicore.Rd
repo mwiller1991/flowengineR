@@ -8,37 +8,72 @@
 wrapper_execution_basic_batchtools_multicore(control, split_output)
 }
 \arguments{
-\item{control}{A standardized control object (see \code{controller_execution()}).}
+\item{control}{A standardized control object.}
 
-\item{split_output}{A list of splits from the splitter engine.}
+\item{split_output}{A list of data splits from the splitter engine.}
 }
 \value{
-A standardized execution output object.
+A standardized execution result list.
 }
 \description{
 Registers one job per split in a local batchtools registry and executes them
 in parallel using the \code{multicore} backend.
 }
 \details{
-Only works on Unix-like systems. Not supported on Windows.
+\strong{Platform Restriction:} Only works on Unix-like systems (Linux, macOS, WSL).
+Not supported on Windows. Use \code{"execution_basic_batchtools_local"} instead.
 
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$execution$params}: Parameters specific to batchtools (e.g., \code{registry_folder}, \code{resources}, etc.).
-\item \code{control}: The full control object passed to each job.
-\item \code{split_output}: The result from the splitter engine containing all splits.
+\item \code{control}: Full control object.
+\item \code{split_output}: Output of the splitter engine.
+\item \code{control$params$execution$params}: Optional engine-specific parameters (see below).
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
+\itemize{
+\item \code{registry_folder} \emph{(character)}: Folder where the batchtools registry will be stored.
+\emph{Default:} \code{"~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore"}
+\item \code{seed} \emph{(integer)}: Seed for registry initialization. \emph{Default:} \code{123}
+\item \code{required_packages} \emph{(character vector)}: R packages to load within each batchtools job. \emph{Default:} \code{character(0)}
+\item \code{ncpus} \emph{(integer)}: Number of parallel cores to use. \emph{Default:} \code{parallel::detectCores()}
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_multicore"
+control$params$execution <- controller_execution(
+  params = list(
+    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    seed = 42,
+    ncpus = 4
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/2_1_d_template_control_execution_basic_batchtools_multicore.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_execution()}:
 \itemize{
-\item A list structured via \code{initialize_output_execution()}:
+\item \code{execution_type}: \code{"basic_batchtools_multicore"}
+\item \code{workflow_results}: Named list of results from each split
+\item \code{params}: Engine parameters (merged default and user-defined)
+\item \code{continue_workflow}: \code{TRUE} (execution is complete)
+\item \code{specific_output}: List with:
 \itemize{
-\item \code{execution_type}: "batchtools_multicore".
-\item \code{workflow_results}: Named list of results per split.
-\item \code{params}: Merged parameter list.
-\item \code{continue_workflow}: \code{TRUE} (ready for next steps).
-\item \code{specific_output}: Metadata including number of splits and registry path.
+\item \code{n_splits}: Number of executed splits
+\item \code{registry}: Path to batchtools registry used
 }
 }
+}
+\seealso{
+\code{\link[=engine_execution_basic_batchtools_multicore]{engine_execution_basic_batchtools_multicore()}},
+\code{\link[=default_params_execution_basic_batchtools_multicore]{default_params_execution_basic_batchtools_multicore()}},
+\code{\link[=initialize_output_execution]{initialize_output_execution()}},
+\code{\link[=controller_execution]{controller_execution()}},
+Template: \verb{inst/templates_control/2_1_d_template_control_execution_basic_batchtools_multicore.R}
+Helper: \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

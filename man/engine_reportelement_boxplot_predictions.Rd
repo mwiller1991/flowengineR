@@ -42,4 +42,7 @@ Supports different prediction sources (raw model, post-processed, or in-processi
 \item A \code{ggplot2} object visualizing prediction distributions per group and per split.
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_boxplot_predictions]{wrapper_reportelement_boxplot_predictions()}}
+}
 \keyword{internal}

@@ -29,4 +29,7 @@ Calculates the Mean Squared Error (MSE) between predicted and actual values.
 \item A numeric value representing the MSE.
 }
 }
+\seealso{
+\code{\link[=wrapper_eval_mse]{wrapper_eval_mse()}}
+}
 \keyword{internal}

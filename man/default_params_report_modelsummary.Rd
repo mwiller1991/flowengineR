@@ -25,4 +25,7 @@ This report engine requires manual alias configuration via the control object.
 \item \emph{(none)} — returns an empty list. Aliases for included reportelements must be set manually.
 }
 }
+\seealso{
+\code{\link[=wrapper_report_modelsummary]{wrapper_report_modelsummary()}}
+}
 \keyword{internal}

@@ -20,23 +20,44 @@ Returns a standardized output using \code{initialize_output_fairness_post()}.
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$fairness_post$fairness_post_data$predictions}: Original prediction values.
-\item \code{control$params$fairness_post$fairness_post_data$actuals}: Observed target values.
-\item \code{control$params$fairness_post$protected_name}: Names of protected attributes.
+\item \code{control$params$fairness_post$fairness_post_data$predictions}: Vector of original model predictions (injected by workflow).
+\item \code{control$params$fairness_post$fairness_post_data$actuals}: Vector of true observed values (injected by workflow).
+\item \code{control$params$fairness_post$protected_name}: Names of protected attributes (used for tracking only).
 \item \code{control$params$fairness_post$params}: Optional engine-specific parameters (none used by this engine).
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$fairness_post$params}):}
+\itemize{
+\item None. This engine performs a generic residual-based adjustment without tunable settings.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$fairness_post <- "fairness_post_genresidual"
+control$params$fairness_post <- controller_fairness_post(
+  protected_name = c("gender")
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/6_a_template_fairness_post_genresidual.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_fairness_post()}:
 \itemize{
-\item A list structured via \code{initialize_output_fairness_post()}:
-\itemize{
-\item \code{adjusted_predictions}: The fairness-adjusted predictions.
-\item \code{method}: Set to \code{"general_residual"}.
-\item \code{input_data}: Original prediction and actual data.
-\item \code{protected_attributes}: Names of protected attributes.
-\item \code{params}: Merged parameter list (empty for this engine).
+\item \code{adjusted_predictions}: Residual-adjusted prediction vector.
+\item \code{method}: \code{"general_residual"}.
+\item \code{input_data}: List with \code{predictions} and \code{actuals}.
+\item \code{protected_attributes}: Passed through from control object.
+\item \code{params}: Empty list (no tunable settings).
 \item \code{specific_output}: \code{NULL}.
 }
 }
+\seealso{
+\code{\link[=engine_fairness_post_genresidual]{engine_fairness_post_genresidual()}},
+\code{\link[=default_params_fairness_post_genresidual]{default_params_fairness_post_genresidual()}},
+\code{\link[=initialize_output_fairness_post]{initialize_output_fairness_post()}},
+\code{\link[=controller_fairness_post]{controller_fairness_post()}},
+Template: \verb{inst/templates_control/6_a_template_fairness_post_genresidual.R}
 }
 \keyword{internal}

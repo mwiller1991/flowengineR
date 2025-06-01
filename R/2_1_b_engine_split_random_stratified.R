@@ -25,8 +25,13 @@
 #' @return A list containing train and test data splits.
 #' @keywords internal
 engine_split_random_stratified <- function(data, target_var, split_ratio, seed) {
+  # Set seed for reproducibility
   set.seed(seed)
+  
+  # Generate stratified training indices
   idx <- caret::createDataPartition(data[[target_var]], p = split_ratio, list = FALSE)
+  
+  # Return split list with train/test data
   list(
     train = data[idx, ],
     test  = data[-idx, ]
@@ -57,6 +62,11 @@ engine_split_random_stratified <- function(data, target_var, split_ratio, seed) 
 #' **Notes:**
 #' - The stratification is performed using `caret::createDataPartition()` and ensures balanced class representation in train/test sets.
 #' - If the target variable has rare categories, consider whether stratification is meaningful.
+#'
+#' **Workflow Integration:**
+#' - `target_var` is **automatically resolved** from `control$data$vars$target_var` 
+#'   if not provided explicitly in the controller.
+#' - This allows users to define `target_var` only once in `controller_vars()`.
 #'
 #' **Example Control Snippet:**
 #' ```
@@ -104,7 +114,10 @@ wrapper_split_random_stratified <- function(control) {
   # Merge default parameters
   params <- merge_with_defaults(split_params$params, default_params_split_random_stratified())
   
-  message(sprintf("[INFO] Performing stratified random split with training ratio %.2f and seed %d", params$split_ratio, split_params$seed))
+  log_msg(sprintf(
+    "[SPLIT] Performing stratified random split with training ratio %.2f and seed %d.",
+    params$split_ratio, split_params$seed
+  ), level = "info", control = control)
   
   # Call the stratified random split engine
   split <- engine_split_random_stratified(

@@ -7,7 +7,7 @@
 wrapper_train_glm(control)
 }
 \arguments{
-\item{control}{A standardized control object (see \code{controller_training()}).}
+\item{control}{A standardized control object (see \code{controller_train()}).}
 }
 \value{
 A standardized output list structured via \code{initialize_output_train()}.
@@ -21,9 +21,32 @@ and invokes the GLM training engine. Returns standardized output using \code{ini
 \itemize{
 \item \code{control$params$train$formula}: A formula specifying the model structure.
 \item \code{control$params$train$data}: Named list with training data (\code{original} and/or \code{normalized}).
+→ This list is automatically provided by the workflow, not by the user.
 \item \code{control$params$train$norm_data}: Logical flag indicating whether to use normalized data.
-\item \code{control$params$train$params}: Optional user-specified hyperparameters (e.g., \code{weights}, \code{family}).
+\item \code{control$params$train$params}: Optional user-specified hyperparameters.
 }
+
+\strong{Engine-Specific Parameters (\code{control$params$train$params}):}
+\itemize{
+\item \code{family} \emph{(function)}: A GLM family function, e.g., \code{gaussian()} (default), \code{binomial()}, \code{poisson()}.
+\item \code{sample_weight} \emph{(numeric vector)}: Observation weights (optional; defaults to equal weights).
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$train <- "train_glm"
+control$params$train <- controller_train(
+  formula = target ~ .,
+  norm_data = TRUE,
+  params = list(
+    family = binomial()
+    # sample_weight = rep(1, nrow(train_data))  # optional if weighted learning is used
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/3_b_template_train_glm.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
@@ -36,5 +59,12 @@ and invokes the GLM training engine. Returns standardized output using \code{ini
 \item \code{specific_output}: Training duration and optional metadata.
 }
 }
+}
+\seealso{
+\code{\link[=engine_train_glm]{engine_train_glm()}},
+\code{\link[=default_params_train_glm]{default_params_train_glm()}},
+\code{\link[=initialize_output_train]{initialize_output_train()}},
+\code{\link[=controller_train]{controller_train()}},
+Template: \verb{inst/templates_control/3_b_template_train_glm.R}
 }
 \keyword{internal}

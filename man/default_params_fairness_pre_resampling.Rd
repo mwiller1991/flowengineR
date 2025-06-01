@@ -29,4 +29,7 @@ Provides default parameters for pre-processing engines. These parameters are spe
 \item Ensures default parameters are used when none are provided in the \code{control} object.
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_pre_resampling]{wrapper_fairness_pre_resampling()}}
+}
 \keyword{internal}

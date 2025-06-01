@@ -4,17 +4,17 @@
 \alias{controller_fairness_pre}
 \title{Controller: Fairness Pre-Processing Specification}
 \usage{
-controller_fairness_pre(protected_attributes, target_var, params = NULL)
+controller_fairness_pre(protected_attributes, target_var, params = list())
 }
 \arguments{
 \item{protected_attributes}{Character vector. Names of protected attributes to be considered.}
 
 \item{target_var}{Character string. Name of the outcome variable.}
 
-\item{params}{Optional named list of engine-specific parameters.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored in \code{control$params$fairness_pre}, compatible with all pre-processing engines.
+Named list. To be stored in \code{control$params$fairness_pre} and passed to the fairness pre-processing engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for any fairness pre-processing engine

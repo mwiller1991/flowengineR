@@ -1,4 +1,253 @@
 #--------------------------------------------------------------------
+### Helper: Internal Logging Function with Colors (Extended with 'error') ###
+#--------------------------------------------------------------------
+#' Helper: Internal Logging Function with Colors
+#'
+#' A centralized logging function for the fairnessToolbox framework.
+#' Supports log level filtering and optional ANSI-colored console output
+#' for better visibility during execution.
+#'
+#' **Log Levels:**
+#' - `"none"`: no output.
+#' - `"debug"`: detailed diagnostics (grey).
+#' - `"info"`: standard process information (blue).
+#' - `"warn"`: warnings and recoverable issues (yellow).
+#' - `"error"`: critical errors (red, optionally triggers stop()).
+#'
+#' **Usage Example:**
+#' ```r
+#' log_msg("[INFO] Workflow started", level = "info", control = control)
+#' log_msg("[ERROR] Missing predictions", level = "error", control = control, abort = TRUE)
+#' ```
+#'
+#' @param msg A character string. The message to display.
+#' @param level A character string. One of `"none"`, `"debug"`, `"info"`, `"warn"`, `"error"`.
+#' @param control The control object containing `settings$log` and `settings$log_level`.
+#' @param abort Logical. If `TRUE` and level is `"error"`, the function will stop execution.
+#'
+#' @return Invisibly returns `NULL`. Used for side-effect printing only.
+#' @keywords internal
+log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
+  if (is.null(control) || !isTRUE(control$settings$log)) return(invisible(NULL))
+  
+  levels <- c("none" = 0, "debug" = 1, "info" = 2, "warn" = 3, "error" = 4)
+  user_level <- control$settings$log_level %||% "info"
+  if (!(user_level %in% names(levels))) user_level <- "info"
+  if (!(level %in% names(levels))) level <- "info"
+  
+  if (levels[[user_level]] < levels[[level]]) return(invisible(NULL))
+  
+  ansi_colored <- function(text, level) {
+    switch(level,
+           "debug" = paste0("\033[90m", text, "\033[0m"),  # grey
+           "info"  = paste0("\033[94m", text, "\033[0m"),  # blue
+           "warn"  = paste0("\033[93m", text, "\033[0m"),  # yellow
+           "error" = paste0("\033[91m", text, "\033[0m"),  # red
+           text)
+  }
+  
+  message(ansi_colored(msg, level))
+  
+  if (level == "error" && isTRUE(abort)) {
+    stop(msg, call. = FALSE)
+  }
+  
+  invisible(NULL)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Internal Helper: Complete Control Object with Defaults ###
+#--------------------------------------------------------------------
+#' Internal Helper: Complete Control Object with Defaults
+#'
+#' Fills a partially specified `control` object with default values for all 
+#' mandatory components up to the evaluation stage. Optional elements such as 
+#' fairness engines, reporting, or publishing are only initialized if explicitly 
+#' selected by the user.
+#'
+#' **Purpose:**
+#' - Ensures a minimal, runnable workflow configuration even with partial user input.
+#' - Enables prototyping or quick-start testing without full manual specification.
+#'
+#' **Default Behavior:**
+#' - Sets `global_seed` to `1` if missing.
+#' - Uses `fairnessToolbox::test_data_2_base_credit_example` as fallback data if neither 
+#'   `control$data$vars` nor `control$data$full` are provided.
+#' - Initializes `data$train` and `data$test` to `NULL` if missing.
+#' - Sets `split_method = "split_random_stratified"` and calls `controller_split()` if missing.
+#' - Sets `execution = "execution_basic_sequential"` and calls `controller_execution()` if missing.
+#' - Sets `train_model = "train_glm"` and `output_type = "response"` if missing.
+#' - Calls `controller_training()` if `params$train` is missing.
+#' - Adds default evaluation methods if not specified: `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`.
+#' - Calls `controller_evaluation()` if `params$eval` is missing.
+#' - For optional modules (`fairness_pre`, `fairness_in`, `fairness_post`, `reportelement`, `report`, `publish`),
+#'   corresponding controller functions are only called if the module is selected by the user.
+#'
+#' **Safety Checks:**
+#' - If `control$data$full` is provided without `control$data$vars`, an error is raised.
+#' - If `control$data$vars` is provided without `control$data$full`, an error is raised.
+#'
+#' **Usage Example:**
+#' ```r
+#' control <- list(train_model = "train_glm")
+#' control <- complete_control_with_defaults(control)
+#' # returns a runnable control object with defaults and dummy data
+#' ```
+#'
+#' @param control list. A (partially defined) user control object.
+#'
+#' @return list. A fully structured control object with completed defaults.
+#' @keywords internal
+complete_control_with_defaults <- function(control) {
+  # Ensure control is a list
+  if (is.null(control)) control <- list()
+  
+  # Settings defaults
+  if (is.null(control$settings)) control$settings <- list()
+  if (is.null(control$settings$log)) control$settings$log <- TRUE
+  if (is.null(control$settings$log_level)) control$settings$log_level <- "info"
+  
+  # Set global seed if not defined
+  if (is.null(control$global_seed)) control$global_seed <- 1
+  
+  # Ensure data list exists
+  if (is.null(control$data)) control$data <- list()
+  
+  # Consistency check for vars and full
+  if (is.null(control$data$vars) && !is.null(control$data$full)) {
+    stop("If you provide custom data via `data$full`, you must define `data$vars` using controller_vars().")
+  }
+  if (!is.null(control$data$vars) && is.null(control$data$full)) {
+    stop("If you provide custom vars via `data$vars`, you must define `data$full`.")
+  }
+  
+  # Fallback: Dummy data + vars
+  if (is.null(control$data$vars) && is.null(control$data$full)) {
+    control$data$full <- fairnessToolbox::test_data_2_base_credit_example
+    vars <- controller_vars(
+      feature_vars = c("income", "loan_amount", "credit_score",
+                       "professionEmployee", "professionSelfemployed", "professionUnemployed"),
+      protected_vars = c("genderFemale", "genderMale", "age"),
+      target_var = "default",
+      protected_vars_binary = c("genderFemale", "genderMale",
+                                "age_group.<30", "age_group.30-50", "age_group.50+")
+    )
+    control$data$vars <- vars
+  } else {
+    vars <- control$data$vars
+  }
+  
+  # Ensure train/test placeholders exist
+  if (is.null(control$data$train)) control$data$train <- NULL
+  if (is.null(control$data$test)) control$data$test <- NULL
+  
+  # Split setup
+  if (is.null(control$split_method)) control$split_method <- "split_random_stratified"
+  if (is.null(control$params$split)) {
+    control$params$split <- controller_split()
+  }
+  
+  # Execution setup
+  if (is.null(control$execution)) control$execution <- "execution_basic_sequential"
+  if (is.null(control$params$execution)) {
+    control$params$execution <- controller_execution()
+  }
+  
+  # Training setup
+  if (is.null(control$train_model)) control$train_model <- "train_glm"
+  if (is.null(control$output_type)) control$output_type <- "response"
+  if (is.null(control$params$train)) {
+    control$params$train <- controller_training(
+      formula = as.formula(paste(
+      vars$target_var, "~",
+      paste(c(vars$feature_vars, vars$protected_vars), collapse = "+")))
+    )
+  }
+  
+  # Evaluation setup
+  if (is.null(control$evaluation)) {
+    control$evaluation <- list("eval_mse", "eval_summarystats", "eval_statisticalparity")
+  }
+  if (is.null(control$params$eval)) {
+    control$params$eval <- controller_evaluation()
+  }
+  
+  # Optional modules: initialize only if selected
+  if (!is.null(control$fairness_pre) && is.null(control$params$fairness_pre)) {
+    control$params$fairness_pre <- controller_fairness_pre()
+  }
+  if (!is.null(control$fairness_in) && is.null(control$params$fairness_in)) {
+    control$params$fairness_in <- controller_fairness_in()
+  }
+  if (!is.null(control$fairness_post) && is.null(control$params$fairness_post)) {
+    control$params$fairness_post <- controller_fairness_post()
+  }
+  if (!is.null(control$reportelement) && is.null(control$params$reportelement)) {
+    control$params$reportelement <- controller_reportelement()
+  }
+  if (!is.null(control$report) && is.null(control$params$report)) {
+    control$params$report <- controller_report()
+  }
+  if (!is.null(control$publish) && is.null(control$params$publish)) {
+    control$params$publish <- controller_publish()
+  }
+  
+  return(control)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Helper: List Registered Engines ###
+#--------------------------------------------------------------------
+#' Helper: List Registered Engines
+#'
+#' Used throughout the fairnessToolbox framework to inspect the internal engine
+#' registry. Returns all currently registered engines, either grouped by engine
+#' type (e.g. "train", "split", "execution") or filtered by a specific type.
+#'
+#' **Purpose:**
+#' - Provides transparency about the active engine configuration.
+#' - Useful for debugging, framework introspection, or user-defined extensions.
+#'
+#' **Usage Example:**
+#' ```r
+#' # Show all registered engines, grouped by type
+#' list_registered_engines()
+#'
+#' # Show only execution engines
+#' list_registered_engines(type = "execution")
+#' ```
+#'
+#' @param type Optional. A character string to filter engines by type prefix (e.g. "train", "split").
+#'             If `NULL` (default), all registered engines are returned, grouped by type.
+#'
+#' @return Either a filtered named list (if `type` is provided), or a named list of engine groups.
+#' @export
+list_registered_engines <- function(type = NULL) {
+  all_engines <- engines
+  
+  if (!is.null(type)) {
+    filtered <- all_engines[grepl(paste0("^", type, "_"), names(all_engines))]
+    return(filtered)
+  }
+  
+  split_by_type <- split(
+    x = all_engines,
+    f = sub("_.*", "", names(all_engines))
+  )
+  
+  return(split_by_type)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### Helper: Merge User and Default Hyperparameters ###
 #--------------------------------------------------------------------
 #' Helper: Merge User and Default Hyperparameters

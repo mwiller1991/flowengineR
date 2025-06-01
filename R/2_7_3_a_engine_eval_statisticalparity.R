@@ -49,7 +49,13 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #' **Standardized Inputs:**
 #' - `control$params$eval$eval_data`: Data frame including predictions and protected attributes (injected by workflow).
 #' - `control$params$eval$protected_name`: Character vector of protected attribute names.
+#'   → This field is auto-filled from `control$vars$protected_vars_binary` and must not be set manually.
 #' - `control$params$eval$params`: Optional engine-specific parameters (not used here).
+#'
+#' **Binary Attribute Requirement:**
+#' - All variables listed in `protected_name` must be binary (e.g., 0/1, TRUE/FALSE).
+#' - Multi-class or continuous variables must be transformed into binary dummies during setup (via `controller_vars()`).
+#' - This wrapper validates binary structure and returns an error if invalid formats are detected.
 #'
 #' **Engine-Specific Parameters (`control$params$eval$params`):**
 #' - None. This engine evaluates group fairness based on fixed logic.
@@ -58,7 +64,7 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #' ```
 #' control$evaluation <- "eval_statisticalparity"
 #' control$params$eval <- controller_evaluation(
-#'   protected_name = c("gender", "race")
+#'   params = list()
 #' )
 #' ```
 #'
@@ -114,6 +120,10 @@ wrapper_eval_statisticalparity <- function(control) {
     protected_name = eval_params$protected_name
   )
   
+  log_msg(sprintf("[EVAL] Statistical Parity evaluation complete: %s",
+                  paste(paste(names(spd_results), sprintf("%.6f", unlist(spd_results))), collapse = ", ")),
+          level = "info", control = control)
+  
   # Standardized output
   initialize_output_eval(
     metrics = list(spd = spd_results),
@@ -147,6 +157,6 @@ wrapper_eval_statisticalparity <- function(control) {
 #' @return A list of default parameters for the MSE evaluation engine.
 #' @keywords internal
 default_params_eval_statisticalparity <- function() {
-  NULL  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  list()
 }
 #--------------------------------------------------------------------

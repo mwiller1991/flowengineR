@@ -7,7 +7,7 @@
 wrapper_execution_basic_slurm_array(control, split_output)
 }
 \arguments{
-\item{control}{A standardized control object (see \code{controller_execution()}).}
+\item{control}{A standardized control object.}
 
 \item{split_output}{A list of splits from the splitter engine.}
 }
@@ -21,27 +21,35 @@ and split definitions to disk. This wrapper does not execute any models directly
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$execution$params}: List of execution-specific parameters (e.g., \code{output_folder}).
-\item \code{control}: The full control object to be serialized.
+\item \code{control}: The full control object containing workflow configuration.
 \item \code{split_output}: The result from the splitter engine containing multiple data splits.
+\item \code{control$params$execution$params}: Engine-specific parameters (see below).
 }
 
-\strong{Standardized Output (returned to framework):}
+\strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
-\item A list structured via \code{initialize_output_execution()}:
-\itemize{
-\item \code{execution_type}: "basic_slurm_array".
-\item \code{workflow_results}: \code{NULL} (execution deferred).
-\item \code{params}: Merged parameter list.
-\item \code{continue_workflow}: \code{FALSE}, indicating that manual resumption is required.
-\item \code{specific_output}: Metadata including output folder and number of splits.
-}
+\item \code{output_folder} \emph{(character, default = "slurm_inputs")}: Directory to store the control and split files.
 }
 
-\strong{Usage Note:}
-The wrapper does not execute any models directly. After preparing the necessary files,
-users must submit their SLURM array jobs externally. Once all jobs are completed and
-output files (\verb{result_split_<id>.rds}) are written, the workflow can be resumed by calling:
+\strong{Notes:}
+\itemize{
+\item This wrapper \strong{only prepares input files} for SLURM execution. The actual model training must be performed externally.
+\item The control object, split output, and number of splits are written to \code{output_folder}.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_slurm_array"
+control$params$execution <- controller_execution(
+  params = list(output_folder = "slurm_inputs")
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/2_1_b_template_control_execution_basic_slurm_array.R}
+
+\strong{Resuming Workflow after SLURM Execution:}
+After completing the external SLURM jobs, resume the workflow using:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{resume_object <- prepare_resume_from_slurm_array(
   control_path = "slurm_inputs/control_base.rds",
@@ -51,6 +59,27 @@ output files (\verb{result_split_<id>.rds}) are written, the workflow can be res
 result <- resume_fairness_workflow(resume_object)
 }\if{html}{\out{</div>}}
 
-See also: \code{\link[=prepare_resume_from_slurm_array]{prepare_resume_from_slurm_array()}}
+\strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_execution()}:
+\itemize{
+\item \code{execution_type}: \code{"basic_slurm_array"}
+\item \code{workflow_results}: \code{NULL} (execution deferred to SLURM)
+\item \code{params}: Engine parameters (merged default and user-defined)
+\item \code{continue_workflow}: \code{FALSE} (must be resumed via \code{resume_fairness_workflow()})
+\item \code{specific_output}: List with:
+\itemize{
+\item \code{message}: Informative status string
+\item \code{output_dir}: Path to directory containing saved inputs
+\item \code{n_splits}: Number of splits prepared for execution
+}
+}
+}
+\seealso{
+\code{\link[=engine_execution_basic_slurm_array]{engine_execution_basic_slurm_array()}},
+\code{\link[=default_params_execution_basic_slurm_array]{default_params_execution_basic_slurm_array()}},
+\code{\link[=initialize_output_execution]{initialize_output_execution()}},
+\code{\link[=controller_execution]{controller_execution()}},
+Template: \verb{inst/templates_control/2_1_b_template_control_execution_basic_slurm_array.R}
+Helper: \code{\link[=prepare_resume_from_slurm_array]{prepare_resume_from_slurm_array()}}, \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

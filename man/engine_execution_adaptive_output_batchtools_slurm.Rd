@@ -29,4 +29,7 @@ using batchtools with a SLURM backend.
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_batchtools_slurm]{wrapper_execution_adaptive_output_batchtools_slurm()}}
+}
 \keyword{internal}

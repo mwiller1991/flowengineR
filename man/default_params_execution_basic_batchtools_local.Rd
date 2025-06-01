@@ -35,4 +35,7 @@ of the batchtools backend.
 }
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_batchtools_local]{wrapper_execution_basic_batchtools_local()}}
+}
 \keyword{internal}

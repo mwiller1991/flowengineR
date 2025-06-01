@@ -4,13 +4,13 @@
 \alias{controller_execution}
 \title{Controller: Execution Engine Specification}
 \usage{
-controller_execution(method = "execution_sequential", params = list())
+controller_execution(params = list())
 }
 \arguments{
-\item{params}{Named list. Additional execution-specific parameters. Keys and values depend on the selected engine.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored in \code{control$execution}, compatible with all execution engines.
+Named list. To be stored in \code{control$params$execution} and passed to the execution engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for configuring any execution engine

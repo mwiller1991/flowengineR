@@ -29,4 +29,7 @@ These parameters determine which evaluation metrics are included in the summary 
 }
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_table_splitmetrics]{wrapper_reportelement_table_splitmetrics()}}
+}
 \keyword{internal}

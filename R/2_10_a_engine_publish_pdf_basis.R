@@ -120,9 +120,11 @@ wrapper_publish_pdf_basis <- function(control, object, file_path, alias_publish 
   if (is.null(alias_publish)) stop("Publish alias must be specified.")
   
   publish_params <- control$params$publish$params[[alias_publish]]  # Accessing the evaluation parameters
+  log_msg(sprintf("[PUBLISH] Starting PDF export for alias '%s'...", alias_publish), level = "info", control = control)
   
   # Check format compatibility
   if (!"pdf" %in% object$compatible_formats) {
+    log_msg("[PUBLISH] PDF format not supported by the given object.", level = "warn", control = control)
     return(initialize_output_publish(
       alias = alias_publish,
       type = publish_params$obj_type,
@@ -140,8 +142,10 @@ wrapper_publish_pdf_basis <- function(control, object, file_path, alias_publish 
         file_path = file_path,
         params = publish_params$params
       )
+      log_msg(sprintf("[PUBLISH] PDF export completed: %s", result_path), level = "info", control = control)
       list(success = TRUE, path = result_path, specific_output = NULL)
     }, error = function(e) {
+      log_msg(sprintf("[PUBLISH] PDF export failed: %s", e$message), level = "error", control = control)
       list(success = FALSE, path = file_path, specific_output = list(error = e$message))
     })
     

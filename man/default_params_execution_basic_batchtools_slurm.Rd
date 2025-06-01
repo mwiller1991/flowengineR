@@ -24,4 +24,7 @@ Includes registry folder, SLURM template path, job resources, and required packa
 \item \code{resources}: SLURM resource specs (e.g., walltime, mem).
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_batchtools_slurm]{wrapper_execution_basic_batchtools_slurm()}}
+}
 \keyword{internal}

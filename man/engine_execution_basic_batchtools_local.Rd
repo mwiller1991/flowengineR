@@ -31,4 +31,7 @@ This function is designed to be called internally by batchtools with the split p
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_batchtools_local]{wrapper_execution_basic_batchtools_local()}}
+}
 \keyword{internal}

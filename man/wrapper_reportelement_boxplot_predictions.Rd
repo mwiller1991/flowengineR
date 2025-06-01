@@ -17,7 +17,7 @@ wrapper_reportelement_boxplot_predictions(
 
 \item{workflow_results}{Named list of workflow results.}
 
-\item{split_output}{Output list from the splitter engine.}
+\item{split_output}{Output from the splitter engine.}
 
 \item{alias}{Unique identifier for this reportelement instance.}
 }
@@ -31,23 +31,63 @@ and invokes the boxplot prediction engine. Returns standardized reportelement ou
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters (e.g., \code{group_var}, \code{source}).
-\item \code{workflow_results}: List of workflow results per split.
-\item \code{split_output}: List of split definitions from the splitter engine.
+\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters.
+\item \code{workflow_results}: List of workflow results per split (injected by workflow).
+\item \code{split_output}: Split information including test data.
 \item \code{alias}: Character string identifying the reportelement instance.
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$reportelement$params[[alias]]}):}
+\itemize{
+\item \code{group_var} \emph{(character)}: Name of the binary grouping variable to stratify predictions.
+\item \code{source} \emph{(character)}: Type of predictions to plot. One of:
+\itemize{
+\item \code{"train"}: raw model predictions (default)
+\item \code{"post"}: post-processed predictions
+\item \code{"inproc"}: in-processing adjusted predictions
+}
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list(
+  pred_plot = "reportelement_boxplot_predictions"
+)
+
+control$params$reportelement <- controller_reportelement(
+  params = list(
+    pred_plot = list(
+      group_var = "gender",
+      source = "post"
+    )
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/8_c_template_reportelement_boxplot_predictions.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_reportelement()}:
 \itemize{
-\item A list structured via \code{initialize_output_reportelement()}:
+\item \code{type}: \code{"plot"}
+\item \code{content}: \code{ggplot2} object
+\item \code{compatible_formats}: \code{c("pdf", "html")}
+\item \code{input_data}: Names of splits used
+\item \code{params}: Parameter list used for this instance
+\item \code{specific_output}: Includes:
 \itemize{
-\item \code{type}: \code{"plot"}.
-\item \code{content}: ggplot2 object.
-\item \code{compatible_formats}: c("pdf", "html").
-\item \code{input_data}: Names of splits used.
-\item \code{params}: Merged parameter list.
-\item \code{specific_output}: Metadata including alias, group variable, and prediction source.
+\item \code{alias}: Name of this reportelement instance
+\item \code{group_var}: Grouping variable used for the plot
+\item \code{source}: Type of predictions used
 }
 }
+}
+\seealso{
+\code{\link[=engine_reportelement_boxplot_predictions]{engine_reportelement_boxplot_predictions()}},
+\code{\link[=default_params_reportelement_boxplot_predictions]{default_params_reportelement_boxplot_predictions()}},
+\code{\link[=initialize_output_reportelement]{initialize_output_reportelement()}},
+\code{\link[=controller_reportelement]{controller_reportelement()}},
+Template: \verb{inst/templates_control/8_c_template_reportelement_boxplot_predictions.R}
 }
 \keyword{internal}

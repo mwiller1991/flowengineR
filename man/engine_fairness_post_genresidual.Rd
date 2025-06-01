@@ -29,4 +29,7 @@ Adjusts predictions by applying the mean residual to improve group-level fairnes
 \item A numeric vector of adjusted predictions.
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_post_genresidual]{wrapper_fairness_post_genresidual()}}
+}
 \keyword{internal}

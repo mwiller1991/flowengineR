@@ -38,4 +38,7 @@ Provides default parameters for the \code{execution_adaptive_output_batchtools_m
 \item \code{ncpus}: Number of local CPUs used per job (multicore backend).
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_batchtools_multicore]{wrapper_execution_adaptive_output_batchtools_multicore()}}
+}
 \keyword{internal}

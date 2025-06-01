@@ -4,15 +4,15 @@
 \alias{controller_evaluation}
 \title{Controller: Evaluation Input Specification}
 \usage{
-controller_evaluation(protected_name, params = NULL)
+controller_evaluation(protected_name, params = list())
 }
 \arguments{
 \item{protected_name}{Character vector. Names of protected attributes used in evaluation metrics.}
 
-\item{params}{Optional named list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.}
 }
 \value{
-A named list to be stored in \code{control$params$eval}, compatible with all evaluation engines.
+Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for evaluation engines used within the

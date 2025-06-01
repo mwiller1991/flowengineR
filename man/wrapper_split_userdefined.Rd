@@ -49,7 +49,7 @@ control$params$split <- controller_split(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \code{inst/templates_control/template_control_split_userdefined.R}
+See full template in \verb{inst/templates_control/1_d_template_control_split_userdefined.R}
 
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_split()} with:

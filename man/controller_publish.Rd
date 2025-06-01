@@ -4,15 +4,15 @@
 \alias{controller_publish}
 \title{Controller: Publish Input Specification}
 \usage{
-controller_publish(output_folder = NULL, params = NULL)
+controller_publish(output_folder = NULL, params = list())
 }
 \arguments{
 \item{output_folder}{Character string. Global directory path to store all exports.}
 
-\item{params}{Named list. Each name should match a \code{control$publish} alias, and contain a list of export parameters (\code{obj_type}, \code{obj_name}, etc.).}
+\item{params}{Named list. Engine-specific configuration. Default is empty list. Each name should match a \code{control$publish} alias, and contain a list of export parameters (\code{obj_type}, \code{obj_name}, etc.).}
 }
 \value{
-A named list to be stored in \code{control$params$publish}, compatible with all publishing engines.
+Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for publishing engines in the fairnessToolbox

@@ -29,4 +29,7 @@ Aggregates selected evaluation metrics from each split and compiles them into a 
 \item A data.frame with one row per split and one column per extracted metric.
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_table_splitmetrics]{wrapper_reportelement_table_splitmetrics()}}
+}
 \keyword{internal}

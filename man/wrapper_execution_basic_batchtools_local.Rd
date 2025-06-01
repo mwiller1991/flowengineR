@@ -8,35 +8,79 @@
 wrapper_execution_basic_batchtools_local(control, split_output)
 }
 \arguments{
-\item{control}{A standardized control object (see \code{controller_execution()}).}
+\item{control}{A standardized control object.}
 
-\item{split_output}{A list of splits from the splitter engine.}
+\item{split_output}{A list of data splits from the splitter engine.}
 }
 \value{
-A standardized execution output object.
+A standardized execution result list.
 }
 \description{
-Registers one job per split in a local batchtools registry, executes them in parallel or sequentially,
-waits for completion, and collects the results into a standardized output.
+Registers one job per split in a local batchtools registry, executes them (optionally in parallel),
+and collects results into a standardized format.
 }
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$execution$params}: Parameters specific to batchtools (e.g., \code{registry_folder}, \code{resources}, etc.).
-\item \code{control}: The full control object passed to each job.
-\item \code{split_output}: The result from the splitter engine containing all splits.
+\item \code{control}: The full control object.
+\item \code{split_output}: Output of the splitter engine.
+\item \code{control$params$execution$params}: Optional engine-specific parameters (see below).
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
+\itemize{
+\item \code{registry_folder} \emph{(character, default = \code{"~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic"})}: Folder for the batchtools registry.
+\item \code{seed} \emph{(integer, default = 123)}: Seed for the registry.
+\item \code{required_packages} \emph{(character vector)}: Packages to be loaded inside each job.
+\item \code{resources} \emph{(list)}: Batchtools resource constraints per job:
+\itemize{
+\item \code{ncpus}: CPUs per job (default: 1)
+\item \code{memory}: RAM in MB (default: 2048)
+\item \code{walltime}: Max runtime in seconds (default: 3600)
+}
+}
+
+\strong{Notes:}
+\itemize{
+\item Each job executes \code{run_workflow_single()} on a single data split.
+\item Results are stored in a local registry directory and retrieved automatically.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_local"
+control$params$execution <- controller_execution(
+  params = list(
+    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic",
+    seed = 42,
+    resources = list(ncpus = 2, memory = 4096, walltime = 600)
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/2_1_c_template_control_execution_basic_batchtools_local.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_execution()}:
 \itemize{
-\item A list structured via \code{initialize_output_execution()}:
+\item \code{execution_type}: \code{"basic_batchtools_local"}
+\item \code{workflow_results}: Named list of results from each split
+\item \code{params}: Engine parameters (merged default and user-defined)
+\item \code{continue_workflow}: \code{TRUE} (execution completed successfully)
+\item \code{specific_output}: List with:
 \itemize{
-\item \code{execution_type}: "basic_batchtools_local".
-\item \code{workflow_results}: Named list of results per split.
-\item \code{params}: Merged parameter list.
-\item \code{continue_workflow}: \code{TRUE} (ready for next steps).
-\item \code{specific_output}: Metadata including number of splits and registry path.
+\item \code{n_splits}: Number of executed splits
+\item \code{registry}: Path to the used batchtools registry
 }
 }
+}
+\seealso{
+\code{\link[=engine_execution_basic_batchtools_local]{engine_execution_basic_batchtools_local()}},
+\code{\link[=default_params_execution_basic_batchtools_local]{default_params_execution_basic_batchtools_local()}},
+\code{\link[=initialize_output_execution]{initialize_output_execution()}},
+\code{\link[=controller_execution]{controller_execution()}},
+Template: \verb{inst/templates_control/2_1_c_template_control_execution_basic_batchtools_local.R}
+Helper: \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

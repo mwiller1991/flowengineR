@@ -4,15 +4,15 @@
 \alias{controller_fairness_post}
 \title{Controller: Fairness Post-Processing Specification}
 \usage{
-controller_fairness_post(fairness_post_data, protected_name, params = NULL)
+controller_fairness_post(protected_name, params = list())
 }
 \arguments{
 \item{protected_name}{Character vector. Names of protected attributes in binary form used for evaluation and adjustment.}
 
-\item{params}{Optional named list of engine-specific post-processing parameters.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored in \code{control$params$fairness_post}, compatible with all post-processing engines.
+Named list. To be stored in \code{control$params$fairness_post} and passed to the fairness post-processing engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for post-processing fairness methods
@@ -27,7 +27,30 @@ model outputs and aim to correct unfairness without modifying the model itself.
 \itemize{
 \item Supplies protected group metadata and engine-specific configuration.
 \item Enables modular extension of fairness post-processing methods.
+\item The required prediction input \code{fairness_post_data} is injected automatically by the workflow.
+It is not part of the \code{control} object and must be accepted as a mandatory standardized input
+by all fairness post-processing engines.
 }
+
+\strong{Structure of \code{fairness_post_data}:}
+The workflow injects the following structure into the engine:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{fairness_post_data <- cbind(
+  predictions = as.numeric(predictions),
+  actuals = testdata[[control$vars$target_var]],
+  testdata[control$vars$protected_vars_binary]
+)
+}\if{html}{\out{</div>}}
+
+This ensures that post-processing methods have access to:
+\itemize{
+\item Raw model predictions (\code{predictions})
+\item True outcome values (\code{actuals})
+\item Protected group indicators (\code{protected_vars_binary})
+}
+
+This object is passed automatically to the fairness post-processing engine and
+\strong{must not be defined manually by the user.}
 
 \strong{Standardized Structure:}
 \itemize{

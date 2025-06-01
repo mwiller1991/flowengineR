@@ -21,8 +21,11 @@
 #' @return Result from `run_workflow_single()`.
 #' @keywords internal
 engine_execution_basic_batchtools_slurm <- function(control, split) {
+  # Inject current split into control
   control$data$train <- split$train
   control$data$test  <- split$test
+  
+  # Execute workflow for current split
   run_workflow_single(control)
 }
 #--------------------------------------------------------------------
@@ -98,6 +101,9 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
   # Create or clear registry
   reg_dir <- params$registry_folder
   unlink(reg_dir, recursive = TRUE)
+  
+  log_msg(sprintf("[EXECUTION] Creating SLURM batchtools registry at '%s'...", reg_dir), level = "info", control = control)
+  
   reg <- batchtools::makeRegistry(
     file.dir = reg_dir,
     make.default = FALSE,
@@ -109,16 +115,19 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
   reg$cluster.functions <- batchtools::makeClusterFunctionsSlurm(template = params$slurm_template)
   
   # Map jobs
+  log_msg("[EXECUTION] Registering SLURM jobs for each split...", level = "info", control = control)
   batchtools::batchMap(fun = engine_execution_basic_batchtools_slurm,
                        more.args = list(control = control),
                        split = split_output$splits,
                        reg = reg)
   
   # Submit and wait
+  log_msg("[EXECUTION] Submitting jobs to SLURM...", level = "info", control = control)
   batchtools::submitJobs(reg = reg, resources = params$resources)
   batchtools::waitForJobs(reg = reg)
   
   # Collect results
+  log_msg("[EXECUTION] Collecting SLURM results...", level = "info", control = control)
   workflow_results <- batchtools::reduceResultsList(reg = reg)
   names(workflow_results) <- names(split_output$splits)
   

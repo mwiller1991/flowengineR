@@ -23,8 +23,11 @@
 #' @return Result from `run_workflow_single()`.
 #' @keywords internal
 engine_execution_basic_batchtools_multicore <- function(control, split) {
+  # Assign current split to control
   control$data$train <- split$train
   control$data$test  <- split$test
+  
+  # Run workflow for this split
   run_workflow_single(control)
 }
 #--------------------------------------------------------------------
@@ -103,6 +106,9 @@ wrapper_execution_basic_batchtools_multicore <- function(control, split_output) 
   # Create or clear registry
   reg_dir <- params$registry_folder
   unlink(reg_dir, recursive = TRUE)
+  
+  log_msg(sprintf("[EXECUTION] Creating multicore batchtools registry at '%s'...", reg_dir), level = "info", control = control)
+  
   reg <- batchtools::makeRegistry(
     file.dir = reg_dir,
     make.default = FALSE,
@@ -114,16 +120,19 @@ wrapper_execution_basic_batchtools_multicore <- function(control, split_output) 
   reg$cluster.functions <- batchtools::makeClusterFunctionsMulticore(ncpus = params$ncpus)
   
   # Map jobs
+  log_msg("[EXECUTION] Registering jobs for each split...", level = "info", control = control)
   batchtools::batchMap(fun = engine_execution_basic_batchtools_multicore,
                        more.args = list(control = control),
                        split = split_output$splits,
                        reg = reg)
   
   # Submit and wait
+  log_msg("[EXECUTION] Submitting and running jobs in parallel...", level = "info", control = control)
   batchtools::submitJobs(reg = reg)
   batchtools::waitForJobs(reg = reg)
   
   # Collect results
+  log_msg("[EXECUTION] Collecting results from multicore execution...", level = "info", control = control)
   workflow_results <- batchtools::reduceResultsList(reg = reg)
   names(workflow_results) <- names(split_output$splits)
   

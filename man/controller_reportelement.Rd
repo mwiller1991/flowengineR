@@ -4,13 +4,13 @@
 \alias{controller_reportelement}
 \title{Controller: Reportelement Input Specification}
 \usage{
-controller_reportelement(params = NULL)
+controller_reportelement(params = list())
 }
 \arguments{
-\item{params}{Optional named list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.}
 }
 \value{
-A named list to be stored in \code{control$params$reportelement}, compatible with all reportelement engines.
+Named list. To be stored in \code{control$params$reportelement} and passed to the reportelement engine(s). Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for reportelement engines in the fairnessToolbox

@@ -9,9 +9,9 @@ wrapper_publish_pdf_basis(control, object, file_path, alias_publish = NULL)
 \arguments{
 \item{control}{A standardized control object (see \code{controller_publish()}).}
 
-\item{object}{A structured report or reportelement object to be published.}
+\item{object}{A structured report or reportelement object.}
 
-\item{file_path}{The base path for file export (without extension).}
+\item{file_path}{Path (without extension) where the file should be saved.}
 
 \item{alias_publish}{Unique identifier for this publishing instance.}
 }
@@ -25,24 +25,51 @@ and invokes the PDF publishing engine. Returns standardized output using \code{i
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$publish$params[[alias_publish]]}: Named list of engine-specific parameters (optional).
+\item \code{control$params$publish$params[[alias_publish]]}: Named list of optional engine-specific parameters.
 \item \code{object}: A structured report or reportelement object.
-\item \code{file_path}: Base file path (without extension) where the file will be saved.
+\item \code{file_path}: Path (without extension) where the file should be saved.
 \item \code{alias_publish}: Character string identifying this publish instance.
 }
+
+\strong{Engine-Specific Parameters (\code{control$params$publish$params[[alias_publish]]}):}
+\itemize{
+\item \emph{(none)} – this engine currently accepts no additional parameters.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$publish <- list("main_pdf" = "publish_pdf_basis")
+control$params$publish <- controller_publish(
+  params = list(
+    main_pdf = list(
+      obj_type = "report"  # or "reportelement"
+    )
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/10_a_template_publish_pdf.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
 \item A list structured via \code{initialize_output_publish()}:
 \itemize{
-\item \code{alias}: Alias used to identify this publishing call.
-\item \code{type}: Object type being published (\code{"report"} or \code{"reportelement"}).
-\item \code{engine}: Engine name used (e.g., \code{"publish_pdf_basis"}).
-\item \code{path}: Full file path to the saved output.
-\item \code{success}: Logical flag indicating success or failure.
-\item \code{params}: Merged parameter list.
-\item \code{specific_output}: Metadata (e.g., error messages if unsuccessful).
+\item \code{alias}: Alias of the publish instance.
+\item \code{type}: \code{"report"} or \code{"reportelement"}.
+\item \code{engine}: \code{"publish_pdf_basis"}.
+\item \code{path}: Path to saved \code{.pdf} file.
+\item \code{success}: TRUE/FALSE depending on success of rendering.
+\item \code{params}: Parameter list used for publishing.
+\item \code{specific_output}: List with error message if rendering failed.
 }
 }
+}
+\seealso{
+\code{\link[=engine_publish_pdf_basis]{engine_publish_pdf_basis()}},
+\code{\link[=default_params_publish_pdf_basis]{default_params_publish_pdf_basis()}},
+\code{\link[=initialize_output_publish]{initialize_output_publish()}},
+\code{\link[=controller_publish]{controller_publish()}},
+Template: \verb{inst/templates_control/10_a_template_publish_pdf.R}
 }
 \keyword{internal}

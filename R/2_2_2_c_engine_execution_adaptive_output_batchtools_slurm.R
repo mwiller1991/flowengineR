@@ -116,6 +116,8 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #' @return A standardized execution output object.
 #' @keywords internal
 wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_output) {
+  log_msg("[EXECUTION] Starting adaptive batchtools SLURM execution...", level = "info", control = control)
+  
   if (length(split_output$splits) != 1) {
     stop(sprintf(
       "Adaptive execution requires a splitter that returns exactly one split. Got %d from '%s'.",
@@ -195,18 +197,19 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
       }
       
       if (isTRUE(stability_result$is_stable)) {
-        message(sprintf(
-          "[ADAPTIVE-SLURM] Stability reached (%s): %.4f < %.4f after %d splits. Stopping.",
+        log_msg(sprintf(
+          "[EXECUTION] Stability reached (%s): %.4f < %.4f after %d splits. Stopping.",
           stability_result$strategy,
           stability_result$stability_value,
           stability_result$threshold_value,
           length(metric_values)
-        ))
+        ), level = "info", control = control)
         break
       }
       
       if (length(metric_values) >= params$max_splits) {
-        message(sprintf("[ADAPTIVE-SLURM] Maximum number of splits (%d) reached. Stopping.", params$max_splits))
+        log_msg(sprintf("[EXECUTION] Maximum number of splits (%d) reached. Stopping.", params$max_splits),
+                level = "warning", control = control)
         break
       }
     }

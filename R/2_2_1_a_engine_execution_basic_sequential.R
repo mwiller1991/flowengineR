@@ -20,6 +20,7 @@
 #' @return A list of results from each `run_workflow_single()` call.
 #' @keywords internal
 engine_execution_basic_sequential <- function(control, split_output) {
+  # Loop over each data split and run the workflow sequentially
   lapply(split_output$splits, function(split) {
     control$data$train <- split$train
     control$data$test  <- split$test
@@ -87,6 +88,11 @@ engine_execution_basic_sequential <- function(control, split_output) {
 wrapper_execution_basic_sequential <- function(control, split_output) {
   # Merge optional parameters with defaults (if needed in future engines)
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_basic_sequential())
+  
+  log_msg(sprintf(
+    "[EXECUTION] Starting sequential execution over %d split(s)...",
+    length(split_output$splits)
+  ), level = "info", control = control)
   
   workflow_results <- engine_execution_basic_sequential(control, split_output)
   

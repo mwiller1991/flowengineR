@@ -106,13 +106,16 @@ engine_report_modelsummary <- function(reportelements, params) {
 wrapper_report_modelsummary <- function(control, reportelements, alias_report = NULL) {
   if (is.null(alias_report)) stop("Report alias must be specified.")
   
-  reportelements <- reportelements
+  log_msg(sprintf("[REPORT] Generating model summary report for alias '%s'...", alias_report), level = "info", control = control)
+
   params <- control$params$report$params[[alias_report]]
   
   sections <- engine_report_modelsummary(
     reportelements = reportelements,
     params = params
   )
+  
+  log_msg(sprintf("[REPORT] Model summary report generated with %d sections.", length(sections)), level = "info", control = control)
   
   initialize_output_report(
     report_title = "Modellzusammenfassung",

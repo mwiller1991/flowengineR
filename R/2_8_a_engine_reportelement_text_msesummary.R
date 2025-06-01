@@ -84,6 +84,8 @@ wrapper_reportelement_text_msesummary <- function(control, workflow_results, spl
     workflow_results = workflow_results
   )
   
+  log_msg(sprintf("[REPORTELEMENT] MSE summary generated: %s", text), level = "info", control = control)
+  
   initialize_output_reportelement(
     type = "text",
     content = text,

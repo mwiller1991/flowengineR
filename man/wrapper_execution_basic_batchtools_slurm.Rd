@@ -8,9 +8,9 @@
 wrapper_execution_basic_batchtools_slurm(control, split_output)
 }
 \arguments{
-\item{control}{The standardized control object.}
+\item{control}{A standardized control object (see \code{controller_execution()}).}
 
-\item{split_output}{The result from the splitter engine.}
+\item{split_output}{A list of splits from the splitter engine.}
 }
 \value{
 A standardized execution output object.
@@ -28,16 +28,55 @@ Registers jobs and submits them to a SLURM cluster using a job template.
 \item \code{split_output}: The result from the splitter engine.
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
+\itemize{
+\item \code{registry_folder} \emph{(character)}: Where to store the batchtools registry (default: \code{"~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"}).
+\item \code{slurm_template} \emph{(character)}: Path to SLURM job template (must exist).
+\item \code{seed} \emph{(integer)}: RNG seed (default: 123).
+\item \code{required_packages} \emph{(character vector)}: R packages to load in job.
+\item \code{resources} \emph{(list)}: Resource specs passed to \code{submitJobs()} (e.g., \code{ncpus}, \code{memory}, \code{walltime}).
+}
+
+\strong{Notes:}
+\itemize{
+\item This wrapper requires SLURM environment and a valid SLURM template.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_slurm"
+control$params$execution <- controller_execution(params = list(
+  registry_folder = "my_bt_slurm",
+  slurm_template = "~/templates/my_slurm.tmpl",
+  seed = 111,
+  required_packages = c("fairnessToolbox"),
+  resources = list(ncpus = 2, memory = 4096, walltime = 7200)
+))
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/2_1_e_template_control_execution_basic_batchtools_slurm.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_execution()}:
 \itemize{
-\item A list structured via \code{initialize_output_execution()}:
+\item \code{execution_type}: \code{"basic_batchtools_slurm"}
+\item \code{workflow_results}: Named list of results from each split
+\item \code{params}: Engine parameters (merged default and user-defined)
+\item \code{continue_workflow}: \code{TRUE} (execution completed successfully)
+\item \code{specific_output}: List with:
 \itemize{
-\item \code{execution_type}: "batchtools_slurm".
-\item \code{workflow_results}: Named list of results per split.
-\item \code{params}: Merged parameter list.
-\item \code{continue_workflow}: \code{TRUE} (ready for next steps).
-\item \code{specific_output}: Includes metric values, reconstructed split_output and used seeds.
+\item \code{n_splits}: Number of executed splits
+\item \code{registry}: Path to the used batchtools registry
 }
 }
+}
+\seealso{
+\code{\link[=engine_execution_basic_batchtools_slurm]{engine_execution_basic_batchtools_slurm()}},
+\code{\link[=default_params_execution_basic_batchtools_slurm]{default_params_execution_basic_batchtools_slurm()}},
+\code{\link[=initialize_output_execution]{initialize_output_execution()}},
+\code{\link[=controller_execution]{controller_execution()}},
+Template: \verb{inst/templates_control/2_1_e_template_control_execution_basic_batchtools_slurm.R},
+Helper: \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

@@ -25,4 +25,7 @@ This engine renders a report object to PDF using an R Markdown template.
 \item \emph{(none)} — returns an empty list.
 }
 }
+\seealso{
+\code{\link[=wrapper_publish_pdf_basis]{wrapper_publish_pdf_basis()}}
+}
 \keyword{internal}

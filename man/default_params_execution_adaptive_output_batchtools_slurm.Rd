@@ -39,4 +39,7 @@ Provides default parameters for the \code{execution_adaptive_output_batchtools_s
 \item \code{resources}: List passed to \code{submitJobs()} (e.g. \code{ncpus}, \code{memory}, \code{walltime}).
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_batchtools_slurm]{wrapper_execution_adaptive_output_batchtools_slurm()}}
+}
 \keyword{internal}

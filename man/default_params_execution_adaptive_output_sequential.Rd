@@ -32,4 +32,7 @@ Provides default parameters for the \code{execution_adaptive_output_sequential} 
 \item \code{seed_base}: Base seed value. The actual seed in iteration i is \code{seed_base + i}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_sequential]{wrapper_execution_adaptive_output_sequential()}}
+}
 \keyword{internal}

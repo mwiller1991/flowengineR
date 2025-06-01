@@ -29,4 +29,7 @@ Fits a linear model using the specified formula and data.
 \item A fitted model object of class \code{"lm"} as returned by \code{stats::lm()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_train_lm]{wrapper_train_lm()}}
+}
 \keyword{internal}

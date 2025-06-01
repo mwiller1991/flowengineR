@@ -57,4 +57,7 @@ Trains a main prediction model alongside an adversarial model to reduce bias wit
 }
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_in_adversialdebiasing]{wrapper_fairness_in_adversialdebiasing()}}
+}
 \keyword{internal}

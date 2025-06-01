@@ -11,10 +11,10 @@ controller_split(seed = 123, target_var, params = list())
 
 \item{target_var}{Character. Name of the target variable used in splitting logic.}
 
-\item{params}{Named list. Additional engine-specific parameters passed to the splitter.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored under \code{control$split}, compatible with all splitter engines.
+Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input configuration for any splitter engine used

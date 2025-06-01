@@ -13,28 +13,51 @@ wrapper_eval_statisticalparity(control)
 A standardized evaluation output object.
 }
 \description{
-Validates and prepares standardized inputs, checks for binary attributes,
+Validates and prepares standardized inputs, checks for binary protected attributes,
 and invokes the SPD engine. Wraps the result using \code{initialize_output_eval()}.
 }
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$eval$eval_data}: Data frame including predictions and protected attributes.
+\item \code{control$params$eval$eval_data}: Data frame including predictions and protected attributes (injected by workflow).
 \item \code{control$params$eval$protected_name}: Character vector of protected attribute names.
-\item \code{control$params$eval$params}: Optional engine-specific parameters (not used by this engine).
+\item \code{control$params$eval$params}: Optional engine-specific parameters (not used here).
 }
+
+\strong{Engine-Specific Parameters (\code{control$params$eval$params}):}
+\itemize{
+\item None. This engine evaluates group fairness based on fixed logic.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_statisticalparity"
+control$params$eval <- controller_evaluation(
+  protected_name = c("gender", "race")
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/7_3_a_template_eval_statisticalparity.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
 \item A list structured via \code{initialize_output_eval()}:
 \itemize{
-\item \code{metrics}: Named list \code{spd} with SPD values per protected attribute.
-\item \code{eval_type}: Set to \code{"statistical_parity_eval"}.
-\item \code{input_data}: Original evaluation data.
-\item \code{protected_attributes}: Names of protected attributes.
-\item \code{params}: Set to \code{NULL}.
+\item \code{metrics}: Named list \code{spd}, containing values per protected attribute.
+\item \code{eval_type}: \code{"statistical_parity_eval"}.
+\item \code{input_data}: Original evaluation data (incl. predictions).
+\item \code{protected_attributes}: List of protected attributes used.
+\item \code{params}: \code{NULL}.
 \item \code{specific_output}: \code{NULL}.
 }
 }
+}
+\seealso{
+\code{\link[=engine_eval_statisticalparity]{engine_eval_statisticalparity()}},
+\code{\link[=default_params_eval_statisticalparity]{default_params_eval_statisticalparity()}},
+\code{\link[=initialize_output_eval]{initialize_output_eval()}},
+\code{\link[=controller_evaluation]{controller_evaluation()}},
+Template: \verb{inst/templates_control/7_3_a_template_eval_statisticalparity.R}
 }
 \keyword{internal}

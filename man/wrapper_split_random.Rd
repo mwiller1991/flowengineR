@@ -48,7 +48,7 @@ control$params$split <- controller_split(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \code{inst/templates/template_control_split_random.R}
+See full template in \verb{inst/templates/1_c_template_control_split_random.R}
 
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_split()} with:

@@ -28,4 +28,7 @@ where each split is executed sequentially with increasing seeds.
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_sequential]{wrapper_execution_adaptive_output_sequential()}}
+}
 \keyword{internal}

@@ -25,4 +25,7 @@ This engine performs a basic export of report or reportelement content to Excel 
 \item \emph{(none)} — returns an empty list.
 }
 }
+\seealso{
+\code{\link[=wrapper_publish_excel_basis]{wrapper_publish_excel_basis()}}
+}
 \keyword{internal}

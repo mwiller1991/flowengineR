@@ -98,6 +98,8 @@ wrapper_execution_basic_slurm_array <- function(control, split_output) {
   # Merge optional parameters
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_basic_slurm_array())
   
+  log_msg(sprintf("[EXECUTION] Preparing SLURM input files in folder: '%s'", params$output_folder), level = "info", control = control)
+  
   # Define folder for SLURM input preparation
   output_dir <- params$output_folder
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
@@ -106,6 +108,8 @@ wrapper_execution_basic_slurm_array <- function(control, split_output) {
   saveRDS(control, file.path(output_dir, "control_base.rds"))
   saveRDS(split_output, file.path(output_dir, "split_output.rds"))
   writeLines(as.character(length(split_output$splits)), file.path(output_dir, "n_splits.txt"))
+  
+  log_msg("[EXECUTION] SLURM input preparation complete. Execution deferred.", level = "info", control = control)
   
   # Return standardized execution output
   initialize_output_execution(

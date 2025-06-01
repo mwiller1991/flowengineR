@@ -8,7 +8,7 @@ controller_fairness_in(
   protected_attributes,
   target_var,
   norm_data = TRUE,
-  params = NULL
+  params = list()
 )
 }
 \arguments{
@@ -18,10 +18,10 @@ controller_fairness_in(
 
 \item{norm_data}{Logical. Use normalized data (\code{TRUE}) or raw data (\code{FALSE}) in training.}
 
-\item{params}{Optional named list of engine-specific parameters.}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored in \code{control$params$fairness_in}, compatible with all in-processing engines.
+Named list. To be stored in \code{control$params$fairness_in} and passed to the fairness in-processing engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for any fairness in-processing engine

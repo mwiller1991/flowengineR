@@ -19,23 +19,46 @@ and invokes the MSE evaluation engine. Wraps the result using \code{initialize_o
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$eval$eval_data$predictions}: Numeric vector of predicted values.
-\item \code{control$params$eval$eval_data$actuals}: Numeric vector of actual observed values.
-\item \code{control$params$eval$protected_attributes}: Names of protected attributes (optional, included in output).
-\item \code{control$params$eval$params$eval_mse}: Optional engine-specific parameters (not required by this engine).
+\item \code{control$params$eval$eval_data$predictions}: Numeric vector of predicted values (injected by workflow).
+\item \code{control$params$eval$eval_data$actuals}: Numeric vector of actual values (injected by workflow).
+\item \code{control$params$eval$protected_attributes}: Names of protected attributes (optional; included in output).
+\item \code{control$params$eval$params$eval_mse}: Optional engine-specific parameters (not used here).
 }
+
+\strong{Engine-Specific Parameters (\code{control$params$eval$params$eval_mse}):}
+\itemize{
+\item None. This engine has no tunable settings.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_mse"
+control$params$eval <- controller_evaluation(
+  protected_name = c("gender")
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/7_2_a_template_eval_mse.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
 \item A list structured via \code{initialize_output_eval()}:
 \itemize{
-\item \code{metrics}: Named list with entry \code{mse}, holding the MSE value.
-\item \code{eval_type}: Set to \code{"mse_eval"}.
-\item \code{input_data}: Original input used for evaluation.
-\item \code{protected_attributes}: Passed through from control (if present).
-\item \code{params}: Merged parameter list.
+\item \code{metrics}: Named list with entry \code{mse} (numeric).
+\item \code{eval_type}: \code{"mse_eval"}.
+\item \code{input_data}: Evaluation input (predictions + actuals).
+\item \code{protected_attributes}: Passed through from control (optional).
+\item \code{params}: Empty list.
 \item \code{specific_output}: \code{NULL}.
 }
 }
+}
+\seealso{
+\code{\link[=engine_eval_mse]{engine_eval_mse()}},
+\code{\link[=default_params_eval_mse]{default_params_eval_mse()}},
+\code{\link[=initialize_output_eval]{initialize_output_eval()}},
+\code{\link[=controller_evaluation]{controller_evaluation()}},
+Template: \verb{inst/templates_control/7_2_a_template_eval_mse.R}
 }
 \keyword{internal}

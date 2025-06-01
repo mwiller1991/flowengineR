@@ -31,18 +31,47 @@ and invokes the Excel publishing engine. Returns standardized output using \code
 \item \code{alias_publish}: Character string identifying this publishing instance.
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$publish$params[[alias_publish]]}):}
+\itemize{
+\item \code{obj_type} \emph{(character)}: Must be \code{"report"} or \code{"reportelement"} (required).
+\item \emph{(no other parameters used in this engine)}
+}
+
+\strong{Example Template Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$publish <- list(
+  export_excel = "publish_excel_basis"
+)
+
+control$params$publish <- controller_publish(
+  params = list(
+    export_excel = list(
+      obj_type = "report"
+    )
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:} \verb{inst/templates_control/10_b_template_publish_excel.R}
+
 \strong{Standardized Output (returned to framework):}
 \itemize{
 \item A list structured via \code{initialize_output_publish()}:
 \itemize{
-\item \code{alias}: Alias used to identify this publishing call.
-\item \code{type}: Object type being published (\code{"report"} or \code{"reportelement"}).
-\item \code{engine}: Engine name used (e.g., \code{"publish_excel_basis"}).
-\item \code{path}: Full file path to the saved output.
-\item \code{success}: Logical flag indicating success or failure.
-\item \code{params}: Merged parameter list.
-\item \code{specific_output}: Metadata (e.g., error messages if unsuccessful).
+\item \code{alias}: Alias of the publishing instance.
+\item \code{type}: \code{"report"} or \code{"reportelement"}.
+\item \code{engine}: \code{"publish_excel_basis"}.
+\item \code{path}: Path to saved \code{.xlsx} file.
+\item \code{success}: TRUE/FALSE indicating rendering success.
+\item \code{params}: Parameter list used for publishing.
+\item \code{specific_output}: Error message or \code{NULL}.
 }
 }
+}
+\seealso{
+\code{\link[=engine_publish_excel_basis]{engine_publish_excel_basis()}},
+\code{\link[=default_params_publish_excel_basis]{default_params_publish_excel_basis()}},
+\code{\link[=initialize_output_publish]{initialize_output_publish()}},
+\code{\link[=controller_publish]{controller_publish()}}
 }
 \keyword{internal}

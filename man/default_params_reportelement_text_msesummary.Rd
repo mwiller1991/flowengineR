@@ -25,4 +25,7 @@ This engine requires no configuration and uses internal aggregation logic.
 \item \emph{(none)} — returns an empty list.
 }
 }
+\seealso{
+\code{\link[=wrapper_reportelement_text_msesummary]{wrapper_reportelement_text_msesummary()}}
+}
 \keyword{internal}

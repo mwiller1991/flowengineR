@@ -27,4 +27,7 @@ Provides default parameters for fairness post-processing engines. These paramete
 \item Ensures default parameters are used when none are provided in the \code{control} object.
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_post_genresidual]{wrapper_fairness_post_genresidual()}}
+}
 \keyword{internal}

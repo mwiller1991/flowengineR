@@ -141,6 +141,9 @@ wrapper_reportelement_boxplot_predictions <- function(control, workflow_results,
     source = params$source
   )
   
+  log_msg(sprintf("[REPORTELEMENT] Boxplot created using group_var = '%s' and source = '%s'.", params$group_var, params$source), 
+          level = "info", control = control)
+  
   initialize_output_reportelement(
     type = "plot",
     content = plot,

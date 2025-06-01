@@ -29,4 +29,7 @@ Combines selected reportelements into a structured multi-section model summary.
 \item A list of structured report sections with headings and associated content.
 }
 }
+\seealso{
+\code{\link[=wrapper_report_modelsummary]{wrapper_report_modelsummary()}}
+}
 \keyword{internal}

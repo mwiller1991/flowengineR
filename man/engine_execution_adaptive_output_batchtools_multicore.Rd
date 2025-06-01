@@ -29,4 +29,7 @@ using batchtools with a multicore backend.
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_output_batchtools_multicore]{wrapper_execution_adaptive_output_batchtools_multicore()}}
+}
 \keyword{internal}

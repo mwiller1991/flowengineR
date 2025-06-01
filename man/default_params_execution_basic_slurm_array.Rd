@@ -26,4 +26,7 @@ split definitions are written before external execution via SLURM array jobs.
 \item \code{output_folder}: Directory where the control and split files are stored (default: \code{"slurm_inputs"}).
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_slurm_array]{wrapper_execution_basic_slurm_array()}}
+}
 \keyword{internal}

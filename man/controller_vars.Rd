@@ -21,7 +21,7 @@ controller_vars(
 \item{protected_vars_binary}{Character vector. Protected variables prepared for fairness evaluation (e.g., binary dummies).}
 }
 \value{
-A named list to be stored in \code{control$vars}, compatible with all fairnessToolbox modules.
+Named list. To be stored in \code{control$vars} and passed to all engines that require variable references. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Creates a standardized structure containing all variable names required across

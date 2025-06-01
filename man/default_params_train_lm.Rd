@@ -28,4 +28,7 @@ Provides default parameters for training engines. These parameters are specific 
 \item Ensures default parameters are used when none are provided in the \code{control} object.
 }
 }
+\seealso{
+\code{\link[=wrapper_train_lm]{wrapper_train_lm()}}
+}
 \keyword{internal}

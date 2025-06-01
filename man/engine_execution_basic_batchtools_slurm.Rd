@@ -31,4 +31,7 @@ Designed for use with a SLURM-based HPC cluster.
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_batchtools_slurm]{wrapper_execution_basic_batchtools_slurm()}}
+}
 \keyword{internal}

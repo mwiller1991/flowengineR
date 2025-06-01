@@ -121,6 +121,8 @@ wrapper_reportelement_table_splitmetrics <- function(control, workflow_results, 
     metrics = params$metrics
   )
   
+  log_msg(sprintf("[REPORTELEMENT] Table generated with %d rows and %d columns.", nrow(table), ncol(table)), level = "info", control = control)
+  
   # Initialize standardized output
   initialize_output_reportelement(
     type = "table",

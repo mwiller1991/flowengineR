@@ -10,7 +10,7 @@ wrapper_execution_adaptive_output_sequential(control, split_output)
 \arguments{
 \item{control}{A standardized control object (see \code{controller_execution()}).}
 
-\item{split_output}{A list of splits from the splitter engine. Must contain exactly one split.}
+\item{split_output}{A list containing exactly one data split.}
 }
 \value{
 A standardized execution output object.
@@ -18,7 +18,7 @@ A standardized execution output object.
 \description{
 Executes a dynamic number of 1-split workflows until a monitored metric becomes stable
 or a maximum number of iterations is reached. Splits are generated using the configured
-splitter with \code{n_splits = 1} and increasing seeds.
+splitter with n_splits = 1 and increasing seeds.
 }
 \details{
 \strong{Important Constraint:} Only splitter engines that return \strong{exactly one split} are allowed.
@@ -26,21 +26,64 @@ Splitters such as cross-validation (\code{split_cv}) with \code{cv_folds > 1} ar
 
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$execution$params}: Parameters for adaptive execution.
-\item \code{control}: The full control object.
-\item \code{split_output}: The result of the initial splitter call (used only to validate split count).
+\item \code{control$params$execution$params}: Execution control settings (e.g., monitored metric, thresholds).
+\item \code{control}: Full control object.
+\item \code{split_output}: Initial split result (only used to check validity).
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
+\itemize{
+\item \code{metric_name} \emph{(character, default = "mse")}: Metric to monitor.
+\item \code{metric_source} \emph{(character, default = "eval_mse")}: Evaluation engine providing the metric.
+\item \code{stability_strategy} \emph{(character)}: Method for convergence (\code{"custom_relative"}, \code{"custom_absolute"}, \code{"mean_relative"}, \code{"mean_absolute"}, \code{"sd_relative"}, \code{"sd_absolute"}, \code{"mad_relative"}, \code{"mad_absolute"}, \code{"cv_relative"}, \code{"cv_absolute"}, \code{"cohen_absolute"}).
+\item \code{threshold} \emph{(numeric)}: Stability threshold for the selected strategy.
+\item \code{window} \emph{(integer)}: Number of trailing values used to assess stability.
+\item \code{min_splits} \emph{(integer)}: Minimum number of iterations before checking.
+\item \code{max_splits} \emph{(integer)}: Maximum iterations before stop.
+\item \code{seed_base} \emph{(integer)}: Seed base; seed used in iteration \code{i} is \code{seed_base + i}.
+\item \code{custom_stability_function} \emph{(function or NULL)}: Optional user-defined stability function.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_adaptive_output_sequential"
+control$params$execution <- controller_execution(
+  params = list(
+    metric_name = "mse",
+    stability_strategy = "cohen_absolute",
+    threshold = 0.2,
+    window = 3,
+    min_splits = 5,
+    max_splits = 50,
+    seed_base = 1000
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/2_2_a_template_execution_adaptive_output_sequential.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_execution()} with:
 \itemize{
-\item A list structured via \code{initialize_output_execution()}:
+\item \code{execution_type}: "adaptive_output_sequential"
+\item \code{workflow_results}: List of results from \code{run_workflow_single()} per split
+\item \code{params}: Merged parameter list
+\item \code{continue_workflow}: \code{TRUE} (workflow continues)
+\item \code{specific_output}: Includes:
 \itemize{
-\item \code{execution_type}: "adaptive_output_sequential".
-\item \code{workflow_results}: Named list of results per iteration.
-\item \code{params}: Merged parameter list.
-\item \code{continue_workflow}: \code{TRUE} (ready for next steps).
-\item \code{specific_output}: Includes metric values, reconstructed split_output and used seeds.
+\item \code{metric_name}, \code{metric_source}
+\item \code{values}: Vector of all metric values
+\item \code{split_output}: Reconstructed split_output object
+\item \code{used_seeds}: Vector of seeds used
 }
 }
+}
+\seealso{
+\code{\link[=engine_execution_adaptive_output_sequential]{engine_execution_adaptive_output_sequential()}},
+\code{\link[=default_params_execution_adaptive_output_sequential]{default_params_execution_adaptive_output_sequential()}},
+\code{\link[=initialize_output_execution]{initialize_output_execution()}},
+\code{\link[=controller_execution]{controller_execution()}},
+Template: \verb{inst/templates_control/2_2_a_template_execution_adaptive_output_sequential.R}
 }
 \keyword{internal}

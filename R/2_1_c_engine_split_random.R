@@ -22,8 +22,13 @@
 #' @return A list containing train and test data splits.
 #' @keywords internal
 engine_split_random <- function(data, split_ratio, seed) {
+  # Set seed to ensure reproducible random sampling
   set.seed(seed)
+  
+  # Sample training indices randomly (without stratification)
   train_indices <- sample(1:nrow(data), size = split_ratio * nrow(data))
+  
+  # Return split structure with train and test sets
   list(
     train = data[train_indices, ],
     test = data[-train_indices, ]
@@ -54,6 +59,11 @@ engine_split_random <- function(data, split_ratio, seed) {
 #' **Notes:**
 #' - The target variable is ignored by this engine but must still be defined for compatibility.
 #' - This engine performs no stratification. For stratified splitting, consider using `"split_random_stratified"`.
+#'
+#' **Workflow Integration:**
+#' - `target_var` is **automatically resolved** from `control$data$vars$target_var` 
+#'   if not provided explicitly in the controller.
+#' - This allows users to define `target_var` only once in `controller_vars()`.
 #'
 #' **Example Control Snippet:**
 #' ```
@@ -98,7 +108,10 @@ wrapper_split_random <- function(control) {
   # Merge default parameters
   params <- merge_with_defaults(split_params$params, default_params_split_random())
   
-  message(sprintf("[INFO] Performing random split with training ratio %.2f and seed %d", params$split_ratio, split_params$seed))
+  log_msg(sprintf(
+    "[SPLIT] Performing random split with training ratio %.2f and seed %d.",
+    params$split_ratio, split_params$seed
+  ), level = "info", control = control)
   
   # Call the random split engine
   split <- engine_split_random(

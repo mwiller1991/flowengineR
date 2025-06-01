@@ -30,4 +30,7 @@ This engine itself does not perform any execution; all processing is handled ext
 \item A placeholder list indicating that SLURM preparation was handled in the wrapper.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_slurm_array]{wrapper_execution_basic_slurm_array()}}
+}
 \keyword{internal}

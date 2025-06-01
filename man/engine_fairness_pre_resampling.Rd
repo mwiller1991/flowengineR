@@ -36,4 +36,7 @@ Applies resampling (oversampling or undersampling) to balance class distribution
 }
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_pre_resampling]{wrapper_fairness_pre_resampling()}}
+}
 \keyword{internal}

@@ -31,4 +31,7 @@ and one scalar parameter set to a candidate value.
 \item A single result list as returned by \code{run_workflow_single()}.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_adaptive_input_scalar_sequential]{wrapper_execution_adaptive_input_scalar_sequential()}}
+}
 \keyword{internal}

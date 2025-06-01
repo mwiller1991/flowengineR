@@ -39,16 +39,20 @@ engine_eval_mse <- function(predictions, actuals) {
 #' - `control$params$eval$eval_data$predictions`: Numeric vector of predicted values (injected by workflow).
 #' - `control$params$eval$eval_data$actuals`: Numeric vector of actual values (injected by workflow).
 #' - `control$params$eval$protected_attributes`: Names of protected attributes (optional; included in output).
-#' - `control$params$eval$params$eval_mse`: Optional engine-specific parameters (not used here).
+#' - `control$params$eval$params$eval_mse`: Optional engine-specific parameters.
 #'
 #' **Engine-Specific Parameters (`control$params$eval$params$eval_mse`):**
-#' - None. This engine has no tunable settings.
+#' - None. This engine has no tunable settings and simply computes the MSE.
+#'
+#' **Variable Handling:**
+#' - This engine does **not** require `protected_name` to be binary.
+#' - Protected attributes are passed through for consistency and may be used in reporting.
 #'
 #' **Example Control Snippet:**
 #' ```
 #' control$evaluation <- "eval_mse"
 #' control$params$eval <- controller_evaluation(
-#'   protected_name = c("gender")
+#'   params = list()
 #' )
 #' ```
 #'
@@ -60,7 +64,7 @@ engine_eval_mse <- function(predictions, actuals) {
 #'   - `metrics`: Named list with entry `mse` (numeric).
 #'   - `eval_type`: `"mse_eval"`.
 #'   - `input_data`: Evaluation input (predictions + actuals).
-#'   - `protected_attributes`: Passed through from control (optional).
+#'   - `protected_attributes`: Passed through from control (optional, not used).
 #'   - `params`: Empty list.
 #'   - `specific_output`: `NULL`.
 #'
@@ -95,6 +99,8 @@ wrapper_eval_mse <- function(control) {
     actuals = as.numeric(eval_params$eval_data$actuals)
   )
   
+  log_msg(sprintf("[EVAL] MSE evaluation complete. MSE = %.6f", mse), level = "info", control = control)
+  
   # Standardized output
   initialize_output_eval(
     metrics = list(mse = mse),
@@ -128,6 +134,6 @@ wrapper_eval_mse <- function(control) {
 #' @return A list of default parameters for the MSE evaluation engine.
 #' @keywords internal
 default_params_eval_mse <- function() {
-  list()  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  list()
 }
 #--------------------------------------------------------------------

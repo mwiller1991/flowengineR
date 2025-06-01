@@ -36,7 +36,7 @@
 #' @param target_var Character. Name of the target variable (dependent variable).
 #' @param protected_vars_binary Character vector. Protected variables prepared for fairness evaluation (e.g., binary dummies).
 #'
-#' @return A named list to be stored in `control$vars`, compatible with all fairnessToolbox modules.
+#' @return Named list. To be stored in \code{control$vars} and passed to all engines that require variable references. Compatible with all \code{fairnessToolbox} modules.
 #' @export
 #--------------------------------------------------------------------
 controller_vars <- function(feature_vars, protected_vars, target_var, protected_vars_binary) {
@@ -56,43 +56,46 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' Controller: Split Input Specification
 #'
 #' Generates a standardized input configuration for any splitter engine used 
-#' within the fairnessToolbox workflow. This controller ensures that the structure 
-#' is compatible not only with built-in engines (e.g., random, stratified, CV) 
-#' but also with any user-defined splitter engines.
+#' within the fairnessToolbox workflow. This controller ensures compatibility 
+#' with built-in engines (e.g., random, stratified, CV) as well as user-defined
+#' splitter engines by standardizing the required interface.
 #'
-#' Designed for use in the construction of the `control` object. This function decouples 
-#' engine-independent information (e.g., target variable, seed) from engine-specific parameters.
+#' Designed for use in the `control` object. This controller separates general information 
+#' (e.g., target variable, seed) from engine-specific hyperparameters.
 #'
 #' **Purpose:**
 #' - Provides a consistent and extensible input structure for all types of splitter engines.
-#' - Facilitates modular extension of the framework by third-party or user-defined engines.
+#' - Facilitates modular extension of the framework.
+#'
+#' **Automated Variable Handling:**
+#' - `target_var` is **optional** and will be automatically set via `control$vars$target_var`
+#'   using `autofill_controllers_from_vars()` if not provided.
+#' - This requires the prior use of `controller_vars()` when setting up the control object.
 #'
 #' **Standardized Structure:**
-#' - `seed`: Random seed used for reproducibility across runs.
-#' - `target_var`: The outcome variable, needed for stratified or CV-based splitting.
-#' - `params`: A named list of additional splitter-specific hyperparameters (e.g., `split_ratio`, `cv_folds`).
+#' - `seed`: Integer seed for reproducibility.
+#' - `target_var`: *(autofilled)* Character string used for stratified or CV-based splitting.
+#' - `params`: Named list of engine-specific hyperparameters (e.g., `split_ratio`, `cv_folds`).
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$split <- controller_split(
 #'   seed = 42,
-#'   target_var = "default",
 #'   params = list(split_ratio = 0.7)
 #' )
 #' ```
 #'
 #' @param seed Optional integer for reproducibility. Default is `123`.
-#' @param target_var Character. Name of the target variable used in splitting logic.
-#' @param params Named list. Additional engine-specific parameters passed to the splitter.
+#' @param target_var Optional character. Name of the target variable (autofilled if not provided).
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored under `control$split`, compatible with all splitter engines.
+#' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
 #--------------------------------------------------------------------
 
-controller_split <- function(seed = 123, target_var, params = list()) {
+controller_split <- function(seed = 123, params = list()) {
   list(
     seed = seed,
-    target_var = target_var,
     params = params
   )
 }
@@ -131,11 +134,11 @@ controller_split <- function(seed = 123, target_var, params = list()) {
 #' )
 #' ```
 #'
-#' @param params Named list. Additional execution-specific parameters. Keys and values depend on the selected engine.
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored in `control$execution`, compatible with all execution engines.
+#' @return Named list. To be stored in \code{control$params$execution} and passed to the execution engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_execution <- function(method = "execution_sequential", params = list()) {
+controller_execution <- function(params = list()) {
   list(
     params = params
   )
@@ -176,11 +179,13 @@ controller_execution <- function(method = "execution_sequential", params = list(
 #'
 #' @param formula A model formula used to define the structure of the predictive model.
 #' @param norm_data Logical. Whether to normalize the input data (default: `TRUE`).
-#' @param params Optional named list of training engine parameters (e.g., tuning values).
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored in `control$params$train`, compatible with all training engines.
+#' @return Named list. To be stored in \code{control$params$train} and passed to the training engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_training <- function(formula, norm_data = TRUE, params = NULL) {
+controller_training <- function(formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
+                                norm_data = TRUE,
+                                params = list()) {
   list(
     formula = formula,
     norm_data = norm_data,
@@ -205,32 +210,31 @@ controller_training <- function(formula, norm_data = TRUE, params = NULL) {
 #'
 #' **Purpose:**
 #' - Prepares all necessary inputs for fairness-aware preprocessing.
-#' - Encapsulates relevant metadata such as protected attributes and outcome variables.
+#' - Allows engine-specific parameters to be passed in a standardized format.
+#'
+#' **Automated Variable Handling:**
+#' - `protected_attributes` and `target_var` are no longer required as direct arguments.
+#' - These will automatically be filled from `control$vars` if omitted.
+#' - This requires the use of `controller_vars()` as part of the control object setup.
 #'
 #' **Standardized Structure:**
-#' - `protected_attributes`: Character vector of protected attribute names.
-#' - `target_var`: Character string. The target variable used in supervised learning.
+#' - `protected_attributes`: (autofilled) Character vector of protected attribute names.
+#' - `target_var`: (autofilled) Character string. The target variable used in supervised learning.
 #' - `params`: A named list of additional parameters passed to the pre-processing engine.
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$fairness_pre <- controller_fairness_pre(
-#'   protected_attributes = c("gender"),
-#'   target_var = "default",
-#'   params = list(method = "DIR", repair_level = 0.5)
+#'   params = list(method = "undersampling")
 #' )
 #' ```
 #'
-#' @param protected_attributes Character vector. Names of protected attributes to be considered.
-#' @param target_var Character string. Name of the outcome variable.
-#' @param params Optional named list of engine-specific parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored in `control$params$fairness_pre`, compatible with all pre-processing engines.
+#' @return Named list. To be stored in \code{control$params$fairness_pre} and passed to the fairness pre-processing engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_fairness_pre <- function(protected_attributes, target_var, params = NULL) {
+controller_fairness_pre <- function(params = list()) {
   list(
-    protected_attributes = protected_attributes,
-    target_var = target_var,
     params = params
   )
 }
@@ -248,40 +252,42 @@ controller_fairness_pre <- function(protected_attributes, target_var, params = N
 #' with built-in and custom in-processing methods that modify models during training.
 #'
 #' Designed for use in the `control` object. In-processing methods can directly influence 
-#' the learning algorithm, e.g., by adjusting loss functions, applying reweighting, or 
-#' enforcing fairness constraints during optimization.
+#' the learning algorithm, for example by adjusting loss functions, applying reweighting, 
+#' or enforcing fairness constraints during optimization.
 #'
 #' **Purpose:**
-#' - Prepares metadata and parameters required for in-processing engines.
-#' - Supports optional normalization toggling at model level.
+#' - Prepares metadata and engine-specific parameters for in-processing methods.
+#' - Supports optional normalization toggling before model training.
+#'
+#' **Automated Variable Handling:**
+#' - `protected_attributes` and `target_var` are **not required** as direct inputs.
+#' - These will be automatically filled from `control$vars` if not set manually.
+#' - Requires prior use of `controller_vars()` to define `target_var` and `protected_vars`.
 #'
 #' **Standardized Structure:**
-#' - `protected_attributes`: Character vector of protected attribute names.
-#' - `target_var`: Character string. The outcome variable.
-#' - `norm_data`: Logical. Whether normalized data should be used for model training.
+#' - `protected_attributes`: *(autofilled)* Character vector of protected attribute names.
+#' - `target_var`: *(autofilled)* Character string specifying the target variable.
+#' - `norm_data`: Logical. Whether to normalize input data before training (default: `TRUE`).
 #' - `params`: A named list of engine-specific parameters.
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$fairness_in <- controller_fairness_in(
-#'   protected_attributes = c("gender"),
-#'   target_var = "default",
 #'   norm_data = TRUE,
-#'   params = list(reweighting_method = "kamiran")
+#'   params = list(
+#'     learning_rate = 0.1,
+#'     num_epochs = 1000
+#'   )
 #' )
 #' ```
 #'
-#' @param protected_attributes Character vector. Protected attributes used during in-processing.
-#' @param target_var Character string. Target variable of the predictive task.
 #' @param norm_data Logical. Use normalized data (`TRUE`) or raw data (`FALSE`) in training.
-#' @param params Optional named list of engine-specific parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored in `control$params$fairness_in`, compatible with all in-processing engines.
+#' @return Named list. To be stored in \code{control$params$fairness_in} and passed to the fairness in-processing engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_fairness_in <- function(protected_attributes, target_var, norm_data = TRUE, params = NULL) {
+controller_fairness_in <- function(norm_data = TRUE, params = list()) {
   list(
-    protected_attributes = protected_attributes,
-    target_var = target_var,
     norm_data = norm_data,
     params = params
   )
@@ -299,33 +305,57 @@ controller_fairness_in <- function(protected_attributes, target_var, norm_data =
 #' used in the fairnessToolbox workflow. This controller supports any post-processing 
 #' engine that adjusts predictions after model training (e.g., rejection options, thresholds).
 #'
-#' Designed for use in the `control` object. Post-processing techniques act on the 
-#' model outputs and aim to correct unfairness without modifying the model itself.
+#' Designed for use in the `control` object. Post-processing techniques act on model outputs
+#' and aim to correct unfairness **without modifying the model itself**.
 #'
 #' **Purpose:**
-#' - Supplies protected group metadata and engine-specific configuration.
-#' - Enables modular extension of fairness post-processing methods.
+#' - Supplies metadata for protected groups and engine-specific parameters.
+#' - Enables modular and extensible use of post-processing fairness engines.
+#' - Supports fully automatic prediction data injection from the workflow.
+#'
+#' **Automated Variable Handling:**
+#' - `protected_name` (i.e. binary/grouped attribute names) is **automatically derived**
+#'   from `control$vars$protected_vars_binary`.
+#' - Users **must not** specify this field manually.
+#' - This requires prior use of `controller_vars()` to define protected attributes and their binary representations.
+#'
+#' **Binary Attribute Requirement:**
+#' - All variables listed in `protected_name` **must be binary** (e.g., 0/1, TRUE/FALSE).
+#' - Multi-class attributes must be manually transformed into binary dummy variables.
+#' - This transformation should be done during the creation of `control$vars$protected_vars_binary`.
+#' - Post-processing will fail or yield incorrect results if non-binary attributes are used.
+#'
+#' **Structure of `fairness_post_data`:**
+#' Injected by the workflow before calling the post-processing engine:
+#' ```r
+#' fairness_post_data <- cbind(
+#'   predictions = as.numeric(predictions),
+#'   actuals = testdata[[control$vars$target_var]],
+#'   testdata[control$vars$protected_vars_binary]
+#' )
+#' ```
+#' This ensures access to:
+#' - `predictions`: Model predictions.
+#' - `actuals`: True labels.
+#' - Binary/grouped protected attributes (`protected_vars_binary`).
 #'
 #' **Standardized Structure:**
-#' - `protected_name`: Character vector of protected attribute names (binary/grouped).
+#' - `protected_name`: *(autofilled)* Character vector of binary/grouped protected attributes.
 #' - `params`: Named list of additional engine-specific parameters.
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$fairness_post <- controller_fairness_post(
-#'   protected_name = c("gender_male"),
 #'   params = list(impact_reduction_factor = 0.5)
 #' )
 #' ```
 #'
-#' @param protected_name Character vector. Names of protected attributes in binary form used for evaluation and adjustment.
-#' @param params Optional named list of engine-specific post-processing parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return A named list to be stored in `control$params$fairness_post`, compatible with all post-processing engines.
+#' @return Named list. To be stored in \code{control$params$fairness_post} and passed to the fairness post-processing engine. Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_fairness_post <- function(fairness_post_data, protected_name, params = NULL) {
+controller_fairness_post <- function(params = list()) {
   list(
-    protected_name = protected_name,
     params = params
   )
 }
@@ -346,32 +376,40 @@ controller_fairness_post <- function(fairness_post_data, protected_name, params 
 #' attributes from metric-specific configuration, enabling flexible extensions.
 #'
 #' **Purpose:**
-#' - Specifies which protected attributes should be considered in fairness metrics.
+#' - Specifies which protected attributes should be considered in fairness evaluation.
 #' - Defines engine-specific configurations for individual evaluation methods.
 #'
+#' **Automated Variable Handling:**
+#' - `protected_name` is **automatically derived** from `control$vars$protected_vars_binary`.
+#' - Users do **not need to set this manually**.
+#' - This requires prior use of `controller_vars()` to define binary indicators for protected attributes.
+#'
+#' **Binary Attribute Requirement:**
+#' - All attributes in `protected_name` must be **binary** (e.g., 0/1, TRUE/FALSE).
+#' - Multi-class or continuous variables must be converted to binary before being passed into `protected_vars_binary`.
+#' - Evaluation engines will throw an error or produce invalid results if this condition is not met.
+#'
 #' **Standardized Structure:**
-#' - `protected_name`: Character vector of protected attributes in binary/grouped form.
-#' - `params`: Optional named list of parameter lists, each keyed by evaluation engine name.
+#' - `protected_name`: *(autofilled)* Character vector of binary/grouped protected attributes.
+#' - `params`: Named list of parameter lists, each keyed by evaluation engine name (e.g., `"eval_mse"`).
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$eval <- controller_evaluation(
-#'   protected_name = c("gender_male"),
 #'   params = list(
 #'     eval_mse = list(),
-#'     eval_statisticalparity = list(group_reference = "female")
+#'     eval_statisticalparity = list(threshold = 0.1)
 #'   )
 #' )
 #' ```
 #'
-#' @param protected_name Character vector. Names of protected attributes used in evaluation metrics.
-#' @param params Optional named list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.
 #'
-#' @return A named list to be stored in `control$params$eval`, compatible with all evaluation engines.
+#' @return Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_evaluation <- function(protected_name, params = NULL) {
+controller_evaluation <- function(params = list()) {
   list(
-    protected_name = protected_name,
+    #protected_name = protected_name,
     params = params
   )
 }
@@ -415,11 +453,11 @@ controller_evaluation <- function(protected_name, params = NULL) {
 #' )
 #' ```
 #'
-#' @param params Optional named list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.
 #'
-#' @return A named list to be stored in `control$params$reportelement`, compatible with all reportelement engines.
+#' @return Named list. To be stored in \code{control$params$reportelement} and passed to the reportelement engine(s). Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_reportelement <- function(params = NULL) {
+controller_reportelement <- function(params = list()) {
   list(
     params = params
   )
@@ -466,11 +504,11 @@ controller_reportelement <- function(params = NULL) {
 #' )
 #' ```
 #'
-#' @param params Optional named list. Each name corresponds to a report alias, and each value is a list of engine-specific parameters.
+#' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a report alias, and each value is a list of engine-specific parameters.
 #'
-#' @return A named list to be stored in `control$params$report`, compatible with all report engines.
+#' @return Named list. To be stored in \code{control$params$report} and passed to the report engine(s). Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_report <- function(params = NULL) {
+controller_report <- function(params = list()) {
   list(
     params = params
   )
@@ -518,11 +556,12 @@ controller_report <- function(params = NULL) {
 #' ```
 #'
 #' @param output_folder Character string. Global directory path to store all exports.
-#' @param params Named list. Each name should match a `control$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
+#' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
 #'
-#' @return A named list to be stored in `control$params$publish`, compatible with all publishing engines.
+#' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{fairnessToolbox} modules.
 #' @export
-controller_publish <- function(output_folder = NULL, params = NULL) {
+controller_publish <- function(output_folder = "~/publish_exports", 
+                               params = list()) {
   list(
     output_folder = output_folder,
     params = params
@@ -569,7 +608,7 @@ controller_publish <- function(output_folder = NULL, params = NULL) {
 #' @param workflow_results A named list of `run_workflow_single()` results, typically loaded from file.
 #' @param metadata Optional. A named list of metadata to be stored in `specific_output` of the execution engine (e.g., runtime info, job ID).
 #'
-#' @return A standardized resume object for use in `resume_fairness_workflow()`.
+#' @return Named list. To be passed to \code{resume_fairness_workflow()} as input after external execution. Compatible with all \code{fairnessToolbox} modules.
 #' @export
 controller_resume_execution <- function(control, split_output, workflow_results, metadata = NULL) {
   list(

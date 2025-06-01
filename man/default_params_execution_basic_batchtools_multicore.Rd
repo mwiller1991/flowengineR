@@ -32,4 +32,7 @@ Note: This engine only works on Unix-like systems (Linux, macOS, WSL). It is not
 \item \code{ncpus}: Number of parallel cores to use locally.
 }
 }
+\seealso{
+\code{\link[=wrapper_execution_basic_batchtools_multicore]{wrapper_execution_basic_batchtools_multicore()}}
+}
 \keyword{internal}

@@ -16,7 +16,7 @@ wrapper_reportelement_table_splitmetrics(
 
 \item{workflow_results}{Named list of workflow results.}
 
-\item{split_output}{Output list from the splitter engine (not used here).}
+\item{split_output}{Output from the splitter engine (not used here).}
 
 \item{alias}{Unique identifier for this reportelement instance.}
 }
@@ -30,23 +30,49 @@ and invokes the table engine. Wraps the result using \code{initialize_output_rep
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters (e.g., \code{metrics}).
-\item \code{workflow_results}: List of workflow results per split.
-\item \code{split_output}: Output of the splitter engine (not used by this engine, included for compatibility).
+\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters.
+\item \code{workflow_results}: Named list of workflow results per split (provided by the workflow).
+\item \code{split_output}: Output of the splitter engine (not used by this engine).
 \item \code{alias}: Character string identifying the reportelement instance.
 }
+
+\strong{Engine-Specific Parameters (\code{control$params$reportelement$params[[alias]]}):}
+\itemize{
+\item \code{metrics} \emph{(character vector)}: Metric types to include in the table.
+Supported: \code{"mse"}, \code{"summarystats"}, \code{"spd"}, etc.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
+control$params$reportelement <- controller_reportelement(
+  params = list("split_table" = list(
+    metrics = c("mse", "summarystats")
+  ))
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/8_b_template_reportelement_table_splitmetrics.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
 \item A list structured via \code{initialize_output_reportelement()}:
 \itemize{
-\item \code{type}: \code{"table"}.
-\item \code{content}: data.frame of split-wise metrics.
-\item \code{compatible_formats}: c("pdf", "html", "xlsx", "json").
-\item \code{input_data}: Names of splits used.
-\item \code{params}: Merged parameter list.
-\item \code{specific_output}: Metadata including \code{n_splits} and \code{alias}.
+\item \code{type}: \code{"table"}
+\item \code{content}: data.frame with one row per split and one column per selected metric
+\item \code{compatible_formats}: \code{c("pdf", "html", "xlsx", "json")}
+\item \code{input_data}: Names of processed splits
+\item \code{params}: Merged parameter list
+\item \code{specific_output}: Metadata including \code{n_splits} and \code{alias}
 }
 }
+}
+\seealso{
+\code{\link[=engine_reportelement_table_splitmetrics]{engine_reportelement_table_splitmetrics()}},
+\code{\link[=default_params_reportelement_table_splitmetrics]{default_params_reportelement_table_splitmetrics()}},
+\code{\link[=initialize_output_reportelement]{initialize_output_reportelement()}},
+\code{\link[=controller_reportelement]{controller_reportelement()}},
+Template: \verb{inst/templates_control/8_b_template_reportelement_table_splitmetrics.R}
 }
 \keyword{internal}

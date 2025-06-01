@@ -87,6 +87,8 @@ wrapper_train_lm <- function(control) {
   # Merge user-provided hyperparameters with defaults
   hyperparameters <- merge_with_defaults(train_params$params, default_params_train_lm())
   
+  log_msg("[TRAIN] Starting LM training...", level = "info", control = control)
+  
   # Track training time
   start_time <- Sys.time()
   
@@ -95,6 +97,9 @@ wrapper_train_lm <- function(control) {
                            train_data)
   
   training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
+  
+  log_msg(sprintf("[TRAIN] LM training finished in %.2f seconds.", training_time),
+          level = "info", control = control)
   
   # Standardized output
   initialize_output_train(
@@ -130,6 +135,6 @@ wrapper_train_lm <- function(control) {
 #' @return A list of default hyperparameters for the training engine.
 #' @keywords internal
 default_params_train_lm <- function() {
-  list()  # This engine does not require specific parameters -> for any other engine would be a list() necessary
+  list()
 }
 #--------------------------------------------------------------------

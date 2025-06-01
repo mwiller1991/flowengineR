@@ -22,12 +22,38 @@ and invokes the resampling engine. Wraps the result using \code{initialize_outpu
 \item \code{control$params$fairness_pre$data}: Input data to be resampled.
 \item \code{control$params$fairness_pre$target_var}: Target variable to be balanced.
 \item \code{control$params$fairness_pre$protected_attributes}: Names of protected variables (not used by this engine).
-\item \code{control$params$fairness_pre$params}: Optional engine-specific parameters (e.g., \code{method}).
+\item \code{control$params$fairness_pre$params}: Optional engine-specific parameters (e.g., \code{method}, \code{target_ratio}).
 }
 
-\strong{Standardized Output (returned to framework):}
+\strong{Engine-Specific Parameters (\code{control$params$fairness_pre$params}):}
 \itemize{
-\item A list structured via \code{initialize_output_pre()}:
+\item \code{method} \emph{(character)}: Resampling strategy to use. Supported:
+\itemize{
+\item \code{"oversampling"}: Repeats minority class samples to match the majority.
+\item \code{"undersampling"}: Reduces majority class samples to match the minority.
+}
+\item \code{target_ratio} \emph{(numeric, default = 1)}: Intended ratio between majority and minority class (currently not used but reserved for future).
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$fairness_pre <- "fairness_pre_resampling"
+control$params$fairness_pre <- controller_fairness_pre(
+  data = my_training_data,
+  target_var = "outcome",
+  protected_attributes = c("gender"),
+  params = list(
+    method = "undersampling"
+    # target_ratio = 1  # optional, currently not used
+  )
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/4_a_template_fairness_pre_resampling.R}
+
+\strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_pre()}:
 \itemize{
 \item \code{preprocessed_data}: The resampled dataset.
 \item \code{method}: Set to \code{"resampling"}.
@@ -35,5 +61,11 @@ and invokes the resampling engine. Wraps the result using \code{initialize_outpu
 \item \code{specific_output}: Original and new class distributions.
 }
 }
+\seealso{
+\code{\link[=engine_fairness_pre_resampling]{engine_fairness_pre_resampling()}},
+\code{\link[=default_params_fairness_pre_resampling]{default_params_fairness_pre_resampling()}},
+\code{\link[=initialize_output_pre]{initialize_output_pre()}},
+\code{\link[=controller_fairness_pre]{controller_fairness_pre()}},
+Template: \verb{inst/templates_control/4_a_template_fairness_pre_resampling.R}
 }
 \keyword{internal}

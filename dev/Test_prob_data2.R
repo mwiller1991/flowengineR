@@ -12,6 +12,7 @@ library(rmarkdown)
 library(openxlsx)
 library(batchtools)
 library(devtools)
+library(utils)
 
 # Load the Controller Functions
 source("~/fairness_toolbox/R/metalevel/metalevel.R")
@@ -100,7 +101,7 @@ source("~/fairness_toolbox/dev/memory_logging_dev.R")
 source("~/fairness_toolbox/tests/SLURM/slurm_testinR/simulate_slurm_run.R")
 
 # Generate the dataset
-dataset <- create_dataset_2(seed = 1)
+dataset <- fairnessToolbox::test_data_2_base_credit_example
 
 #Setting variables fitting to the dataset
 vars = controller_vars(
@@ -113,14 +114,19 @@ vars = controller_vars(
 # Control Object for Prototyping
 control <- list(
   global_seed = 1,
-  vars = vars,         # Include vars within control for consistency
   data = list(
-    full = dataset,    # Optional, if splitter engine is used
+    vars = controller_vars(
+      feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
+      protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
+      target_var = "default",                            # Target variable
+      protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
+    ),
+    full = fairnessToolbox::test_data_2_base_credit_example,    # Optional, if splitter engine is used
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
   split_method = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
-  execution = "execution_adaptive_output_batchtools_multicore", #execution_sequential #execution_adaptive_sequential_stability
+  execution = "execution_basic_sequential", #execution_sequential #execution_adaptive_sequential_stability
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   fairness_pre = NULL, #"fairness_pre_resampling",
@@ -145,7 +151,6 @@ control <- list(
   params = list(
     split = controller_split(
       seed = 123,
-      target_var = vars$target_var,
       params =   list(split_ratio = 0.6,
                       cv_folds = 5
       )
@@ -162,8 +167,6 @@ control <- list(
       )
     ),
     fairness_pre = controller_fairness_pre(
-      protected_attributes = vars$protected_vars,
-      target_var = vars$target_var,
       params =   list(
         method = "undersampling"
       )
@@ -173,8 +176,6 @@ control <- list(
       norm_data = TRUE
     ),
     fairness_in = controller_fairness_in(
-      protected_attributes = vars$protected_vars,
-      target_var = vars$target_var,
       params =   list(
         learning_rate = 0.1,
         num_epochs = 1000,
@@ -182,10 +183,8 @@ control <- list(
       )
     ),
     fairness_post = controller_fairness_post(
-      protected_name = vars$protected_vars_binary
     ),
     eval = controller_evaluation(
-      protected_name = vars$protected_vars_binary,
       params = list(
         eval_mse = list(weighting_factor = 0.5), #Example for Test
         eval_statisticalparity = list(threshold = 0.1) #Example for Test
@@ -214,6 +213,32 @@ control <- list(
       )
     )
   )
+)
+
+
+# Control Object for Prototyping
+control <- list(
+  global_seed = 1,
+  data = list(
+    vars = controller_vars(
+      feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
+      protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
+      target_var = "default",                            # Target variable
+      protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
+    ),
+    full = fairnessToolbox::test_data_2_base_credit_example,    # Optional, if splitter engine is used
+    train = NULL,      # Training data
+    test = NULL        # Test data
+  )
+)
+
+# Control Object for Prototyping
+control <- list(
+  settings =list(
+  log = FALSE,             # (optional) grober Schalter an/aus
+  log_level = "info"      # "none", "info", "debug", "warn"
+),
+  global_seed = 1
 )
 
 

@@ -21,8 +21,11 @@
 #' @return Result from `run_workflow_single()`.
 #' @keywords internal
 engine_execution_basic_batchtools_local <- function(control, split) {
+  # Assign current split to control object
   control$data$train <- split$train
   control$data$test  <- split$test
+  
+  # Run full workflow for this split
   run_workflow_single(control)
 }
 #--------------------------------------------------------------------
@@ -99,12 +102,17 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
   # Create or clear registry
   reg_dir <- params$registry_folder
   unlink(reg_dir, recursive = TRUE)  # Clean existing if necessary
+  
+  log_msg(sprintf("[EXECUTION] Creating batchtools registry at '%s'...", reg_dir), level = "info", control = control)
+  
   reg <- batchtools::makeRegistry(
     file.dir = reg_dir,
     make.default = FALSE,
     seed = params$seed,
     packages = params$required_packages
   )
+  
+  log_msg("[EXECUTION] Registering jobs for each split...", level = "info", control = control)
   
   # Map jobs
   batchtools::batchMap(fun = engine_execution_basic_batchtools_local,
@@ -113,10 +121,12 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
                        reg = reg)
   
   # Submit and wait
+  log_msg("[EXECUTION] Submitting and waiting for batchtools jobs...", level = "info", control = control)
   batchtools::submitJobs(reg = reg, resources = params$resources)
   batchtools::waitForJobs(reg = reg)
   
   # Collect results
+  log_msg("[EXECUTION] Collecting results from completed jobs...", level = "info", control = control)
   workflow_results <- batchtools::reduceResultsList(reg = reg)
   names(workflow_results) <- names(split_output$splits)
   

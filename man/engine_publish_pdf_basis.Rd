@@ -32,4 +32,7 @@ Renders a structured report object to PDF using RMarkdown.
 \item A character string with the path to the successfully generated PDF file.
 }
 }
+\seealso{
+\code{\link[=wrapper_publish_pdf_basis]{wrapper_publish_pdf_basis()}}
+}
 \keyword{internal}

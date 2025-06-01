@@ -4,17 +4,17 @@
 \alias{controller_training}
 \title{Controller: Training Engine Specification}
 \usage{
-controller_training(formula, norm_data = TRUE, params = NULL)
+controller_training(formula, norm_data = TRUE, params = list())
 }
 \arguments{
 \item{formula}{A model formula used to define the structure of the predictive model.}
 
 \item{norm_data}{Logical. Whether to normalize the input data (default: \code{TRUE}).}
 
-\item{params}{Optional named list of training engine parameters (e.g., tuning values).}
+\item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
-A named list to be stored in \code{control$params$train}, compatible with all training engines.
+Named list. To be stored in \code{control$params$train} and passed to the training engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input structure for any training engine used

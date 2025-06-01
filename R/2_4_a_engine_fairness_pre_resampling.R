@@ -70,31 +70,31 @@ engine_fairness_pre_resampling <- function(data, target_var, params) {
 #' Wrapper for Fairness Pre-Processing Engine: Resampling
 #'
 #' Validates and prepares standardized inputs, merges default and user-defined parameters,
-#' and invokes the resampling engine. Wraps the result using `initialize_output_pre()`.
+#' and invokes the resampling engine. This wrapper ensures compatibility with the internal structure
+#' of the fairnessToolbox and produces standardized output via `initialize_output_pre()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$fairness_pre$data`: Input data to be resampled.
-#' - `control$params$fairness_pre$target_var`: Target variable to be balanced.
-#' - `control$params$fairness_pre$protected_attributes`: Names of protected variables (not used by this engine).
-#' - `control$params$fairness_pre$params`: Optional engine-specific parameters (e.g., `method`, `target_ratio`).
+#' - `control$params$fairness_pre$data`: Input data to be resampled, taken from `control$data$train`.
+#' - `control$params$fairness_pre$target_var`: Name of the target variable.  
+#'   → Auto-filled from `control$vars$target_var` via `autofill_controllers_from_vars()`.
+#' - `control$params$fairness_pre$protected_attributes`: Not used in this engine but passed through for consistency.
+#' - `control$params$fairness_pre$params`: Optional engine-specific parameters.
 #'
 #' **Engine-Specific Parameters (`control$params$fairness_pre$params`):**
 #' - `method` *(character)*: Resampling strategy to use. Supported:
-#'   - `"oversampling"`: Repeats minority class samples to match the majority.
-#'   - `"undersampling"`: Reduces majority class samples to match the minority.
-#' - `target_ratio` *(numeric, default = 1)*: Intended ratio between majority and minority class (currently not used but reserved for future).
+#'   - `"oversampling"`: Duplicates minority class samples.
+#'   - `"undersampling"`: Reduces majority class samples.
+#' - `target_ratio` *(numeric, default = 1)*: Intended ratio between classes (currently unused but reserved).
+#'
+#' **Workflow Integration:**
+#' - `target_var` and `protected_attributes` are automatically resolved based on `control$vars`.
+#' - These values must be respected by engines but should **not be set manually**.
 #'
 #' **Example Control Snippet:**
-#' ```
+#' ```r
 #' control$fairness_pre <- "fairness_pre_resampling"
 #' control$params$fairness_pre <- controller_fairness_pre(
-#'   data = my_training_data,
-#'   target_var = "outcome",
-#'   protected_attributes = c("gender"),
-#'   params = list(
-#'     method = "undersampling"
-#'     # target_ratio = 1  # optional, currently not used
-#'   )
+#'   params = list(method = "undersampling")
 #' )
 #' ```
 #'
@@ -104,9 +104,9 @@ engine_fairness_pre_resampling <- function(data, target_var, params) {
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_pre()`:
 #' - `preprocessed_data`: The resampled dataset.
-#' - `method`: Set to `"resampling"`.
-#' - `params`: Merged parameter list.
-#' - `specific_output`: Original and new class distributions.
+#' - `method`: `"resampling"`.
+#' - `params`: Final merged parameter list.
+#' - `specific_output`: Original and new class distributions (as named lists).
 #'
 #' @seealso 
 #'   [engine_fairness_pre_resampling()],  
@@ -115,7 +115,7 @@ engine_fairness_pre_resampling <- function(data, target_var, params) {
 #'   [controller_fairness_pre()],  
 #'   Template: `inst/templates_control/4_a_template_fairness_pre_resampling.R`
 #'
-#' @param control A standardized control object (see `controller_fairness_pre()`).
+#' @param control A standardized control object (see `controller_fairness_pre()`). Must include `control$vars`.
 #' @return A standardized fairness pre-processing output.
 #' @keywords internal
 wrapper_fairness_pre_resampling <- function(control) {
@@ -131,12 +131,23 @@ wrapper_fairness_pre_resampling <- function(control) {
   # Merge optional parameters with defaults
   params <- merge_with_defaults(pre_params$params, default_params_fairness_pre_resampling())
   
+  log_msg(sprintf("[PRE] Starting resampling (%s)...", params$method),
+          level = "info", control = control)
+  
   # Call the specific resampling engine
   engine_output <- engine_fairness_pre_resampling(
     data = pre_params$data,
     target_var = pre_params$target_var,
     params = params
   )
+  
+  # Log class distribution
+  old <- engine_output$specific_output$original_counts
+  new <- engine_output$specific_output$new_counts
+  log_msg(sprintf("[PRE] Original: %s | New: %s",
+                  paste(names(old), unlist(old), sep = "=", collapse = ", "),
+                  paste(names(new), unlist(new), sep = "=", collapse = ", ")),
+          level = "info", control = control)
   
   # Use standardized output
   initialize_output_pre(

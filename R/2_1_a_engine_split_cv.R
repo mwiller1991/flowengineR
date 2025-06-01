@@ -24,10 +24,14 @@
 #' @return A list of train/test split indices per fold.
 #' @keywords internal
 engine_split_cv <- function(data, target_var, cv_folds, seed) {
+  # Set random seed for reproducibility
   set.seed(seed)
+  
+  # Create stratified folds based on target variable
   folds <- caret::createFolds(data[[target_var]], k = cv_folds, list = TRUE)
   names(folds) <- paste0("fold", seq_along(folds))
   
+  # Construct split list with train/test data for each fold
   split_list <- lapply(folds, function(test_idx) {
     list(
       train = data[-test_idx, ],
@@ -35,6 +39,7 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
     )
   })
   
+  # Return list of splits
   return(split_list)
 }
 #--------------------------------------------------------------------
@@ -62,6 +67,11 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #' **Notes:**
 #' - Stratification is applied based on the `target_var`.
 #' - If `cv_folds = 1`, validation fails because training would be empty.
+#' 
+#' **Workflow Integration:**
+#' - `target_var` is **automatically resolved** from `control$data$vars$target_var` 
+#'   if not provided explicitly in the controller.
+#' - This allows users to define `target_var` only once in `controller_vars()`.
 #'
 #' **Example Control Snippet:**
 #' ```
@@ -113,7 +123,7 @@ wrapper_split_cv <- function(control) {
     stop("wrapper_split_cv: CV fold count is 1 → this will result in empty training data. Consider using a different splitter (e.g., stratified_random).")
   }
   
-  message(sprintf("[INFO] Performing %d-fold cross-validation with seed %d", params$cv_folds, split_params$seed))
+  log_msg(sprintf("[SPLIT] Performing %d-fold cross-validation with seed %d.", params$cv_folds, split_params$seed), level = "info", control = control)
   
   # Call CV splitter engine
   splits <- engine_split_cv(

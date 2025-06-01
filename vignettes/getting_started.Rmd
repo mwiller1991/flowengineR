@@ -1,0 +1,155 @@
+---
+title: "Getting Started with fairnessToolbox"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with fairnessToolbox}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### Introduction
+
+The most powerful feature of `fairnessToolbox` is its fully modular architecture: **every engine—whether for training, fairness adjustment, evaluation, or reporting—can be swapped or extended independently**. As long as an engine adheres to the standardized inputs and outputs, it integrates seamlessly into the overall workflow.
+
+This means you can:
+- Try a different fairness method without touching the model configuration
+- Replace the training engine (e.g., switch from `lm` to `randomForest`) without changing the post-processing or evaluation logic
+- Add your own engine for any step without modifying the workflow core
+
+> ⚡ In short: You only need to care about the "connection points"—not the entire workflow design.
+> 
+> The engines provided by default are only examples. The real power lies in defining your own logic within the provided framework.
+
+`fairnessToolbox` is a modular, extensible R framework that helps you analyze machine learning models with regard to both predictive performance and fairness.
+
+This vignette introduces the basic workflow by walking through a minimal example.
+
+You will learn how to:
+- Define variables and model inputs
+- Configure and run a training engine
+- Apply a fairness post-processing method
+- Evaluate model performance and fairness
+
+---
+
+### Step 1: Define Variables
+
+We begin by specifying which columns in our dataset are:
+- input features
+- protected attributes
+- the target variable
+- binary versions of protected attributes used for evaluation
+
+```{r}
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount"),
+  protected_vars = c("gender", "marital_status"),
+  target_var = "default",
+  protected_vars_binary = c("gender_Female", "marital_status_Married")
+)
+```
+
+---
+
+### Step 2: Define the Control Object
+
+Here we configure the training, fairness post-processing, and evaluation engines.
+We use:
+- `train_lm`: linear model
+- `fairness_post_disparateimpact`: adjusts predictions to reduce disparate impact
+- `eval_statisticalparity` and `eval_mse` as evaluation metrics
+
+```{r}
+control <- list(
+  settings = list(),
+  
+  train = "train_lm",
+  fairness_post = "fairness_post_genresidual",
+  eval = c("eval_statisticalparity", "eval_mse"),
+  params = list(
+    train = controller_training(
+      formula = default ~ income + loan_amount,
+      norm_data = TRUE
+    ),
+    fairness_post = controller_fairness_post(
+      protected_name = c("gender_Female")
+    ),
+    eval = controller_evaluation(
+      protected_name = c("gender_Female")
+    )
+  )
+)
+```
+
+A detailled introduction to the control object can be found here...
+
+---
+
+### Step 3: Run the Workflow
+
+```{r}
+results <- fairness_workflow(control)
+```
+
+This returns a list of standardized results:
+- model and predictions
+- adjusted predictions (if fairness post-processing is used)
+- evaluation metrics
+
+---
+
+### Step 4: Inspect Results
+
+```{r}
+results$metrics  # all computed metrics
+results$model    # trained model object
+```
+
+---
+
+### Overview of Modular Engine Types
+
+| Engine Type       | Workflow Position  | Description                                                                 | Input (via Wrapper)                                        | Output (via Initializer)                   | Example Engines                      |
+| ----------------- | ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
+| `split_*`         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_stratified`   |
+| `execution_*`     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
+| `fairness_pre_*`  | Pre-Processing     | Modifies input data before model training to reduce bias                    | `data`, `protected_attributes`, `target_var`, `params`     | `preprocessed_data`, `method`              | `fairness_pre_disparity`             |
+| `train_*`         | Model Training     | Fits a predictive model to the training data                                | `formula`, `data`, `params`, `norm_data`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_rf`               |
+| `fairness_in_*`   | In-Processing      | Adjusts model training to include fairness constraints                      | `driver_train`, `data`, `protected_attributes`, `params`   | `adjusted_model`, `predictions`            | `fairness_in_kamiran`                |
+| `fairness_post_*` | Post-Processing    | Adjusts model predictions after training                                    | `predictions`, `actuals`, `protected_attributes`, `params` | `adjusted_predictions`, `method`           | `fairness_post_disparateimpact`      |
+| `eval_*`          | Evaluation         | Calculates performance and fairness metrics                                 | `predictions`, `actuals`, `protected_attributes`, `params` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
+| `reportelement_*` | Reporting Element  | Creates a plot or table from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
+| `report_*`        | Report Composition | Assembles multiple reporting elements into a structured document            | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_markdown`                    |
+| `publish_*`       | Output Publishing  | Saves results or reports to disk or external targets                        | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_html`, `publish_json`       |
+
+
+| Engine Type         | Workflow Position        | Input (via Wrapper)                                         | Output (via Initializer)                   | Example Engines                    |
+|---------------------|---------------------------|--------------------------------------------------------------|---------------------------------------------|------------------------------------|
+| `split_*`           | Dataset Splitting         | `data`, `target_var`, `seed`, `params`                      | `splits`, `split_type`, `seed`              | `split_random`, `split_stratified` |
+| `execution_*`       | Execution Strategy         | `control`, `split_output`, `params`                         | `workflow_results`, `execution_type`        | `execution_sequential`             |
+| `fairness_pre_*`    | Pre-Processing             | `data`, `protected_attributes`, `target_var`, `params`      | `preprocessed_data`, `method`               | `fairness_pre_disparity`           |
+| `train_*`           | Model Training             | `formula`, `data`, `params`, `norm_data`                    | `model`, `model_type`, `predictions`        | `train_lm`, `train_rf`             |
+| `fairness_in_*`     | In-Processing              | `driver_train`, `data`, `protected_attributes`, `params`    | `adjusted_model`, `predictions`             | `fairness_in_kamiran`              |
+| `fairness_post_*`   | Post-Processing            | `predictions`, `actuals`, `protected_attributes`, `params`  | `adjusted_predictions`, `method`            | `fairness_post_disparateimpact`    |
+| `eval_*`            | Evaluation                 | `predictions`, `actuals`, `protected_attributes`, `params`  | `metrics`, `eval_type`                      | `eval_statisticalparity`, `eval_mse` |
+| `reportelement_*`   | Reporting Element          | `workflow_results`, `split_output`, `alias`, `params`       | `report_object`, `report_type`              | `reportelement_table_splitmetrics` |
+| `report_*`          | Report Composition         | `reportelements`, `alias_report`, `params`                  | `report`, `sections`, `compatible_formats`  | `report_markdown`                  |
+| `publish_*`         | Output Publishing          | `object`, `file_path`, `alias_publish`, `params`            | `path`, `success`, `type`                   | `publish_html`, `publish_json`     |
+
+All engines can be **replaced or extended independently**—just keep their input and output format consistent. This guarantees plug-and-play flexibility across the entire pipeline.
+
+---
+
+### Next Steps
+
+- [Engine Development Guide](how_to_build_custom_engine.html)
+- [Metalevel Workflow Diagram](metalevel_flowchart.html)
+
+To learn how to extend the framework with custom components, refer to the Engine Development Guide.

@@ -32,4 +32,7 @@ Provides default parameters for adversarial debiasing in-processing engines.
 \item Ensures default parameters are used when none are provided in the \code{control} object.
 }
 }
+\seealso{
+\code{\link[=wrapper_fairness_in_adversialdebiasing]{wrapper_fairness_in_adversialdebiasing()}}
+}
 \keyword{internal}

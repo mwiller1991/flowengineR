@@ -21,7 +21,7 @@ controller_resume_execution(
 \item{metadata}{Optional. A named list of metadata to be stored in \code{specific_output} of the execution engine (e.g., runtime info, job ID).}
 }
 \value{
-A standardized resume object for use in \code{resume_fairness_workflow()}.
+Named list. To be passed to \code{resume_fairness_workflow()} as input after external execution. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Constructs a standardized resume object to re-enter the fairnessToolbox

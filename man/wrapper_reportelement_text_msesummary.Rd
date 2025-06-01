@@ -30,23 +30,44 @@ and wraps the result using \code{initialize_output_reportelement()}.
 \details{
 \strong{Standardized Inputs:}
 \itemize{
-\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters (not used in this engine).
-\item \code{workflow_results}: Named list of workflow results per split.
+\item \code{control$params$reportelement$params[[alias]]}: Named list of engine-specific parameters (not used here).
+\item \code{workflow_results}: Named list of workflow results per split (injected by workflow).
 \item \code{split_output}: Output of the splitter engine (not used by this engine).
 \item \code{alias}: Character string identifying the reportelement instance.
 }
 
+\strong{Engine-Specific Parameters (\code{control$params$reportelement$params[[alias]]}):}
+\itemize{
+\item None. This engine works without any configuration.
+}
+
+\strong{Example Control Snippet:}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list("mse_text" = "reportelement_text_msesummary")
+control$params$reportelement <- controller_reportelement(
+  params = list("mse_text" = list())
+)
+}\if{html}{\out{</div>}}
+
+\strong{Template Reference:}
+See full template in \verb{inst/templates_control/8_a_template_reportelement_text_msesummary.R}
+
 \strong{Standardized Output (returned to framework):}
+A list structured via \code{initialize_output_reportelement()}:
 \itemize{
-\item A list structured via \code{initialize_output_reportelement()}:
-\itemize{
-\item \code{type}: \code{"text"}.
-\item \code{content}: Character string containing the summary.
-\item \code{compatible_formats}: c("pdf", "html", "json", "markdown").
-\item \code{input_data}: Names of splits used.
-\item \code{params}: Empty list (no parameters required).
-\item \code{specific_output}: Named list including the computed summary text.
+\item \code{type}: \code{"text"}
+\item \code{content}: A formatted summary sentence (character string)
+\item \code{compatible_formats}: \code{c("pdf", "html", "json", "markdown")}
+\item \code{input_data}: Names of used splits
+\item \code{params}: Empty list
+\item \code{specific_output}: List containing the same text under \code{mean_mse}
 }
 }
+\seealso{
+\code{\link[=engine_reportelement_text_msesummary]{engine_reportelement_text_msesummary()}},
+\code{\link[=default_params_reportelement_text_msesummary]{default_params_reportelement_text_msesummary()}},
+\code{\link[=initialize_output_reportelement]{initialize_output_reportelement()}},
+\code{\link[=controller_reportelement]{controller_reportelement()}},
+Template: \verb{inst/templates_control/8_a_template_reportelement_text_msesummary.R}
 }
 \keyword{internal}

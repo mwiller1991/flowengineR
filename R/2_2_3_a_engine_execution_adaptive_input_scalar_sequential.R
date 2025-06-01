@@ -99,6 +99,8 @@ engine_execution_adaptive_input_scalar_sequential <- function(control) {
 #' @return A standardized execution output object.
 #' @keywords internal
 wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_output) {
+  log_msg("[EXECUTION] Starting scalar parameter optimization...", level = "info", control = control)
+  
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_adaptive_input_scalar_sequential())
   
   metric_values <- numeric()
@@ -129,15 +131,20 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
     improve <- if (params$direction == "minimize") (best_metric - metric) else (metric - best_metric)
     
     if (improve > params$min_improvement) {
+      log_msg(sprintf(
+        "[EXECUTION] Iteration %d | value = %.4f | metric = %.4f | improvement = %.6f",
+        i, current_value, metric, improve
+      ), level = "info", control = control)
+      
       best_metric <- metric
       best_result <- result
       best_param <- current_value
       current_value <- current_value + params$param_step
     } else {
-      message(sprintf(
-        "[PARAMOPT] No further improvement after %d iterations (best = %.4f). Stopping.",
+      log_msg(sprintf(
+        "[EXECUTION] No further improvement after %d iterations (best = %.4f). Stopping.",
         i, best_metric
-      ))
+      ), level = "info", control = control)
       break
     }
   }

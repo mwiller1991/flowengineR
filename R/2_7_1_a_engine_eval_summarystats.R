@@ -49,17 +49,22 @@ engine_eval_summarystats <- function(predictions) {
 #'
 #' **Standardized Inputs:**
 #' - `control$params$eval$eval_data$predictions`: Numeric vector of predictions (automatically provided by workflow).
-#' - `control$params$eval$protected_name`: Names of protected attributes (not used by this engine).
-#' - `control$params$eval$params`: Optional engine-specific parameters (none used here).
+#' - `control$params$eval$protected_name`: Character vector of protected attributes (not used by this engine, but passed through for completeness).
+#' - `control$params$eval$params$eval_summarystats`: Optional engine-specific parameters (not used here).
 #'
-#' **Engine-Specific Parameters (`control$params$eval$params`):**
+#' **Engine-Specific Parameters (`control$params$eval$params$eval_summarystats`):**
 #' - None. This engine performs statistical evaluation using fixed metrics.
+#'
+#' **Variable Handling:**
+#' - No protected attribute processing is required.
+#' - All attributes in `protected_name` (if present) are ignored by the engine, but retained in the output.
+#' - No binary coding or preprocessing is necessary for this metric.
 #'
 #' **Example Control Snippet:**
 #' ```
 #' control$evaluation <- "eval_summarystats"
 #' control$params$eval <- controller_evaluation(
-#'   protected_name = c("gender")
+#'   params = list()
 #' )
 #' ```
 #'
@@ -98,6 +103,8 @@ wrapper_eval_summarystats <- function(control) {
     predictions = as.numeric(eval_params$eval_data$predictions)
   )
   
+  log_msg("[EVAL] Summary statistics evaluation complete.", level = "info", control = control)
+  
   # Standardized output
   initialize_output_eval(
     metrics = list(summary_stats = summary_stats),
@@ -130,6 +137,6 @@ wrapper_eval_summarystats <- function(control) {
 #' @return A list of default parameters for the MSE evaluation engine.
 #' @keywords internal
 default_params_eval_summarystats <- function() {
-  NULL
+  list()
 }
 #--------------------------------------------------------------------
