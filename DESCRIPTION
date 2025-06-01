@@ -1,13 +1,33 @@
-Package: fairness_toolbox
+Package: fairnessToolbox
 Type: Package
-Title: A Toolbox for Fairness Analysis in Machine Learning
+Title: Modular Fairness Workflow Toolbox
 Version: 0.1.0
-Author: Your Name <your.email@example.com>
-Maintainer: Your Name <your.email@example.com>
-Description: A comprehensive toolbox for fairness-aware machine learning, including preprocessing, in-processing, and post-processing fairness methods, along with evaluation tools.
-License: MIT
+Authors@R: 
+    person("Maximilian", "Willer", email = "willer.maximilian@googlemail.com", role = c("aut", "cre"))
+Description: 
+    A modular and extensible framework for fairness-aware machine learning workflows. 
+    This package provides interchangeable engines and controllers for preprocessing, 
+    training, in-processing, post-processing, evaluation, reporting, and publishing.
+    It is designed for flexibility, transparency, and integration with user-defined controls.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports:
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: R (>= 4.1.0)
+Imports: 
     ggplot2,
-    caret
+    caret,
+    magrittr,
+    moments,
+    dplyr,
+    rmarkdown,
+    openxlsx,
+    batchtools,
+    stats,
+    utils
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
