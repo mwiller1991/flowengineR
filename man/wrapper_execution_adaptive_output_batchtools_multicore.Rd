@@ -72,7 +72,7 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
     seed = 123,
     required_packages = c("caret", "dplyr"),
     ncpus = 4
@@ -87,7 +87,7 @@ See full template in \verb{inst/templates_control/2_2_b_template_execution_adapt
 A list as created by \code{initialize_output_execution()}:
 \itemize{
 \item \code{execution_type}: \code{"adaptive_output_batchtools_multicore"}
-\item \code{workflow_results}: List of results from \code{run_workflow_single()} per split
+\item \code{workflow_results}: List of results from \code{run_workflow_singlesplitloop()} per split
 \item \code{params}: All resolved execution parameters
 \item \code{continue_workflow}: Always \code{TRUE}
 \item \code{specific_output}: Includes:

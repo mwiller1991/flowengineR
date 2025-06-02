@@ -14,7 +14,7 @@ If \code{NULL} (default), all registered engines are returned, grouped by type.}
 Either a filtered named list (if \code{type} is provided), or a named list of engine groups.
 }
 \description{
-Used throughout the fairnessToolbox framework to inspect the internal engine
+Used throughout the flowengineR-framework to inspect the internal engine
 registry. Returns all currently registered engines, either grouped by engine
 type (e.g. "train", "split", "execution") or filtered by a specific type.
 }

@@ -129,9 +129,9 @@ control <- list(
   execution = "execution_basic_sequential", #execution_sequential #execution_adaptive_sequential_stability
   train_model = "train_lm",
   output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
-  fairness_pre = NULL, #"fairness_pre_resampling",
-  fairness_in = NULL, #"fairness_in_adversialdebiasing",
-  fairness_post = "fairness_post_genresidual",
+  preprocessing = NULL, #"preprocessing_fairness_resampling",
+  inprocessing = "inprocessing_fairness_adversialdebiasing",
+  postprocessing = NULL, #"postprocessing_fairness_genresidual",
   evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
   reportelement = list(
     gender_box_raw = "reportelement_boxplot_predictions",
@@ -166,7 +166,7 @@ control <- list(
         max_splits = 50
       )
     ),
-    fairness_pre = controller_fairness_pre(
+    preprocessing = controller_preprocessing(
       params =   list(
         method = "undersampling"
       )
@@ -175,14 +175,14 @@ control <- list(
       formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
       norm_data = TRUE
     ),
-    fairness_in = controller_fairness_in(
+    inprocessing = controller_preprocessing(
       params =   list(
         learning_rate = 0.1,
         num_epochs = 1000,
         num_adversary_steps = 10
       )
     ),
-    fairness_post = controller_fairness_post(
+    postprocessing = controller_postprocessing(
     ),
     eval = controller_evaluation(
       params = list(
@@ -193,7 +193,7 @@ control <- list(
     reportelement = controller_reportelement(
       params = list(
         gender_box_raw = list(group_var = "genderMale", source = "train"),
-        gender_box_adjusted = list(group_var = "genderMale", source = "post"),
+        gender_box_adjusted = list(group_var = "genderMale", source = "train"),
         age_box = list(group_var = "age_group.50+"),
         metrics_table = list(metrics = c("mse", "statisticalparity", "summarystats")),
         text_mse_summary = list()
@@ -205,7 +205,7 @@ control <- list(
       )
     ),
     publish = controller_publish(
-      output_folder = "~/fairness_toolbox/tests/publish_exports", 
+      output_folder = "~/flowengineR/tests/publish_exports", 
       params = list(
         pdf_basis_test_singleelement = list(obj_name = "text_mse_summary", obj_type = "reportelement"),
         pdf_basis_test_report = list(obj_name = "modelsummary", obj_type = "report"),
@@ -235,7 +235,7 @@ control <- list(
 # Control Object for Prototyping
 control <- list(
   settings =list(
-  log = FALSE,             # (optional) grober Schalter an/aus
+  log = TRUE,             # (optional) grober Schalter an/aus
   log_level = "info"      # "none", "info", "debug", "warn"
 ),
   global_seed = 1
@@ -243,7 +243,7 @@ control <- list(
 
 
 # Run the Workflow
-result <- fairness_workflow(control)
+result <- run_workflow(control)
 
 simulate_slurm_run(
   control_path = "~/fairness_toolbox/tests/SLURM/slurm_inputs/control_base.rds",

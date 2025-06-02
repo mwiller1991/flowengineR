@@ -1,17 +1,17 @@
 #--------------------------------------------------------------------
 ### Master-function: Preparation Phase ###
 #--------------------------------------------------------------------
-#' Run the Initial Fairness Workflow (Preparation and Execution Phase)
+#' Run a Modular Workflow (Preparation and Execution Phase)
 #'
-#' This function initiates a full fairness-aware machine learning workflow by handling the preparation phase. 
+#' This function initiates a full modular algorithmic workflow by handling the preparation phase. 
 #' It calls the specified splitter engine to create data partitions and passes the result to the chosen execution engine. 
 #' Depending on the execution setup, the function may return early (e.g. if a batchtools-based external execution such as SLURM is used), 
-#' or directly continue with downstream processing via `continue_fairness_workflow()`.
+#' or directly continue with downstream processing via `continue_workflow()`.
 #'
 #' **Inputs:**
 #' - `control`: A standardized control object. This must contain all relevant components for the workflow:
-#'   - `split_method`: Name of a registered splitter engine (e.g. `"split_random_stratified"`)
-#'   - `execution`: Name of a registered execution engine (optional; defaults to `"execution_sequential"`)
+#'   - `split_method`: Name of a registered splitter engine (e.g. "split_random_stratified")
+#'   - `execution`: Name of a registered execution engine (optional; defaults to "execution_sequential")
 #'   - `params`: Parameter structure used by downstream engines (e.g., split ratio, seeds, evaluation metrics)
 #'
 #' **Output:**
@@ -20,18 +20,18 @@
 #'   - `execution_output`: Result of the execution engine
 #'   - `aggregated_results`, `reportelements`, `reports`, `publishing`: All `NULL`
 #'
-#' - If the execution continues within the R session, the function delegates to `continue_fairness_workflow()` and returns:
+#' - If the execution continues within the R session, the function delegates to `continue_workflow()` and returns:
 #'   - Full structured workflow result, including post-execution outputs
 #'
 #' **Usage Context:**
 #' - This is the main entry point into the framework.
-#' - It is intended to be called by users who wish to run training, (optional) fairness pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
+#' - It is intended to be called by users who wish to run training, (optional) pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
 #'
 #' @param control A standardized list structure containing all workflow instructions and parameters. Created manually or via controller functions.
 #'
 #' @return A structured list containing at least `split_output` and `execution_output`. Additional elements may be included depending on the workflow stage.
 #' @export
-fairness_workflow <- function(control) {
+run_workflow <- function(control) {
   log_msg("[MASTER] Initializing control object with defaults...", level = "info", control = control)
   control <- complete_control_with_defaults(control)
   
@@ -72,7 +72,7 @@ fairness_workflow <- function(control) {
   
   # 4. Continue workflow
   log_msg("[MASTER] Proceeding to reporting and publishing...", level = "info", control = control)
-  continue_fairness_workflow(control, split_output, execution_output)
+  continue_workflow(control, split_output, execution_output)
 }
 #--------------------------------------------------------------------
 
@@ -80,9 +80,9 @@ fairness_workflow <- function(control) {
 #--------------------------------------------------------------------
 ### Continuation Function after Execution ###
 #--------------------------------------------------------------------
-#' Continue the Fairness Workflow after Execution Phase
+#' Continue the Workflow after Execution Phase
 #'
-#' This function completes a fairness-aware ML workflow by performing post-execution steps:
+#' This function completes a modular workflow by performing post-execution steps:
 #' - Aggregates the raw results from multiple workflow runs,
 #' - Optionally generates reporting elements and full reports using registered reporting engines,
 #' - Optionally calls publishing engines to export final results to external formats.
@@ -102,8 +102,8 @@ fairness_workflow <- function(control) {
 #'   - `publishing`: Optional list of results from publishing engines (if specified).
 #'
 #' **Usage Context:**
-#' - Automatically called within `fairness_workflow()` unless the execution engine is configured to terminate early.
-#' - May also be called manually (e.g., from `resume_fairness_workflow()`) to finalize an externally executed pipeline.
+#' - Automatically called within `run_workflow()` unless the execution engine is configured to terminate early.
+#' - May also be called manually (e.g., from `resume_workflow()`) to finalize an externally executed pipeline.
 #'
 #' @param control A standardized list that controls the reporting and publishing steps.
 #' @param split_output The result of the splitting engine, required for contextual reports.
@@ -111,7 +111,7 @@ fairness_workflow <- function(control) {
 #'
 #' @return A named list containing the full workflow results, including aggregation, reports and published outputs.
 #' @export
-continue_fairness_workflow <- function(control, split_output, execution_output) {
+continue_workflow <- function(control, split_output, execution_output) {
   log_msg("[CONTINUE] Aggregating workflow results...", level = "info", control = control)
   workflow_results <- execution_output$workflow_results
   aggregated_results <- aggregate_results(workflow_results)
@@ -220,13 +220,13 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
 
 
 #--------------------------------------------------------------------
-### resuming workflow ###
+### Resuming workflow ###
 #--------------------------------------------------------------------
-#' Resume a Fairness Workflow After External Execution
+#' Resume a Workflow After External Execution
 #'
-#' This function allows a previously initiated fairness workflow to be resumed after execution 
+#' This function allows a previously initiated modular workflow to be resumed after execution 
 #' was completed outside of R (e.g., via SLURM, batchtools, or other deferred backends).  
-#' It expects a structured resume object and internally calls `continue_fairness_workflow()` 
+#' It expects a structured resume object and internally calls `continue_workflow()` 
 #' to complete all post-execution steps such as aggregation, reporting, and publishing.
 #'
 #' **Inputs:**
@@ -236,23 +236,23 @@ continue_fairness_workflow <- function(control, split_output, execution_output) 
 #'   - `execution_output`: A valid execution engine output, including `workflow_results`.
 #'
 #' **Output:**
-#' - A full workflow result object as returned by `continue_fairness_workflow()`:
+#' - A full workflow result object as returned by `continue_workflow()`:
 #'   - `split_output`, `execution_output`
 #'   - `aggregated_results`: Summary across workflow runs
 #'   - `reportelements`, `reports`, `publishing`: If configured in the control
 #'
 #' **Usage Context:**
 #' - Intended for use after asynchronous or parallel execution completed externally
-#' - Enables full integration of batchtools or SLURM workflows into the fairness pipeline
+#' - Enables full integration of batchtools or SLURM workflows into the modular pipeline
 #'
 #' @param resume_object A structured list returned by `controller_resume_execution()`, containing all necessary components to resume the workflow.
 #'
-#' @return A named list as returned by `continue_fairness_workflow()`, including all optional post-processing results.
+#' @return A named list as returned by `continue_workflow()`, including all optional post-processing results.
 #' @export
-resume_fairness_workflow <- function(resume_object) {
+resume_workflow <- function(resume_object) {
   validate_resume_object(resume_object)
   log_msg("[RESUME] Resuming workflow after external execution...", level = "info", control = resume_object$control)
-  continue_fairness_workflow(
+  continue_workflow(
     control = resume_object$control,
     split_output = resume_object$split_output,
     execution_output = resume_object$execution_output
@@ -265,47 +265,51 @@ resume_fairness_workflow <- function(resume_object) {
 #--------------------------------------------------------------------
 ### single round master workflow ###
 #--------------------------------------------------------------------
-#' Run a Single Iteration of the Fairness Workflow
+#' Run a Single Workflow Iteration (One Train/Test Split)
 #'
-#' Executes a full modeling and fairness pipeline for a single train/test split.
-#' Includes optional steps for fairness preprocessing, in-processing, post-processing, 
-#' as well as evaluation and normalization. 
+#' Executes a complete algorithmic workflow for a single split of training and test data. 
+#' Supports optional preprocessing, in-processing, post-processing, evaluation, and normalization steps, 
+#' all controlled by user-defined engine specifications. 
 #'
-#' This function is **publicly accessible** and is designed to be called in parallel workflows 
-#' (e.g., batchtools or SLURM). However, direct manual usage is discouraged in favor of 
-#' calling it through a dedicated execution engine, which ensures proper input preparation.
+#' This function is publicly accessible and is designed to be used within execution engines, 
+#' including sequential and parallel workflows (e.g., via batchtools or SLURM). 
 #'
-#' **Inputs:**
+#' **Inputs (from control object):**
 #' - `control$data$train`: Training data (data.frame).
 #' - `control$data$test`: Test data (data.frame).
-#' - `control$data$vars`: List with `feature_vars`, `target_var`, `protected_vars`, `protected_vars_binary`.
+#' - `control$data$vars`: A list including:
+#'   - `feature_vars`: Input variables used for training
+#'   - `target_var`: Target variable
+#'   - `protected_vars`: (Optional) Variables used for protected group analyses
+#'   - `protected_vars_binary`: (Optional) Binary indicators for group-specific evaluation
 #' - `control$params$train`: Model training configuration.
 #' - `control$output_type`: Either `"response"` or `"prob"` (default: `"response"`).
-#' - Optional modules:
-#'   - `control$fairness_pre`: Preprocessing fairness engine name.
-#'   - `control$fairness_in`: In-processing fairness engine name.
-#'   - `control$fairness_post`: Post-processing fairness engine name.
-#'   - `control$evaluation`: List of evaluation engine names.
+#' - Optional modules (if configured):
+#'   - `control$preprocessing`: Name of preprocessing engine
+#'   - `control$inprocessing`: Name of in-processing engine
+#'   - `control$postprocessing`: Name of post-processing engine
+#'   - `control$evaluation`: Vector of evaluation engine names
 #'
 #' **Output:**
-#' - A named list with results from each stage:
-#'   - `output_train`: Base model and predictions.
-#'   - `output_fairness_pre`: (if applicable) Preprocessing output.
-#'   - `output_fairness_in`: (if applicable) Adjusted in-processing model and predictions.
-#'   - `output_fairness_post`: (if applicable) Adjusted post-processing predictions.
-#'   - `output_eval`: (if applicable) Evaluation results per engine.
-#'   - `normalization`: Used normalization parameters (if applied).
+#' A named list with standardized results:
+#' - `output_train`: Base model and predictions
+#' - `output_preprocessing`: (if used) Preprocessed training data
+#' - `output_inprocessing`: (if used) Adjusted model and predictions
+#' - `output_postprocessing`: (if used) Adjusted predictions
+#' - `output_eval`: (if used) Evaluation results
+#' - `normalization`: Parameters and method used for normalization (if applied)
 #'
 #' **Usage Notes:**
-#' - `control$data$train` and `control$data$test` must already be defined.
-#' - Normalization is handled internally based on train data.
-#' - Designed for 1-split workflows. Use inside adaptive engines or SLURM jobs.
+#' - Input data must already be split before calling this function.
+#' - Normalization is based on training data and applied consistently to test data.
+#' - Engines must follow the standardized input/output format to be compatible.
+#' - This function is typically called internally by execution engines.
 #'
-#' @param control A fully configured control object with all necessary components.
+#' @param control A fully specified control object for a single train/test split.
 #'
-#' @return A list containing model results, predictions, fairness modules, and evaluations.
+#' @return A list with all outputs generated by the configured engines during this workflow iteration.
 #' @export
-run_workflow_single <- function(control) {
+run_workflow_singlesplitloop <- function(control) {
 
   log_msg("[SINGLE] Starting single workflow iteration...", level = "info", control = control)
 
@@ -320,17 +324,17 @@ run_workflow_single <- function(control) {
   # Step 1: Assign raw training data
   control$params$train$data <- control$data$train
 
-  # Step 2: Fairness Pre-Processing
-  if (!is.null(control$fairness_pre)) {
-    log_msg(paste0("[SINGLE] Running fairness pre-processing: ", control$fairness_pre), level = "info", control = control)
-    control$params$fairness_pre$data <- control$data$train
-    control$params$fairness_pre$protected_attributes <- control$data$vars$protected_vars
-    control$params$fairness_pre$target_var <- control$data$vars$target_var
-    driver_fairness_pre <- engines[[control$fairness_pre]]
-    output_fairness_pre <- driver_fairness_pre(control)
-    control$params$train$data <- output_fairness_pre$preprocessed_data
-    results$output_fairness_pre <- output_fairness_pre
-    log_msg("[SINGLE] Fairness pre-processing completed.", level = "debug", control = control)
+  # Step 2: Preprocessing (if defined)
+  if (!is.null(control$preprocessing)) {
+    log_msg(paste0("[SINGLE] Running preprocessing engine: ", control$preprocessing), level = "info", control = control)
+    control$params$preprocessing$data <- control$data$train
+    control$params$preprocessing$protected_attributes <- control$data$vars$protected_vars
+    control$params$preprocessing$target_var <- control$data$vars$target_var
+    driver_pre <- engines[[control$preprocessing]]
+    output_pre <- driver_pre(control)
+    control$params$train$data <- output_pre$preprocessed_data
+    results$output_preprocessing <- output_pre
+    log_msg("[SINGLE] Preprocessing completed.", level = "debug", control = control)
   }
 
   # Step 3: Normalization
@@ -352,8 +356,8 @@ run_workflow_single <- function(control) {
     normalized = apply_minmax_params(control$params$train$data, norm_params)
   )
   log_msg("[SINGLE] Normalization complete.", level = "debug", control = control)
-
-  # Step 4.1: Base Training
+  
+  # Step 4: Model training
   log_msg(paste0("[SINGLE] Training base model: ", control$train_model), level = "info", control = control)
   driver_train <- engines[[control$train_model]]
   output_train <- driver_train(control)
@@ -387,45 +391,46 @@ run_workflow_single <- function(control) {
   output_train$predictions <- predictions
   results$output_train <- output_train
 
-  # Step 4.4: In-Processing Fairness
-  if (!is.null(control$fairness_in)) {
-    log_msg(paste0("[SINGLE] Running in-processing fairness: ", control$fairness_in), level = "info", control = control)
-    control$params$fairness_in$protected_attributes <- control$data$vars$protected_vars
-    control$params$fairness_in$target_var <- control$data$vars$target_var
-    driver_fairness_in <- engines[[control$fairness_in]]
-    output_fairness_in <- driver_fairness_in(control, driver_train)
+  # Step 4.4: In-Processing (if defined)
+  if (!is.null(control$inprocessing)) {
+    log_msg(paste0("[SINGLE] Running in-processing engine: ", control$inprocessing), level = "info", control = control)
+    control$params$inprocessing$protected_attributes <- control$data$vars$protected_vars
+    control$params$inprocessing$target_var <- control$data$vars$target_var
+    driver_in <- engines[[control$inprocessing]]
+    output_in <- driver_in(control, driver_train)
+    
     if (control$output_type == "prob") {
-      predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "prob"))
+      predictions <- as.numeric(predict(output_in$adjusted_model, newdata = testdata, type = "prob"))
     } else if (control$output_type == "response") {
-      predictions <- as.numeric(predict(output_fairness_in$adjusted_model, newdata = testdata, type = "response"))
+      predictions <- as.numeric(predict(output_in$adjusted_model, newdata = testdata, type = "response"))
       if (control$params$train$norm_data == TRUE) {
         predictions <- denormalize_predictions(predictions, control$data$vars$target_var, norm_params)
       }
     } else {
       stop("Invalid output_type specified in control.")
     }
-    output_fairness_in$predictions <- predictions
-    results$output_fairness_in <- output_fairness_in
-    log_msg("[SINGLE] In-processing fairness completed.", level = "debug", control = control)
+    output_in$predictions <- predictions
+    results$output_inprocessing <- output_in
+    log_msg("[SINGLE] In-processing completed.", level = "debug", control = control)
   }
 
-  # Step 5: Post-Processing Fairness
-  if (!is.null(control$fairness_post)) {
-    log_msg(paste0("[SINGLE] Running post-processing fairness: ", control$fairness_post), level = "info", control = control)
-    control$params$fairness_post$fairness_post_data <- cbind(
+  # Step 5: Post-Processing (if defined)
+  if (!is.null(control$postprocessing)) {
+    log_msg(paste0("[SINGLE] Running post-processing engine: ", control$postprocessing), level = "info", control = control)
+    control$params$postprocessing$postprocessing_data <- cbind(
       predictions = as.numeric(predictions),
       actuals = testdata[[control$data$vars$target_var]],
       testdata[control$data$vars$protected_vars_binary]
     )
-    control$params$fairness_post$protected_name <- control$data$vars$protected_vars_binary
-    driver_fairness_post <- engines[[control$fairness_post]]
-    output_fairness_post <- driver_fairness_post(control)
-    predictions <- as.numeric(output_fairness_post$adjusted_predictions)
-    results$output_fairness_post <- output_fairness_post
-    log_msg("[SINGLE] Post-processing fairness completed.", level = "debug", control = control)
+    control$params$postprocessing$protected_name <- control$data$vars$protected_vars_binary
+    driver_post <- engines[[control$postprocessing]]
+    output_post <- driver_post(control)
+    predictions <- as.numeric(output_post$adjusted_predictions)
+    results$output_postprocessing <- output_post
+    log_msg("[SINGLE] Post-processing completed.", level = "debug", control = control)
   }
 
-  # Step 6: Evaluation
+  # Step 6: Evaluation (if defined)
   if (!is.null(control$evaluation)) {
     log_msg("[SINGLE] Running evaluation step...", level = "info", control = control)
     control$params$eval$eval_data <- cbind(

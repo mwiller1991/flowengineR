@@ -4,7 +4,7 @@
 \alias{controller_publish}
 \title{Controller: Publish Input Specification}
 \usage{
-controller_publish(output_folder = NULL, params = list())
+controller_publish(output_folder = "~/publish_exports", params = list())
 }
 \arguments{
 \item{output_folder}{Character string. Global directory path to store all exports.}

@@ -1,38 +1,38 @@
 #--------------------------------------------------------------------
 ### Core Registration Function for Engines ###
 #--------------------------------------------------------------------
-#' Register an Engine in the fairnessToolbox Framework
+#' Register an Engine in the flowengineR Framework
 #'
 #' Dynamically loads, validates, and registers a new engine into the global `engines` registry.
-#' This function is a central building block of the fairnessToolbox modular architecture, allowing
-#' users to integrate custom engines for training, splitting, evaluation, fairness processing,
-#' reporting, or execution.
+#' This function is a central building block of the `flowengineR` modular architecture, allowing
+#' users to integrate custom engines for preprocessing, training, postprocessing, evaluation,
+#' reporting, publishing, and execution.
 #'
 #' **Workflow:**
 #' 1. Loads the engine file using `source()`.
 #' 2. Expects the file to contain:
-#'    - `wrapper_<engine_name>`: Standardized interface.
-#'    - `engine_<engine_name>`: Core logic function.
-#'    - `default_params_<engine_name>`: List of default hyperparameters.
-#' 3. Calls a type-specific validation function, e.g., `validate_engine_train()`.
-#' 4. If validation passes, the wrapper function is registered under `.GlobalEnv$engines`.
+#'    - `wrapper_<engine_name>`: Standardized interface
+#'    - `engine_<engine_name>`: Core logic function
+#'    - `default_params_<engine_name>`: List of default hyperparameters
+#' 3. Calls a type-specific validation function, e.g., `validate_engine_train()`
+#' 4. If validation passes, the wrapper function is registered under `.GlobalEnv$engines`
 #'
 #' **Supported Engine Types:**
-#' - `split_*`: Splitter engines
-#' - `execution_*`: Execution strategies (e.g., sequential, SLURM)
-#' - `fairness_pre_*`: Fairness processing methods
-#' - `train_*`: Training engines
-#' - `fairness_in_*`: Fairness processing methods
-#' - `fairness_post_*`: Fairness processing methods
-#' - `eval_*`: Evaluation metrics
-#' - `report_*`: Full report builders
-#' - `reportelement_*`: Report element builders (tables, plots)
-#' - `publish_*`: Publishing engines (e.g., PDF, HTML)
+#' - `split_*`: Data splitting engines
+#' - `execution_*`: Workflow execution strategies (e.g., sequential, parallel)
+#' - `preprocessing_*`: Data preprocessing before training
+#' - `train_*`: Model training engines
+#' - `inprocessing_*`: In-training modification engines
+#' - `postprocessing_*`: Prediction adjustment after training
+#' - `eval_*`: Evaluation engines (metrics, diagnostics)
+#' - `report_*`: Report builders
+#' - `reportelement_*`: Visual or tabular reporting components
+#' - `publish_*`: Export engines for external output
 #'
 #' **Validation Mechanism:**
 #' A centralized validation function (e.g., `validate_engine_train()`) is automatically 
-#' called by `register_engine()` based on the engine type. It checks structure, formal 
-#' arguments, return types, and naming conventions.
+#' called based on the engine type. It checks structure, required arguments, return types,
+#' and naming conventions.
 #'
 #' **Skipping Validation (Advanced Use):**
 #' Wrappers can opt out of validation (e.g., during prototyping) by returning
@@ -53,14 +53,7 @@
 #' @export
 register_engine <- function(engine_name, file_path) {
   tryCatch({
-    # Derive engine type from the engine name
-    engine_type <- strsplit(engine_name, "_")[[1]]
-    
-    if (engine_type[1] == "fairness") {
-      full_engine_type <- paste(engine_type[1], engine_type[2], sep = "_")  # Combine "fairness" with "post", "pre", or "in"
-    } else {
-      full_engine_type <- engine_type[1]  # For other types like "train", "split", "report"
-    }
+      full_engine_type <- strsplit(engine_name, "_")[[1]]
     
     # Source the engine file
     source(file_path, local = FALSE)

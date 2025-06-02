@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Helper: Internal Logging Function with Colors
 #'
-#' A centralized logging function for the fairnessToolbox framework.
+#' A centralized logging function for the flowengineR-framework.
 #' Supports log level filtering and optional ANSI-colored console output
 #' for better visibility during execution.
 #'
@@ -65,7 +65,7 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #'
 #' Fills a partially specified `control` object with default values for all 
 #' mandatory components up to the evaluation stage. Optional elements such as 
-#' fairness engines, reporting, or publishing are only initialized if explicitly 
+#' processing engines, reporting, or publishing are only initialized if explicitly 
 #' selected by the user.
 #'
 #' **Purpose:**
@@ -74,7 +74,7 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #'
 #' **Default Behavior:**
 #' - Sets `global_seed` to `1` if missing.
-#' - Uses `fairnessToolbox::test_data_2_base_credit_example` as fallback data if neither 
+#' - Uses `flowengineR::test_data_2_base_credit_example` as fallback data if neither 
 #'   `control$data$vars` nor `control$data$full` are provided.
 #' - Initializes `data$train` and `data$test` to `NULL` if missing.
 #' - Sets `split_method = "split_random_stratified"` and calls `controller_split()` if missing.
@@ -83,7 +83,7 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #' - Calls `controller_training()` if `params$train` is missing.
 #' - Adds default evaluation methods if not specified: `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`.
 #' - Calls `controller_evaluation()` if `params$eval` is missing.
-#' - For optional modules (`fairness_pre`, `fairness_in`, `fairness_post`, `reportelement`, `report`, `publish`),
+#' - For optional modules (`preprocessing`, `inprocessing`, `postprocessing`, `reportelement`, `report`, `publish`),
 #'   corresponding controller functions are only called if the module is selected by the user.
 #'
 #' **Safety Checks:**
@@ -126,7 +126,7 @@ complete_control_with_defaults <- function(control) {
   
   # Fallback: Dummy data + vars
   if (is.null(control$data$vars) && is.null(control$data$full)) {
-    control$data$full <- fairnessToolbox::test_data_2_base_credit_example
+    control$data$full <- flowengineR::test_data_2_base_credit_example
     vars <- controller_vars(
       feature_vars = c("income", "loan_amount", "credit_score",
                        "professionEmployee", "professionSelfemployed", "professionUnemployed"),
@@ -176,14 +176,14 @@ complete_control_with_defaults <- function(control) {
   }
   
   # Optional modules: initialize only if selected
-  if (!is.null(control$fairness_pre) && is.null(control$params$fairness_pre)) {
-    control$params$fairness_pre <- controller_fairness_pre()
+  if (!is.null(control$preprocessing) && is.null(control$params$preprocessing)) {
+    control$params$preprocessing <- controller_preprocessing()
   }
-  if (!is.null(control$fairness_in) && is.null(control$params$fairness_in)) {
-    control$params$fairness_in <- controller_fairness_in()
+  if (!is.null(control$inprocessing) && is.null(control$params$inprocessing)) {
+    control$params$inprocessing <- controller_inprocessing()
   }
-  if (!is.null(control$fairness_post) && is.null(control$params$fairness_post)) {
-    control$params$fairness_post <- controller_fairness_post()
+  if (!is.null(control$postprocessing) && is.null(control$params$postprocessing)) {
+    control$params$postprocessing <- controller_postprocessing()
   }
   if (!is.null(control$reportelement) && is.null(control$params$reportelement)) {
     control$params$reportelement <- controller_reportelement()
@@ -206,7 +206,7 @@ complete_control_with_defaults <- function(control) {
 #--------------------------------------------------------------------
 #' Helper: List Registered Engines
 #'
-#' Used throughout the fairnessToolbox framework to inspect the internal engine
+#' Used throughout the flowengineR-framework to inspect the internal engine
 #' registry. Returns all currently registered engines, either grouped by engine
 #' type (e.g. "train", "split", "execution") or filtered by a specific type.
 #'
@@ -252,7 +252,7 @@ list_registered_engines <- function(type = NULL) {
 #--------------------------------------------------------------------
 #' Helper: Merge User and Default Hyperparameters
 #'
-#' Used throughout the fairnessToolbox framework to combine user-specified
+#' Used throughout the flowengineR-framework to combine user-specified
 #' hyperparameters with engine-defined defaults. Ensures that missing fields 
 #' in user input are automatically filled with fallback defaults.
 #'
@@ -377,7 +377,7 @@ apply_minmax_params <- function(data, params) {
 #'
 #' Retrieves the correct training dataset from the control object 
 #' based on whether normalization is enabled or not. This helper 
-#' is mandatory for all training engines within the fairnessToolbox framework.
+#' is mandatory for all training engines within the flowengineR-framework.
 #'
 #' **Purpose:**
 #' - Ensures that each training engine uses the correct version of the data 
@@ -451,11 +451,11 @@ denormalize_predictions <- function(predictions, feature_name, norm_params) {
 #' Internal Helper: Aggregate Evaluation Metrics across Splits
 #'
 #' Aggregates both flat and nested evaluation metrics across multiple splits.
-#' This function is used internally by the fairnessToolbox master workflow
+#' This function is used internally by the flowengineR master workflow
 #' to compute summary statistics from evaluation outputs.
 #'
 #' **Usage Context:**
-#' - Called by `continue_fairness_workflow()` during the aggregation phase.
+#' - Called by `continue_workflow()` during the aggregation phase.
 #' - Supports evaluation outputs with nested or flat metric structures.
 #'
 #' **Supported Formats:**
@@ -523,7 +523,7 @@ aggregate_results <- function(workflow_results) {
 #--------------------------------------------------------------------
 #' Internal Helper: Validate Engine Wrapper Structure
 #'
-#' Performs structural consistency checks on engine components within the fairnessToolbox framework.
+#' Performs structural consistency checks on engine components within the flowengineR-framework.
 #' This includes verifying the existence of required functions (engine, wrapper, default parameters),
 #' correct argument signatures, and the use of standardized output initializers.
 #'
@@ -591,7 +591,7 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #' Internal Helper: Show Control Template for an Engine
 #'
 #' Loads and optionally prints or opens a prewritten control template file from the
-#' `R/` directory of the `fairnessToolbox` package using the naming convention
+#' `R/` directory of the `flowengineR` package using the naming convention
 #' `*_template_<engine>.R`.
 #'
 #' **Purpose:**
@@ -618,7 +618,7 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #' }
 show_template <- function(name, open = FALSE, return_content = FALSE) {
   # Locate R/ directory inside installed package
-  template_path <- system.file("templates_control", package = "fairnessToolbox")
+  template_path <- system.file("templates_control", package = "flowengineR")
   if (template_path == "") stop("Could not locate package installation path.")
   
   # Build pattern for matching file with _template_<engine>.R in name

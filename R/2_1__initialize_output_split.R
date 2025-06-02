@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Output Initializer: Splitter Engine Results
 #'
-#' Creates a standardized output object for **splitter engines** within the fairnessToolbox.
+#' Creates a standardized output object for **splitter engines** within the flowengineR
 #' This initializer ensures that all splitter engines return their results in a uniform format,
 #' making them compatible with downstream execution engines.
 #'

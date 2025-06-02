@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Adaptive Scalar Param Optimization (Sequential)
 #'
-#' Executes a single run using `run_workflow_single()`, designed for use
+#' Executes a single run using `run_workflow_singlesplitloop()`, designed for use
 #' in scalar hyperparameter optimization. This engine is called internally
 #' by the sequential wrapper to test one specific parameter value.
 #'
@@ -12,17 +12,17 @@
 #'              and one scalar parameter set to a candidate value.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_adaptive_input_scalar_sequential()]
 #'
 #' @param control A standardized control object including `data$train`, `data$test`,
 #'                and updated parameter (via `param_path`).
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_adaptive_input_scalar_sequential <- function(control) {
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ engine_execution_adaptive_input_scalar_sequential <- function(control) {
 #' Wrapper for Execution Engine: Adaptive Scalar Param Optimization (Sequential)
 #'
 #' Optimizes a single numeric/scalar hyperparameter in sequential steps.  
-#' In each iteration, the value is updated and `run_workflow_single()` is called with the adjusted `control` object.  
+#' In each iteration, the value is updated and `run_workflow_singlesplitloop()` is called with the adjusted `control` object.  
 #' The process stops when the performance metric no longer improves sufficiently, or when the maximum number of steps is reached.
 #'
 #' **Standardized Inputs:**
@@ -123,7 +123,7 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
     # Set value via dynamic assignment
     eval(parse(text = paste0("control$", params$param_path, " <- ", current_value)))
     
-    result <- run_workflow_single(control)
+    result <- run_workflow_singlesplitloop(control)
     workflow_results[[split_id]] <- result
     metric <- result$output_eval[[params$metric_source]]$metrics[[params$metric_name]]
     metric_values[i] <- metric

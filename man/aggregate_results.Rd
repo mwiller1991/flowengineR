@@ -14,13 +14,13 @@ A named list of aggregated metrics, each containing summary statistics.
 }
 \description{
 Aggregates both flat and nested evaluation metrics across multiple splits.
-This function is used internally by the fairnessToolbox master workflow
+This function is used internally by the flowengineR master workflow
 to compute summary statistics from evaluation outputs.
 }
 \details{
 \strong{Usage Context:}
 \itemize{
-\item Called by \code{continue_fairness_workflow()} during the aggregation phase.
+\item Called by \code{continue_workflow()} during the aggregation phase.
 \item Supports evaluation outputs with nested or flat metric structures.
 }
 

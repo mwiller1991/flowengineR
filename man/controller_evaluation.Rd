@@ -4,11 +4,9 @@
 \alias{controller_evaluation}
 \title{Controller: Evaluation Input Specification}
 \usage{
-controller_evaluation(protected_name, params = list())
+controller_evaluation(params = list())
 }
 \arguments{
-\item{protected_name}{Character vector. Names of protected attributes used in evaluation metrics.}
-
 \item{params}{Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.}
 }
 \value{
@@ -25,23 +23,36 @@ attributes from metric-specific configuration, enabling flexible extensions.
 
 \strong{Purpose:}
 \itemize{
-\item Specifies which protected attributes should be considered in fairness metrics.
+\item Specifies which protected attributes should be considered in fairness evaluation.
 \item Defines engine-specific configurations for individual evaluation methods.
+}
+
+\strong{Automated Variable Handling:}
+\itemize{
+\item \code{protected_name} is \strong{automatically derived} from \code{control$vars$protected_vars_binary}.
+\item Users do \strong{not need to set this manually}.
+\item This requires prior use of \code{controller_vars()} to define binary indicators for protected attributes.
+}
+
+\strong{Binary Attribute Requirement:}
+\itemize{
+\item All attributes in \code{protected_name} must be \strong{binary} (e.g., 0/1, TRUE/FALSE).
+\item Multi-class or continuous variables must be converted to binary before being passed into \code{protected_vars_binary}.
+\item Evaluation engines will throw an error or produce invalid results if this condition is not met.
 }
 
 \strong{Standardized Structure:}
 \itemize{
-\item \code{protected_name}: Character vector of protected attributes in binary/grouped form.
-\item \code{params}: Optional named list of parameter lists, each keyed by evaluation engine name.
+\item \code{protected_name}: \emph{(autofilled)} Character vector of binary/grouped protected attributes.
+\item \code{params}: Named list of parameter lists, each keyed by evaluation engine name (e.g., \code{"eval_mse"}).
 }
 
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{control$params$eval <- controller_evaluation(
-  protected_name = c("gender_male"),
   params = list(
     eval_mse = list(),
-    eval_statisticalparity = list(group_reference = "female")
+    eval_statisticalparity = list(threshold = 0.1)
   )
 )
 }\if{html}{\out{</div>}}

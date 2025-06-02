@@ -8,7 +8,7 @@ control$execution <- "execution_basic_batchtools_multicore"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore", # Target registry folder
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore", # Target registry folder
     seed = 42,                   # Seed for reproducibility
     ncpus = 4,                   # Number of CPU cores to use in parallel
     required_packages = character(0)  # Add required packages here, e.g., c("ggplot2", "caret")

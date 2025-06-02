@@ -13,10 +13,10 @@ engine_execution_basic_batchtools_multicore(control, split)
 \item{split}{A single list with \verb{$train} and \verb{$test}.}
 }
 \value{
-Result from \code{run_workflow_single()}.
+Result from \code{run_workflow_singlesplitloop()}.
 }
 \description{
-Executes one split using \code{run_workflow_single()} as part of a batchtools job.
+Executes one split using \code{run_workflow_singlesplitloop()} as part of a batchtools job.
 Uses the \code{multicore} backend of batchtools for local parallelization.
 }
 \details{
@@ -30,7 +30,7 @@ This engine only works on Unix-like systems (Linux, macOS, WSL). It does not wor
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A single result list as returned by \code{run_workflow_single()}.
+\item A single result list as returned by \code{run_workflow_singlesplitloop()}.
 }
 }
 \seealso{

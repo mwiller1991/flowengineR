@@ -20,20 +20,27 @@ and wraps the result using \code{initialize_output_eval()}.
 \strong{Standardized Inputs:}
 \itemize{
 \item \code{control$params$eval$eval_data$predictions}: Numeric vector of predictions (automatically provided by workflow).
-\item \code{control$params$eval$protected_name}: Names of protected attributes (not used by this engine).
-\item \code{control$params$eval$params}: Optional engine-specific parameters (none used here).
+\item \code{control$params$eval$protected_name}: Character vector of protected attributes (not used by this engine, but passed through for completeness).
+\item \code{control$params$eval$params$eval_summarystats}: Optional engine-specific parameters (not used here).
 }
 
-\strong{Engine-Specific Parameters (\code{control$params$eval$params}):}
+\strong{Engine-Specific Parameters (\code{control$params$eval$params$eval_summarystats}):}
 \itemize{
 \item None. This engine performs statistical evaluation using fixed metrics.
+}
+
+\strong{Variable Handling:}
+\itemize{
+\item No protected attribute processing is required.
+\item All attributes in \code{protected_name} (if present) are ignored by the engine, but retained in the output.
+\item No binary coding or preprocessing is necessary for this metric.
 }
 
 \strong{Example Control Snippet:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_summarystats"
 control$params$eval <- controller_evaluation(
-  protected_name = c("gender")
+  params = list()
 )
 }\if{html}{\out{</div>}}
 

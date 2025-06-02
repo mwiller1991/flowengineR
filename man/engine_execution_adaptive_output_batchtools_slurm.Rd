@@ -11,10 +11,10 @@ engine_execution_adaptive_output_batchtools_slurm(control)
 \item{control}{A standardized control object including \code{data$train} and \code{data$test}.}
 }
 \value{
-Result from \code{run_workflow_single()}.
+Result from \code{run_workflow_singlesplitloop()}.
 }
 \description{
-Executes a single split using \code{run_workflow_single()}. Intended for use
+Executes a single split using \code{run_workflow_singlesplitloop()}. Intended for use
 in adaptive stability procedures, where splits are executed in parallel
 using batchtools with a SLURM backend.
 }
@@ -26,7 +26,7 @@ using batchtools with a SLURM backend.
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A single result list as returned by \code{run_workflow_single()}.
+\item A single result list as returned by \code{run_workflow_singlesplitloop()}.
 }
 }
 \seealso{

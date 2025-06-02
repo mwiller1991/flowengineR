@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Batchtools Multicore Execution
 #'
-#' Executes one split using `run_workflow_single()` as part of a batchtools job.
+#' Executes one split using `run_workflow_singlesplitloop()` as part of a batchtools job.
 #' Uses the `multicore` backend of batchtools for local parallelization.
 #'
 #' This engine only works on Unix-like systems (Linux, macOS, WSL). It does not work on Windows.
@@ -13,14 +13,14 @@
 #' - `split`: A single list containing `train` and `test` datasets.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_basic_batchtools_multicore()]
 #'
 #' @param control The full control object.
 #' @param split A single list with `$train` and `$test`.
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_basic_batchtools_multicore <- function(control, split) {
   # Assign current split to control
@@ -28,7 +28,7 @@ engine_execution_basic_batchtools_multicore <- function(control, split) {
   control$data$test  <- split$test
   
   # Run workflow for this split
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ engine_execution_basic_batchtools_multicore <- function(control, split) {
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
 #' - `registry_folder` *(character)*: Folder where the batchtools registry will be stored.  
-#'   *Default:* `"~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore"`
+#'   *Default:* `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore"`
 #' - `seed` *(integer)*: Seed for registry initialization. *Default:* `123`
 #' - `required_packages` *(character vector)*: R packages to load within each batchtools job. *Default:* `character(0)`
 #' - `ncpus` *(integer)*: Number of parallel cores to use. *Default:* `parallel::detectCores()`
@@ -62,7 +62,7 @@ engine_execution_basic_batchtools_multicore <- function(control, split) {
 #' control$execution <- "execution_basic_batchtools_multicore"
 #' control$params$execution <- controller_execution(
 #'   params = list(
-#'     registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore",
+#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
 #'     seed = 42,
 #'     ncpus = 4
 #'   )
@@ -178,7 +178,7 @@ wrapper_execution_basic_batchtools_multicore <- function(control, split_output) 
 #' @keywords internal
 default_params_execution_basic_batchtools_multicore <- function() {
   list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
     seed = 123,
     required_packages = character(0),
     ncpus = parallel::detectCores()

@@ -18,7 +18,7 @@ Invisibly returns \code{TRUE} or, if \code{return_content = TRUE}, returns chara
 }
 \description{
 Loads and optionally prints or opens a prewritten control template file from the
-\verb{R/} directory of the \code{fairnessToolbox} package using the naming convention
+\verb{R/} directory of the \code{flowengineR} package using the naming convention
 \verb{*_template_<engine>.R}.
 }
 \details{

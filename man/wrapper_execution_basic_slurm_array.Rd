@@ -56,7 +56,7 @@ After completing the external SLURM jobs, resume the workflow using:
   split_output_path = "slurm_inputs/split_output.rds",
   result_dir = "slurm_outputs/"
 )
-result <- resume_fairness_workflow(resume_object)
+result <- resume_workflow(resume_object)
 }\if{html}{\out{</div>}}
 
 \strong{Standardized Output (returned to framework):}
@@ -65,7 +65,7 @@ A list structured via \code{initialize_output_execution()}:
 \item \code{execution_type}: \code{"basic_slurm_array"}
 \item \code{workflow_results}: \code{NULL} (execution deferred to SLURM)
 \item \code{params}: Engine parameters (merged default and user-defined)
-\item \code{continue_workflow}: \code{FALSE} (must be resumed via \code{resume_fairness_workflow()})
+\item \code{continue_workflow}: \code{FALSE} (must be resumed via \code{resume_workflow()})
 \item \code{specific_output}: List with:
 \itemize{
 \item \code{message}: Informative status string

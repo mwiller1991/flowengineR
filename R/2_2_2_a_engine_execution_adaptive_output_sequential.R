@@ -3,23 +3,23 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Adaptive Sequential Stability
 #'
-#' Executes a single split using `run_workflow_single()`. Intended for use in adaptive loops
+#' Executes a single split using `run_workflow_singlesplitloop()`. Intended for use in adaptive loops
 #' where each split is executed sequentially with increasing seeds.
 #'
 #' **Inputs (passed via wrapper):**
 #' - `control`: A fully prepared control object with assigned training and test data.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_adaptive_output_sequential()]
 #'
 #' @param control A standardized control object including `data$train` and `data$test`.
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_adaptive_output_sequential <- function(control) {
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ engine_execution_adaptive_output_sequential <- function(control) {
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_execution()` with:
 #' - `execution_type`: "adaptive_output_sequential"
-#' - `workflow_results`: List of results from `run_workflow_single()` per split
+#' - `workflow_results`: List of results from `run_workflow_singlesplitloop()` per split
 #' - `params`: Merged parameter list
 #' - `continue_workflow`: `TRUE` (workflow continues)
 #' - `specific_output`: Includes:

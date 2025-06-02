@@ -4,7 +4,12 @@
 \alias{controller_training}
 \title{Controller: Training Engine Specification}
 \usage{
-controller_training(formula, norm_data = TRUE, params = list())
+controller_training(
+  formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse =
+    "+"), "+", paste(vars$protected_vars, collapse = "+"))),
+  norm_data = TRUE,
+  params = list()
+)
 }
 \arguments{
 \item{formula}{A model formula used to define the structure of the predictive model.}

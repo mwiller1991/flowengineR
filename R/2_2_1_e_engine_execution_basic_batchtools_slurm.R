@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Batchtools SLURM Execution
 #'
-#' Executes one split using `run_workflow_single()` as part of a batchtools job.
+#' Executes one split using `run_workflow_singlesplitloop()` as part of a batchtools job.
 #' Designed for use with a SLURM-based HPC cluster.
 #'
 #' **Inputs (passed to engine via wrapper/batchtools):**
@@ -11,14 +11,14 @@
 #' - `split`: A single list containing `train` and `test` datasets.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_basic_batchtools_slurm()]
 #'
 #' @param control The full control object.
 #' @param split A single list with `$train` and `$test`.
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_basic_batchtools_slurm <- function(control, split) {
   # Inject current split into control
@@ -26,7 +26,7 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
   control$data$test  <- split$test
   
   # Execute workflow for current split
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
 #' - `split_output`: The result from the splitter engine.
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
-#' - `registry_folder` *(character)*: Where to store the batchtools registry (default: `"~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"`).
+#' - `registry_folder` *(character)*: Where to store the batchtools registry (default: `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"`).
 #' - `slurm_template` *(character)*: Path to SLURM job template (must exist).
 #' - `seed` *(integer)*: RNG seed (default: 123).
 #' - `required_packages` *(character vector)*: R packages to load in job.
@@ -60,7 +60,7 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
 #'   registry_folder = "my_bt_slurm",
 #'   slurm_template = "~/templates/my_slurm.tmpl",
 #'   seed = 111,
-#'   required_packages = c("fairnessToolbox"),
+#'   required_packages = c("flowengineR"),
 #'   resources = list(ncpus = 2, memory = 4096, walltime = 7200)
 #' ))
 #' ```
@@ -168,8 +168,8 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
 #' @keywords internal
 default_params_execution_basic_batchtools_slurm <- function() {
   list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",
-    slurm_template = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",
+    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",
     seed = 123,
     required_packages = character(0),
     resources = list(

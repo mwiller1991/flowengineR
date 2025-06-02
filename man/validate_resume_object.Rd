@@ -13,7 +13,7 @@ validate_resume_object(resume_object)
 Returns \code{TRUE} if validation is successful; otherwise throws a descriptive error.
 }
 \description{
-Ensures that the object passed to \code{resume_fairness_workflow()} contains
+Ensures that the object passed to \code{resume_workflow()} contains
 all required fields with the correct structure and types. This check is
 critical to prevent runtime errors when resuming SLURM-based or
 externally executed workflows.

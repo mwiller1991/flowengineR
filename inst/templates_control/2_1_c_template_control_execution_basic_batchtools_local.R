@@ -8,9 +8,9 @@ control$execution <- "execution_basic_batchtools_local"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
     seed = 123,
-    required_packages = c("fairnessToolbox"),
+    required_packages = c("flowengineR"),
     resources = list(
       ncpus = 1,
       memory = 2048,
@@ -22,7 +22,7 @@ control$params$execution <- controller_execution(
 # --- Available Parameters for execution_basic_batchtools_local ---
 # registry_folder: path to batchtools registry
 # seed: integer (registry seed)
-# required_packages: character vector (e.g., c("fairnessToolbox"))
+# required_packages: character vector (e.g., c("flowengineR"))
 # resources:
 #   - ncpus: integer (default: 1)
 #   - memory: MB per job (default: 2048)

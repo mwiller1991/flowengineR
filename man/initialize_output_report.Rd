@@ -30,7 +30,7 @@ initialize_output_report(
 A structured list representing a complete report.
 }
 \description{
-Creates a structured report object to be used by publishing engines within the fairnessToolbox.
+Creates a structured report object to be used by publishing engines within the flowengineR.
 Ensures consistent formatting and metadata across all full reports, whether user-defined or
 programmatically assembled from reportelements.
 }

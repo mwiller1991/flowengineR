@@ -12,10 +12,10 @@ engine_execution_adaptive_input_scalar_sequential(control)
 and updated parameter (via \code{param_path}).}
 }
 \value{
-Result from \code{run_workflow_single()}.
+Result from \code{run_workflow_singlesplitloop()}.
 }
 \description{
-Executes a single run using \code{run_workflow_single()}, designed for use
+Executes a single run using \code{run_workflow_singlesplitloop()}, designed for use
 in scalar hyperparameter optimization. This engine is called internally
 by the sequential wrapper to test one specific parameter value.
 }
@@ -28,7 +28,7 @@ and one scalar parameter set to a candidate value.
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A single result list as returned by \code{run_workflow_single()}.
+\item A single result list as returned by \code{run_workflow_singlesplitloop()}.
 }
 }
 \seealso{

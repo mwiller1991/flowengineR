@@ -15,7 +15,7 @@ merge_with_defaults(user_hyperparameters, default_hyperparameters)
 A named list containing the merged parameter set.
 }
 \description{
-Used throughout the fairnessToolbox framework to combine user-specified
+Used throughout the flowengineR-framework to combine user-specified
 hyperparameters with engine-defined defaults. Ensures that missing fields
 in user input are automatically filled with fallback defaults.
 }

@@ -30,7 +30,7 @@ initialize_output_eval(
 A standardized list containing evaluation results.
 }
 \description{
-Creates a standardized output structure for evaluation engines within the fairnessToolbox.
+Creates a standardized output structure for evaluation engines within the flowengineR.
 Ensures compatibility with result aggregation, reporting, and publishing mechanisms.
 }
 \details{

@@ -36,6 +36,13 @@ This engine does not support any additional parameters.
 \item Internally sets \code{internal_skip_validation = TRUE} to exclude engine from automatic validation checks.
 }
 
+\strong{Workflow Integration:}
+\itemize{
+\item \code{target_var} is \strong{automatically resolved} from \code{control$data$vars$target_var}
+if not provided explicitly in the controller.
+\item This allows users to define \code{target_var} only once in \code{controller_vars()}.
+}
+
 \strong{Example Control Snippet:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$split_method <- "split_userdefined"

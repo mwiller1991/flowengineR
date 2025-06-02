@@ -21,12 +21,12 @@ prepare_resume_from_slurm_array(
 \item{metadata}{Optional named list of metadata to include in the resume object (e.g., \code{engine}, \code{timestamp}).}
 }
 \value{
-A validated resume object compatible with \code{resume_fairness_workflow()}.
+A validated resume object compatible with \code{resume_workflow()}.
 }
 \description{
 Collects control structure, split configuration, and individual result files
 from a SLURM array job and compiles a standardized resume object that can be
-passed directly to \code{resume_fairness_workflow()}.
+passed directly to \code{resume_workflow()}.
 }
 \details{
 Wraps internal loading and file validation logic, and supports flexible file
@@ -54,6 +54,6 @@ and reside in the defined result directory.
   result_dir = "slurm_outputs/"
 )
 
-result <- resume_fairness_workflow(resume_object)
+result <- resume_workflow(resume_object)
 }\if{html}{\out{</div>}}
 }

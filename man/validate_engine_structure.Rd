@@ -24,7 +24,7 @@ validate_engine_structure(
 \code{TRUE} if structure is valid. Otherwise, stops with error or issues warnings.
 }
 \description{
-Performs structural consistency checks on engine components within the fairnessToolbox framework.
+Performs structural consistency checks on engine components within the flowengineR-framework.
 This includes verifying the existence of required functions (engine, wrapper, default parameters),
 correct argument signatures, and the use of standardized output initializers.
 }

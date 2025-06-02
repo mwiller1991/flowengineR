@@ -157,11 +157,11 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
 
 
 #--------------------------------------------------------------------
-### Subregistry Validation: Fairness Pre-Processing Engines ###
+### Subregistry Validation: Preprocessing Engines ###
 #--------------------------------------------------------------------
-#' Subregistry Validation for Fairness Pre-Processing Engines
+#' Subregistry Validation for Preprocessing Engines
 #'
-#' Validates fairness pre-processing engines during registration via `register_engine()` 
+#' Validates preprocessing engines during registration via `register_engine()` 
 #' by checking wrapper structure, expected output, and functional behavior.
 #'
 #' **Purpose:**
@@ -172,12 +172,12 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
 #' - Verifies that required output fields are present and correctly structured.
 #'
 #' **Scope:**
-#' - Applies to all engines prefixed with `fairness_pre`.
+#' - Applies to all engines prefixed with `preprocessing_`.
 #' - Automatically triggered during `register_engine()`, unless explicitly skipped via internal flag.
 #'
 #' **Required Output Structure:**
 #' - `preprocessed_data`: A data.frame with transformed input.
-#' - `method`: A string identifier of the pre-processing method.
+#' - `method`: A string identifier of the preprocessing method.
 #'
 #' **Usage Notes:**
 #' - Wrapper may signal `skip_validation = TRUE` to bypass checks.
@@ -185,11 +185,11 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
 #'
 #' @param wrapper_function Function. The wrapper function for the engine.
 #' @param default_params_function Function. The engine’s default parameter provider.
-#' @param engine_name Character. Name of the engine (e.g., `"fairness_pre_disparity"`).
+#' @param engine_name Character. Name of the engine (e.g., `"preprocessing_resampling"`).
 #'
 #' @return TRUE if validation is successful, otherwise an error is raised.
 #' @keywords internal
-validate_engine_fairness_pre <- function(wrapper_function, default_params_function, engine_name) {
+validate_engine_preprocessing <- function(wrapper_function, default_params_function, engine_name) {
   # --- structural check ---
   validate_engine_structure(
     wrapper_function = wrapper_function,
@@ -210,7 +210,7 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
   # Create a dummy control object using the controller function
   dummy_control <- list(
     params = list(
-      fairness_pre = controller_fairness_pre(
+      preprocessing = controller_preprocessing(
         protected_attributes = names(dummy_protected_attributes),
         target_var = "target_var",
         params = default_params_function()  # Use default parameters
@@ -219,8 +219,8 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
     internal_skip_validation = TRUE  # internal flag for the wrapper to be able to jump the validation if neccessary
   )
   
-  # Manually add `fairness_post_data` to the `fairness_post` list
-  dummy_control$params$fairness_pre$data <- dummy_data
+  # Inject dummy data into control
+  dummy_control$params$preprocessing$data <- dummy_data
   
   # Call the wrapper and validate the output
   output <- tryCatch({
@@ -231,14 +231,14 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
     }
     result
   }, error = function(e) {
-    stop(paste("[WARNING] Fairness pre-processing engine validation failed:", e$message))
+    stop(paste("[WARNING] Preprocessing engine validation failed:", e$message))
   })
   
-  # Required fields for fairness pre-processing engines
+  # Required fields
   required_fields <- c("preprocessed_data", "method")
   missing_fields <- setdiff(required_fields, names(output))
   if (length(missing_fields) > 0) {
-    stop(paste("[WARNING] Fairness pre-processing engine output missing required fields:", paste(missing_fields, collapse = ", ")))
+    stop(paste("[WARNING] Preprocessing engine output missing required fields:", paste(missing_fields, collapse = ", ")))
   }
   
   # Check transformed data
@@ -251,7 +251,7 @@ validate_engine_fairness_pre <- function(wrapper_function, default_params_functi
     stop("[WARNING] Method must be a single character string.")
   }
   
-  message("[SUCCESS] Fairness pre-processing engine validated successfully.")
+  message("[SUCCESS] Preprocessing engine validated successfully.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -349,44 +349,44 @@ validate_engine_train <- function(wrapper_function, default_params_function, eng
 
 
 #--------------------------------------------------------------------
-### Subregistry Validation: Fairness In-Processing Engines ###
+### Subregistry Validation: In-Processing Engines ###
 #--------------------------------------------------------------------
-#' Subregistry Validation for Fairness In-Processing Engines
+#' Subregistry Validation for In-Processing Engines
 #'
-#' Validates fairness in-processing engines during registration via `register_engine()`. 
+#' Validates in-processing engines during registration via `register_engine()`. 
 #' Ensures structural consistency with the required interface and output format.
 #'
 #' **Purpose:**
 #' - Confirms that the wrapper function:
 #'   - Uses the correct argument signature: `function(control, driver_train)`
-#'   - Calls the initializer: `initialize_output_fairness_in()`
+#'   - Calls the initializer: `initialize_output_inprocessing()`
 #'   - Returns a valid in-processing output structure.
 #'
 #' **Scope:**
-#' - Applies to all engines of type `fairness_in_*`.
+#' - Applies to all engines of type `inprocessing_*`.
 #' - Triggered automatically by `register_engine()` unless validation is bypassed using an internal skip flag.
 #'
 #' **Note:**
 #' - Functional validation (i.e., test run) is skipped due to the complexity of requiring a working training engine as input.
 #' - Structural validation ensures interface consistency, enabling safe embedding into the modular workflow.
 #'
-#' @param wrapper_function Function. The wrapper function for the fairness in-processing engine.
+#' @param wrapper_function Function. The wrapper function for the in-processing engine.
 #' @param default_params_function Function. The function providing default parameters for the engine.
-#' @param engine_name Character. The name of the engine being validated (e.g., `"fairness_in_adversarial"`).
+#' @param engine_name Character. The name of the engine being validated (e.g., `"inprocessing_weightedloss"`).
 #'
 #' @return TRUE if the engine passes structural validation; otherwise, an error is raised.
 #' @keywords internal
-validate_engine_fairness_in <- function(wrapper_function, default_params_function, engine_name) {
+validate_engine_inprocessing <- function(wrapper_function, default_params_function, engine_name) {
   # --- structural check ---
   validate_engine_structure(
     wrapper_function = wrapper_function,
     engine_name = engine_name,
     expected_args = c("control", "driver_train"),
-    expected_output_initializer = "initialize_output_fairness_in"
+    expected_output_initializer = "initialize_output_inprocessing"
   )
   
   # --- functional check ---
-  message("[INFO] Fairness in-processing engines do not support functional validation due to complexity.")
+  message("[INFO] In-processing engines do not support functional validation due to complexity.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -394,26 +394,26 @@ validate_engine_fairness_in <- function(wrapper_function, default_params_functio
 
 
 #--------------------------------------------------------------------
-### Subregistry Validation: Fairness Post-Processing Engines ###
+### Subregistry Validation: Post-Processing Engines ###
 #--------------------------------------------------------------------
-#' Subregistry Validation for Fairness Post-Processing Engines
+#' Subregistry Validation for Post-Processing Engines
 #'
-#' Validates fairness post-processing engines during registration via `register_engine()`. 
+#' Validates post-processing engines during registration via `register_engine()`. 
 #' Ensures structural and functional compliance with the expected interface and output format.
 #'
 #' **Purpose:**
 #' - Checks the wrapper function:
 #'   - Accepts the correct argument signature: `function(control)`
-#'   - Calls the initializer: `initialize_output_fairness_post()`
+#'   - Calls the initializer: `initialize_output_postprocessing()`
 #'   - Produces a valid and complete post-processing output.
 #'
 #' **Scope:**
-#' - Applies to all engines of type `fairness_post_*`.
+#' - Applies to all engines of type `postprocessing_*`.
 #' - Triggered during `register_engine()` unless skipped via internal flag.
 #'
 #' **Required Output Fields:**
 #' - `adjusted_predictions`: Numeric vector of modified predictions.
-#' - `method`: Character string describing the fairness technique.
+#' - `method`: Character string describing the applied technique.
 #' - `input_data`: Data frame used for post-processing.
 #' - `protected_attributes`: Data frame of protected group variables.
 #'
@@ -421,19 +421,19 @@ validate_engine_fairness_in <- function(wrapper_function, default_params_functio
 #' - Dummy input includes predictions, actuals, and protected attributes.
 #' - Engines may return `skip_validation = TRUE` to bypass validation (for example, in meta-engines).
 #'
-#' @param wrapper_function Function. The wrapper function for the fairness post-processing engine.
+#' @param wrapper_function Function. The wrapper function for the post-processing engine.
 #' @param default_params_function Function. Supplies default parameters for the engine.
-#' @param engine_name Character. Name of the engine being validated (e.g., `"fairness_post_equalized_odds"`).
+#' @param engine_name Character. Name of the engine being validated (e.g., `"postprocessing_equalized_odds"`).
 #'
 #' @return TRUE if the engine passes validation; otherwise, an error is raised.
 #' @keywords internal
-validate_engine_fairness_post <- function(wrapper_function, default_params_function, engine_name) {
+validate_engine_postprocessing <- function(wrapper_function, default_params_function, engine_name) {
   # --- structural check ---
   validate_engine_structure(
     wrapper_function = wrapper_function,
     engine_name = engine_name,
     expected_args = c("control"),
-    expected_output_initializer = "initialize_output_fairness_post"
+    expected_output_initializer = "initialize_output_postprocessing"
   )
   
   # --- functional check ---
@@ -449,15 +449,16 @@ validate_engine_fairness_post <- function(wrapper_function, default_params_funct
   dummy_control <- list(
     output_type = "prob",
     params = list(
-      fairness_post = controller_fairness_post(
+      postprocessing = controller_postprocessing(
         protected_name = names(dummy_protected_attributes),
         params = default_params_function()  # Use default parameters
       )
     ),
     internal_skip_validation = TRUE  # internal flag for the wrapper to be able to jump the validation if neccessary
   )
-  # Manually add `fairness_post_data` to the `fairness_post` list
-  dummy_control$params$fairness_post$fairness_post_data <- cbind(
+  
+  # Add postprocessing data manually
+  dummy_control$params$postprocessing$postprocessing_data <- cbind(
     predictions = as.numeric(dummy_predictions),
     actuals = dummy_actuals,
     dummy_protected_attributes
@@ -472,27 +473,25 @@ validate_engine_fairness_post <- function(wrapper_function, default_params_funct
     }
     result
   }, error = function(e) {
-    stop(paste("[WARNING] Fairness post-processing engine validation failed:", e$message))
+    stop(paste("[WARNING] Post-processing engine validation failed:", e$message))
   })
   
-  # Required fields for fairness post-processing engines
+  # Required fields
   required_fields <- c("adjusted_predictions", "method", "input_data", "protected_attributes")
   missing_fields <- setdiff(required_fields, names(output))
   if (length(missing_fields) > 0) {
-    stop(paste("[WARNING] Fairness post-processing engine output missing required fields:", paste(missing_fields, collapse = ", ")))
+    stop(paste("[WARNING] Post-processing engine output missing required fields:", paste(missing_fields, collapse = ", ")))
   }
   
-  # Check adjusted predictions
   if (!is.numeric(output$adjusted_predictions)) {
     stop("[WARNING] Adjusted predictions must be a numeric vector.")
   }
   
-  # Check method
   if (!is.character(output$method) || length(output$method) != 1) {
     stop("[WARNING] Method must be a single character string.")
   }
   
-  message("[SUCCESS] Fairness post-processing engine validated successfully.")
+  message("[SUCCESS] Post-processing engine validated successfully.")
   return(TRUE)
 }
 #--------------------------------------------------------------------
@@ -618,7 +617,7 @@ validate_engine_eval <- function(wrapper_function, default_params_function, engi
 #' output in the expected structure using `initialize_output_reportelement()`.
 #'
 #' **Purpose:**
-#' - Confirms structural compatibility of engines with the fairnessToolbox reporting layer.
+#' - Confirms structural compatibility of engines with the flowengineR reporting layer.
 #' - Allows seamless composition of reports from validated reportelements.
 #'
 #' **Validation Criteria:**
@@ -756,7 +755,7 @@ validate_engine_publish <- function(wrapper_function, default_params_function, e
 #--------------------------------------------------------------------
 #' Validate Resume Object for Workflow Resumption
 #'
-#' Ensures that the object passed to `resume_fairness_workflow()` contains
+#' Ensures that the object passed to `resume_workflow()` contains
 #' all required fields with the correct structure and types. This check is 
 #' critical to prevent runtime errors when resuming SLURM-based or 
 #' externally executed workflows.

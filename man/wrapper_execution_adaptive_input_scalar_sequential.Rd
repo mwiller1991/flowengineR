@@ -17,7 +17,7 @@ A standardized execution output object.
 }
 \description{
 Optimizes a single numeric/scalar hyperparameter in sequential steps.
-In each iteration, the value is updated and \code{run_workflow_single()} is called with the adjusted \code{control} object.
+In each iteration, the value is updated and \code{run_workflow_singlesplitloop()} is called with the adjusted \code{control} object.
 The process stops when the performance metric no longer improves sufficiently, or when the maximum number of steps is reached.
 }
 \details{

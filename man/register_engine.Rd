@@ -2,7 +2,7 @@
 % Please edit documentation in R/1_b_registry.R
 \name{register_engine}
 \alias{register_engine}
-\title{Register an Engine in the fairnessToolbox Framework}
+\title{Register an Engine in the flowengineR Framework}
 \usage{
 register_engine(engine_name, file_path)
 }
@@ -16,9 +16,9 @@ Invisibly registers the engine into \code{.GlobalEnv$engines[[engine_name]]} if 
 }
 \description{
 Dynamically loads, validates, and registers a new engine into the global \code{engines} registry.
-This function is a central building block of the fairnessToolbox modular architecture, allowing
-users to integrate custom engines for training, splitting, evaluation, fairness processing,
-reporting, or execution.
+This function is a central building block of the \code{flowengineR} modular architecture, allowing
+users to integrate custom engines for preprocessing, training, postprocessing, evaluation,
+reporting, publishing, and execution.
 }
 \details{
 \strong{Workflow:}
@@ -26,32 +26,32 @@ reporting, or execution.
 \item Loads the engine file using \code{source()}.
 \item Expects the file to contain:
 \itemize{
-\item \verb{wrapper_<engine_name>}: Standardized interface.
-\item \verb{engine_<engine_name>}: Core logic function.
-\item \verb{default_params_<engine_name>}: List of default hyperparameters.
+\item \verb{wrapper_<engine_name>}: Standardized interface
+\item \verb{engine_<engine_name>}: Core logic function
+\item \verb{default_params_<engine_name>}: List of default hyperparameters
 }
-\item Calls a type-specific validation function, e.g., \code{validate_engine_train()}.
-\item If validation passes, the wrapper function is registered under \code{.GlobalEnv$engines}.
+\item Calls a type-specific validation function, e.g., \code{validate_engine_train()}
+\item If validation passes, the wrapper function is registered under \code{.GlobalEnv$engines}
 }
 
 \strong{Supported Engine Types:}
 \itemize{
-\item \verb{split_*}: Splitter engines
-\item \verb{execution_*}: Execution strategies (e.g., sequential, SLURM)
-\item \verb{fairness_pre_*}: Fairness processing methods
-\item \verb{train_*}: Training engines
-\item \verb{fairness_in_*}: Fairness processing methods
-\item \verb{fairness_post_*}: Fairness processing methods
-\item \verb{eval_*}: Evaluation metrics
-\item \verb{report_*}: Full report builders
-\item \verb{reportelement_*}: Report element builders (tables, plots)
-\item \verb{publish_*}: Publishing engines (e.g., PDF, HTML)
+\item \verb{split_*}: Data splitting engines
+\item \verb{execution_*}: Workflow execution strategies (e.g., sequential, parallel)
+\item \verb{preprocessing_*}: Data preprocessing before training
+\item \verb{train_*}: Model training engines
+\item \verb{inprocessing_*}: In-training modification engines
+\item \verb{postprocessing_*}: Prediction adjustment after training
+\item \verb{eval_*}: Evaluation engines (metrics, diagnostics)
+\item \verb{report_*}: Report builders
+\item \verb{reportelement_*}: Visual or tabular reporting components
+\item \verb{publish_*}: Export engines for external output
 }
 
 \strong{Validation Mechanism:}
 A centralized validation function (e.g., \code{validate_engine_train()}) is automatically
-called by \code{register_engine()} based on the engine type. It checks structure, formal
-arguments, return types, and naming conventions.
+called based on the engine type. It checks structure, required arguments, return types,
+and naming conventions.
 
 \strong{Skipping Validation (Advanced Use):}
 Wrappers can opt out of validation (e.g., during prototyping) by returning

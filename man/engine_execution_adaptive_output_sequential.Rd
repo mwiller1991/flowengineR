@@ -11,10 +11,10 @@ engine_execution_adaptive_output_sequential(control)
 \item{control}{A standardized control object including \code{data$train} and \code{data$test}.}
 }
 \value{
-Result from \code{run_workflow_single()}.
+Result from \code{run_workflow_singlesplitloop()}.
 }
 \description{
-Executes a single split using \code{run_workflow_single()}. Intended for use in adaptive loops
+Executes a single split using \code{run_workflow_singlesplitloop()}. Intended for use in adaptive loops
 where each split is executed sequentially with increasing seeds.
 }
 \details{
@@ -25,7 +25,7 @@ where each split is executed sequentially with increasing seeds.
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A single result list as returned by \code{run_workflow_single()}.
+\item A single result list as returned by \code{run_workflow_singlesplitloop()}.
 }
 }
 \seealso{

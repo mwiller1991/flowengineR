@@ -31,8 +31,8 @@ engine_reportelement_boxplot_predictions <- function(workflow_results, split_out
     
     predictions <- switch(source,
                           train = split_result$output_train$predictions,
-                          post = split_result$output_fairness_post$adjusted_predictions,
-                          inproc = split_result$output_fairness_in$predictions,
+                          post = split_result$output_postprocessing$adjusted_predictions,
+                          inproc = split_result$output_inprocessing$predictions,
                           stop("Unknown source for predictions.")
     )
     
@@ -171,7 +171,7 @@ wrapper_reportelement_boxplot_predictions <- function(control, workflow_results,
 #'
 #' **Purpose:**
 #' - Controls the prediction type visualized in the boxplot.
-#' - Allows selection between raw model output and fairness-adjusted predictions.
+#' - Allows selection between raw model output and adjusted predictions.
 #'
 #' **Default Parameters:**
 #' - `source`: Determines which predictions to visualize. Options are:

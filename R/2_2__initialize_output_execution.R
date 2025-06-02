@@ -4,7 +4,7 @@
 #' Output Initializer: Execution Engine Results
 #'
 #' Creates a standardized output structure for execution engines within the
-#' fairnessToolbox framework. This ensures consistency across execution types
+#' flowengineR framework. This ensures consistency across execution types
 #' such as sequential runs, batchtools, SLURM arrays, and future distributed methods.
 #'
 #' **Purpose:**
@@ -20,7 +20,7 @@
 #'
 #' **Important Requirement:**
 #' The names of `workflow_results` **must exactly match** the split identifiers in `split_output$splits`.
-#' This is required for proper mapping and evaluation within `resume_fairness_workflow()`.
+#' This is required for proper mapping and evaluation within `resume_workflow()`.
 #'
 #' **Usage Example (inside a wrapper):**
 #' ```r
@@ -36,7 +36,7 @@
 #' @param workflow_results List of `run_workflow_single()` results (named to match splits), or `NULL` if deferred.
 #' @param params Optional. List of engine-specific parameters.
 #' @param specific_output Optional. Additional metadata or diagnostics.
-#' @param continue_workflow Logical. Whether the fairness workflow should proceed after execution.
+#' @param continue_workflow Logical. Whether the workflow should proceed after execution.
 #'
 #' @return A standardized list returned from all execution engines.
 #' @export

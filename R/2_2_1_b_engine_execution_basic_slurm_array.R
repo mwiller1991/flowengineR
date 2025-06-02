@@ -67,7 +67,7 @@ engine_execution_basic_slurm_array <- function(control, split_output) {
 #'   split_output_path = "slurm_inputs/split_output.rds",
 #'   result_dir = "slurm_outputs/"
 #' )
-#' result <- resume_fairness_workflow(resume_object)
+#' result <- resume_workflow(resume_object)
 #' ```
 #'
 #' **Standardized Output (returned to framework):**
@@ -75,7 +75,7 @@ engine_execution_basic_slurm_array <- function(control, split_output) {
 #' - `execution_type`: `"basic_slurm_array"`
 #' - `workflow_results`: `NULL` (execution deferred to SLURM)
 #' - `params`: Engine parameters (merged default and user-defined)
-#' - `continue_workflow`: `FALSE` (must be resumed via `resume_fairness_workflow()`)
+#' - `continue_workflow`: `FALSE` (must be resumed via `resume_workflow()`)
 #' - `specific_output`: List with:
 #'     - `message`: Informative status string
 #'     - `output_dir`: Path to directory containing saved inputs

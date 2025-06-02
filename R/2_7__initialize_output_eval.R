@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Output Initializer: Evaluation Engine Results
 #'
-#' Creates a standardized output structure for evaluation engines within the fairnessToolbox.
+#' Creates a standardized output structure for evaluation engines within the flowengineR.
 #' Ensures compatibility with result aggregation, reporting, and publishing mechanisms.
 #'
 #' **Purpose:**

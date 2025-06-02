@@ -69,8 +69,8 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-    slurm_template = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
+    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
     seed = 123,
     required_packages = c("caret", "dplyr"),
     resources = list(ncpus = 2, memory = 4096, walltime = 3600)
@@ -85,7 +85,7 @@ See \verb{inst/templates_control/2_2_c_template_execution_adaptive_output_batcht
 List created by \code{initialize_output_execution()}:
 \itemize{
 \item \code{execution_type}: \code{"adaptive_output_batchtools_slurm"}
-\item \code{workflow_results}: List of results from \code{run_workflow_single()} per split
+\item \code{workflow_results}: List of results from \code{run_workflow_singlesplitloop()} per split
 \item \code{params}: Final parameter list used
 \item \code{continue_workflow}: Always \code{TRUE}
 \item \code{specific_output}: Includes:

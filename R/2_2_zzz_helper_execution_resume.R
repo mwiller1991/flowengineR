@@ -5,7 +5,7 @@
 #'
 #' Collects control structure, split configuration, and individual result files 
 #' from a SLURM array job and compiles a standardized resume object that can be 
-#' passed directly to `resume_fairness_workflow()`.
+#' passed directly to `resume_workflow()`.
 #'
 #' Wraps internal loading and file validation logic, and supports flexible file 
 #' structure and metadata tagging.
@@ -28,7 +28,7 @@
 #'   result_dir = "slurm_outputs/"
 #' )
 #'
-#' result <- resume_fairness_workflow(resume_object)
+#' result <- resume_workflow(resume_object)
 #' ```
 #'
 #' @param control_path Path to the serialized control object (`.rds`). Default: `"slurm_inputs/control_base.rds"`.
@@ -36,7 +36,7 @@
 #' @param result_dir Directory containing the result files `result_split_<id>.rds`. Default: `"slurm_outputs"`.
 #' @param metadata Optional named list of metadata to include in the resume object (e.g., `engine`, `timestamp`).
 #'
-#' @return A validated resume object compatible with `resume_fairness_workflow()`.
+#' @return A validated resume object compatible with `resume_workflow()`.
 #' @export
 prepare_resume_from_slurm_array <- function(
     control_path = "slurm_inputs/control_base.rds",

@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Batchtools Local Execution
 #'
-#' Executes one split using `run_workflow_single()` as part of a batchtools job.
+#' Executes one split using `run_workflow_singlesplitloop()` as part of a batchtools job.
 #' This function is designed to be called internally by batchtools with the split passed explicitly.
 #'
 #' **Inputs (passed to engine via wrapper/batchtools):**
@@ -11,14 +11,14 @@
 #' - `split`: A single list containing `train` and `test` datasets.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_basic_batchtools_local()]
 #'
 #' @param control The full control object.
 #' @param split A single list with `$train` and `$test`.
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_basic_batchtools_local <- function(control, split) {
   # Assign current split to control object
@@ -26,7 +26,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
   control$data$test  <- split$test
   
   # Run full workflow for this split
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
 #' - `control$params$execution$params`: Optional engine-specific parameters (see below).
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
-#' - `registry_folder` *(character, default = `"~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic"`)*: Folder for the batchtools registry.
+#' - `registry_folder` *(character, default = `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"`)*: Folder for the batchtools registry.
 #' - `seed` *(integer, default = 123)*: Seed for the registry.
 #' - `required_packages` *(character vector)*: Packages to be loaded inside each job.
 #' - `resources` *(list)*: Batchtools resource constraints per job:
@@ -55,7 +55,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
 #'   - `walltime`: Max runtime in seconds (default: 3600)
 #'
 #' **Notes:**
-#' - Each job executes `run_workflow_single()` on a single data split.
+#' - Each job executes `run_workflow_singlesplitloop()` on a single data split.
 #' - Results are stored in a local registry directory and retrieved automatically.
 #'
 #' **Example Control Snippet:**
@@ -63,7 +63,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
 #' control$execution <- "execution_basic_batchtools_local"
 #' control$params$execution <- controller_execution(
 #'   params = list(
-#'     registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic",
+#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
 #'     seed = 42,
 #'     resources = list(ncpus = 2, memory = 4096, walltime = 600)
 #'   )
@@ -172,7 +172,7 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
 #' @keywords internal
 default_params_execution_basic_batchtools_local <- function() {
   list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic", # later just: bt_registry
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic", # later just: bt_registry
     seed = 123,
     required_packages = character(0),
     resources = list(ncpus = 1, memory = 2048, walltime = 3600)

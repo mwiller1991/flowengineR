@@ -18,7 +18,7 @@ These parameters define which prediction source is used for the boxplot.
 \strong{Purpose:}
 \itemize{
 \item Controls the prediction type visualized in the boxplot.
-\item Allows selection between raw model output and fairness-adjusted predictions.
+\item Allows selection between raw model output and adjusted predictions.
 }
 
 \strong{Default Parameters:}

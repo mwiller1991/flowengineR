@@ -67,7 +67,7 @@ See full template in \verb{inst/templates_control/2_2_a_template_execution_adapt
 A list structured via \code{initialize_output_execution()} with:
 \itemize{
 \item \code{execution_type}: "adaptive_output_sequential"
-\item \code{workflow_results}: List of results from \code{run_workflow_single()} per split
+\item \code{workflow_results}: List of results from \code{run_workflow_singlesplitloop()} per split
 \item \code{params}: Merged parameter list
 \item \code{continue_workflow}: \code{TRUE} (workflow continues)
 \item \code{specific_output}: Includes:

@@ -29,7 +29,7 @@ and collects results into a standardized format.
 
 \strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
-\item \code{registry_folder} \emph{(character, default = \code{"~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic"})}: Folder for the batchtools registry.
+\item \code{registry_folder} \emph{(character, default = \code{"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"})}: Folder for the batchtools registry.
 \item \code{seed} \emph{(integer, default = 123)}: Seed for the registry.
 \item \code{required_packages} \emph{(character vector)}: Packages to be loaded inside each job.
 \item \code{resources} \emph{(list)}: Batchtools resource constraints per job:
@@ -42,7 +42,7 @@ and collects results into a standardized format.
 
 \strong{Notes:}
 \itemize{
-\item Each job executes \code{run_workflow_single()} on a single data split.
+\item Each job executes \code{run_workflow_singlesplitloop()} on a single data split.
 \item Results are stored in a local registry directory and retrieved automatically.
 }
 
@@ -51,7 +51,7 @@ and collects results into a standardized format.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_local"
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_registry_basic",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
     seed = 42,
     resources = list(ncpus = 2, memory = 4096, walltime = 600)
   )

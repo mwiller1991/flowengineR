@@ -4,46 +4,52 @@
 \alias{controller_split}
 \title{Controller: Split Input Specification}
 \usage{
-controller_split(seed = 123, target_var, params = list())
+controller_split(seed = 123, params = list())
 }
 \arguments{
 \item{seed}{Optional integer for reproducibility. Default is \code{123}.}
 
-\item{target_var}{Character. Name of the target variable used in splitting logic.}
-
 \item{params}{Named list. Engine-specific configuration. Default is empty list.}
+
+\item{target_var}{Optional character. Name of the target variable (autofilled if not provided).}
 }
 \value{
 Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{fairnessToolbox} modules.
 }
 \description{
 Generates a standardized input configuration for any splitter engine used
-within the fairnessToolbox workflow. This controller ensures that the structure
-is compatible not only with built-in engines (e.g., random, stratified, CV)
-but also with any user-defined splitter engines.
+within the fairnessToolbox workflow. This controller ensures compatibility
+with built-in engines (e.g., random, stratified, CV) as well as user-defined
+splitter engines by standardizing the required interface.
 }
 \details{
-Designed for use in the construction of the \code{control} object. This function decouples
-engine-independent information (e.g., target variable, seed) from engine-specific parameters.
+Designed for use in the \code{control} object. This controller separates general information
+(e.g., target variable, seed) from engine-specific hyperparameters.
 
 \strong{Purpose:}
 \itemize{
 \item Provides a consistent and extensible input structure for all types of splitter engines.
-\item Facilitates modular extension of the framework by third-party or user-defined engines.
+\item Facilitates modular extension of the framework.
+}
+
+\strong{Automated Variable Handling:}
+\itemize{
+\item \code{target_var} is \strong{optional} and will be automatically set via \code{control$vars$target_var}
+using \code{autofill_controllers_from_vars()} if not provided.
+\item This requires the prior use of \code{controller_vars()} when setting up the control object.
 }
 
 \strong{Standardized Structure:}
 \itemize{
-\item \code{seed}: Random seed used for reproducibility across runs.
-\item \code{target_var}: The outcome variable, needed for stratified or CV-based splitting.
-\item \code{params}: A named list of additional splitter-specific hyperparameters (e.g., \code{split_ratio}, \code{cv_folds}).
+\item \code{seed}: Integer seed for reproducibility.
+\item \code{target_var}: \emph{(autofilled)} Character string used for stratified or CV-based splitting.
+\item \code{params}: Named list of engine-specific hyperparameters (e.g., \code{split_ratio}, \code{cv_folds}).
 }
 
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{control$params$split <- controller_split(
   seed = 42,
-  target_var = "default",
   params = list(split_ratio = 0.7)
 )
 }\if{html}{\out{</div>}}

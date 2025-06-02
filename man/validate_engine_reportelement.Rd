@@ -28,7 +28,7 @@ output in the expected structure using \code{initialize_output_reportelement()}.
 \details{
 \strong{Purpose:}
 \itemize{
-\item Confirms structural compatibility of engines with the fairnessToolbox reporting layer.
+\item Confirms structural compatibility of engines with the flowengineR reporting layer.
 \item Allows seamless composition of reports from validated reportelements.
 }
 

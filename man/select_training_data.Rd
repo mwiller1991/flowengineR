@@ -15,7 +15,7 @@ A data frame used for model training.
 \description{
 Retrieves the correct training dataset from the control object
 based on whether normalization is enabled or not. This helper
-is mandatory for all training engines within the fairnessToolbox framework.
+is mandatory for all training engines within the flowengineR-framework.
 }
 \details{
 \strong{Purpose:}

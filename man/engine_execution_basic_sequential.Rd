@@ -12,10 +12,10 @@ engine_execution_basic_sequential(control, split_output)
 \item{split_output}{A list of splits from the splitter engine.}
 }
 \value{
-A list of results from each \code{run_workflow_single()} call.
+A list of results from each \code{run_workflow_singlesplitloop()} call.
 }
 \description{
-Executes the workflow sequentially over all predefined data splits by calling \code{run_workflow_single()} for each split.
+Executes the workflow sequentially over all predefined data splits by calling \code{run_workflow_singlesplitloop()} for each split.
 }
 \details{
 \strong{Inputs (passed to engine via wrapper):}
@@ -26,7 +26,7 @@ Executes the workflow sequentially over all predefined data splits by calling \c
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A list of results, each returned from one \code{run_workflow_single()} call per split.
+\item A list of results, each returned from one \code{run_workflow_singlesplitloop()} call per split.
 }
 }
 \seealso{

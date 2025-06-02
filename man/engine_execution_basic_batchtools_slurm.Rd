@@ -13,10 +13,10 @@ engine_execution_basic_batchtools_slurm(control, split)
 \item{split}{A single list with \verb{$train} and \verb{$test}.}
 }
 \value{
-Result from \code{run_workflow_single()}.
+Result from \code{run_workflow_singlesplitloop()}.
 }
 \description{
-Executes one split using \code{run_workflow_single()} as part of a batchtools job.
+Executes one split using \code{run_workflow_singlesplitloop()} as part of a batchtools job.
 Designed for use with a SLURM-based HPC cluster.
 }
 \details{
@@ -28,7 +28,7 @@ Designed for use with a SLURM-based HPC cluster.
 
 \strong{Output (returned to wrapper):}
 \itemize{
-\item A single result list as returned by \code{run_workflow_single()}.
+\item A single result list as returned by \code{run_workflow_singlesplitloop()}.
 }
 }
 \seealso{

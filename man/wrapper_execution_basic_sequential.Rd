@@ -15,7 +15,7 @@ wrapper_execution_basic_sequential(control, split_output)
 A standardized execution result list.
 }
 \description{
-Executes the workflow sequentially over all predefined data splits by calling \code{run_workflow_single()} for each.
+Executes the workflow sequentially over all predefined data splits by calling \code{run_workflow_singlesplitloop()} for each.
 This engine is ideal for simple setups or debugging when parallelization is not required.
 }
 \details{
@@ -50,7 +50,7 @@ See full template in \verb{inst/templates_control/2_1_a_template_control_executi
 A list structured via \code{initialize_output_execution()}:
 \itemize{
 \item \code{execution_type}: \code{"basic_sequential"}
-\item \code{workflow_results}: List of results from each split (output of \code{run_workflow_single()})
+\item \code{workflow_results}: List of results from each split (output of \code{run_workflow_singlesplitloop()})
 \item \code{params}: Engine parameters (merged default and user-defined)
 \item \code{continue_workflow}: \code{TRUE} (execution completed within wrapper)
 \item \code{specific_output}: List with:

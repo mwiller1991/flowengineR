@@ -3,28 +3,28 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Sequential Split Execution
 #'
-#' Executes the workflow sequentially over all predefined data splits by calling `run_workflow_single()` for each split.
+#' Executes the workflow sequentially over all predefined data splits by calling `run_workflow_singlesplitloop()` for each split.
 #'
 #' **Inputs (passed to engine via wrapper):**
 #' - `control`: The full control object with all configurations.
 #' - `split_output`: Output from the splitter engine, containing a list of splits.
 #'
 #' **Output (returned to wrapper):**
-#' - A list of results, each returned from one `run_workflow_single()` call per split.
+#' - A list of results, each returned from one `run_workflow_singlesplitloop()` call per split.
 #'
 #' @param control A list containing all workflow parameters and inputs.
 #' @param split_output A list of splits from the splitter engine.
 #'
 #' @seealso [wrapper_execution_basic_sequential()]
 #'
-#' @return A list of results from each `run_workflow_single()` call.
+#' @return A list of results from each `run_workflow_singlesplitloop()` call.
 #' @keywords internal
 engine_execution_basic_sequential <- function(control, split_output) {
   # Loop over each data split and run the workflow sequentially
   lapply(split_output$splits, function(split) {
     control$data$train <- split$train
     control$data$test  <- split$test
-    run_workflow_single(control)
+    run_workflow_singlesplitloop(control)
   })
 }
 #--------------------------------------------------------------------
@@ -36,7 +36,7 @@ engine_execution_basic_sequential <- function(control, split_output) {
 #--------------------------------------------------------------------
 #' Wrapper for Execution Engine: Sequential Split Execution
 #'
-#' Executes the workflow sequentially over all predefined data splits by calling `run_workflow_single()` for each.
+#' Executes the workflow sequentially over all predefined data splits by calling `run_workflow_singlesplitloop()` for each.
 #' This engine is ideal for simple setups or debugging when parallelization is not required.
 #'
 #' **Standardized Inputs:**
@@ -65,7 +65,7 @@ engine_execution_basic_sequential <- function(control, split_output) {
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_execution()`:
 #' - `execution_type`: `"basic_sequential"`
-#' - `workflow_results`: List of results from each split (output of `run_workflow_single()`)
+#' - `workflow_results`: List of results from each split (output of `run_workflow_singlesplitloop()`)
 #' - `params`: Engine parameters (merged default and user-defined)
 #' - `continue_workflow`: `TRUE` (execution completed within wrapper)
 #' - `specific_output`: List with:

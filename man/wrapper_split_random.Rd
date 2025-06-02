@@ -37,6 +37,13 @@ This engine supports the following parameter:
 \item This engine performs no stratification. For stratified splitting, consider using \code{"split_random_stratified"}.
 }
 
+\strong{Workflow Integration:}
+\itemize{
+\item \code{target_var} is \strong{automatically resolved} from \code{control$data$vars$target_var}
+if not provided explicitly in the controller.
+\item This allows users to define \code{target_var} only once in \code{controller_vars()}.
+}
+
 \strong{Example Control Snippet:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$split_method <- "split_random"

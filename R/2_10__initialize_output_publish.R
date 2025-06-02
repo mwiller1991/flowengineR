@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Output Initializer: Publishing Engine Result
 #'
-#' Creates a standardized result object for publishing engines within the fairnessToolbox.
+#' Creates a standardized result object for publishing engines within the flowengineR.
 #' This initializer ensures that all publishing results are reported in a consistent structure,
 #' allowing for reliable logging, debugging, and downstream tracking.
 #'

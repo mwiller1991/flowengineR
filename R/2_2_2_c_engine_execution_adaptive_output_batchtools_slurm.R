@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------
 #' Execution Engine: Adaptive Batchtools SLURM Stability
 #'
-#' Executes a single split using `run_workflow_single()`. Intended for use
+#' Executes a single split using `run_workflow_singlesplitloop()`. Intended for use
 #' in adaptive stability procedures, where splits are executed in parallel
 #' using batchtools with a SLURM backend.
 #'
@@ -11,16 +11,16 @@
 #' - `control`: A fully prepared control object with assigned training and test data.
 #'
 #' **Output (returned to wrapper):**
-#' - A single result list as returned by `run_workflow_single()`.
+#' - A single result list as returned by `run_workflow_singlesplitloop()`.
 #'
 #' @seealso [wrapper_execution_adaptive_output_batchtools_slurm()]
 #'
 #' @param control A standardized control object including `data$train` and `data$test`.
 #'
-#' @return Result from `run_workflow_single()`.
+#' @return Result from `run_workflow_singlesplitloop()`.
 #' @keywords internal
 engine_execution_adaptive_output_batchtools_slurm <- function(control) {
-  run_workflow_single(control)
+  run_workflow_singlesplitloop(control)
 }
 #--------------------------------------------------------------------
 
@@ -79,8 +79,8 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #'     max_splits = 50,
 #'     seed_base = 2000,
 #'     n_splits_per_iteration = 3,
-#'     registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-#'     slurm_template = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
+#'     slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
 #'     seed = 123,
 #'     required_packages = c("caret", "dplyr"),
 #'     resources = list(ncpus = 2, memory = 4096, walltime = 3600)
@@ -94,7 +94,7 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #' **Standardized Output (returned to framework):**
 #' List created by `initialize_output_execution()`:
 #' - `execution_type`: `"adaptive_output_batchtools_slurm"`
-#' - `workflow_results`: List of results from `run_workflow_single()` per split
+#' - `workflow_results`: List of results from `run_workflow_singlesplitloop()` per split
 #' - `params`: Final parameter list used
 #' - `continue_workflow`: Always `TRUE`
 #' - `specific_output`: Includes:
@@ -287,8 +287,8 @@ default_params_execution_adaptive_output_batchtools_slurm <- function() {
     custom_stability_function = NULL,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-    slurm_template = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
+    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
     seed = 123,
     required_packages = character(0),
     resources = list(ncpus = 1, memory = 2048, walltime = 3600)

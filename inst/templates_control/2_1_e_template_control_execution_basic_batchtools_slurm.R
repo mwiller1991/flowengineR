@@ -8,8 +8,8 @@ control$execution <- "execution_basic_batchtools_slurm"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",  # Path to batchtools registry
-    slurm_template = "~/fairness_toolbox/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",         # SLURM job template
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",  # Path to batchtools registry
+    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",         # SLURM job template
     seed = 42,                        # Seed for reproducibility
     required_packages = character(0),# Required packages for each job
     resources = list(
@@ -31,4 +31,4 @@ control$params$execution <- controller_execution(
 # - This engine is designed for HPC clusters using the SLURM scheduler.
 # - Each split is submitted as a separate job using the given SLURM template.
 # - You can track job progress and errors using the batchtools registry at `registry_folder`.
-# - Use `resume_fairness_workflow()` after completion to process outputs if run in deferred mode.
+# - Use `resume_workflow()` after completion to process outputs if run in deferred mode.

@@ -1,8 +1,8 @@
 ---
-title: "Getting Started with fairnessToolbox"
+title: "Getting Started with flowengineR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting Started with fairnessToolbox}
+  %\VignetteIndexEntry{Getting Started with flowengineR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,49 +10,44 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  library(flowengineR)
 )
 ```
 
 ### Introduction
 
-The most powerful feature of `fairnessToolbox` is its fully modular architecture: **every engine—whether for training, fairness adjustment, evaluation, or reporting—can be swapped or extended independently**. As long as an engine adheres to the standardized inputs and outputs, it integrates seamlessly into the overall workflow.
+The core strength of `flowengineR` is its **fully modular architecture**: any engine—whether used for data preprocessing, core algorithm execution, evaluation, or reporting—can be replaced or extended without changing the surrounding workflow.
 
 This means you can:
-- Try a different fairness method without touching the model configuration
-- Replace the training engine (e.g., switch from `lm` to `randomForest`) without changing the post-processing or evaluation logic
-- Add your own engine for any step without modifying the workflow core
+- Test different preprocessing or postprocessing strategies with the same core algorithm
+- Swap the algorithm engine (e.g., switch from a statistical model to a simulation) without touching the reporting logic
+- Extend the workflow to entirely new domains, such as robustness testing, explainability, or compliance validation
 
-> ⚡ In short: You only need to care about the "connection points"—not the entire workflow design.
+> ⚡ In short: You only need to care about the "connection points"—not the entire workflow structure.
 > 
-> The engines provided by default are only examples. The real power lies in defining your own logic within the provided framework.
+> All default engines are just examples. The real power lies in defining your own logic using the framework’s unified interface.
 
-`fairnessToolbox` is a modular, extensible R framework that helps you analyze machine learning models with regard to both predictive performance and fairness.
+`flowengineR` is a general-purpose workflow framework for algorithmic experimentation and analysis. One of its primary use cases is **fairness-aware modeling**, for which several ready-to-use engines are included.
 
 This vignette introduces the basic workflow by walking through a minimal example.
 
 You will learn how to:
 - Define variables and model inputs
 - Configure and run a training engine
-- Apply a fairness post-processing method
+- Apply a post-processing method
 - Evaluate model performance and fairness
 
 ---
 
 ### Step 1: Define Variables
 
-We begin by specifying which columns in our dataset are:
-- input features
-- protected attributes
-- the target variable
-- binary versions of protected attributes used for evaluation
-
 ```{r}
-vars <- controller_vars(
-  feature_vars = c("income", "loan_amount"),
-  protected_vars = c("gender", "marital_status"),
-  target_var = "default",
-  protected_vars_binary = c("gender_Female", "marital_status_Married")
+vars = controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),
+  protected_vars = c("genderFemale", "genderMale", "age"),   
+  target_var = "default",            
+  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")
 )
 ```
 
@@ -60,16 +55,12 @@ vars <- controller_vars(
 
 ### Step 2: Define the Control Object
 
-Here we configure the training, fairness post-processing, and evaluation engines.
-We use:
-- `train_lm`: linear model
-- `fairness_post_disparateimpact`: adjusts predictions to reduce disparate impact
-- `eval_statisticalparity` and `eval_mse` as evaluation metrics
-
 ```{r}
 control <- list(
-  settings = list(),
-  
+  settings = list(
+    log = TRUE,
+    log_level = "info"
+  ),
   train = "train_lm",
   fairness_post = "fairness_post_genresidual",
   eval = c("eval_statisticalparity", "eval_mse"),
@@ -78,17 +69,13 @@ control <- list(
       formula = default ~ income + loan_amount,
       norm_data = TRUE
     ),
-    fairness_post = controller_fairness_post(
-      protected_name = c("gender_Female")
-    ),
-    eval = controller_evaluation(
-      protected_name = c("gender_Female")
-    )
+    fairness_post = controller_fairness_post(),
+    eval = controller_evaluation()
   )
 )
 ```
 
-A detailled introduction to the control object can be found here...
+A detailed introduction to the control object can be found [here](control_object_reference.html).
 
 ---
 
@@ -114,42 +101,61 @@ results$model    # trained model object
 
 ---
 
+### Logging and Debugging
+
+`flowengineR` includes a built-in logging system to improve transparency and simplify debugging throughout the entire workflow.
+
+Logging is **enabled and configured via the `settings` section** of the `control` object:
+
+```{r}
+settings = list(
+  log = TRUE,
+  log_level = "debug"
+)
+```
+
+Each internal function—especially within engines—can issue structured log messages through the centralized `log_msg()` helper. Messages are color-coded in the console and categorized by severity:
+
+| Level   | Description                        | Console Color |
+|---------|------------------------------------|---------------|
+| `debug` | Detailed diagnostics               | Grey          |
+| `info`  | Standard process messages          | Blue          |
+| `warn`  | Recoverable issues and warnings    | Yellow        |
+| `error` | Critical errors (can abort)        | Red           |
+
+#### Example
+
+```
+#> [INFO] Starting fairness_workflow
+#> [DEBUG] Calling training engine: train_lm
+#> [WARN] Postprocessing skipped: no predictions found
+#> [ERROR] Protected attributes missing (aborted)
+```
+
+This allows flexible diagnostics and helps users trace issues without manually inspecting intermediate objects.
+
+---
+
 ### Overview of Modular Engine Types
 
 | Engine Type       | Workflow Position  | Description                                                                 | Input (via Wrapper)                                        | Output (via Initializer)                   | Example Engines                      |
 | ----------------- | ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
 | `split_*`         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_stratified`   |
 | `execution_*`     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
-| `fairness_pre_*`  | Pre-Processing     | Modifies input data before model training to reduce bias                    | `data`, `protected_attributes`, `target_var`, `params`     | `preprocessed_data`, `method`              | `fairness_pre_disparity`             |
-| `train_*`         | Model Training     | Fits a predictive model to the training data                                | `formula`, `data`, `params`, `norm_data`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_rf`               |
-| `fairness_in_*`   | In-Processing      | Adjusts model training to include fairness constraints                      | `driver_train`, `data`, `protected_attributes`, `params`   | `adjusted_model`, `predictions`            | `fairness_in_kamiran`                |
-| `fairness_post_*` | Post-Processing    | Adjusts model predictions after training                                    | `predictions`, `actuals`, `protected_attributes`, `params` | `adjusted_predictions`, `method`           | `fairness_post_disparateimpact`      |
-| `eval_*`          | Evaluation         | Calculates performance and fairness metrics                                 | `predictions`, `actuals`, `protected_attributes`, `params` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
-| `reportelement_*` | Reporting Element  | Creates a plot or table from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
-| `report_*`        | Report Composition | Assembles multiple reporting elements into a structured document            | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_markdown`                    |
-| `publish_*`       | Output Publishing  | Saves results or reports to disk or external targets                        | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_html`, `publish_json`       |
-
-
-| Engine Type         | Workflow Position        | Input (via Wrapper)                                         | Output (via Initializer)                   | Example Engines                    |
-|---------------------|---------------------------|--------------------------------------------------------------|---------------------------------------------|------------------------------------|
-| `split_*`           | Dataset Splitting         | `data`, `target_var`, `seed`, `params`                      | `splits`, `split_type`, `seed`              | `split_random`, `split_stratified` |
-| `execution_*`       | Execution Strategy         | `control`, `split_output`, `params`                         | `workflow_results`, `execution_type`        | `execution_sequential`             |
-| `fairness_pre_*`    | Pre-Processing             | `data`, `protected_attributes`, `target_var`, `params`      | `preprocessed_data`, `method`               | `fairness_pre_disparity`           |
-| `train_*`           | Model Training             | `formula`, `data`, `params`, `norm_data`                    | `model`, `model_type`, `predictions`        | `train_lm`, `train_rf`             |
-| `fairness_in_*`     | In-Processing              | `driver_train`, `data`, `protected_attributes`, `params`    | `adjusted_model`, `predictions`             | `fairness_in_kamiran`              |
-| `fairness_post_*`   | Post-Processing            | `predictions`, `actuals`, `protected_attributes`, `params`  | `adjusted_predictions`, `method`            | `fairness_post_disparateimpact`    |
-| `eval_*`            | Evaluation                 | `predictions`, `actuals`, `protected_attributes`, `params`  | `metrics`, `eval_type`                      | `eval_statisticalparity`, `eval_mse` |
-| `reportelement_*`   | Reporting Element          | `workflow_results`, `split_output`, `alias`, `params`       | `report_object`, `report_type`              | `reportelement_table_splitmetrics` |
-| `report_*`          | Report Composition         | `reportelements`, `alias_report`, `params`                  | `report`, `sections`, `compatible_formats`  | `report_markdown`                  |
-| `publish_*`         | Output Publishing          | `object`, `file_path`, `alias_publish`, `params`            | `path`, `success`, `type`                   | `publish_html`, `publish_json`     |
-
-All engines can be **replaced or extended independently**—just keep their input and output format consistent. This guarantees plug-and-play flexibility across the entire pipeline.
+| `preprocessing_*` | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `fairness_pre_disparity`, `pre_pca`  |
+| `train_*`         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_rf`, `train_gbm`  |
+| `inprocessing_*`  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `fairness_in_kamiran`                |
+| `postprocessing_*`| Post-Processing    | Modifies predictions after model execution                                  | `predictions`, `params`, `protected_attributes`            | `adjusted_predictions`, `method`           | `fairness_post_genresidual`          |
+| `eval_*`          | Evaluation         | Calculates performance or bias metrics                                      | `predictions`, `actuals`, `params`, `protected_attributes` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
+| `reportelement_*` | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
+| `report_*`        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_markdown`                    |
+| `publish_*`       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_html`, `publish_json`       |
 
 ---
 
 ### Next Steps
 
 - [Engine Development Guide](how_to_build_custom_engine.html)
-- [Metalevel Workflow Diagram](metalevel_flowchart.html)
-
-To learn how to extend the framework with custom components, refer to the Engine Development Guide.
+- [Metalevel Flowchart](metalevel_flowchart.html)
+- [Using Fairness Engines](fairness_module_examples.html)
+- [Advanced Execution Modes](adaptive_execution_workflows.html)

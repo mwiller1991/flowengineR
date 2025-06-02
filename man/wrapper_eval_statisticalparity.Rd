@@ -21,7 +21,15 @@ and invokes the SPD engine. Wraps the result using \code{initialize_output_eval(
 \itemize{
 \item \code{control$params$eval$eval_data}: Data frame including predictions and protected attributes (injected by workflow).
 \item \code{control$params$eval$protected_name}: Character vector of protected attribute names.
+→ This field is auto-filled from \code{control$vars$protected_vars_binary} and must not be set manually.
 \item \code{control$params$eval$params}: Optional engine-specific parameters (not used here).
+}
+
+\strong{Binary Attribute Requirement:}
+\itemize{
+\item All variables listed in \code{protected_name} must be binary (e.g., 0/1, TRUE/FALSE).
+\item Multi-class or continuous variables must be transformed into binary dummies during setup (via \code{controller_vars()}).
+\item This wrapper validates binary structure and returns an error if invalid formats are detected.
 }
 
 \strong{Engine-Specific Parameters (\code{control$params$eval$params}):}
@@ -33,7 +41,7 @@ and invokes the SPD engine. Wraps the result using \code{initialize_output_eval(
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_statisticalparity"
 control$params$eval <- controller_evaluation(
-  protected_name = c("gender", "race")
+  params = list()
 )
 }\if{html}{\out{</div>}}
 

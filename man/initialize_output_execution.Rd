@@ -21,14 +21,14 @@ initialize_output_execution(
 
 \item{specific_output}{Optional. Additional metadata or diagnostics.}
 
-\item{continue_workflow}{Logical. Whether the fairness workflow should proceed after execution.}
+\item{continue_workflow}{Logical. Whether the workflow should proceed after execution.}
 }
 \value{
 A standardized list returned from all execution engines.
 }
 \description{
 Creates a standardized output structure for execution engines within the
-fairnessToolbox framework. This ensures consistency across execution types
+flowengineR framework. This ensures consistency across execution types
 such as sequential runs, batchtools, SLURM arrays, and future distributed methods.
 }
 \details{
@@ -49,7 +49,7 @@ such as sequential runs, batchtools, SLURM arrays, and future distributed method
 
 \strong{Important Requirement:}
 The names of \code{workflow_results} \strong{must exactly match} the split identifiers in \code{split_output$splits}.
-This is required for proper mapping and evaluation within \code{resume_fairness_workflow()}.
+This is required for proper mapping and evaluation within \code{resume_workflow()}.
 
 \strong{Usage Example (inside a wrapper):}
 

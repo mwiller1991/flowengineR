@@ -22,19 +22,25 @@ and invokes the MSE evaluation engine. Wraps the result using \code{initialize_o
 \item \code{control$params$eval$eval_data$predictions}: Numeric vector of predicted values (injected by workflow).
 \item \code{control$params$eval$eval_data$actuals}: Numeric vector of actual values (injected by workflow).
 \item \code{control$params$eval$protected_attributes}: Names of protected attributes (optional; included in output).
-\item \code{control$params$eval$params$eval_mse}: Optional engine-specific parameters (not used here).
+\item \code{control$params$eval$params$eval_mse}: Optional engine-specific parameters.
 }
 
 \strong{Engine-Specific Parameters (\code{control$params$eval$params$eval_mse}):}
 \itemize{
-\item None. This engine has no tunable settings.
+\item None. This engine has no tunable settings and simply computes the MSE.
+}
+
+\strong{Variable Handling:}
+\itemize{
+\item This engine does \strong{not} require \code{protected_name} to be binary.
+\item Protected attributes are passed through for consistency and may be used in reporting.
 }
 
 \strong{Example Control Snippet:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_mse"
 control$params$eval <- controller_evaluation(
-  protected_name = c("gender")
+  params = list()
 )
 }\if{html}{\out{</div>}}
 
@@ -48,7 +54,7 @@ See full template in \verb{inst/templates_control/7_2_a_template_eval_mse.R}
 \item \code{metrics}: Named list with entry \code{mse} (numeric).
 \item \code{eval_type}: \code{"mse_eval"}.
 \item \code{input_data}: Evaluation input (predictions + actuals).
-\item \code{protected_attributes}: Passed through from control (optional).
+\item \code{protected_attributes}: Passed through from control (optional, not used).
 \item \code{params}: Empty list.
 \item \code{specific_output}: \code{NULL}.
 }

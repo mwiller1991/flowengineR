@@ -1,15 +1,15 @@
 ---
-title: "How to Build a Custom Engine in fairnessToolbox"
+title: "How to Build a Custom Engine in flowengineR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{How to Build a Custom Engine in fairnessToolbox}
+  %\VignetteIndexEntry{How to Build a Custom Engine in flowengineR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-**Engine Development Guide: Creating Custom Engines in fairnessToolbox**
+**Engine Development Guide: Creating Custom Engines in flowengineR**
 
-This guide explains the standardized structure required to build and register a new engine within the `fairnessToolbox` framework. All engines—whether for training, evaluation, fairness processing, reporting, or publishing—must follow the same core architectural pattern.
+This guide explains the standardized structure required to build and register a new engine within the `flowengineR` framework. All engines—whether for training, evaluation, processing, reporting, or publishing—must follow the same core architectural pattern.
 
 ---
 
@@ -164,7 +164,7 @@ register_engine(
 ```
 
 After registration, you can reference the engine by name in the control object:
-To use a custom engine in the fairnessToolbox workflow, only the **wrapper function needs to be referenced** in the control object. The engine and default functions are automatically picked up via naming conventions.
+To use a custom engine in the flowengineR workflow, only the **wrapper function needs to be referenced** in the control object. The engine and default functions are automatically picked up via naming conventions.
 
 #### Example: Registering a training engine
 

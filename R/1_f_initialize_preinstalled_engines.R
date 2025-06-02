@@ -4,10 +4,10 @@
 #' @title Package Attachment Hook (.onAttach)
 #'
 #' @description
-#' This function is automatically called when the fairnessToolbox package is attached
-#' via `library(fairnessToolbox)`. It populates a global list named `engines` containing
+#' This function is automatically called when the flowengineR-package is attached
+#' via `library(flowengineR)`. It populates a global list named `engines` containing
 #' all built-in engine wrapper functions, grouped by type (e.g., training, splitting,
-#' execution, evaluation, fairness processing, reporting, publishing).
+#' execution, evaluation, processing, reporting, publishing).
 #'
 #' **Purpose:**
 #' - Makes all engine wrappers available in a centralized object `engines`.
@@ -30,10 +30,6 @@
 #' @keywords internal
 .onAttach <- function(libname, pkgname) {
   assign("engines", list(
-    # Training
-    train_lm = wrapper_train_lm,
-    train_glm = wrapper_train_glm,
-    
     # Split
     split_cv = wrapper_split_cv,
     split_random_stratified = wrapper_split_random_stratified,
@@ -53,14 +49,18 @@
     execution_adaptive_batchtools_slurm = wrapper_execution_adaptive_output_batchtools_slurm,
     execution_adaptive_input_scalar_sequential = wrapper_execution_adaptive_input_scalar_sequential,
     
-    # Fairness Pre
-    fairness_pre_resampling = wrapper_fairness_pre_resampling,
+    # preprocessing
+    preprocessing_fairness_resampling = wrapper_preprocessing_fairness_resampling,
     
-    # Fairness In
-    fairness_in_adversialdebiasing = wrapper_fairness_in_adversialdebiasing,
+    # Training
+    train_lm = wrapper_train_lm,
+    train_glm = wrapper_train_glm,
     
-    # Fairness Post
-    fairness_post_genresidual = wrapper_fairness_post_genresidual,
+    # inprocessing
+    inprocessing_fairness_adversialdebiasing = wrapper_inprocessing_fairness_adversialdebiasing,
+    
+    # postprocessing
+    postprocessing_fairness_genresidual = wrapper_postprocessing_fairness_genresidual,
     
     # Evaluation
     eval_summarystats = wrapper_eval_summarystats,

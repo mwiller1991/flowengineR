@@ -148,6 +148,52 @@ controller_execution <- function(params = list()) {
 
 
 #--------------------------------------------------------------------
+### Controller: Preprocessing Configuration ###
+#--------------------------------------------------------------------
+#' Controller: Preprocessing Engine Configuration
+#'
+#' Generates a standardized input structure for any preprocessing engine 
+#' used within the `flowengineR` workflow. This includes steps like feature transformation,
+#' resampling, reweighting, or preparation of group-specific attributes prior to model training.
+#'
+#' Designed for use in the construction of the `control` object. Ensures compatibility 
+#' with all built-in and user-defined preprocessing engines.
+#'
+#' **Purpose:**
+#' - Supplies metadata and parameters for preprocessing steps before training.
+#' - Enables flexible customization of the data pipeline (e.g., stratification, normalization helpers, resampling strategies).
+#'
+#' **Automated Variable Handling:**
+#' - `protected_attributes` and `target_var` are **automatically filled** from `control$vars`
+#'   if not manually specified.
+#' - This requires the use of `controller_vars()` to define the necessary references.
+#'
+#' **Standardized Structure:**
+#' - `protected_attributes`: *(autofilled)* Character vector of attribute names used for group-wise preprocessing (optional).
+#' - `target_var`: *(autofilled)* Character string of the prediction target variable.
+#' - `params`: A named list of engine-specific configuration options.
+#'
+#' **Usage Example:**
+#' ```r
+#' control$params$preprocessing <- controller_preprocessing(
+#'   params = list(method = "resample_by_group", group_var = "gender")
+#' )
+#' ```
+#'
+#' @param params Named list. Engine-specific configuration. Default is empty list.
+#'
+#' @return Named list. To be stored in \code{control$params$preprocessing} and passed to a preprocessing engine.
+#' @export
+controller_preprocessing <- function(params = list()) {
+  list(
+    params = params
+  )
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
 ### Controller: Training Engine Configuration ###
 #--------------------------------------------------------------------
 #' Controller: Training Engine Specification
@@ -197,96 +243,46 @@ controller_training <- function(formula = as.formula(paste(vars$target_var, "~",
 
 
 #--------------------------------------------------------------------
-### Controller: Fairness Pre-Processing Configuration ###
+### Controller: In-Processing Configuration ###
 #--------------------------------------------------------------------
-#' Controller: Fairness Pre-Processing Specification
+#' Controller: In-Processing Engine Configuration
 #'
-#' Generates a standardized input structure for any fairness pre-processing engine 
-#' used within the fairnessToolbox workflow. This controller ensures compatibility 
-#' with built-in and user-defined engines for preprocessing protected attributes.
+#' Generates a standardized input structure for any in-processing engine 
+#' used within the `flowengineR` workflow. In-processing engines modify the model training process directly,
+#' for example by applying constraints, reweighting, or custom optimization procedures.
 #'
-#' Designed for use in the `control` object. Pre-processing can include bias mitigation 
-#' steps such as reweighting, sampling, or transformation of features before model training.
+#' Designed for use in the construction of the `control` object. Ensures compatibility 
+#' with built-in and user-defined in-processing strategies.
 #'
 #' **Purpose:**
-#' - Prepares all necessary inputs for fairness-aware preprocessing.
-#' - Allows engine-specific parameters to be passed in a standardized format.
+#' - Passes relevant metadata and hyperparameters to in-processing methods.
+#' - Enables direct influence on the model training logic (e.g., bias penalties, group-specific loss weights).
 #'
 #' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are no longer required as direct arguments.
-#' - These will automatically be filled from `control$vars` if omitted.
-#' - This requires the use of `controller_vars()` as part of the control object setup.
+#' - `protected_attributes` and `target_var` are **automatically derived** from `control$vars`
+#'   if not manually specified.
+#' - This requires prior definition via `controller_vars()`.
 #'
 #' **Standardized Structure:**
-#' - `protected_attributes`: (autofilled) Character vector of protected attribute names.
-#' - `target_var`: (autofilled) Character string. The target variable used in supervised learning.
-#' - `params`: A named list of additional parameters passed to the pre-processing engine.
+#' - `protected_attributes`: *(autofilled)* Character vector of relevant attributes (e.g., grouping or constraint targets).
+#' - `target_var`: *(autofilled)* Name of the target variable.
+#' - `norm_data`: Logical. Whether to use normalized data (default: `TRUE`).
+#' - `params`: A named list of engine-specific hyperparameters.
 #'
 #' **Usage Example:**
 #' ```r
-#' control$params$fairness_pre <- controller_fairness_pre(
-#'   params = list(method = "undersampling")
-#' )
-#' ```
-#'
-#' @param params Named list. Engine-specific configuration. Default is empty list.
-#'
-#' @return Named list. To be stored in \code{control$params$fairness_pre} and passed to the fairness pre-processing engine. Compatible with all \code{fairnessToolbox} modules.
-#' @export
-controller_fairness_pre <- function(params = list()) {
-  list(
-    params = params
-  )
-}
-#--------------------------------------------------------------------
-
-
-
-#--------------------------------------------------------------------
-### Controller: Fairness In-Processing Configuration ###
-#--------------------------------------------------------------------
-#' Controller: Fairness In-Processing Specification
-#'
-#' Generates a standardized input structure for any fairness in-processing engine 
-#' used within the fairnessToolbox workflow. This controller ensures compatibility 
-#' with built-in and custom in-processing methods that modify models during training.
-#'
-#' Designed for use in the `control` object. In-processing methods can directly influence 
-#' the learning algorithm, for example by adjusting loss functions, applying reweighting, 
-#' or enforcing fairness constraints during optimization.
-#'
-#' **Purpose:**
-#' - Prepares metadata and engine-specific parameters for in-processing methods.
-#' - Supports optional normalization toggling before model training.
-#'
-#' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are **not required** as direct inputs.
-#' - These will be automatically filled from `control$vars` if not set manually.
-#' - Requires prior use of `controller_vars()` to define `target_var` and `protected_vars`.
-#'
-#' **Standardized Structure:**
-#' - `protected_attributes`: *(autofilled)* Character vector of protected attribute names.
-#' - `target_var`: *(autofilled)* Character string specifying the target variable.
-#' - `norm_data`: Logical. Whether to normalize input data before training (default: `TRUE`).
-#' - `params`: A named list of engine-specific parameters.
-#'
-#' **Usage Example:**
-#' ```r
-#' control$params$fairness_in <- controller_fairness_in(
+#' control$params$inprocessing <- controller_inprocessing(
 #'   norm_data = TRUE,
-#'   params = list(
-#'     learning_rate = 0.1,
-#'     num_epochs = 1000
-#'   )
+#'   params = list(constraint = "equalized odds", lambda = 0.1)
 #' )
 #' ```
 #'
-#' @param norm_data Logical. Use normalized data (`TRUE`) or raw data (`FALSE`) in training.
+#' @param norm_data Logical. Whether to use normalized data (default: TRUE).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return Named list. To be stored in \code{control$params$fairness_in} and passed to the fairness in-processing engine. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$inprocessing} and passed to an in-processing engine.
 #' @export
-controller_fairness_in <- function(norm_data = TRUE, params = list()) {
+controller_inprocessing <- function(norm_data = TRUE, params = list()) {
   list(
     norm_data = norm_data,
     params = params
@@ -297,64 +293,53 @@ controller_fairness_in <- function(norm_data = TRUE, params = list()) {
 
 
 #--------------------------------------------------------------------
-### Controller: Fairness Post-Processing Configuration ###
+### Controller: Post-Processing Configuration ###
 #--------------------------------------------------------------------
-#' Controller: Fairness Post-Processing Specification
+#' Controller: Post-Processing Engine Configuration
 #'
-#' Generates a standardized input structure for post-processing fairness methods 
-#' used in the fairnessToolbox workflow. This controller supports any post-processing 
-#' engine that adjusts predictions after model training (e.g., rejection options, thresholds).
+#' Generates a standardized input structure for any post-processing engine 
+#' used within the `flowengineR` workflow. Post-processing engines adjust 
+#' model predictions after training, without modifying the model itself.
 #'
-#' Designed for use in the `control` object. Post-processing techniques act on model outputs
-#' and aim to correct unfairness **without modifying the model itself**.
+#' Typical use cases include: threshold correction, group-based adjustments, 
+#' rule-based overlays, or compliance alignment.
 #'
 #' **Purpose:**
-#' - Supplies metadata for protected groups and engine-specific parameters.
-#' - Enables modular and extensible use of post-processing fairness engines.
-#' - Supports fully automatic prediction data injection from the workflow.
-#'
-#' **Automated Variable Handling:**
-#' - `protected_name` (i.e. binary/grouped attribute names) is **automatically derived**
-#'   from `control$vars$protected_vars_binary`.
-#' - Users **must not** specify this field manually.
-#' - This requires prior use of `controller_vars()` to define protected attributes and their binary representations.
+#' - Enables flexible prediction adjustment logic as a modular step.
+#' - Supports group-specific postprocessing using binary attributes as conditions.
 #'
 #' **Binary Attribute Requirement:**
-#' - All variables listed in `protected_name` **must be binary** (e.g., 0/1, TRUE/FALSE).
-#' - Multi-class attributes must be manually transformed into binary dummy variables.
-#' - This transformation should be done during the creation of `control$vars$protected_vars_binary`.
-#' - Post-processing will fail or yield incorrect results if non-binary attributes are used.
+#' - The workflow expects binary/grouped versions of protected or grouping attributes.
+#' - These must be defined in `control$vars$protected_vars_binary` using `controller_vars()`.
+#' - Each variable listed must be strictly binary (e.g., 0/1 or TRUE/FALSE).
 #'
-#' **Structure of `fairness_post_data`:**
-#' Injected by the workflow before calling the post-processing engine:
+#' **Workflow Injection:**
+#' Before executing the engine, the workflow injects the following data frame:
 #' ```r
-#' fairness_post_data <- cbind(
-#'   predictions = as.numeric(predictions),
-#'   actuals = testdata[[control$vars$target_var]],
-#'   testdata[control$vars$protected_vars_binary]
+#' postprocessing_data <- cbind(
+#'   predictions = <numeric>,        # model predictions
+#'   actuals     = <factor/numeric>, # true outcome
+#'   ... group-specific binary attributes ...
 #' )
 #' ```
-#' This ensures access to:
-#' - `predictions`: Model predictions.
-#' - `actuals`: True labels.
-#' - Binary/grouped protected attributes (`protected_vars_binary`).
+#' - Column names used in postprocessing must match those in `protected_vars_binary`.
 #'
 #' **Standardized Structure:**
-#' - `protected_name`: *(autofilled)* Character vector of binary/grouped protected attributes.
-#' - `params`: Named list of additional engine-specific parameters.
+#' - `protected_name`: *(autofilled)* Character vector of binary/grouping attributes.
+#' - `params`: Named list of additional configuration passed to the engine.
 #'
 #' **Usage Example:**
 #' ```r
-#' control$params$fairness_post <- controller_fairness_post(
-#'   params = list(impact_reduction_factor = 0.5)
+#' control$params$postprocessing <- controller_postprocessing(
+#'   params = list(method = "threshold_shift", delta = 0.05)
 #' )
 #' ```
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return Named list. To be stored in \code{control$params$fairness_post} and passed to the fairness post-processing engine. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$postprocessing} and passed to the post-processing engine.
 #' @export
-controller_fairness_post <- function(params = list()) {
+controller_postprocessing <- function(params = list()) {
   list(
     params = params
   )
