@@ -43,7 +43,7 @@ and wraps the result using \code{initialize_output_reportelement()}.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list("mse_text" = "reportelement_text_msesummary")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$reportelement <- list("mse_text" = "reportelement_text_msesummary")
 control$params$reportelement <- controller_reportelement(
   params = list("mse_text" = list())
 )

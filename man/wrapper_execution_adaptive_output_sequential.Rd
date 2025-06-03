@@ -46,7 +46,7 @@ Splitters such as cross-validation (\code{split_cv}) with \code{cv_folds > 1} ar
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_adaptive_output_sequential"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_adaptive_output_sequential"
 control$params$execution <- controller_execution(
   params = list(
     metric_name = "mse",

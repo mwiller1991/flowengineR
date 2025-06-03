@@ -42,7 +42,7 @@ The process stops when the performance metric no longer improves sufficiently, o
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_adaptive_input_scalar_sequential"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_adaptive_input_scalar_sequential"
 control$params$execution <- controller_execution(
   params = list(
     param_path = "train_params$n.trees",

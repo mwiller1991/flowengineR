@@ -68,7 +68,7 @@ engine_report_modelsummary <- function(reportelements, params) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$report <- list("main_report" = "report_modelsummary")
+#' control$engine_select$report <- list("main_report" = "report_modelsummary")
 #' control$params$report <- controller_report(
 #'   params = list("main_report" = list(
 #'     mse_text = "mse_text",

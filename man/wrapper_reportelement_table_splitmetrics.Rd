@@ -44,7 +44,7 @@ Supported: \code{"mse"}, \code{"summarystats"}, \code{"spd"}, etc.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
 control$params$reportelement <- controller_reportelement(
   params = list("split_table" = list(
     metrics = c("mse", "summarystats")

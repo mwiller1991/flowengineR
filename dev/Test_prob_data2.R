@@ -113,7 +113,12 @@ vars = controller_vars(
 
 # Control Object for Prototyping
 control <- list(
+  settings = list(
+    log = TRUE,
+    log_level = "info"
+  ),
   global_seed = 1,
+  output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   data = list(
     vars = controller_vars(
       feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
@@ -125,28 +130,29 @@ control <- list(
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
-  split_method = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
-  execution = "execution_basic_sequential", #execution_sequential #execution_adaptive_sequential_stability
-  train_model = "train_lm",
-  output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
-  preprocessing = NULL, #"preprocessing_fairness_resampling",
-  inprocessing = "inprocessing_fairness_adversialdebiasing",
-  postprocessing = NULL, #"postprocessing_fairness_genresidual",
-  evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
-  reportelement = list(
-    gender_box_raw = "reportelement_boxplot_predictions",
-    gender_box_adjusted = "reportelement_boxplot_predictions",
-    age_box = "reportelement_boxplot_predictions",
-    metrics_table = "reportelement_table_splitmetrics",
-    text_mse_summary = "reportelement_text_msesummary"
-  ),
-  report = list(
-    modelsummary = "report_modelsummary"
-  ),
-  publish = list(
-    pdf_basis_test_report = "publish_pdf_basis",
-    pdf_basis_test_singleelement = "publish_pdf_basis",
-    excel_basis_test_singleelement = "publish_excel_basis"
+  engines <-list(
+    split = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
+    execution = "execution_basic_sequential", #execution_sequential #execution_adaptive_sequential_stability
+    train = "train_lm",
+    preprocessing = NULL, #"preprocessing_fairness_resampling",
+    inprocessing = "inprocessing_fairness_adversialdebiasing",
+    postprocessing = NULL, #"postprocessing_fairness_genresidual",
+    evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
+    reportelement = list(
+      gender_box_raw = "reportelement_boxplot_predictions",
+      gender_box_adjusted = "reportelement_boxplot_predictions",
+      age_box = "reportelement_boxplot_predictions",
+      metrics_table = "reportelement_table_splitmetrics",
+      text_mse_summary = "reportelement_text_msesummary"
+    ),
+    report = list(
+      modelsummary = "report_modelsummary"
+    ),
+    publish = list(
+      pdf_basis_test_report = "publish_pdf_basis",
+      pdf_basis_test_singleelement = "publish_pdf_basis",
+      excel_basis_test_singleelement = "publish_excel_basis"
+    )
   ),
   params = list(
     split = controller_split(
@@ -218,17 +224,20 @@ control <- list(
 
 # Control Object for Prototyping
 control <- list(
-  global_seed = 1,
-  data = list(
-    vars = controller_vars(
-      feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
-      protected_vars = c("genderFemale", "genderMale", "age"),            # Protected variables
-      target_var = "default",                            # Target variable
-      protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
+  settings = list(
+    log = TRUE,
+    log_level = "info"
+  ),
+  train = "train_lm",
+  postprocessing = "postprecessing_fairness_genresidual",
+  eval = c("eval_statisticalparity", "eval_mse"),
+  params = list(
+    train = controller_training(
+      formula = default ~ income + loan_amount,
+      norm_data = TRUE
     ),
-    full = fairnessToolbox::test_data_2_base_credit_example,    # Optional, if splitter engine is used
-    train = NULL,      # Training data
-    test = NULL        # Test data
+    postprocessing = controller_postprocessing(),
+    eval = controller_evaluation()
   )
 )
 

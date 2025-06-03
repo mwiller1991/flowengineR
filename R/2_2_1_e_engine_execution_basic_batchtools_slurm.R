@@ -55,7 +55,7 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_basic_batchtools_slurm"
+#' control$engine_select$execution <- "execution_basic_batchtools_slurm"
 #' control$params$execution <- controller_execution(params = list(
 #'   registry_folder = "my_bt_slurm",
 #'   slurm_template = "~/templates/my_slurm.tmpl",

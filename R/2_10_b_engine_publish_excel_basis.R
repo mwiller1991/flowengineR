@@ -76,7 +76,7 @@ engine_publish_excel_basis <- function(report, file_path, params = NULL) {
 #'
 #' **Example Template Snippet:**
 #' ```
-#' control$publish <- list(
+#' control$engine_select$publish <- list(
 #'   export_excel = "publish_excel_basis"
 #' )
 #'

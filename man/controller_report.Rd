@@ -31,13 +31,13 @@ of results.
 \strong{Standardized Structure:}
 \itemize{
 \item \code{params}: A named list of parameter lists. Each name must match an alias specified in
-\code{control$report}, which maps to a report engine.
+\code{control$engine_select$report}, which maps to a report engine.
 }
 
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (e.g. assigned engines)
-control$report <- list(
+control$engine_select$report <- list(
   alias1 = "report_markdown",
   alias2 = "report_json_summary"
 )

@@ -74,7 +74,7 @@ engine_reportelement_table_splitmetrics <- function(workflow_results, metrics) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
+#' control$engine_select$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
 #' control$params$reportelement <- controller_reportelement(
 #'   params = list("split_table" = list(
 #'     metrics = c("mse", "summarystats")

@@ -67,7 +67,7 @@ engine_split_random <- function(data, split_ratio, seed) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$split_method <- "split_random"
+#' control$engine_select$split <- "split_random"
 #' control$params$split <- controller_split(
 #'   seed = 42,
 #'   target_var = "default",  # Required by framework, ignored here

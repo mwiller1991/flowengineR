@@ -58,7 +58,7 @@ engine_postprocessing_fairness_genresidual <- function(predictions, actuals) {
 #'
 #' **Example Control Snippet:**
 #' ```r
-#' control$postprocessing <- "postprocessing_fairness_genresidual"
+#' control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
 #' control$params$postprocessing <- controller_postprocessing(
 #'   params = list()
 #' )

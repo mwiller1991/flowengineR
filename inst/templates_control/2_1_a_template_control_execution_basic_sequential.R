@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_basic_sequential"
+control$engine_select$execution <- "execution_basic_sequential"
 
 # 2. Execution Parameters (none required)
 control$params$execution <- controller_execution(

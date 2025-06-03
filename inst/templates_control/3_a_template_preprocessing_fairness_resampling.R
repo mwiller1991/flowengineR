@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$preprocessing <- "preprocessing_fairness_resampling"
+control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
 
 # 2. Pre-Processing Parameters
 control$params$preprocessing <- controller_preprocessing(

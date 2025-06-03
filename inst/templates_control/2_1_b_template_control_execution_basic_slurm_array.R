@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_basic_slurm_array"
+control$engine_select$execution <- "execution_basic_slurm_array"
 
 # 2. Execution Parameters (where to write input files)
 control$params$execution <- controller_execution(

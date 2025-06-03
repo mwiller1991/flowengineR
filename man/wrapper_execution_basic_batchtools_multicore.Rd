@@ -41,7 +41,7 @@ Not supported on Windows. Use \code{"execution_basic_batchtools_local"} instead.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_multicore"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_batchtools_multicore"
 control$params$execution <- controller_execution(
   params = list(
     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",

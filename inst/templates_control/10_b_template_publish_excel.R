@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$publish <- list(
+control$engine_select$publish <- list(
   export_excel = "publish_excel_basis"
 )
 

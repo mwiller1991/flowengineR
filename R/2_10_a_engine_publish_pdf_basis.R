@@ -79,7 +79,7 @@ engine_publish_pdf_basis <- function(report, file_path, params = NULL) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$publish <- list("main_pdf" = "publish_pdf_basis")
+#' control$engine_select$publish <- list("main_pdf" = "publish_pdf_basis")
 #' control$params$publish <- controller_publish(
 #'   params = list(
 #'     main_pdf = list(

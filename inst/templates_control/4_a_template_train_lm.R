@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$train <- "train_lm"
+control$engine_select$train <- "train_lm"
 
 # 2. Training Parameters
 control$params$train <- controller_train(

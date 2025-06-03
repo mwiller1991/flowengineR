@@ -62,14 +62,14 @@ control <- list(
     log_level = "info"
   ),
   train = "train_lm",
-  fairness_post = "fairness_post_genresidual",
+  postprocessing = "postprocessing_fairness_genresidual",
   eval = c("eval_statisticalparity", "eval_mse"),
   params = list(
     train = controller_training(
       formula = default ~ income + loan_amount,
       norm_data = TRUE
     ),
-    fairness_post = controller_fairness_post(),
+    postprocessing = controller_postprocessing(),
     eval = controller_evaluation()
   )
 )
@@ -82,7 +82,7 @@ A detailed introduction to the control object can be found [here](control_object
 ### Step 3: Run the Workflow
 
 ```{r}
-results <- fairness_workflow(control)
+results <- run_workflow(control)
 ```
 
 This returns a list of standardized results:
@@ -138,18 +138,47 @@ This allows flexible diagnostics and helps users trace issues without manually i
 
 ### Overview of Modular Engine Types
 
+One of the core principles of **flowengineR** is modularity through interchangeable components called *engines*—these include engines for training, splitting, execution, evaluation, preprocessing, and reporting.
+
 | Engine Type       | Workflow Position  | Description                                                                 | Input (via Wrapper)                                        | Output (via Initializer)                   | Example Engines                      |
 | ----------------- | ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
 | `split_*`         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_stratified`   |
 | `execution_*`     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
-| `preprocessing_*` | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `fairness_pre_disparity`, `pre_pca`  |
-| `train_*`         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_rf`, `train_gbm`  |
-| `inprocessing_*`  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `fairness_in_kamiran`                |
+| `preprocessing_*` | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `preprocessing_fairness_resampling`  |
+| `train_*`         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_gbm`              |
+| `inprocessing_*`  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `inpro(..)_adversialdebiasing`       |
 | `postprocessing_*`| Post-Processing    | Modifies predictions after model execution                                  | `predictions`, `params`, `protected_attributes`            | `adjusted_predictions`, `method`           | `fairness_post_genresidual`          |
 | `eval_*`          | Evaluation         | Calculates performance or bias metrics                                      | `predictions`, `actuals`, `params`, `protected_attributes` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
 | `reportelement_*` | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
-| `report_*`        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_markdown`                    |
-| `publish_*`       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_html`, `publish_json`       |
+| `report_*`        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_modelsummary`                |
+| `publish_*`       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_excel_basis`                |
+
+---
+
+## Listing Available Engines
+
+To get an overview of all currently registered engines, use the helper function `list_registered_engines()`:
+
+```r
+# Show all registered engines, grouped by type
+list_registered_engines()
+```
+
+This will output all available engines, grouped by engine type such as `train`, `split`, `execution`, `evaluation`, `preprocessing`, and `postprocessing`.
+
+You can also filter the output to a specific engine type:
+
+```r
+# Show only execution engines
+list_registered_engines(type = "execution")
+```
+
+This function is especially useful if:
+- you have registered your own custom engines and want to verify their integration,
+- you are unsure about the correct naming of available engines,
+- you want to introspect the internal engine setup during debugging or development.
+
+It is a key utility for working transparently and flexibly within the flowengineR framework.
 
 ---
 

@@ -44,7 +44,7 @@ Registers jobs and submits them to a SLURM cluster using a job template.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_slurm"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_batchtools_slurm"
 control$params$execution <- controller_execution(params = list(
   registry_folder = "my_bt_slurm",
   slurm_template = "~/templates/my_slurm.tmpl",

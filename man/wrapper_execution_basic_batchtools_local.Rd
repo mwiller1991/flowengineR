@@ -48,7 +48,7 @@ and collects results into a standardized format.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_batchtools_local"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_batchtools_local"
 control$params$execution <- controller_execution(
   params = list(
     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",

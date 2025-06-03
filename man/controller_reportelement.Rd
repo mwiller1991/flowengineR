@@ -29,13 +29,13 @@ for distinct visualizations, tables, or summaries, depending on the reporting en
 \strong{Standardized Structure:}
 \itemize{
 \item \code{params}: A named list of parameter lists. Each name must correspond to an alias specified
-in \code{control$reportelement}, which in turn maps to a specific reportelement engine.
+in \code{control$engine_select$reportelement}, which in turn maps to a specific reportelement engine.
 }
 
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (e.g. assigned engines)
-control$reportelement <- list(
+control$engine_select$reportelement <- list(
   alias1 = "reportelement_table_splitmetrics",
   alias2 = "reportelement_boxplot_predictions"
 )

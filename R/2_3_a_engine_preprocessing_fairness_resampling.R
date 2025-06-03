@@ -92,7 +92,7 @@ engine_preprocessing_fairness_resampling <- function(data, target_var, params) {
 #'
 #' **Example Control Snippet:**
 #' ```r
-#' control$preprocessing <- "preprocessing_fairness_resampling"
+#' control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
 #' control$params$preprocessing <- controller_preprocessing(
 #'   params = list(method = "undersampling")
 #' )

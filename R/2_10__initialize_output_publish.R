@@ -12,7 +12,7 @@
 #' - Enables uniform evaluation and comparison of publishing outcomes across engines.
 #'
 #' **Standardized Output:**
-#' - `alias`: User-defined alias for the published item (typically from `control$publish`).
+#' - `alias`: User-defined alias for the published item (typically from `control$engine_select$publish`).
 #' - `type`: Specifies whether the published object was a `"report"` or `"reportelement"`.
 #' - `engine`: Name of the publishing engine (e.g., `"engine_publish_html"`).
 #' - `path`: File path to the exported file.

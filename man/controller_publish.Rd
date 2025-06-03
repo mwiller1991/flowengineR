@@ -9,7 +9,7 @@ controller_publish(output_folder = "~/publish_exports", params = list())
 \arguments{
 \item{output_folder}{Character string. Global directory path to store all exports.}
 
-\item{params}{Named list. Engine-specific configuration. Default is empty list. Each name should match a \code{control$publish} alias, and contain a list of export parameters (\code{obj_type}, \code{obj_name}, etc.).}
+\item{params}{Named list. Engine-specific configuration. Default is empty list. Each name should match a \code{control$engine_select$publish} alias, and contain a list of export parameters (\code{obj_type}, \code{obj_name}, etc.).}
 }
 \value{
 Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{fairnessToolbox} modules.
@@ -32,13 +32,13 @@ report formats (e.g., HTML, PDF, JSON) or custom targets (e.g., web endpoints, f
 \strong{Standardized Structure:}
 \itemize{
 \item \code{output_folder}: Root directory for all published files.
-\item \code{params}: A named list of configuration lists, each matching an alias in \code{control$publish}.
+\item \code{params}: A named list of configuration lists, each matching an alias in \code{control$engine_select$publish}.
 }
 
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (mapped to export engines)
-control$publish <- list(
+control$engine_select$publish <- list(
   html_summary = "publish_html",
   full_json = "publish_json"
 )

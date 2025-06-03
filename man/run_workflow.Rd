@@ -23,8 +23,11 @@ or directly continue with downstream processing via \code{continue_workflow()}.
 \itemize{
 \item \code{control}: A standardized control object. This must contain all relevant components for the workflow:
 \itemize{
-\item \code{split_method}: Name of a registered splitter engine (e.g. "split_random_stratified")
+\item \code{engines}: A list with the used engines.
+\itemize{
+\item \code{split}: Name of a registered splitter engine (e.g. "split_random_stratified")
 \item \code{execution}: Name of a registered execution engine (optional; defaults to "execution_sequential")
+}
 \item \code{params}: Parameter structure used by downstream engines (e.g., split ratio, seeds, evaluation metrics)
 }
 }

@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$reportelement <- list(
+control$engine_select$reportelement <- list(
   mse_text = "reportelement_text_msesummary"
 )
 

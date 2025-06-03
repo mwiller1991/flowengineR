@@ -46,7 +46,7 @@ allowing for reliable logging, debugging, and downstream tracking.
 
 \strong{Standardized Output:}
 \itemize{
-\item \code{alias}: User-defined alias for the published item (typically from \code{control$publish}).
+\item \code{alias}: User-defined alias for the published item (typically from \code{control$engine_select$publish}).
 \item \code{type}: Specifies whether the published object was a \code{"report"} or \code{"reportelement"}.
 \item \code{engine}: Name of the publishing engine (e.g., \code{"engine_publish_html"}).
 \item \code{path}: File path to the exported file.

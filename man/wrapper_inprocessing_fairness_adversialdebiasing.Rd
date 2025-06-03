@@ -45,7 +45,7 @@ and invokes the adversarial debiasing engine. Wraps the result using \code{initi
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
 control$params$inprocessing <- controller_inprocessing(
   norm_data = TRUE,
   params = list(

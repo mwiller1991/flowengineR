@@ -46,7 +46,7 @@ of the fairnessToolbox and produces standardized output via \code{initialize_out
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$preprocessing <- "preprocessing_fairness_resampling"
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
 control$params$preprocessing <- controller_preprocessing(
   params = list(method = "undersampling")
 )

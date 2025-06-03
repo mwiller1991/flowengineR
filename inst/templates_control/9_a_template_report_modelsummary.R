@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$report <- list(
+control$engine_select$report <- list(
   main_report = "report_modelsummary"
 )
 

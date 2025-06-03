@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
 
 # 2. In-Processing Parameters
 control$params$inprocessing <- controller_inprocessing(

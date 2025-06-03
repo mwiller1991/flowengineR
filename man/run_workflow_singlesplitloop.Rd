@@ -36,10 +36,10 @@ including sequential and parallel workflows (e.g., via batchtools or SLURM).
 \item \code{control$output_type}: Either \code{"response"} or \code{"prob"} (default: \code{"response"}).
 \item Optional modules (if configured):
 \itemize{
-\item \code{control$preprocessing}: Name of preprocessing engine
-\item \code{control$inprocessing}: Name of in-processing engine
-\item \code{control$postprocessing}: Name of post-processing engine
-\item \code{control$evaluation}: Vector of evaluation engine names
+\item \code{control$engine_select$preprocessing}: Name of preprocessing engine
+\item \code{control$engine_select$inprocessing}: Name of in-processing engine
+\item \code{control$engine_select$postprocessing}: Name of post-processing engine
+\item \code{control$engine_select$evaluation}: Vector of evaluation engine names
 }
 }
 

@@ -77,9 +77,9 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #' - Uses `flowengineR::test_data_2_base_credit_example` as fallback data if neither 
 #'   `control$data$vars` nor `control$data$full` are provided.
 #' - Initializes `data$train` and `data$test` to `NULL` if missing.
-#' - Sets `split_method = "split_random_stratified"` and calls `controller_split()` if missing.
+#' - Sets `split = "split_random_stratified"` and calls `controller_split()` if missing.
 #' - Sets `execution = "execution_basic_sequential"` and calls `controller_execution()` if missing.
-#' - Sets `train_model = "train_glm"` and `output_type = "response"` if missing.
+#' - Sets `train = "train_glm"` and `output_type = "response"` if missing.
 #' - Calls `controller_training()` if `params$train` is missing.
 #' - Adds default evaluation methods if not specified: `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`.
 #' - Calls `controller_evaluation()` if `params$eval` is missing.
@@ -92,7 +92,7 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #'
 #' **Usage Example:**
 #' ```r
-#' control <- list(train_model = "train_glm")
+#' control <- list(train = "train_glm")
 #' control <- complete_control_with_defaults(control)
 #' # returns a runnable control object with defaults and dummy data
 #' ```
@@ -144,20 +144,23 @@ complete_control_with_defaults <- function(control) {
   if (is.null(control$data$train)) control$data$train <- NULL
   if (is.null(control$data$test)) control$data$test <- NULL
   
+  # Ensure engines list exists
+  if (is.null(control$engine_select)) control$engine_select <- list()
+  
   # Split setup
-  if (is.null(control$split_method)) control$split_method <- "split_random_stratified"
+  if (is.null(control$engine_select$split)) control$engine_select$split <- "split_random_stratified"
   if (is.null(control$params$split)) {
     control$params$split <- controller_split()
   }
   
   # Execution setup
-  if (is.null(control$execution)) control$execution <- "execution_basic_sequential"
+  if (is.null(control$engine_select$execution)) control$engine_select$execution <- "execution_basic_sequential"
   if (is.null(control$params$execution)) {
     control$params$execution <- controller_execution()
   }
   
   # Training setup
-  if (is.null(control$train_model)) control$train_model <- "train_glm"
+  if (is.null(control$engine_select$train)) control$engine_select$train <- "train_glm"
   if (is.null(control$output_type)) control$output_type <- "response"
   if (is.null(control$params$train)) {
     control$params$train <- controller_training(
@@ -168,30 +171,30 @@ complete_control_with_defaults <- function(control) {
   }
   
   # Evaluation setup
-  if (is.null(control$evaluation)) {
-    control$evaluation <- list("eval_mse", "eval_summarystats", "eval_statisticalparity")
+  if (is.null(control$engine_select$evaluation)) {
+    control$engine_select$evaluation <- list("eval_mse", "eval_summarystats", "eval_statisticalparity")
   }
   if (is.null(control$params$eval)) {
     control$params$eval <- controller_evaluation()
   }
   
   # Optional modules: initialize only if selected
-  if (!is.null(control$preprocessing) && is.null(control$params$preprocessing)) {
+  if (!is.null(control$engine_select$preprocessing) && is.null(control$params$preprocessing)) {
     control$params$preprocessing <- controller_preprocessing()
   }
-  if (!is.null(control$inprocessing) && is.null(control$params$inprocessing)) {
+  if (!is.null(control$engine_select$inprocessing) && is.null(control$params$inprocessing)) {
     control$params$inprocessing <- controller_inprocessing()
   }
-  if (!is.null(control$postprocessing) && is.null(control$params$postprocessing)) {
+  if (!is.null(control$engine_select$postprocessing) && is.null(control$params$postprocessing)) {
     control$params$postprocessing <- controller_postprocessing()
   }
-  if (!is.null(control$reportelement) && is.null(control$params$reportelement)) {
+  if (!is.null(control$engine_select$reportelement) && is.null(control$params$reportelement)) {
     control$params$reportelement <- controller_reportelement()
   }
-  if (!is.null(control$report) && is.null(control$params$report)) {
+  if (!is.null(control$engine_select$report) && is.null(control$params$report)) {
     control$params$report <- controller_report()
   }
-  if (!is.null(control$publish) && is.null(control$params$publish)) {
+  if (!is.null(control$engine_select$publish) && is.null(control$params$publish)) {
     control$params$publish <- controller_publish()
   }
   

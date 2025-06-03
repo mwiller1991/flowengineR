@@ -38,7 +38,7 @@ and invokes the model summary report engine. Returns standardized output using \
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$report <- list("main_report" = "report_modelsummary")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$report <- list("main_report" = "report_modelsummary")
 control$params$report <- controller_report(
   params = list("main_report" = list(
     mse_text = "mse_text",

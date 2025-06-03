@@ -34,7 +34,7 @@ and invokes the GLM training engine. Returns standardized output using \code{ini
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$train <- "train_glm"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$train <- "train_glm"
 control$params$train <- controller_train(
   formula = target ~ .,
   norm_data = TRUE,

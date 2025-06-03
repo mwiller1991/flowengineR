@@ -45,7 +45,7 @@ if not provided explicitly in the controller.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$split_method <- "split_userdefined"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$split <- "split_userdefined"
 control$data$train <- my_train_data
 control$data$test  <- my_test_data
 control$params$split <- controller_split(

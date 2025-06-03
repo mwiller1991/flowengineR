@@ -62,7 +62,7 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$evaluation <- "eval_statisticalparity"
+#' control$engine_select$evaluation <- "eval_statisticalparity"
 #' control$params$eval <- controller_evaluation(
 #'   params = list()
 #' )

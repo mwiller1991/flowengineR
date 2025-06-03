@@ -60,7 +60,7 @@ Allowed values:
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_adaptive_output_batchtools_multicore"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_adaptive_output_batchtools_multicore"
 control$params$execution <- controller_execution(
   params = list(
     metric_name = "mse",

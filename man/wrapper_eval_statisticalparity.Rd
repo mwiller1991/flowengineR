@@ -39,7 +39,7 @@ and invokes the SPD engine. Wraps the result using \code{initialize_output_eval(
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_statisticalparity"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$evaluation <- "eval_statisticalparity"
 control$params$eval <- controller_evaluation(
   params = list()
 )

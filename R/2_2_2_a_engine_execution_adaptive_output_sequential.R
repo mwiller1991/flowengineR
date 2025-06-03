@@ -55,7 +55,7 @@ engine_execution_adaptive_output_sequential <- function(control) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_adaptive_output_sequential"
+#' control$engine_select$execution <- "execution_adaptive_output_sequential"
 #' control$params$execution <- controller_execution(
 #'   params = list(
 #'     metric_name = "mse",
@@ -103,7 +103,7 @@ wrapper_execution_adaptive_output_sequential <- function(control, split_output) 
     stop(sprintf(
       "Adaptive execution requires a splitter that returns exactly one split. Got %d from '%s'.",
       length(split_output$splits),
-      control$split_method
+      control$engine_select$split
     ))
   }
   
@@ -121,7 +121,7 @@ wrapper_execution_adaptive_output_sequential <- function(control, split_output) 
     repeat_seed <- params$seed_base + i
     control$params$split$seed <- repeat_seed
     
-    split_result <- engines[[control$split_method]](control)
+    split_result <- engines[[control$engine_select$split]](control)
     split <- split_result$splits[[1]]
     split_id <- paste0("split", i)
     
@@ -178,7 +178,7 @@ wrapper_execution_adaptive_output_sequential <- function(control, split_output) 
   
   # Rebuild standardized split_output
   reconstructed_split_output <- initialize_output_split(
-    split_type = control$split_method,
+    split_type = control$engine_select$split,
     splits = used_splits,
     seed = used_seeds,
     params = control$params$split$params,

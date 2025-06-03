@@ -46,7 +46,7 @@ if not provided explicitly in the controller.
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$split_method <- "split_cv"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$split <- "split_cv"
 control$params$split <- controller_split(
   seed = 42,
   target_var = "default",

@@ -38,7 +38,7 @@ and invokes the PDF publishing engine. Returns standardized output using \code{i
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$publish <- list("main_pdf" = "publish_pdf_basis")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$publish <- list("main_pdf" = "publish_pdf_basis")
 control$params$publish <- controller_publish(
   params = list(
     main_pdf = list(

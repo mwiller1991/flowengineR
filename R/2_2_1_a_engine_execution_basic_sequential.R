@@ -53,7 +53,7 @@ engine_execution_basic_sequential <- function(control, split_output) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_basic_sequential"
+#' control$engine_select$execution <- "execution_basic_sequential"
 #' control$params$execution <- controller_execution(
 #'   params = list()  # No parameters needed
 #' )

@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$evaluation <- "eval_statisticalparity"
+control$engine_select$evaluation <- "eval_statisticalparity"
 
 # 2. Evaluation Parameters
 control$params$eval <- controller_evaluation(

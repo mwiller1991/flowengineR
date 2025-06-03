@@ -38,7 +38,7 @@ and invokes the MSE evaluation engine. Wraps the result using \code{initialize_o
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$evaluation <- "eval_mse"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$evaluation <- "eval_mse"
 control$params$eval <- controller_evaluation(
   params = list()
 )

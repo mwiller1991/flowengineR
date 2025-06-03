@@ -50,7 +50,7 @@ and invokes the boxplot prediction engine. Returns standardized reportelement ou
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$reportelement <- list(
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$reportelement <- list(
   pred_plot = "reportelement_boxplot_predictions"
 )
 

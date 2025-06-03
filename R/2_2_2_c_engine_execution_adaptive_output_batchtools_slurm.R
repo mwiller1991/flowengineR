@@ -67,7 +67,7 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_adaptive_output_batchtools_slurm"
+#' control$engine_select$execution <- "execution_adaptive_output_batchtools_slurm"
 #' control$params$execution <- controller_execution(
 #'   params = list(
 #'     metric_name = "mse",
@@ -122,7 +122,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
     stop(sprintf(
       "Adaptive execution requires a splitter that returns exactly one split. Got %d from '%s'.",
       length(split_output$splits),
-      control$split_method
+      control$engine_select$split
     ))
   }
   
@@ -145,7 +145,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
     for (j in seq_along(seeds)) {
       split_seed <- seeds[j]
       control$params$split$seed <- split_seed
-      split_result <- engines[[control$split_method]](control)
+      split_result <- engines[[control$engine_select$split]](control)
       split <- split_result$splits[[1]]
       
       split_id <- paste0("split", length(metric_values) + j)
@@ -218,7 +218,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
   }
   
   reconstructed_split_output <- initialize_output_split(
-    split_type = control$split_method,
+    split_type = control$engine_select$split,
     splits = used_splits,
     seed = used_seeds,
     params = control$params$split$params,

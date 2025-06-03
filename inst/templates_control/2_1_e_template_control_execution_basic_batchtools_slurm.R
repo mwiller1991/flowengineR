@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_basic_batchtools_slurm"
+control$engine_select$execution <- "execution_basic_batchtools_slurm"
 
 # 2. Execution Parameters
 control$params$execution <- controller_execution(

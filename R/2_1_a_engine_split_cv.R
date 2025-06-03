@@ -75,7 +75,7 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$split_method <- "split_cv"
+#' control$engine_select$split <- "split_cv"
 #' control$params$split <- controller_split(
 #'   seed = 42,
 #'   target_var = "default",

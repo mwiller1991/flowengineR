@@ -54,7 +54,7 @@ engine_execution_adaptive_input_scalar_sequential <- function(control) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_adaptive_input_scalar_sequential"
+#' control$engine_select$execution <- "execution_adaptive_input_scalar_sequential"
 #' control$params$execution <- controller_execution(
 #'   params = list(
 #'     param_path = "train_params$n.trees",

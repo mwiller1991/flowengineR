@@ -59,7 +59,7 @@ engine_execution_basic_batchtools_multicore <- function(control, split) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_basic_batchtools_multicore"
+#' control$engine_select$execution <- "execution_basic_batchtools_multicore"
 #' control$params$execution <- controller_execution(
 #'   params = list(
 #'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",

@@ -31,9 +31,9 @@ selected by the user.
 \item Uses \code{flowengineR::test_data_2_base_credit_example} as fallback data if neither
 \code{control$data$vars} nor \code{control$data$full} are provided.
 \item Initializes \code{data$train} and \code{data$test} to \code{NULL} if missing.
-\item Sets \code{split_method = "split_random_stratified"} and calls \code{controller_split()} if missing.
+\item Sets \code{split = "split_random_stratified"} and calls \code{controller_split()} if missing.
 \item Sets \code{execution = "execution_basic_sequential"} and calls \code{controller_execution()} if missing.
-\item Sets \code{train_model = "train_glm"} and \code{output_type = "response"} if missing.
+\item Sets \code{train = "train_glm"} and \code{output_type = "response"} if missing.
 \item Calls \code{controller_training()} if \code{params$train} is missing.
 \item Adds default evaluation methods if not specified: \code{"eval_mse"}, \code{"eval_summarystats"}, \code{"eval_statisticalparity"}.
 \item Calls \code{controller_evaluation()} if \code{params$eval} is missing.
@@ -49,7 +49,7 @@ corresponding controller functions are only called if the module is selected by 
 
 \strong{Usage Example:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{control <- list(train_model = "train_glm")
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{control <- list(train = "train_glm")
 control <- complete_control_with_defaults(control)
 # returns a runnable control object with defaults and dummy data
 }\if{html}{\out{</div>}}

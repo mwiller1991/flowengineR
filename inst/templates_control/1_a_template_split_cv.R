@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$split_method <- "split_cv"
+control$engine_select$split <- "split_cv"
 
 # 2. Split Parameters (stratified cross-validation)
 control$params$split <- controller_split(

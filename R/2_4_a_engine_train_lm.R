@@ -43,7 +43,7 @@ engine_train_lm <- function(formula, data) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$train <- "train_lm"
+#' control$engine_select$train <- "train_lm"
 #' control$params$train <- controller_train(
 #'   formula = target ~ .,
 #'   norm_data = TRUE

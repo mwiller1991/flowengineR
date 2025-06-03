@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_adaptive_output_batchtools_multicore"
+control$engine_select$execution <- "execution_adaptive_output_batchtools_multicore"
 
 # 2. Execution Parameters
 control$params$execution <- controller_execution(

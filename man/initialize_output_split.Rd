@@ -49,7 +49,7 @@ making them compatible with downstream execution engines.
 
 \strong{Usage Example (inside an engine):}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{set.seed(control$split$seed)
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{set.seed(control$params$split$seed)
 n <- nrow(control$data)
 idx <- sample(seq_len(n))
 splits <- list("1" = list(train = idx[1:70], test = idx[71:100]))
@@ -57,8 +57,8 @@ splits <- list("1" = list(train = idx[1:70], test = idx[71:100]))
 initialize_output_split(
   split_type = "random",
   splits = splits,
-  seed = control$split$seed,
-  params = control$split$params
+  seed = control$params$split$seed,
+  params = control$params$split
 )
 }\if{html}{\out{</div>}}
 }

@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_basic_batchtools_local"
+control$engine_select$execution <- "execution_basic_batchtools_local"
 
 # 2. Execution Parameters
 control$params$execution <- controller_execution(

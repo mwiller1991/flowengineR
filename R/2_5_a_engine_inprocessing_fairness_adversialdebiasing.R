@@ -233,7 +233,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #'
 #' **Example Control Snippet:**
 #' ```r
-#' control$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+#' control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
 #' control$params$inprocessing <- controller_inprocessing(
 #'   norm_data = TRUE,
 #'   params = list(

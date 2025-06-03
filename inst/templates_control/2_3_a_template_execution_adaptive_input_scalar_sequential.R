@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$execution <- "execution_adaptive_input_scalar_sequential"
+control$engine_select$execution <- "execution_adaptive_input_scalar_sequential"
 
 # 2. Execution Parameters
 control$params$execution <- controller_execution(

@@ -28,7 +28,7 @@ and invokes the LM training engine. Returns standardized output using \code{init
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$train <- "train_lm"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$train <- "train_lm"
 control$params$train <- controller_train(
   formula = target ~ .,
   norm_data = TRUE

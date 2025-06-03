@@ -50,7 +50,7 @@ engine_execution_basic_slurm_array <- function(control, split_output) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$execution <- "execution_basic_slurm_array"
+#' control$engine_select$execution <- "execution_basic_slurm_array"
 #' control$params$execution <- controller_execution(
 #'   params = list(output_folder = "slurm_inputs")
 #' )

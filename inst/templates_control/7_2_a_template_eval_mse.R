@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$evaluation <- "eval_mse"
+control$engine_select$evaluation <- "eval_mse"
 
 # 2. Evaluation Parameters
 control$params$eval <- controller_evaluation(

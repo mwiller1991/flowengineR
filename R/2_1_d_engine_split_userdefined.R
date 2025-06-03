@@ -56,7 +56,7 @@ engine_split_userdefined <- function(train, test) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$split_method <- "split_userdefined"
+#' control$engine_select$split <- "split_userdefined"
 #' control$data$train <- my_train_data
 #' control$data$test  <- my_test_data
 #' control$params$split <- controller_split(

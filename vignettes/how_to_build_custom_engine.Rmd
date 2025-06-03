@@ -169,7 +169,7 @@ To use a custom engine in the flowengineR workflow, only the **wrapper function 
 #### Example: Registering a training engine
 
 ```r
-control$train <- "train_glm"  # This calls wrapper_train_glm()
+control$engine_select$train <- "train_glm"  # This calls wrapper_train_glm()
 
 control$params$train <- controller_training(
   formula = target ~ .,
@@ -186,7 +186,7 @@ This setup is sufficient to execute the entire training phase using your custom 
 * The name of the engine determines how it is referenced in the control object, e.g.:
 
 ```r
-control$train <- "train_glm"  # matches wrapper_train_glm
+control$engine_select$train <- "train_glm"  # matches wrapper_train_glm
 ```
 
 * The wrapper is always registered by the user; engine and default function are used internally

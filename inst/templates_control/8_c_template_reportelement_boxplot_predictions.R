@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$reportelement <- list(
+control$engine_select$reportelement <- list(
   pred_plot = "reportelement_boxplot_predictions"
 )
 

@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$split_method <- "split_random_stratified"
+control$engine_select$split <- "split_random_stratified"
 
 # 2. Split Parameters (stratified random split)
 control$params$split <- controller_split(

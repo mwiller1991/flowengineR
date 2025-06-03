@@ -51,7 +51,7 @@ engine_train_glm <- function(formula, family, data, sample_weight) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$train <- "train_glm"
+#' control$engine_select$train <- "train_glm"
 #' control$params$train <- controller_train(
 #'   formula = target ~ .,
 #'   norm_data = TRUE,

@@ -3,7 +3,7 @@
 # ============================================================
 
 # 1. Engine Selection
-control$postprocessing <- "postprocessing_fairness_genresidual"
+control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
 
 # 2. Post-Processing Parameters
 control$params$postprocessing <- controller_postprocessing(

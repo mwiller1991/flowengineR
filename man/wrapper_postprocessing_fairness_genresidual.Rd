@@ -49,7 +49,7 @@ Auto-filled from \code{control$vars$protected_vars_binary} via \code{autofill_co
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$postprocessing <- "postprocessing_fairness_genresidual"
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
 control$params$postprocessing <- controller_postprocessing(
   params = list()
 )

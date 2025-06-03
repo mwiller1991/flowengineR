@@ -84,7 +84,7 @@ engine_reportelement_boxplot_predictions <- function(workflow_results, split_out
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$reportelement <- list(
+#' control$engine_select$reportelement <- list(
 #'   pred_plot = "reportelement_boxplot_predictions"
 #' )
 #'

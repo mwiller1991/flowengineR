@@ -37,7 +37,7 @@ This engine currently accepts no parameters. The parameter list may be used for 
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_sequential"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_sequential"
 control$params$execution <- controller_execution(
   params = list()  # No parameters needed
 )

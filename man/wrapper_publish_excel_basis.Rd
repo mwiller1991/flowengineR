@@ -39,7 +39,7 @@ and invokes the Excel publishing engine. Returns standardized output using \code
 
 \strong{Example Template Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$publish <- list(
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$publish <- list(
   export_excel = "publish_excel_basis"
 )
 

@@ -70,7 +70,7 @@ engine_split_random_stratified <- function(data, target_var, split_ratio, seed) 
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$split_method <- "split_random_stratified"
+#' control$engine_select$split <- "split_random_stratified"
 #' control$params$split <- controller_split(
 #'   seed = 123,
 #'   target_var = "default",

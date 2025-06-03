@@ -419,12 +419,12 @@ controller_evaluation <- function(params = list()) {
 #'
 #' **Standardized Structure:**
 #' - `params`: A named list of parameter lists. Each name must correspond to an alias specified
-#'   in `control$reportelement`, which in turn maps to a specific reportelement engine.
+#'   in `control$engine_select$reportelement`, which in turn maps to a specific reportelement engine.
 #'
 #' **Usage Example:**
 #' ```r
 #' # Alias definitions (e.g. assigned engines)
-#' control$reportelement <- list(
+#' control$engine_select$reportelement <- list(
 #'   alias1 = "reportelement_table_splitmetrics",
 #'   alias2 = "reportelement_boxplot_predictions"
 #' )
@@ -470,12 +470,12 @@ controller_reportelement <- function(params = list()) {
 #'
 #' **Standardized Structure:**
 #' - `params`: A named list of parameter lists. Each name must match an alias specified in
-#'   `control$report`, which maps to a report engine.
+#'   `control$engine_select$report`, which maps to a report engine.
 #'
 #' **Usage Example:**
 #' ```r
 #' # Alias definitions (e.g. assigned engines)
-#' control$report <- list(
+#' control$engine_select$report <- list(
 #'   alias1 = "report_markdown",
 #'   alias2 = "report_json_summary"
 #' )
@@ -520,12 +520,12 @@ controller_report <- function(params = list()) {
 #'
 #' **Standardized Structure:**
 #' - `output_folder`: Root directory for all published files.
-#' - `params`: A named list of configuration lists, each matching an alias in `control$publish`.
+#' - `params`: A named list of configuration lists, each matching an alias in `control$engine_select$publish`.
 #'
 #' **Usage Example:**
 #' ```r
 #' # Alias definitions (mapped to export engines)
-#' control$publish <- list(
+#' control$engine_select$publish <- list(
 #'   html_summary = "publish_html",
 #'   full_json = "publish_json"
 #' )
@@ -541,7 +541,7 @@ controller_report <- function(params = list()) {
 #' ```
 #'
 #' @param output_folder Character string. Global directory path to store all exports.
-#' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
+#' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$engine_select$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
 #'
 #' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{fairnessToolbox} modules.
 #' @export

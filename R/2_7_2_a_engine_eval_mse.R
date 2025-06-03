@@ -50,7 +50,7 @@ engine_eval_mse <- function(predictions, actuals) {
 #'
 #' **Example Control Snippet:**
 #' ```
-#' control$evaluation <- "eval_mse"
+#' control$engine_select$evaluation <- "eval_mse"
 #' control$params$eval <- controller_evaluation(
 #'   params = list()
 #' )

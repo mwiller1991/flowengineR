@@ -39,7 +39,7 @@ and split definitions to disk. This wrapper does not execute any models directly
 
 \strong{Example Control Snippet:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{control$execution <- "execution_basic_slurm_array"
+\if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_slurm_array"
 control$params$execution <- controller_execution(
   params = list(output_folder = "slurm_inputs")
 )

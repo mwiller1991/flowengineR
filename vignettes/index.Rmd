@@ -1,0 +1,37 @@
+
+---
+title: "Welcome to flowengineR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Welcome to flowengineR}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Welcome to flowengineR
+
+`flowengineR` provides a modular framework for defining, executing, and evaluating flexible workflows.  
+It is designed to support advanced scenarios such as fairness-aware modeling, batch-based execution, and automated reporting.
+
+---
+
+## 📚 Vignettes
+
+- [Getting Started](getting_started.html): Introduction to the core concepts and basic usage.
+- [Control Objects](control_objects.html): How to define and use control structures.
+- [Custom Engines](custom_engines.html): Integrating your own training, evaluation, or reporting engines.
+- [Execution with Batchtools](execution_batchtools.html): Parallel and batch-based execution using SLURM or similar backends.
+- [Stability Strategies](stability_strategies.html): Adaptive workflows and stopping criteria for stable results.
+- [Reporting and Publishing](reporting.html): Generating structured reports and output files.
+
+---
+
+## 🛠️ Key Functions
+
+- [`run_workflow_variants()`](reference/run_workflow_variants.html): Execute a complete workflow with multiple configurations.
+- [`controller_train()`](reference/controller_train.html): Set up model training behavior.
+- [`list_registered_engines()`](reference/list_registered_engines.html): Inspect the currently registered engines.
+
+---
+
+This index will grow as the package evolves.
