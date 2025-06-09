@@ -1,0 +1,57 @@
+---
+title: "In Detail: Execution Engine - Sequential Split Execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Sequential Split Execution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Sequential Split Execution (`engine_execution_basic_sequential`)
+
+### Purpose and Function
+This engine executes the full training and evaluation workflow sequentially across all predefined data splits. It relies on the function `run_workflow_singlesplitloop()` and is ideal for debugging or when parallel execution is not needed or desired.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: A list with the entire configuration structure for the workflow (⚠️ provided directly by the workflow).
+- `split_output`: A list of data splits as created by the splitter engine (⚠️ provided directly by the workflow).
+- `params`: Not used in this engine but passed through for consistency and potential future extensions.
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| –         | –    | –       | This engine does not use any parameters. |
+
+### Output Structure
+
+The wrapper returns a standardized list via `initialize_output_execution()` with the following structure:
+
+- `execution_type`: `"basic_sequential"`
+- `workflow_results`: List of outputs, one per split, as returned by `run_workflow_singlesplitloop()`.
+- `params`: Parameters used (empty list).
+- `continue_workflow`: Always `TRUE` for this engine.
+- `specific_output`: List with:
+    - `n_splits`: Number of executed splits
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_basic_sequential()`
+- **Position in Flow:** Execution phase after splitting
+- **Downstream Compatibility:** All subsequent stages (e.g., reporting) operate on the aggregated `workflow_results`.
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_1_a_template_control_execution_basic_sequential.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_basic_sequential"
+control$params$execution <- controller_execution(
+  params = list()  # No parameters required
+)
+```

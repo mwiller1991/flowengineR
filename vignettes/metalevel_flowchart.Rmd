@@ -7,8 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Metalevel Workflow Structure
-
 This vignette visualizes the internal structure of the `flowengineR` framework.  
 The flowchart highlights how user input is routed through controllers and engines, how outputs are standardized, and how different parts of the modular workflow interact.
 

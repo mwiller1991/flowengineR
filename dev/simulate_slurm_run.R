@@ -16,7 +16,7 @@ simulate_slurm_run <- function(
     control$data$test  <- split_output$splits[[i]]$test
     control$params$split <- list(split_id = i)
     
-    result <- run_workflow_single(control)
+    result <- run_workflow_singlesplitloop(control)
     
     saveRDS(result, file = file.path(result_dir, paste0("result_split_", i, ".rds")))
   }

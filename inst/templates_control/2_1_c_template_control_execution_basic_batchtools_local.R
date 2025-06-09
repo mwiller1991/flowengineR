@@ -29,6 +29,6 @@ control$params$execution <- controller_execution(
 #   - walltime: seconds per job (default: 3600)
 #
 # Notes:
-# - Each job runs run_workflow_single() on a single split.
+# - Each job runs run_workflow_singlesplitloop() on a single split.
 # - This engine uses the local backend of batchtools.
 # - This template can be found at: inst/templates_control/2_1_c_template_control_execution_basic_batchtools_local.R

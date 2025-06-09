@@ -40,19 +40,19 @@ engine_postprocessing_fairness_genresidual <- function(predictions, actuals) {
 #' - `control$params$postprocessing$postprocessing_data$predictions`: Numeric vector of model predictions (injected by workflow).
 #' - `control$params$postprocessing$postprocessing_data$actuals`: Numeric vector of true observed values (injected by workflow).
 #' - `control$params$postprocessing$protected_name`: Character vector of protected attribute names (binary).  
-#'   Auto-filled from `control$vars$protected_vars_binary` via `autofill_controllers_from_vars()`.
+#'   Auto-filled from `control$data$vars$protected_vars_binary` via `autofill_controllers_from_vars()`.
 #' - `control$params$postprocessing$params`: Optional engine-specific parameters (not used here).
 #'
 #' **Binary Attribute Requirement:**
 #' - All protected attributes listed in `protected_name` must be binary (e.g., 0/1, TRUE/FALSE).
-#' - Post-processing engines in fairnessToolbox are not designed for multi-class or continuous protected attributes.
+#' - Post-processing engines in flowengineR are not designed for multi-class or continuous protected attributes.
 #' - Binary transformation must be performed during setup (e.g. via `controller_vars(protected_vars_binary = ...)`).
 #'
 #' **Engine-Specific Parameters (`control$params$postprocessing$params`):**
 #' - None. This engine performs a fixed residual adjustment and requires no tunable settings.
 #' 
 #' **Workflow Integration:**
-#' - `protected_name` are **automatically filled** based on `control$vars`.
+#' - `protected_name` are **automatically filled** based on `control$data$vars`.
 #' - These inputs must be respected by all engines but **do not need to be set manually** in the controller.
 #' - This wrapper ensures these values are passed correctly to the engine.
 #'
@@ -83,7 +83,7 @@ engine_postprocessing_fairness_genresidual <- function(predictions, actuals) {
 #'   [controller_postprocessing()],  
 #'   Template: `inst/templates_control/6_a_template_postprocessing_fairness_genresidual.R`
 #'
-#' @param control A standardized control object (must include `control$vars` and a valid `control$params$postprocessing`).
+#' @param control A standardized control object (must include `control$data$vars` and a valid `control$params$postprocessing`).
 #' @return A standardized fairness post-processing output.
 #' @keywords internal
 wrapper_postprocessing_fairness_genresidual <- function(control) {
@@ -104,7 +104,7 @@ wrapper_postprocessing_fairness_genresidual <- function(control) {
   adjusted_predictions <- engine_postprocessing_fairness_genresidual(postprocessing_params$postprocessing_data$predictions, postprocessing_params$postprocessing_data$actuals)
   
   # Ensure probabilities are within [0, 1] if output_type is "prob"
-  if (control$output_type == "prob") {
+  if (control$settings$output_type == "prob") {
     adjusted_predictions <- pmax(pmin(adjusted_predictions, 1), 0)
   }
   

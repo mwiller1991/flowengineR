@@ -17,8 +17,19 @@ Description:
     ready-to-use engines for implementing fairness interventions at various workflow stages.
     These can be freely combined with other engines or extended to support goals like 
     robustness, explainability, or domain-specific compliance.
+    The framework defines a fixed set of typed engine categories (e.g., preprocessing, 
+    training, postprocessing, evaluation, reporting), each governed by standardized 
+    input/output interfaces and supported by controller functions that validate inputs 
+    and manage execution logic. This structured design facilitates systematic reuse, 
+    benchmarking, and the orchestration of complex multi-step workflows.
+    Unlike GUI-oriented workflow tools such as KNIME or task schedulers like Airflow, 
+    flowengineR is entirely script-based and designed for programmatic flexibility 
+    and reproducibility. It enables logic-driven execution and transparent handling of 
+    modular components in a fully R-native environment.
     Its architecture supports custom engine development and encourages modular reuse 
-    for research, prototyping, and production-grade analysis workflows.
+    for research, prototyping, and production-grade analysis workflows. It also 
+    enables adaptive or parallel execution strategies (e.g., via SLURM or batchtools), 
+    and can resume interrupted workflows through checkpoint-compatible components.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -35,9 +46,9 @@ Imports:
     openxlsx,
     batchtools,
     stats,
-    utils
+    utils,
+    randomForest
 Suggests:
     testthat,
-    knitr,
-    rmarkdown
+    knitr
 VignetteBuilder: knitr

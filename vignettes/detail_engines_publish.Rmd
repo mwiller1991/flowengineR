@@ -1,0 +1,116 @@
+---
+title: "In Detail: Publishing Engines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Publishing Engines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Publishing Engines in `flowengineR` are used to **export reportelements or full reports to external formats** such as PDF, Excel, or HTML. They are the final stage of the reporting pipeline and create tangible output files based on the intermediate reporting structure.
+
+A Publishing Engine **always requires either a `report` or a `reportelement`** as input. These must be generated beforehand via their respective engines.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are provided directly from the workflow:
+
+| Input             | Type         | Description                                                                     |
+|------------------|--------------|---------------------------------------------------------------------------------|
+| `object`         | list         | A `report` or `reportelement` object (⚠️ provided by the framework)             |
+| `file_path`      | character    | Target path including filename and extension (⚠️ provided by the framework)     |
+| `output_folder`  | character    | Target path privided via controller  (⚠️ transformed to file_path by the framework) |
+| `alias_publish`  | character    | Internal name for tracking/export management                                    |
+| `params`         | list         | Optional engine-specific parameters                                             |
+
+Framework resolution:
+- `object`: result from a reportelement or report engine
+- `file_path`: transformed from `control$params$publish$output_folder` and alias_publish
+- `output_folder`: specified via publishing controller
+- `alias_publish`: from `control$engine_select$publish`
+- `params`: from `control$params$publish$params`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_publish()`:
+
+| Output              | Type         | Description                                                      |
+|---------------------|--------------|------------------------------------------------------------------|
+| `alias`             | character    | Alias name used to track this publishing instance                |
+| `type`              | character    | Publishing engine type                                           |
+| `engine`            | character    | Internal function name                                           |
+| `path`              | character    | Output file path                                                 |
+| `success`           | logical / NA | Whether export was successful                                    |
+| `params`            | list         | Parameters used                                                  |
+| `specific_output`   | list / NULL  | Optional additional technical metadata (e.g., timestamp, size)  |
+
+---
+
+## 🔗 Dependency to Other Layers
+
+Publishing is the **final stage** in the reporting workflow. It depends on either:
+- a fully constructed `report` (e.g., via `engine_report_modelsummary()`), or
+- a standalone `reportelement` (e.g., a table or plot)
+
+Without one of these, publishing cannot proceed.
+
+The field `compatible_formats`, which is part of the **report output**, determines which publishing formats can be applied to a report. Publishing engines are expected to check for format compatibility.
+
+---
+
+## ⚙️ Available Publishing Engines
+
+| Engine Name         | Function Name                     | Description                           | Template Path                                                      | Detail Page |
+|---------------------|------------------------------------|---------------------------------------|---------------------------------------------------------------------|-------------|
+| `publish_pdf_basis` | `engine_publish_pdf_basis()`      | Basic PDF exporter for full reports   | `inst/templates_control/10_a_engine_publish_pdf_basis.R`         | [📄](detail_engine_publish_pdf_basis.html) |
+| `publish_excel_basis` | `engine_publish_excel_basis()`   | Exports reportelements to Excel files | `inst/templates_control/10_b_engine_publish_excel_basis.R`       | [📄](detail_engine_publish_excel_basis.html) |
+
+Use `list_registered_engines("publish")` to view available publishing engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+
+In practice, the user specifies an `output_folder` in the controller. The `file_path` is then constructed automatically by combining the `output_folder`, the alias name, and the target file format based on the publishing engine.
+
+```r
+control$engine_select$publish <- list(
+  export_pdf = "publish_pdf_basis",
+  export_excel = "publish_excel_basis"
+)
+
+control$params$publish <- controller_publish(
+  params = list(
+    export_pdf = list(file_path = "~/outputs"),
+    export_excel = list(file_path = "~/outputs")
+  )
+)
+```
+
+---
+
+## 🛠️ Writing Your Own Publishing Engine
+
+To implement a publishing engine:
+
+1. Create `engine_*()` to accept a report/reportelement and a file path.
+2. Return a standardized result via `initialize_output_publish()`.
+3. Use the `params` to customize file format or export behavior.
+
+---
+
+## 🎯 Possible Use-Cases: Export Options for Different Stakeholders
+
+- Use `publish_pdf_basis` to export a full report as a PDF for documentation or communication.
+- Use `publish_excel_basis` to export specific reportelements (e.g., metric tables) for internal analysis.
+
+This separation allows targeting different stakeholder needs: strategic decision-makers get visual summaries; analysts get structured data.

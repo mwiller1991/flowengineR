@@ -1,0 +1,66 @@
+---
+title: "In Detail: Execution Engine - Batchtools SLURM Execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools SLURM Execution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Batchtools SLURM Execution (`engine_execution_basic_batchtools_slurm`)
+
+### Purpose and Function
+This engine executes workflow splits on an HPC cluster via SLURM using `batchtools`. It creates jobs for each split, submits them using a SLURM job template, and collects the results once completed. A valid SLURM template is required.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: Control object with full configuration (⚠️ provided directly by the workflow).
+- `split_output`: A list of data splits returned from a splitter engine (⚠️ provided directly by the workflow).
+- `params`: SLURM-related batchtools options including job template and resources.
+
+### Engine-specific Parameters
+
+| Parameter         | Type            | Default                                                   | Description                                  |
+|------------------|------------------|-----------------------------------------------------------|----------------------------------------------|
+| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"` | Folder for batchtools registry        |
+| `slurm_template` | character        | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl"`     | Path to SLURM job template (required) |
+| `seed`           | integer          | `123`                                                     | Seed for reproducibility                     |
+| `required_packages` | character[]   | `character(0)`                                            | R packages to load in each job               |
+| `resources`      | list             | `{ncpus=1, memory=2048, walltime=3600}`                   | SLURM job resource specs                     |
+
+### Output Structure
+
+The output is created via `initialize_output_execution()`:
+
+- `execution_type`: `"basic_batchtools_slurm"`
+- `workflow_results`: Named list of split results
+- `params`: Final parameter list
+- `continue_workflow`: `TRUE` (after SLURM jobs complete)
+- `specific_output`: List with:
+    - `n_splits`: Number of splits processed
+    - `registry`: Registry folder used
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_basic_batchtools_slurm()`
+- **Position in Flow:** Execution phase
+- **Execution Environment:** Requires SLURM and valid SLURM job template
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_1_e_template_control_execution_basic_batchtools_slurm.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_basic_batchtools_slurm"
+control$params$execution <- controller_execution(params = list(
+  registry_folder = "my_bt_slurm",
+  slurm_template = "~/templates/my_slurm.tmpl",
+  seed = 111,
+  required_packages = c("flowengineR"),
+  resources = list(ncpus = 2, memory = 4096, walltime = 7200)
+))
+```

@@ -101,7 +101,7 @@ source("~/fairness_toolbox/dev/memory_logging_dev.R")
 source("~/fairness_toolbox/tests/SLURM/slurm_testinR/simulate_slurm_run.R")
 
 # Generate the dataset
-dataset <- fairnessToolbox::test_data_2_base_credit_example
+dataset <- flowengineR::test_data_2_base_credit_example
 
 #Setting variables fitting to the dataset
 vars = controller_vars(
@@ -114,11 +114,13 @@ vars = controller_vars(
 # Control Object for Prototyping
 control <- list(
   settings = list(
-    log = TRUE,
-    log_level = "info"
+    log = list(
+      log_show = TRUE,
+      log_level = "info"
+    ),
+    global_seed = 1,
+    output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   ),
-  global_seed = 1,
-  output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   data = list(
     vars = controller_vars(
       feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
@@ -126,7 +128,7 @@ control <- list(
       target_var = "default",                            # Target variable
       protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
     ),
-    full = fairnessToolbox::test_data_2_base_credit_example,    # Optional, if splitter engine is used
+    full = flowengineR::test_data_2_base_credit_example,    # Optional, if splitter engine is used
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
@@ -267,7 +269,7 @@ resume_object <- prepare_resume_from_slurm_array(
                     metadata = list(engine = "SLURM_ARRAY", timestamp = Sys.time())
                   )
   
-result <- resume_fairness_workflow(resume_object)
+result <- resume_workflow(resume_object)
 
 
 result$reportelements$metrics_table$content
@@ -275,4 +277,3 @@ result$reportelements$gender_box_raw$content
 result$reportelements$mse_text$content
 View(result$reportelements$metrics_table$content)
 
-result_full <- fairness_workflow_variants(control)

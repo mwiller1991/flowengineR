@@ -14,6 +14,6 @@ control$params$execution <- controller_execution(
 # (none)
 #
 # Notes:
-# - This engine runs all splits sequentially using run_workflow_single().
+# - This engine runs all splits sequentially using run_workflow_singlesplitloop().
 # - No parallelization, registry or batching is applied.
 # - This template can be found at: inst/templates_control/2_1_a_template_control_execution_basic_sequential.R

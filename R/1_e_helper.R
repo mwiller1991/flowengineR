@@ -22,16 +22,16 @@
 #'
 #' @param msg A character string. The message to display.
 #' @param level A character string. One of `"none"`, `"debug"`, `"info"`, `"warn"`, `"error"`.
-#' @param control The control object containing `settings$log` and `settings$log_level`.
+#' @param control The control object containing `settings$log$log_show` and `settings$log$log_level`.
 #' @param abort Logical. If `TRUE` and level is `"error"`, the function will stop execution.
 #'
 #' @return Invisibly returns `NULL`. Used for side-effect printing only.
 #' @keywords internal
 log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
-  if (is.null(control) || !isTRUE(control$settings$log)) return(invisible(NULL))
+  if (is.null(control) || !isTRUE(control$settings$log$log_show)) return(invisible(NULL))
   
   levels <- c("none" = 0, "debug" = 1, "info" = 2, "warn" = 3, "error" = 4)
-  user_level <- control$settings$log_level %||% "info"
+  user_level <- control$settings$log$log_level %||% "info"
   if (!(user_level %in% names(levels))) user_level <- "info"
   if (!(level %in% names(levels))) level <- "info"
   
@@ -107,11 +107,11 @@ complete_control_with_defaults <- function(control) {
   
   # Settings defaults
   if (is.null(control$settings)) control$settings <- list()
-  if (is.null(control$settings$log)) control$settings$log <- TRUE
-  if (is.null(control$settings$log_level)) control$settings$log_level <- "info"
-  
-  # Set global seed if not defined
-  if (is.null(control$global_seed)) control$global_seed <- 1
+  if (is.null(control$settings$log)) control$settings$log <- list()
+  if (is.null(control$settings$log$log_show)) control$settings$log$log_show <- TRUE
+  if (is.null(control$settings$log$log_level)) control$settings$log$log_level <- "info"
+  if (is.null(control$settings$global_seed)) control$settings$global_seed <- 1
+  if (is.null(control$settings$output_type)) control$settings$output_type <- "response"
   
   # Ensure data list exists
   if (is.null(control$data)) control$data <- list()
@@ -161,7 +161,6 @@ complete_control_with_defaults <- function(control) {
   
   # Training setup
   if (is.null(control$engine_select$train)) control$engine_select$train <- "train_glm"
-  if (is.null(control$output_type)) control$output_type <- "response"
   if (is.null(control$params$train)) {
     control$params$train <- controller_training(
       formula = as.formula(paste(
@@ -302,7 +301,7 @@ merge_with_defaults <- function(user_hyperparameters, default_hyperparameters) {
 #' test data to ensure consistency.
 #'
 #' **Usage Context:**
-#' - Called by `run_workflow_single()` before applying normalization.
+#' - Called by `run_workflow_singlesplitloop()` before applying normalization.
 #' - Output is passed to `apply_minmax_params()` to normalize all datasets.
 #'
 #' **Output Format:**
@@ -342,7 +341,7 @@ compute_minmax_params <- function(data, feature_names) {
 #' parameters (typically derived from training data).
 #'
 #' **Usage Context:**
-#' - Used within `run_workflow_single()` to normalize training, test, and model input data.
+#' - Used within `run_workflow_singlesplitloop()` to normalize training, test, and model input data.
 #' - Ensures consistent normalization across splits and data stages.
 #'
 #' **Normalization Formula:**
@@ -423,7 +422,7 @@ select_training_data <- function(norm_data, data) {
 #' using stored min/max values from the training data.
 #'
 #' **Usage Context:**
-#' - Used within `run_workflow_single()` when the prediction output type is `"response"` 
+#' - Used within `run_workflow_singlesplitloop()` when the prediction output type is `"response"` 
 #'   and normalization was applied to the target variable.
 #' - Applies inverse of Min-Max scaling based on training data statistics.
 #'
@@ -465,7 +464,7 @@ denormalize_predictions <- function(predictions, feature_name, norm_params) {
 #' - Flat metrics (e.g., `mse`, `stat_parity`) → numeric vector across splits.
 #' - Nested metrics (e.g., `summary_stats`) → submetric-level mean/sd.
 #'
-#' @param workflow_results A list of `run_workflow_single()` results (one per split).
+#' @param workflow_results A list of `run_workflow_singlesplitloop()` results (one per split).
 #'
 #' @return A named list of aggregated metrics, each containing summary statistics.
 #' @keywords internal

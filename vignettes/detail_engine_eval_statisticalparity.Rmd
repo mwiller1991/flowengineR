@@ -1,0 +1,67 @@
+---
+title: "In Detail: Evaluation Engine - Statistical Parity Difference (SPD)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Evaluation Engine - Statistical Parity Difference (SPD)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Statistical Parity Difference (`engine_eval_statisticalparity`)
+
+### Purpose and Function
+
+This evaluation engine calculates the **Statistical Parity Difference (SPD)** to assess group fairness.
+SPD is computed as the absolute difference in mean predicted values between two groups defined by a binary protected attribute.
+A value of 0 indicates equal treatment, while higher values suggest bias in predicted outcomes.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `predictions`: Numeric vector of predicted values (⚠️ provided directly by the workflow).
+- `actuals`: Numeric vector of true target values (⚠️ provided directly by the workflow).
+- `protected_attributes`: Optional character vector of protected attribute names (⚠️ provided directly by the workflow).
+- `params`: Optional (not used in this engine, remains empty).
+
+### Binary Attribute Requirement
+
+All protected attributes must be binary (e.g., 0/1, TRUE/FALSE).  
+Multi-class or continuous attributes must be binarized before evaluation (e.g., using `controller_vars()`).
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| –        | –    | –       | No parameters for this engine |
+
+### Output Structure
+
+Returned via `initialize_output_eval()`:
+
+- `metrics`: Named list `spd`, with one entry per protected attribute
+- `eval_type`: `"statistical_parity_eval"`
+- `input_data`: Original `eval_data` including predictions
+- `protected_attributes`: Names of protected attributes used
+- `params`: `NULL`
+- `specific_output`: `NULL`
+
+### Workflow Integration
+
+- **Controller Function:** `controller_evaluation()`
+- **Wrapper Function:** `wrapper_eval_statisticalparity()`
+- **Engine Function:** `engine_eval_statisticalparity()`
+- **Position in Flow:** Evaluation phase
+- **Use Case:** Fairness assessment (group-level parity)
+
+### Template Reference
+
+This engine’s control template is located at:  
+`inst/templates_control/7_3_a_template_eval_statisticalparity.R`
+
+### Example Configuration
+```r
+control$engine_select$evaluation <- "eval_statisticalparity"
+control$params$eval <- controller_evaluation(
+  params = list()
+)
+```

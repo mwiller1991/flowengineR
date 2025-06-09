@@ -218,7 +218,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #' - `control$params$train$data`: Training dataset (original or normalized).
 #' - `control$params$train$norm_data`: Logical flag indicating whether normalized data should be used. Must be same as for base trainer for model consistency.
 #' - `control$params$inprocessing$protected_attributes`: Character vector of protected attributes.  
-#'   → Auto-filled from `control$vars$protected_vars` via `autofill_controllers_from_vars()`.
+#'   → Auto-filled from `control$data$vars$protected_vars` via `autofill_controllers_from_vars()`.
 #' - `control$params$inprocessing$params`: Named list of engine-specific parameters.
 #' - `driver_train`: Training engine function for the main model (provided by the workflow).
 #'
@@ -264,7 +264,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #'   [controller_inprocessing()],  
 #'   Template: `inst/templates_control/5_a_template_inprocessing_fairness_adversialdebiasing.R`
 #'
-#' @param control A standardized control object. Must include `control$vars` and a valid `control$params$inprocessing`.
+#' @param control A standardized control object. Must include `control$data$vars` and a valid `control$params$inprocessing`.
 #' @param driver_train A training engine function used to train the main model.
 #' 
 #' @return A standardized fairness in-processing output.
@@ -290,8 +290,8 @@ wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_tra
   ), level = "info", control = control)
   
   # Shutting down logging for run
-  log_status <- control$settings$log
-  control$settings$log = FALSE 
+  log_status <- control$settings$log$log_show
+  control$settings$log$log_show = FALSE 
   
   # Track training time
   start_time <- Sys.time()
@@ -310,7 +310,7 @@ wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_tra
   training_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
   
   # Resetting logging to user-input
-  control$settings$log <- log_status
+  control$settings$log$log_show <- log_status
   
   log_msg(sprintf("[IN] Adversarial training complete (%.2fs)", training_time),
           level = "info", control = control)

@@ -1,14 +1,11 @@
-
 ---
 title: "Welcome to flowengineR"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Welcome to flowengineR}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-# Welcome to flowengineR
 
 `flowengineR` provides a modular framework for defining, executing, and evaluating flexible workflows.  
 It is designed to support advanced scenarios such as fairness-aware modeling, batch-based execution, and automated reporting.
@@ -17,18 +14,86 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 
 ## 📚 Vignettes
 
+### Getting Started & Motivation
 - [Getting Started](getting_started.html): Introduction to the core concepts and basic usage.
-- [Control Objects](control_objects.html): How to define and use control structures.
-- [Custom Engines](custom_engines.html): Integrating your own training, evaluation, or reporting engines.
-- [Execution with Batchtools](execution_batchtools.html): Parallel and batch-based execution using SLURM or similar backends.
-- [Stability Strategies](stability_strategies.html): Adaptive workflows and stopping criteria for stable results.
-- [Reporting and Publishing](reporting.html): Generating structured reports and output files.
+- [Why flwoengineR was build](why_flowengineR.html): Thematic classification why our problem could not be solved with an existing workflow-manager.
+- [Example](example_workflow_credit.html): A basic workflow to demonstrate how to use the package on a dataset.
+
+### How-To Guides
+- [How to: Set up Control Objects](how_to_build_controlobjekt.html): How to define and use control structures.
+- [How to: Use Engine-Types](how_to_use_engines.html): Overview of all engine types in `flowengineR`, their roles in the workflow, and how they interact within the control object.
+- [How to: Build Custom Engines](how_to_build_custom_engine.html): Step-by-step instructions for creating your own engine, including registration and integration into the framework.
+
+### Detailled Workflow-Information
+- [In Detail: Full Package Flow Chart in Mermaid](metalevel_flowchart.html): Showing the entire workflow with all relevant parameters and functions as a Picture and as Mermaid-Code.
+<br><br>
+- [In Detail: Splitter Engines](detail_engines_split.html): Engines responsible for splitting the dataset into train/test partitions, e.g., random, stratified, or cross-validation splits.
+- [In Detail: Execution Engines](detail_engines_execution.html): Define how the workflow is executed across splits – sequentially, in parallel, or adaptively based on evaluation results.
+- [In Detail: Preprocessing Engines](detail_engines_preprocessing.html): Apply transformations or fairness adjustments to the training data before model fitting.
+- [In Detail: Training Engines](detail_engines_train.html): Fit predictive models using various algorithms like linear regression, random forest, or GBM.
+- [In Detail: Inprocessing Engines](detail_engines_inprocessing.html): Modify the model training process to embed fairness directly into model learning (e.g., via adversarial training).
+- [In Detail: Postprocessing Engines](detail_engines_postprocessing.html): Adjust model predictions after training to improve fairness or fulfill external constraints.
+- [In Detail: Evaluation Engines](detail_engines_evaluation.html): Calculate performance or fairness metrics for model predictions, such as MSE or statistical parity difference.
+- [In Detail: Reporting-Elements Engines](detail_engines_reportelement.html): Generate visualizations or summaries (e.g., plots, tables, text blocks) as modular report elements.
+- [In Detail: Report Engines](detail_engines_report.html): Combine multiple report elements into structured reports that summarize results across splits and metrics.
+- [In Detail: Publishing Engines](detail_engines_publish.html): Export reports to external formats such as PDF, HTML, Excel, or JSON for further analysis or sharing.
+
+
+
+### Detailled Information on included Engines
+
+#### Splitter Engines
+- [In Detail: Split Engine – Cross-Validation (CV)](detail_engine_split_cv.html): Splits the data into multiple folds for cross-validation. Each fold is used once as test set, the others as training.
+- [In Detail: Split Engine – Random Split](detail_engine_split_random.html): Splits the data randomly into train and test sets based on a defined ratio.
+- [In Detail: Split Engine – Stratified Random Split](detail_engine_split_random_stratified.html): Like random split, but preserves the distribution of the target variable (stratification).
+- [In Detail: Split Engine – User-Defined Split](detail_engine_split_userdefined.html): Allows manual provision of train/test data, skipping internal splitting entirely.
+
+#### Execution Engines
+- [In Detail: Execution Engine – Basic Sequential](detail_engine_execution_basic_sequential.html): Executes all splits one after another in a single R session.
+- [In Detail: Execution Engine – Basic Batchtools (Local)](detail_engine_execution_basic_batchtools_local.html): Submits each split as an individual job in a local batchtools registry.
+- [In Detail: Execution Engine – Basic Batchtools (Multicore)](detail_engine_execution_basic_batchtools_multicore.html): Uses multicore backend of batchtools for parallel local execution.
+- [In Detail: Execution Engine – Basic Batchtools (SLURM)](detail_engine_execution_basic_batchtools_slurm.html): Submits jobs to a SLURM cluster for distributed execution.
+- [In Detail: Execution Engine – Basic Slurm Array Preparation](detail_engine_execution_basic_slurm_array.html): Prepares inputs for SLURM array execution but does not run any models.
+- [In Detail: Execution Engine – Adaptive Output Stability Check (Sequential)](detail_engine_execution_adaptive_output_sequential.html): Repeats single-split workflows until a monitored metric stabilizes across runs.
+- [In Detail: Execution Engine – Adaptive Output via Batchtools (Multicore)](detail_engine_execution_adaptive_output_batchtools_multicore.html): Executes stability-based workflows using batchtools with local multicore support.
+- [In Detail: Execution Engine – Adaptive Output via Batchtools (SLURM)](detail_engine_execution_adaptive_output_batchtools_slurm.html): Same as above, but for distributed systems using SLURM as backend.
+- [In Detail: Execution Engine – Adaptive Input Scalar Optimization (Sequential)](detail_engine_execution_adaptive_input_scalar_sequential.html): Optimizes a single scalar hyperparameter step by step until performance stabilizes.¢
+
+#### Preprocessing Engines
+- [In Detail: Preprocessing Engine – Fairness Resampling](detail_engine_preprocessing_fairness_resampling.html): Balances protected groups in the training data via duplication or undersampling.
+
+#### Training Engines
+- [In Detail: Training Engine – Linear Model (LM)](detail_engine_train_lm.html): Fits a simple linear regression model using `stats::lm()`. Useful for interpretable baseline models.
+- [In Detail: Training Engine – Generalized Linear Model (GLM)](detail_engine_train_glm.html): Trains a GLM via the `caret` framework. Supports a range of link functions and model families.
+
+#### Inprocessing Engines
+- [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversialdebiasing.html): Uses adversarial learning to reduce bias during model training.
+
+#### Postprocessing Engines
+- [In Detail: Postprocessing Engine – General Residual Adjustment](detail_engine_postprocessing_fairness_genresidual.html): Adjusts predictions post-hoc using group-specific mean residuals.
+
+#### Evaluation Engines
+- [In Detail: Evaluation Engine – MSE](detail_engine_eval_mse.html): Calculates the Mean Squared Error between predicted and actual values.
+- [In Detail: Evaluation Engine – Summary Statistics](detail_engine_eval_summarystats.html): Computes central statistical metrics like mean, SD, skewness, etc.
+- [In Detail: Evaluation Engine – Statistical Parity](detail_engine_eval_statisticalparity.html): Measures group fairness via absolute statistical parity difference.
+
+#### Reportelement Engines
+- [In Detail: Reportelement – MSE Summary Text](detail_engine_reportelement_text_msesummary.html): Generates a short textual summary of average MSE across all splits.
+- [In Detail: Reportelement – Table of Split Metrics](detail_engine_reportelement_table_splitmetrics.html): Creates a data.frame of selected evaluation metrics per split.
+- [In Detail: Reportelement – Boxplot of Predictions by Group](detail_engine_reportelement_boxplot_predictions.html): Visualizes prediction distributions per split grouped by a binary attribute.
+
+#### Report Engines
+- [In Detail: Report Engine – Model Summary Report](detail_engine_report_modelsummary.html): Combines textual and visual reportelements into a structured report.
+
+#### Publishing Engines
+- [In Detail: Publishing Engine – PDF Basis Export](detail_engine_publish_pdf_basis.html): Converts a structured report into a PDF via RMarkdown.
+- [In Detail: Publishing Engine – Excel Basis Export](detail_engine_publish_excel_basis.html): Writes a structured report into an Excel file using `openxlsx`.
 
 ---
 
 ## 🛠️ Key Functions
 
-- [`run_workflow_variants()`](reference/run_workflow_variants.html): Execute a complete workflow with multiple configurations.
+- [`run_workflow()`](reference/run_workflow.html): Execute a complete workflow.
 - [`controller_train()`](reference/controller_train.html): Set up model training behavior.
 - [`list_registered_engines()`](reference/list_registered_engines.html): Inspect the currently registered engines.
 

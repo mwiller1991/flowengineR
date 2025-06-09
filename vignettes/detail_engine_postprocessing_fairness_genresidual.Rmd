@@ -1,0 +1,65 @@
+---
+title: "In Detail: Post-Processing Engine - General Residual Adjustment"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Post-Processing Engine - General Residual Adjustment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: General Residual Adjustment (`engine_postprocessing_fairness_genresidual`)
+
+### Purpose and Function
+This post-processing engine adjusts predicted values by applying the **mean residual** to each prediction. It is designed to mitigate group-level bias in a simple, global manner without requiring protected group labels during adjustment.
+
+The method operates by computing the average residual across the entire dataset and shifting predictions accordingly. This can help reduce systematic under- or overestimation, especially in imbalanced settings.
+
+> ⚠️ This engine applies a **global correction** and does not differentiate between subgroups.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `predictions`: Numeric vector of model predictions (⚠️ provided directly by the workflow).
+- `actuals`: Numeric vector of observed target values (⚠️ provided directly by the workflow).
+- `protected_name`: Names of protected attributes (binary) (⚠️ provided directly by the workflow).
+- `params`: Optional engine-specific parameters (not used here)
+
+**Binary Attribute Requirement:**
+All attributes listed in `protected_name` must be binary (e.g., 0/1, TRUE/FALSE). Post-processing engines in `flowengineR` do not support multi-class or continuous protected variables.
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| –         | –    | –       | This engine uses no specific parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_postprocessing()`:
+
+- `adjusted_predictions`: Residual-adjusted prediction vector
+- `method`: `"general_residual"`
+- `input_data`: List with `predictions` and `actuals`
+- `protected_attributes`: Names of protected variables used
+- `params`: Final parameter list (empty)
+- `specific_output`: `NULL`
+
+### Workflow Integration
+
+- **Controller Function:** `controller_postprocessing()`
+- **Wrapper Function:** `wrapper_postprocessing_fairness_genresidual()`
+- **Engine Function:** `engine_postprocessing_fairness_genresidual()`
+- **Position in Flow:** Post-processing phase
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/6_a_template_postprocessing_fairness_genresidual.R`
+
+### Example Configuration
+```r
+control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
+control$params$postprocessing <- controller_postprocessing(
+  params = list()
+)
+```

@@ -1,0 +1,58 @@
+---
+title: "In Detail: Evaluation Engine - Summary Statistics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Evaluation Engine - Summary Statistics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Summary Statistics (`engine_eval_summarystats`)
+
+### Purpose and Function
+This evaluation engine calculates a wide range of statistical properties of the predicted values. It is intended to give users a quick overview of the distributional characteristics of model outputs, which can be helpful for both performance inspection and fairness diagnosis.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `predictions`: Numeric vector of predictions (⚠️ provided directly by the workflow).
+- `protected_name`: Character vector of protected attributes (ignored by this engine) (⚠️ provided directly by the workflow).
+- `params`: Optional engine-specific parameters (unused) (⚠️ provided directly by the workflow).
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| –         | –    | –       | This engine does not use any specific parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_eval()`:
+
+- `metrics`: A list named `summary_stats` containing:
+    - `mean`, `median`, `sd`, `var`, `min`, `max`, `quantile_25`, `quantile_75`, `iqr`, `skewness`, `kurtosis`, `range`
+- `eval_type`: `"summarystats_eval"`
+- `input_data`: The full evaluation input object
+- `params`: `NULL` (no engine-specific settings used)
+- `specific_output`: `NULL`
+
+### Workflow Integration
+
+- **Controller Function:** `controller_evaluation()`
+- **Wrapper Function:** `wrapper_eval_summarystats()`
+- **Engine Function:** `engine_eval_summarystats()`
+- **Position in Flow:** Evaluation phase
+- **Use Case:** Analyze distribution of prediction values
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/7_1_a_template_eval_summarystats.R`
+
+### Example Configuration
+```r
+control$engine_select$evaluation <- "eval_summarystats"
+control$params$eval <- controller_evaluation(
+  params = list()
+)
+```

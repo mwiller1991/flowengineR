@@ -32,7 +32,7 @@
 #'
 #' @return A structured list containing at least `split_output` and `execution_output`. Additional elements may be included depending on the workflow stage.
 #' @export
-run_workflow <- function(control) {
+run_workflow <- function(control = list()) {
   log_msg("[MASTER] Initializing control object with defaults...", level = "info", control = control)
   control <- complete_control_with_defaults(control)
   
@@ -279,7 +279,7 @@ resume_workflow <- function(resume_object) {
 #'   - `protected_vars`: (Optional) Variables used for protected group analyses
 #'   - `protected_vars_binary`: (Optional) Binary indicators for group-specific evaluation
 #' - `control$params$train`: Model training configuration.
-#' - `control$output_type`: Either `"response"` or `"prob"` (default: `"response"`).
+#' - `control$settings$output_type`: Either `"response"` or `"prob"` (default: `"response"`).
 #' - Optional modules (if configured):
 #'   - `control$engine_select$preprocessing`: Name of preprocessing engine
 #'   - `control$engine_select$inprocessing`: Name of in-processing engine
@@ -366,17 +366,12 @@ run_workflow_singlesplitloop <- function(control) {
   } else {
     stop("Normalization is not properly choosen.")
   }
-
-  if (is.null(control$output_type)) {
-    control$output_type <- "response"
-    log_msg("[SINGLE] output_type not specified. Defaulting to 'response'.", level = "warn", control = control)
-  }
-
+  
   # Step 4.3: Prediction
   log_msg("[SINGLE] Generating predictions from base model...", level = "debug", control = control)
-  if (control$output_type == "prob") {
+  if (control$settings$output_type == "prob") {
     predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "prob"))
-  } else if (control$output_type == "response") {
+  } else if (control$settings$output_type == "response") {
     predictions <- as.numeric(predict(output_train$model, newdata = testdata, type = "response"))
     if (control$params$train$norm_data == TRUE) {
       predictions <- denormalize_predictions(predictions, control$data$vars$target_var, norm_params)
@@ -395,9 +390,9 @@ run_workflow_singlesplitloop <- function(control) {
     driver_in <- engines[[control$engine_select$inprocessing]]
     output_in <- driver_in(control, driver_train)
     
-    if (control$output_type == "prob") {
+    if (control$settings$output_type == "prob") {
       predictions <- as.numeric(predict(output_in$adjusted_model, newdata = testdata, type = "prob"))
-    } else if (control$output_type == "response") {
+    } else if (control$settings$output_type == "response") {
       predictions <- as.numeric(predict(output_in$adjusted_model, newdata = testdata, type = "response"))
       if (control$params$train$norm_data == TRUE) {
         predictions <- denormalize_predictions(predictions, control$data$vars$target_var, norm_params)

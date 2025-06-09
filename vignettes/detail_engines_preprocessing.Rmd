@@ -1,0 +1,115 @@
+---
+title: "In Detail: Preprocessing Engines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Preprocessing Engines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Preprocessing Engines in `flowengineR` are responsible for transforming the dataset before training begins. This includes general data transformations (e.g., scaling or feature engineering) as well as advanced tasks like fairness-aware adjustments. If no preprocessing is specified, raw data is passed to the training engine unchanged.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are passed to the engine wrapper and partially pre-filled by the framework:
+
+| Input                  | Type             | Description                                                           |
+| ---------------------- | ---------------- | --------------------------------------------------------------------- |
+| `data`                 | data.frame       | Full dataset for preprocessing (⚠️ provided directly by the workflow) |
+| `target_var`           | character        | Target variable name (⚠️ provided directly by the workflow)           |
+| `protected_attributes` | character vector | Optional list of protected group variables (⚠️ provided directly by the workflow)                            |
+| `params`               | list             | Engine-specific parameters (from controller)                          |
+
+Framework resolution:
+- `data`: from `control$data$full`
+- `target_var`: from `control$data$vars$target_var`
+- `protected_attributes`: optional, often from `control$data$vars$protected`
+- `params`: from `control$params$preprocessing$params`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_preprocessing()`:
+
+| Output              | Type        | Description                                     |
+| ------------------- | ----------- | ----------------------------------------------- |
+| `preprocessed_data` | data.frame  | Transformed dataset used for training           |
+| `method`            | character   | Name or description of the preprocessing method |
+| `params`            | list        | Parameters used (merged default + user)         |
+| `specific_output`   | list / NULL | Optional additional output (engine-specific)    |
+
+---
+
+## ⚙️ Available Preprocessing Engines
+
+| Engine Name           | Function Name                                | Description                                 | Template Path                                                                     | Detail Page                                                |
+| --------------------- | -------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `preprocessing_fairness_resampling` | `engine_preprocessing_fairness_resampling()` | Balances groups via over-/undersampling     | `inst/templates_control/3_a_template_control_preprocessing_fairness_resampling.R` | [📄](detail_engine_preprocessing_fairness_resampling.html) |
+
+Use `list_registered_engines("preprocessing")` to view available engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+To use a preprocessing engine, define it in the control object:
+
+```r
+control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
+control$params$preprocessing <- controller_preprocessing(
+  params = list(method = "oversample_minority")
+)
+```
+
+The engine is invoked automatically as part of the internal training pipeline.
+
+---
+
+## 🛠️ Writing Your Own Preprocessing Engine
+
+To implement a custom preprocessing engine:
+
+1. Define an `engine_*()` function that accepts standardized inputs.
+2. Write a `wrapper_*()` function that applies defaults and formats the output.
+3. Use `initialize_output_preprocessing()` to return consistent results.
+
+For examples, see:
+- `wrapper_preprocessing_fairness_resampling()`
+
+---
+
+## 🔬 Possible Use-Case: Fairness Preprocessing
+
+One powerful application of preprocessing is the mitigation of bias before any model training takes place. In this stage, we can directly manipulate the input data to remove or reduce disparities between protected groups. This approach is particularly useful when fairness is a primary concern, or when downstream models are not fairness-aware.
+
+### Motivation
+Fairness preprocessing aims to ensure that the data entering the model does not already encode structural disadvantages or biased patterns. Unlike in- or postprocessing techniques, it tackles the issue at the source and can thus be a foundation for more robust fairness interventions.
+
+### Typical Techniques
+- **Disparate Impact Remover**: Adjusts feature values to make distributions across groups more similar while preserving relevant information.
+- **Reweighting or Resampling**: Changes the representation of individuals in the dataset (e.g., oversampling underrepresented groups).
+- **Fair Representation Learning**: Transforms data into an alternative latent space that obfuscates group membership but retains predictive utility.
+
+### Usage Example
+These engines are fully compatible with the existing preprocessing infrastructure:
+
+```r
+control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
+control$params$preprocessing <- controller_preprocessing(
+  params = list(method = "oversample_minority")
+)
+```
+
+Fairness preprocessing can be used as a standalone fairness mechanism or in combination with fairness-aware in- or postprocessing methods. It is particularly suitable in pipelines where modifying model internals is not possible (e.g., black-box models or regulatory constraints).
+
+Some preprocessing engines are specifically designed to mitigate bias. These can:
+- **Adjust features** to reduce disparate impact (e.g., via Disparate Impact Remover)
+- **Balance group sizes** using resampling
+- **Create fair representations** for downstream modeling

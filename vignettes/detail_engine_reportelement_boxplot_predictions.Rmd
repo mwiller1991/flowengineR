@@ -1,0 +1,71 @@
+---
+title: "In Detail: Reportelement – Boxplot of Predictions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Reportelement – Boxplot of Predictions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Boxplot of Predictions (`reportelement_boxplot_predictions`)
+
+### Purpose and Function
+
+This reportelement engine visualizes prediction distributions for a selected group variable (e.g., gender or age group) across all splits using `ggplot2`. It supports predictions from different stages of the pipeline (`train`, `post`, or `inproc`) and is helpful for comparing model fairness or stability visually.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `workflow_results`: List of workflow results (⚠️ provided directly by the workflow).
+- `split_output`: Output from the splitter engine, including test data per split (⚠️ provided directly by the workflow).
+- `params`: A list defining the mapping of section content to reportelement aliases.
+
+### Engine-specific Parameters
+
+| Parameter   | Type      | Default  | Description                                               |
+|-------------|-----------|----------|-----------------------------------------------------------|
+| `source`    | character | "train"  | Determines the prediction source to visualize             |
+| `group_var` | character | *(none)* | Grouping variable (must be present in test data)          |
+
+### Output Structure
+
+Returned via `initialize_output_reportelement()`:
+
+- `type`: `"plot"`
+- `content`: `ggplot2` boxplot object
+- `compatible_formats`: `c("pdf", "html")`
+- `input_data`: Names of used splits
+- `params`: Merged parameter list
+- `specific_output`:
+  - `alias`: Reportelement alias
+  - `group_var`: Used grouping variable
+  - `source`: Used prediction source
+
+### Workflow Integration
+
+- **Controller Function:** `controller_reportelement()`
+- **Wrapper Function:** `wrapper_reportelement_boxplot_predictions()`
+- **Engine Function:** `engine_reportelement_boxplot_predictions()`
+- **Position in Flow:** Reportelement phase
+
+### Template Reference
+
+The control template is available at:  
+`inst/templates_control/8_c_template_reportelement_boxplot_predictions.R`
+
+### Example Configuration
+
+```r
+control$engine_select$reportelement <- list(
+  pred_plot = "reportelement_boxplot_predictions"
+)
+
+control$params$reportelement <- controller_reportelement(
+  params = list(
+    pred_plot = list(
+      group_var = "gender",
+      source = "post"
+    )
+  )
+)
+```

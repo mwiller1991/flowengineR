@@ -1,0 +1,78 @@
+---
+title: "In Detail: Execution Engine - Adaptive Scalar Param Optimization (Sequential)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Scalar Param Optimization (Sequential)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Adaptive Scalar Param Optimization (Sequential) (`engine_execution_adaptive_input_scalar_sequential`)
+
+### Purpose and Function
+This engine performs a sequential search over a single scalar hyperparameter. It updates the control object in each iteration, runs the full workflow for a given parameter value, and monitors a performance metric for improvement. Execution stops once improvement falls below a user-defined threshold or after a fixed number of steps.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: A full control object with fixed training/testing data (⚠️ provided directly by the workflow).
+- `split_output`: Only the first split is used across all iterations (⚠️ provided directly by the workflow).
+- `params`: Execution-specific configuration including metric and search definition.
+
+### Engine-specific Parameters
+
+| Parameter         | Type      | Default        | Description                                                   |
+|------------------|-----------|----------------|---------------------------------------------------------------|
+| `param_path`      | character | `"train_params$n.trees"` | Path to the parameter in the control object          |
+| `param_start`     | numeric   | `10`           | Starting value for parameter                                  |
+| `param_step`      | numeric   | `10`           | Step size for value updates                                   |
+| `direction`       | character | `"minimize"`   | Optimization direction: `"minimize"` or `"maximize"`          |
+| `metric_name`     | character | `"mse"`        | Name of evaluation metric                                     |
+| `metric_source`   | character | `"eval_mse"`   | Evaluation engine providing the metric                        |
+| `min_improvement` | numeric   | `0.001`        | Minimum required improvement to continue                      |
+| `max_iterations`  | integer   | `10`           | Maximum number of steps allowed                               |
+
+### Output Structure
+
+Standard output via `initialize_output_execution()` includes:
+
+- `execution_type`: `"adaptive_input_scalar_sequential"`
+- `workflow_results`: List of run results per parameter setting
+- `params`: Complete parameter configuration
+- `continue_workflow`: Always `TRUE`
+- `specific_output`: List containing:
+    - `metric_name`, `metric_source`
+    - `values`: Metric values across runs
+    - `param_values`: Tested parameter values
+    - `best_metric`: Best value achieved
+    - `best_param`: Corresponding parameter value
+    - `best_result`: Result object from best-performing run
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_adaptive_input_scalar_sequential()`
+- **Position in Flow:** Execution phase (adaptive tuning)
+- **Use Case:** Fine-tuning of a numeric hyperparameter in minimal infrastructure setup
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_3_a_template_execution_adaptive_input_scalar_sequential.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_adaptive_input_scalar_sequential"
+control$params$execution <- controller_execution(
+  params = list(
+    param_path = "train_params$n.trees",
+    param_start = 10,
+    param_step = 10,
+    direction = "minimize",
+    metric_name = "mse",
+    metric_source = "eval_mse",
+    min_improvement = 0.001,
+    max_iterations = 10
+  )
+)
+```

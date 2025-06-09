@@ -1,0 +1,62 @@
+---
+title: "In Detail: Split Engine - Stratified Random Split"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Split Engine - Stratified Random Split}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Stratified Random Split (`engine_split_random_stratified`)
+
+### Purpose and Function
+This engine performs a stratified random split of the input dataset into training and test subsets based on a specified ratio. The splitting is stratified using a target variable to ensure balanced representation across the output datasets. It is typically used when a single train/test division is sufficient.
+
+### Input Structure (via Wrapper)
+Inputs are passed through the `wrapper_split_random_stratified()` function and originate from the `control` object.
+
+**Standardized Inputs:**
+- `data`: A data frame containing the full dataset (⚠️ provided directly by the workflow).
+- `target_var`: A character string indicating the stratification variable (⚠️ provided directly by the workflow).
+- `seed`: Integer for reproducibility.
+- `params`: Additional engine-specific parameters.
+
+### Engine-specific Parameters
+
+| Parameter      | Type     | Default | Description                                          |
+|----------------|----------|---------|------------------------------------------------------|
+| `split_ratio`  | numeric  | `0.7`   | Ratio of data to be used for training (0–1 interval) |
+
+These parameters are defined in `control$params$split$params`.
+
+### Output Structure
+
+The output is a standardized list created via `initialize_output_split()`:
+
+- `split_type`: `"random_stratified"`
+- `splits`: A list with one named element `random_stratified`, containing both `train` and `test` data frames.
+- `seed`: Random seed used in the split.
+- `params`: Final list of used parameters.
+- `specific_output`: `NULL` (no additional metadata generated).
+
+### Workflow Integration
+
+- **Controller Function:** `controller_split()`
+- **Engine Wrapper:** `wrapper_split_random_stratified()`
+- **Position in Flow:** Appears as an alternative to CV splitting in the Split phase.
+- **Downstream Compatibility:** Fully compatible with training and fairness engines.
+
+### Template Reference
+
+This engine's control template is located at:
+`inst/templates_control/1_b_template_control_split_random_stratified.R`
+
+### Example Configuration
+```r
+control$engine_select$split <- "split_random_stratified"
+control$params$split <- controller_split(
+  seed = 123,
+  target_var = "default",
+  params = list(split_ratio = 0.75)
+)
+```

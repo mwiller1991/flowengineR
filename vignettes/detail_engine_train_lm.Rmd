@@ -1,0 +1,59 @@
+---
+title: "In Detail: Training Engine - Linear Model (LM)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Training Engine - Linear Model (LM)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Linear Model (`engine_train_lm`)
+
+### Purpose and Function
+This training engine fits a linear model using the base R `lm()` function. It is suitable for regression tasks and is used when no additional regularization or weighting is required. The model is trained using the standard formula/data approach.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `formula`: A model formula provided by the user.
+- `data`: A named list with both `original` and `normalized` versions of the training dataset (⚠️ provided directly by the workflow).
+- `norm_data`: A logical flag to determine which dataset version is used.
+- `params`: Optional parameters (not used in this engine).
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| –         | –    | –       | This engine does not use any engine-specific parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_train()`:
+
+- `model`: Fitted linear model object of class `"lm"`
+- `model_type`: `"lm"`
+- `formula`: Formula used for training
+- `hyperparameters`: (Empty) List of used parameters
+- `specific_output`: Training duration in seconds
+
+### Workflow Integration
+
+- **Controller Function:** `controller_train()`
+- **Wrapper Function:** `wrapper_train_lm()`
+- **Engine Function:** `engine_train_lm()`
+- **Position in Flow:** Training phase
+- **Use Case:** Baseline or interpretable regression model
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/4_a_template_train_lm.R`
+
+### Example Configuration
+```r
+control$engine_select$train <- "train_lm"
+control$params$train <- controller_train(
+  formula = target ~ .,
+  norm_data = TRUE
+)
+```

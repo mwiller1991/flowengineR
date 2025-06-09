@@ -167,7 +167,7 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
 #' **Purpose:**
 #' - Ensures that the wrapper function:
 #'   - Has the correct signature: `function(control)`
-#'   - Calls the correct initializer: `initialize_output_pre()`
+#'   - Calls the correct initializer: `initialize_output_preprocessing()`
 #' - Performs a functional test run using dummy data and default parameters.
 #' - Verifies that required output fields are present and correctly structured.
 #'
@@ -195,7 +195,7 @@ validate_engine_preprocessing <- function(wrapper_function, default_params_funct
     wrapper_function = wrapper_function,
     engine_name = engine_name,
     expected_args = c("control"),
-    expected_output_initializer = "initialize_output_pre"
+    expected_output_initializer = "initialize_output_preprocessing"
   )
   
   # --- functional check ---
@@ -447,7 +447,9 @@ validate_engine_postprocessing <- function(wrapper_function, default_params_func
   
   # Create a dummy control object using the controller function
   dummy_control <- list(
-    output_type = "prob",
+    settings = list(
+      output_type = "response"
+      ),
     params = list(
       postprocessing = controller_postprocessing(
         protected_name = names(dummy_protected_attributes),
@@ -555,7 +557,9 @@ validate_engine_eval <- function(wrapper_function, default_params_function, engi
   
   # Create a dummy control object using the controller function
   dummy_control <- list(
-    output_type = "prob",
+    settings = list(
+      output_type = "response"
+      ),
     params = list(
       eval = controller_evaluation(
         protected_name = names(dummy_protected_attributes),

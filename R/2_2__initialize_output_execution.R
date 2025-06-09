@@ -13,7 +13,7 @@
 #'
 #' **Standardized Output:**
 #' - `execution_type`: Identifier string for the execution engine (e.g., `"sequential"`, `"slurm_array"`).
-#' - `workflow_results`: List of results (from `run_workflow_single()`), or `NULL` if external execution.
+#' - `workflow_results`: List of results (from `run_workflow_singlesplitloop()`), or `NULL` if external execution.
 #' - `params`: Optional engine-specific execution parameters.
 #' - `specific_output`: Optional metadata (e.g., file paths, engine diagnostics).
 #' - `continue_workflow`: Logical flag indicating whether the main workflow should proceed automatically.
@@ -33,7 +33,7 @@
 #' ```
 #'
 #' @param execution_type Character. Short label for the engine (e.g., "slurm_array", "batchtools").
-#' @param workflow_results List of `run_workflow_single()` results (named to match splits), or `NULL` if deferred.
+#' @param workflow_results List of `run_workflow_singlesplitloop()` results (named to match splits), or `NULL` if deferred.
 #' @param params Optional. List of engine-specific parameters.
 #' @param specific_output Optional. Additional metadata or diagnostics.
 #' @param continue_workflow Logical. Whether the workflow should proceed after execution.

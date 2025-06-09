@@ -1,5 +1,5 @@
 # Generate the dataset
-dataset <- fairnessToolbox::test_data_2_base_credit_example
+dataset <- flowengineR::test_data_2_base_credit_example
 
 #Setting variables fitting to the dataset
 vars = controller_vars(
@@ -12,11 +12,13 @@ vars = controller_vars(
 # Control Object for Prototyping
 control <- list(
   settings = list(
-    log = TRUE,
-    log_level = "info"
+    log = list(
+      log_show = TRUE,
+      log_level = "info"
+    ),
+    global_seed = 1,
+    output_type = "response" # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   ),
-  global_seed = 1,
-  output_type = "response", # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
   data = list(
     vars = controller_vars(
       feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),  # All non-protected variables
@@ -24,15 +26,15 @@ control <- list(
       target_var = "default",                            # Target variable
       protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")            # Protected variables for evaluations (in groups)
     ),
-    full = fairnessToolbox::test_data_2_base_credit_example,    # Optional, if splitter engine is used
+    full = flowengineR::test_data_2_base_credit_example,    # Optional, if splitter engine is used
     train = NULL,      # Training data
     test = NULL        # Test data
   ),
   engine_select = list(
     split = "split_random_stratified",   # Method for splitting (e.g., "split_random" or "split_cv" or "split_random_stratified")
-    execution = "execution_basic_sequential", #execution_sequential #execution_adaptive_sequential_stability
+    execution = "execution_adaptive_output_sequential", #execution_sequential #execution_adaptive_sequential_stability
     preprocessing = NULL, #"preprocessing_fairness_resampling",
-    train = "train_lm",
+    train = "train_glm",
     inprocessing = "inprocessing_fairness_adversialdebiasing",
     postprocessing = NULL, #"postprocessing_fairness_genresidual",
     evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"), #list("eval_summarystats", "eval_mse", "eval_statisticalparity")
@@ -142,11 +144,14 @@ control <- list(
 
 # Control Object for Prototyping
 control <- list(
-  settings =list(
-  log = TRUE,             # (optional) grober Schalter an/aus
-  log_level = "info"      # "none", "info", "debug", "warn"
-),
-  global_seed = 1
+  settings = list(
+    log = list(
+      log_show = TRUE,
+      log_level = "info"
+    ),
+    global_seed = 1,
+    output_type = "response" # Add option for output type ("response" or "prob") depends on model (GLM/LM do not support prob)
+  )
 )
 
 

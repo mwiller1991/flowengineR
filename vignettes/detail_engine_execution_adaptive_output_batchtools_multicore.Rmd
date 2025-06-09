@@ -1,0 +1,87 @@
+---
+title: "In Detail: Execution Engine - Adaptive Batchtools Multicore Stability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Batchtools Multicore Stability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Adaptive Batchtools Multicore Stability (`engine_execution_adaptive_output_batchtools_multicore`)
+
+### Purpose and Function
+This engine performs adaptive stability analysis using batches of parallel executions via `batchtools` and a multicore backend. Each batch contains `n_splits_per_iteration` jobs that are run concurrently. Stability is monitored via a specified metric and strategy, and execution stops upon convergence or reaching the `max_splits` limit.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: Configured control object (⚠️ provided directly by the workflow).
+- `split_output`: Dummy result from splitter (must contain exactly one split) (⚠️ provided directly by the workflow).
+- `params`: Execution parameters, including metric and stability options.
+
+### Engine-specific Parameters
+
+| Parameter                  | Type       | Default                                                   | Description                                                  |
+|---------------------------|------------|-----------------------------------------------------------|--------------------------------------------------------------|
+| `metric_name`             | character  | `"mse"`                                                   | Metric to monitor                                            |
+| `metric_source`           | character  | `"eval_mse"`                                              | Name of evaluation engine providing the metric               |
+| `stability_strategy`      | character  | `"cohen_absolute"`                                        | Strategy for detecting convergence                           |
+| `threshold`               | numeric    | `0.2`                                                     | Threshold for stability strategy                             |
+| `window`                  | integer    | `3`                                                       | Number of trailing values considered                         |
+| `min_splits`              | integer    | `5`                                                       | Minimum iterations before stability is evaluated             |
+| `max_splits`              | integer    | `50`                                                      | Maximum number of iterations allowed                         |
+| `custom_stability_function` | function | `NULL`                                                    | Optional custom function for stability checking              |
+| `seed_base`               | integer    | `2000`                                                    | Base seed; individual seeds increment from this value        |
+| `n_splits_per_iteration`  | integer    | `3`                                                       | Number of parallel jobs in each iteration                    |
+| `registry_folder`         | character  | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore"` | Path to registry |
+| `seed`                    | integer    | `123`                                                     | Seed for batchtools registry                                 |
+| `required_packages`       | character[]| `character(0)`                                            | Packages loaded inside jobs                                  |
+| `ncpus`                   | integer    | `parallel::detectCores()`                                 | CPUs per job                                                 |
+
+### Output Structure
+
+Returned via `initialize_output_execution()`:
+
+- `execution_type`: `"adaptive_output_batchtools_multicore"`
+- `workflow_results`: Named list with results per split
+- `params`: Final parameter list
+- `continue_workflow`: `TRUE`
+- `specific_output`:
+    - `metric_name`, `metric_source`
+    - `values`: Vector of collected metric values
+    - `split_output`: Full reconstructed split object
+    - `used_seeds`: List of seeds used per split
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_adaptive_output_batchtools_multicore()`
+- **Position in Flow:** Execution phase
+- **Execution Mode:** Adaptive, parallelized per iteration
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_2_b_template_execution_adaptive_output_batchtools_multicore.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_adaptive_output_batchtools_multicore"
+control$params$execution <- controller_execution(
+  params = list(
+    metric_name = "mse",
+    metric_source = "eval_mse",
+    stability_strategy = "cohen_absolute",
+    threshold = 0.2,
+    window = 3,
+    min_splits = 5,
+    max_splits = 50,
+    seed_base = 2000,
+    n_splits_per_iteration = 3,
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    seed = 123,
+    required_packages = c("caret", "dplyr"),
+    ncpus = 4
+  )
+)
+```

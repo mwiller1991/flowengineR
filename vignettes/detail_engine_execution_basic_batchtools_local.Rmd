@@ -1,0 +1,65 @@
+---
+title: "In Detail: Execution Engine - Batchtools Local Execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools Local Execution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Batchtools Local Execution (`engine_execution_basic_batchtools_local`)
+
+### Purpose and Function
+This engine runs one workflow split per job using the `batchtools` framework. Each split is processed using `run_workflow_singlesplitloop()`. Jobs are registered and executed locally and results are automatically collected.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: The full control object with all configuration data (⚠️ provided directly by the workflow).
+- `split_output`: The result from the splitter engine (⚠️ provided directly by the workflow).
+- `params`: Engine-specific configuration, such as registry settings and resources.
+
+### Engine-specific Parameters
+
+| Parameter         | Type            | Default                                             | Description                                 |
+|------------------|------------------|-----------------------------------------------------|---------------------------------------------|
+| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"`| Folder to store the registry                |
+| `seed`           | integer          | `123`                                               | Seed for reproducibility                    |
+| `required_packages` | character[]   | `character(0)`                                      | Packages to load inside each job            |
+| `resources`      | list             | `{ncpus=1, memory=2048, walltime=3600}`             | Resource constraints per job                |
+
+### Output Structure
+
+The output is structured via `initialize_output_execution()` and includes:
+
+- `execution_type`: `"basic_batchtools_local"`
+- `workflow_results`: A named list of results for each split
+- `params`: Final parameter list (merged default and user-defined)
+- `continue_workflow`: `TRUE` (completed within wrapper)
+- `specific_output`: List containing:
+    - `n_splits`: Number of splits executed
+    - `registry`: Path to batchtools registry
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_basic_batchtools_local()`
+- **Position in Flow:** Execution phase
+- **Execution Strategy:** Local jobs with automatic result collection
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_1_c_template_control_execution_basic_batchtools_local.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_basic_batchtools_local"
+control$params$execution <- controller_execution(
+  params = list(
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
+    seed = 42,
+    resources = list(ncpus = 2, memory = 4096, walltime = 600)
+  )
+)
+```

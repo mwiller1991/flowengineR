@@ -26,7 +26,7 @@
 #'   alias = alias_publish,
 #'   type = "report",
 #'   engine = "engine_publish_html",
-#'   path = file_path,
+#'   path = path,
 #'   success = file.exists(file_path),
 #'   params = control$params$publish$params[[alias_publish]]
 #' )

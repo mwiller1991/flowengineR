@@ -1,0 +1,85 @@
+---
+title: "In Detail: Splitter Engines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Splitter Engines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Splitter Engines in `flowengineR` are responsible for dividing a full dataset into training and test sets. This operation is critical, as all downstream modeling and evaluation relies on this split. Splitters can support single splits, repeated random splits, or cross-validation.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are passed to the engine wrapper and partially pre-filled by the framework:
+
+| Input                | Type        | Description                                                                 |
+|---------------------|-------------|-----------------------------------------------------------------------------|
+| `data`              | data.frame  | The full dataset to be split (⚠️ provided directly by the workflow)        |
+| `target_var`        | character   | Column name for stratification (⚠️ provided directly by the workflow)       |
+| `seed`              | integer     | Seed value for reproducibility (from controller)                           |
+| `params`            | list        | Additional engine-specific parameters (from controller)                    |
+
+Framework resolution:
+- `data`: resolved from `control$data$full`
+- `target_var`: from `control$data$vars$target_var`
+- `seed`, `params`: resolved from `control$params$split`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_split()`:
+
+| Output              | Type         | Description                                                                 |
+|---------------------|--------------|-----------------------------------------------------------------------------|
+| `split_type`        | character    | Name of the splitting strategy used                                         |
+| `splits`            | list         | Named list of train/test split data or indices                              |
+| `seed`              | integer      | Seed used for split generation                                              |
+| `params`            | list         | Parameters used in this split (merged user + default)                       |
+| `specific_output`   | list / NULL  | Optional engine-specific metadata                                           |
+
+---
+
+## ⚙️ Available Splitter Engines
+
+Each engine has a corresponding control template to guide setup and customization. Templates are stored in `inst/templates_control/` and can be previewed with `show_template()`.
+
+| Engine Name               | Function Name                       | Description                                              | Template Path                                               | Detail Page |
+|---------------------------|-------------------------------------|----------------------------------------------------------|-------------------------------------------------------------|-------------|
+| `split_random`            | `engine_split_random()`             | Random split of data without stratification              | `inst/templates_control/1_c_template_control_split_random.R`             | [📄](detail_engine_split_random.html) |
+| `split_random_stratified` | `engine_split_random_stratified()` | Stratified random split based on the target variable     | `inst/templates_control/1_b_template_control_split_random_stratified.R`  | [📄](detail_engine_split_random_stratified.html) |
+| `split_cv`                | `engine_split_cv()`                 | Cross-validation folds using stratified sampling         | `inst/templates_control/1_a_template_control_split_cv.R`                | [📄](detail_engine_split_cv.html) |
+
+
+Use `list_registered_engines("split")` to inspect all currently loaded splitter engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+To use a splitter engine, define it in your control object:
+
+```r
+control$engine_select$split <- "split_random_stratified"
+control$params$split <- controller_split(
+  seed = 123,
+  target_var = "default",
+  params = list(split_ratio = 0.75)
+)
+```
+
+---
+
+## 🛠️ Writing Your Own Splitter Engine
+
+To implement a custom splitter engine:
+
+1. Define an `engine_*()` function that accepts `data`, `target_var`, `seed`, and engine-specific parameters.
+2. Write a wrapper `wrapper_*()` that validates inputs, applies default parameters, and formats outputs using `initialize_output_split()`.
+3. Optionally define `default_params_*()` to hold fallback values.
+
+The wrapper ensures integration with the workflow logic, including logging, controller-based configuration, and default merging.
+
+For example wrappers, see:
+- `wrapper_split_random_stratified()`
+- `wrapper_split_cv()`

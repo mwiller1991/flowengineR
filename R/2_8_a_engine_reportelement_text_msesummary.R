@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------
 ### engine ###
 #--------------------------------------------------------------------
-#' Reportelement Engine: Textblock – MSE Summary
+#' Reportelement Engine: Textblock - MSE Summary
 #'
 #' Computes and formats a text summary of the average Mean Squared Error (MSE) across all splits.
 #'
@@ -22,7 +22,7 @@ engine_reportelement_text_msesummary <- function(workflow_results) {
     result$output_eval$eval_mse$metrics$mse
   })
   mean_mse <- mean(all_mse, na.rm = TRUE)
-  sprintf("Der durchschnittliche MSE über alle Splits beträgt %.4f.", mean_mse)
+  sprintf("Der durchschnittliche MSE ueber alle Splits betraegt %.4f.", mean_mse)
 }
 #--------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ engine_reportelement_text_msesummary <- function(workflow_results) {
 #--------------------------------------------------------------------
 ### wrapper ###
 #--------------------------------------------------------------------
-#' Wrapper for Reportelement Engine: Textblock – MSE Summary
+#' Wrapper for Reportelement Engine: Textblock - MSE Summary
 #'
 #' Validates and prepares standardized inputs, invokes the MSE summary text engine,
 #' and wraps the result using `initialize_output_reportelement()`.
@@ -112,7 +112,7 @@ wrapper_reportelement_text_msesummary <- function(control, workflow_results, spl
 #' - Ensures compatibility with the framework's parameter handling conventions.
 #'
 #' **Default Parameters:**
-#' - *(none)* — returns an empty list.
+#' - *(none)* - returns an empty list.
 #'
 #' @seealso [wrapper_reportelement_text_msesummary()]
 #'

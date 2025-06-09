@@ -4,7 +4,7 @@
 #' Controller: Variable Definition Specification
 #'
 #' Creates a standardized structure containing all variable names required across
-#' the fairnessToolbox workflow, including input features, protected attributes, target variable,
+#' the flowengineR workflow, including input features, protected attributes, target variable,
 #' and optionally grouped or binarized versions of protected attributes for evaluation.
 #'
 #' Designed for use in the construction of the `control` object. This controller ensures
@@ -23,7 +23,7 @@
 #'
 #' **Usage Example:**
 #' ```r
-#' control$vars <- controller_vars(
+#' control$data$vars <- controller_vars(
 #'   feature_vars = c("income", "loan_amount"),
 #'   protected_vars = c("gender", "marital_status"),
 #'   target_var = "default",
@@ -36,7 +36,7 @@
 #' @param target_var Character. Name of the target variable (dependent variable).
 #' @param protected_vars_binary Character vector. Protected variables prepared for fairness evaluation (e.g., binary dummies).
 #'
-#' @return Named list. To be stored in \code{control$vars} and passed to all engines that require variable references. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$data$vars} and passed to all engines that require variable references. Compatible with all \code{flowengineR} modules.
 #' @export
 #--------------------------------------------------------------------
 controller_vars <- function(feature_vars, protected_vars, target_var, protected_vars_binary) {
@@ -56,7 +56,7 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' Controller: Split Input Specification
 #'
 #' Generates a standardized input configuration for any splitter engine used 
-#' within the fairnessToolbox workflow. This controller ensures compatibility 
+#' within the flowengineR workflow. This controller ensures compatibility 
 #' with built-in engines (e.g., random, stratified, CV) as well as user-defined
 #' splitter engines by standardizing the required interface.
 #'
@@ -68,7 +68,7 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' - Facilitates modular extension of the framework.
 #'
 #' **Automated Variable Handling:**
-#' - `target_var` is **optional** and will be automatically set via `control$vars$target_var`
+#' - `target_var` is **optional** and will be automatically set via `control$data$vars$target_var`
 #'   using `autofill_controllers_from_vars()` if not provided.
 #' - This requires the prior use of `controller_vars()` when setting up the control object.
 #'
@@ -89,7 +89,7 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' @param target_var Optional character. Name of the target variable (autofilled if not provided).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{flowengineR} modules.
 #' @export
 #--------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ controller_split <- function(seed = 123, params = list()) {
 #' Controller: Execution Engine Specification
 #'
 #' Generates a standardized input structure for configuring any execution engine 
-#' used within the fairnessToolbox workflow. This controller supports both sequential 
+#' used within the flowengineR workflow. This controller supports both sequential 
 #' and parallel/adaptive execution strategies, including those relying on external resources 
 #' like SLURM or batchtools.
 #'
@@ -136,7 +136,7 @@ controller_split <- function(seed = 123, params = list()) {
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return Named list. To be stored in \code{control$params$execution} and passed to the execution engine. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$execution} and passed to the execution engine. Compatible with all \code{flowengineR} modules.
 #' @export
 controller_execution <- function(params = list()) {
   list(
@@ -164,7 +164,7 @@ controller_execution <- function(params = list()) {
 #' - Enables flexible customization of the data pipeline (e.g., stratification, normalization helpers, resampling strategies).
 #'
 #' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are **automatically filled** from `control$vars`
+#' - `protected_attributes` and `target_var` are **automatically filled** from `control$data$vars`
 #'   if not manually specified.
 #' - This requires the use of `controller_vars()` to define the necessary references.
 #'
@@ -199,7 +199,7 @@ controller_preprocessing <- function(params = list()) {
 #' Controller: Training Engine Specification
 #'
 #' Generates a standardized input structure for any training engine used 
-#' within the fairnessToolbox workflow. This includes the model formula, 
+#' within the flowengineR workflow. This includes the model formula, 
 #' optional hyperparameters, and a flag indicating whether to normalize input data.
 #'
 #' Designed for use in the construction of the `control` object. Ensures compatibility 
@@ -227,7 +227,7 @@ controller_preprocessing <- function(params = list()) {
 #' @param norm_data Logical. Whether to normalize the input data (default: `TRUE`).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
-#' @return Named list. To be stored in \code{control$params$train} and passed to the training engine. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$train} and passed to the training engine. Compatible with all \code{flowengineR} modules.
 #' @export
 controller_training <- function(formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
                                 norm_data = TRUE,
@@ -259,7 +259,7 @@ controller_training <- function(formula = as.formula(paste(vars$target_var, "~",
 #' - Enables direct influence on the model training logic (e.g., bias penalties, group-specific loss weights).
 #'
 #' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are **automatically derived** from `control$vars`
+#' - `protected_attributes` and `target_var` are **automatically derived** from `control$data$vars`
 #'   if not manually specified.
 #' - This requires prior definition via `controller_vars()`.
 #'
@@ -310,7 +310,7 @@ controller_inprocessing <- function(norm_data = TRUE, params = list()) {
 #'
 #' **Binary Attribute Requirement:**
 #' - The workflow expects binary/grouped versions of protected or grouping attributes.
-#' - These must be defined in `control$vars$protected_vars_binary` using `controller_vars()`.
+#' - These must be defined in `control$data$vars$protected_vars_binary` using `controller_vars()`.
 #' - Each variable listed must be strictly binary (e.g., 0/1 or TRUE/FALSE).
 #'
 #' **Workflow Injection:**
@@ -354,7 +354,7 @@ controller_postprocessing <- function(params = list()) {
 #' Controller: Evaluation Input Specification
 #'
 #' Generates a standardized input structure for evaluation engines used within the 
-#' fairnessToolbox workflow. Supports both built-in and custom metrics that assess 
+#' flowengineR workflow. Supports both built-in and custom metrics that assess 
 #' accuracy, fairness, or other user-defined aspects.
 #'
 #' Designed for use in the `control` object. This controller separates the protected 
@@ -365,7 +365,7 @@ controller_postprocessing <- function(params = list()) {
 #' - Defines engine-specific configurations for individual evaluation methods.
 #'
 #' **Automated Variable Handling:**
-#' - `protected_name` is **automatically derived** from `control$vars$protected_vars_binary`.
+#' - `protected_name` is **automatically derived** from `control$data$vars$protected_vars_binary`.
 #' - Users do **not need to set this manually**.
 #' - This requires prior use of `controller_vars()` to define binary indicators for protected attributes.
 #'
@@ -390,7 +390,7 @@ controller_postprocessing <- function(params = list()) {
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.
 #'
-#' @return Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
 controller_evaluation <- function(params = list()) {
   list(
@@ -407,7 +407,7 @@ controller_evaluation <- function(params = list()) {
 #--------------------------------------------------------------------
 #' Controller: Reportelement Input Specification
 #'
-#' Generates a standardized input structure for reportelement engines in the fairnessToolbox
+#' Generates a standardized input structure for reportelement engines in the flowengineR
 #' workflow. Each element is independently configurable and mapped to a reporting alias.
 #'
 #' Designed for modular and extensible usage within the `control` object. Each alias allows
@@ -440,7 +440,7 @@ controller_evaluation <- function(params = list()) {
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.
 #'
-#' @return Named list. To be stored in \code{control$params$reportelement} and passed to the reportelement engine(s). Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$reportelement} and passed to the reportelement engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
 controller_reportelement <- function(params = list()) {
   list(
@@ -456,7 +456,7 @@ controller_reportelement <- function(params = list()) {
 #--------------------------------------------------------------------
 #' Controller: Report Input Specification
 #'
-#' Generates a standardized input structure for report engines in the fairnessToolbox
+#' Generates a standardized input structure for report engines in the flowengineR
 #' workflow. Each report is mapped to a reporting alias and can consist of one or more
 #' reportelements.
 #'
@@ -491,7 +491,7 @@ controller_reportelement <- function(params = list()) {
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a report alias, and each value is a list of engine-specific parameters.
 #'
-#' @return Named list. To be stored in \code{control$params$report} and passed to the report engine(s). Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$report} and passed to the report engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
 controller_report <- function(params = list()) {
   list(
@@ -507,7 +507,7 @@ controller_report <- function(params = list()) {
 #--------------------------------------------------------------------
 #' Controller: Publish Input Specification
 #'
-#' Generates a standardized input structure for publishing engines in the fairnessToolbox
+#' Generates a standardized input structure for publishing engines in the flowengineR
 #' workflow. This includes both a global output folder and per-alias settings for how 
 #' specific content (e.g., reports or reportelements) should be exported.
 #'
@@ -543,7 +543,7 @@ controller_report <- function(params = list()) {
 #' @param output_folder Character string. Global directory path to store all exports.
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$engine_select$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
 #'
-#' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
 controller_publish <- function(output_folder = "~/publish_exports", 
                                params = list()) {
@@ -561,9 +561,9 @@ controller_publish <- function(output_folder = "~/publish_exports",
 #--------------------------------------------------------------------
 #' Controller: Resume Input Specification
 #'
-#' Constructs a standardized resume object to re-enter the fairnessToolbox
+#' Constructs a standardized resume object to re-enter the flowengineR
 #' workflow after external execution (e.g., SLURM-based batch processing).
-#' The returned object is designed for direct use in `resume_fairness_workflow()`.
+#' The returned object is designed for direct use in `resume_workflow()`.
 #'
 #' **Purpose:**
 #' - Allows decoupling of long-running execution from downstream workflow processing.
@@ -585,15 +585,15 @@ controller_publish <- function(output_folder = "~/publish_exports",
 #'   metadata = list(slurm_job_id = "batch123")
 #' )
 #'
-#' result <- resume_fairness_workflow(resume_object)
+#' result <- resume_workflow(resume_object)
 #' ```
 #'
 #' @param control The original control object used during the initial workflow configuration.
 #' @param split_output A previously stored result object returned by the splitter engine.
-#' @param workflow_results A named list of `run_workflow_single()` results, typically loaded from file.
+#' @param workflow_results A named list of `run_workflow_singlesplitloop()` results, typically loaded from file.
 #' @param metadata Optional. A named list of metadata to be stored in `specific_output` of the execution engine (e.g., runtime info, job ID).
 #'
-#' @return Named list. To be passed to \code{resume_fairness_workflow()} as input after external execution. Compatible with all \code{fairnessToolbox} modules.
+#' @return Named list. To be passed to \code{resume_workflow()} as input after external execution. Compatible with all \code{flowengineR} modules.
 #' @export
 controller_resume_execution <- function(control, split_output, workflow_results, metadata = NULL) {
   list(

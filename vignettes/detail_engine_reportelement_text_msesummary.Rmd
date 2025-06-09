@@ -1,0 +1,60 @@
+---
+title: "In Detail: Reportelement Engine - Textblock – MSE Summary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Reportelement Engine - Textblock – MSE Summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Textblock – MSE Summary (`engine_reportelement_text_msesummary`)
+
+### Purpose and Function
+
+This reportelement engine computes the average Mean Squared Error (MSE) across all splits and returns a plain-text summary statement. It is intended for inclusion in reporting outputs such as PDF, HTML, or Markdown documents.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `workflow_results`: Named list of workflow results per split (⚠️ provided directly by the workflow).
+- `split_output`: Not used by this engine (⚠️ provided directly by the workflow).
+- `alias`: Character string identifying the reportelement instance
+- `params`: Optional engine-specific parameters (not used here)
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| –        | –    | –       | This engine uses no configurable parameters |
+
+### Output Structure
+
+Returned via `initialize_output_reportelement()`:
+
+- `type`: `"text"`
+- `content`: A German summary string reporting the average MSE
+- `compatible_formats`: `c("pdf", "html", "json", "markdown")`
+- `input_data`: Names of all splits that contributed to the result
+- `params`: Empty list
+- `specific_output`: Named list with field `mean_mse` (same as `content`)
+
+### Workflow Integration
+
+- **Controller Function:** `controller_reportelement()`
+- **Wrapper Function:** `wrapper_reportelement_text_msesummary()`
+- **Engine Function:** `engine_reportelement_text_msesummary()`
+- **Position in Flow:** Reporting phase
+- **Use Case:** Inject natural language summary of regression performance into reports
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/8_a_template_reportelement_text_msesummary.R`
+
+### Example Configuration
+```r
+control$engine_select$reportelement <- list("mse_text" = "reportelement_text_msesummary")
+control$params$reportelement <- controller_reportelement(
+  params = list("mse_text" = list())
+)
+```

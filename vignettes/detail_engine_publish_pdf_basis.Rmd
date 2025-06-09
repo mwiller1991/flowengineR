@@ -1,0 +1,68 @@
+---
+title: "In Detail: Publishing Engine – PDF Basis Export"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Publishing Engine – PDF Basis Export}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: PDF Export (`publish_pdf_basis`)
+
+### Purpose and Function
+This publishing engine renders a structured report object into a PDF file using an RMarkdown-based rendering pipeline. It supports exporting multi-section reports composed of standardized `reportelements` or just reportelements.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `object`: A structured report object created using `initialize_output_report()` or `initialize_output_reportelement()`(⚠️ provided directly by the workflow).
+- `file_path`: Transformed from `control$params$publish$output_folder` and alias_publish. File path where the PDF file should be saved.
+- `params`: Optional list of publishing parameters (not used in this engine).
+- `alias_publish`: Character string identifying this publishing instance.
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| –        | –    | –       | This engine does not use any engine-specific parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_publish()`:
+
+- `alias`: The publishing alias.
+- `type`: `"report"` or `"reportelement"`.
+- `engine`: `"publish_pdf_basis"`.
+- `path`: Path to the saved PDF file.
+- `success`: TRUE/FALSE depending on render outcome.
+- `params`: Parameters used for publishing.
+- `specific_output`: Error info or metadata.
+
+### Format Compatibility
+
+This engine **requires** the input object to support `"pdf"` in its `compatible_formats` field. Otherwise, publishing will fail.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_publish()`
+- **Wrapper Function:** `wrapper_publish_pdf_basis()`
+- **Engine Function:** `engine_publish_pdf_basis()`
+- **Position in Flow:** End of pipeline
+- **Use Case:** Export reports as shareable PDF documents
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/10_a_template_publish_pdf.R`
+
+### Example Configuration
+```r
+control$engine_select$publish <- list("main_pdf" = "publish_pdf_basis")
+control$params$publish <- controller_publish(
+  params = list(
+    main_pdf = list(
+    obj_name = "text_mse_summary", 
+    obj_type = "reportelement")    
+  )
+)
+```

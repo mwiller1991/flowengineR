@@ -120,7 +120,7 @@ wrapper_split_cv <- function(control) {
   params <- merge_with_defaults(split_params$params, default_params_split_cv())
   
   if (params$cv_folds == 1) {
-    stop("wrapper_split_cv: CV fold count is 1 → this will result in empty training data. Consider using a different splitter (e.g., stratified_random).")
+    stop("wrapper_split_cv: CV fold count is 1 -> this will result in empty training data. Consider using a different splitter (e.g., stratified_random).")
   }
   
   log_msg(sprintf("[SPLIT] Performing %d-fold cross-validation with seed %d.", params$cv_folds, split_params$seed), level = "info", control = control)

@@ -1,0 +1,67 @@
+---
+title: "In Detail: Evaluation Engine - Mean Squared Error (MSE)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Evaluation Engine - Mean Squared Error (MSE)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Mean Squared Error (`engine_eval_mse`)
+
+### Purpose and Function
+This evaluation engine calculates the Mean Squared Error (MSE) between predicted values and observed actuals. It is typically used as a performance metric in regression tasks and is compatible with all continuous target prediction models.
+
+The MSE is defined as:
+
+```math
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n}(\hat{y}_i - y_i)^2
+```
+
+Where \( \hat{y}_i \) are the predictions and \( y_i \) are the true target values.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `predictions`: Numeric vector of predicted values (⚠️ provided directly by the workflow).
+- `actuals`: Numeric vector of true target values (⚠️ provided directly by the workflow).
+- `protected_attributes`: Optional character vector of protected attribute names (not used by this engine) (⚠️ provided directly by the workflow).
+- `params`: Optional (not used in this engine, remains empty).
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| –        | –    | –       | This engine does not support any custom parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_eval()`:
+
+- `metrics`: Named list with entry `mse` (numeric)
+- `eval_type`: `"mse_eval"`
+- `input_data`: List with predictions and actuals
+- `protected_attributes`: Optional (passed through from controller)
+- `params`: Empty list
+- `specific_output`: NULL
+
+### Workflow Integration
+
+- **Controller Function:** `controller_evaluation()`
+- **Wrapper Function:** `wrapper_eval_mse()`
+- **Engine Function:** `engine_eval_mse()`
+- **Position in Flow:** Evaluation phase
+- **Use Case:** Evaluate prediction error for continuous target variables
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/7_2_a_template_eval_mse.R`
+
+### Example Configuration
+```r
+control$engine_select$evaluation <- "eval_mse"
+control$params$eval <- controller_evaluation(
+  params = list()
+)
+```

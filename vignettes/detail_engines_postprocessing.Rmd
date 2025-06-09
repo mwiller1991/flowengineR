@@ -1,0 +1,104 @@
+---
+title: "In Detail: Postprocessing Engines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Postprocessing Engines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Postprocessing Engines in `flowengineR` are used to adjust model predictions after training. These adjustments do not alter the model itself but operate on its output, making them especially useful for adding fairness corrections or applying output-specific constraints.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are passed to the engine wrapper and are provided directly by the workflow:
+
+| Input                  | Type             | Description                                                    |
+|------------------------|------------------|----------------------------------------------------------------|
+| `fairness_post_data`   | data.frame       | Dataset including raw predictions and protected attributes (⚠️ provided by the framework)     |
+| `params`               | list             | Engine-specific parameters                                     |
+| `protected_name`       | character        | Name(s) of protected attribute(s) to consider (⚠️ provided by the framework)                  |
+
+Framework resolution:
+- `fairness_post_data`: compiled from earlier workflow steps
+- `params`: passed via `control$params$postprocessing$params`
+- `protected_name`: resolved via `control$data$vars$protected`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_fairness_post()`:
+
+| Output                | Type         | Description                                                        |
+|-----------------------|--------------|--------------------------------------------------------------------|
+| `adjusted_predictions`| vector       | Postprocessed prediction values                                    |
+| `method`              | character    | Name or description of the postprocessing method                   |
+| `input_data`          | data.frame   | Original input data with raw predictions                           |
+| `protected_attributes`| data.frame   | Extracted protected group variables                                |
+| `params`              | list         | Parameters used in the method                                      |
+| `specific_output`     | list / NULL  | Optional additional engine-specific outputs                        |
+
+---
+
+## ⚙️ Available Postprocessing Engines
+
+| Engine Name                      | Function Name                                       | Description                             | Template Path                                                                    | Detail Page |
+|----------------------------------|----------------------------------------------------|-----------------------------------------|----------------------------------------------------------------------------------|--------------|
+| `postprocessing_fairness_genresidual` | `engine_postprocessing_fairness_genresidual()` | Group-aware residual shifting           | `inst/templates_control/6_a_template_control_postprocessing_fairness_genresidual.R` | [📄](detail_engine_postprocessing_fairness_genresidual.html) |
+
+Use `list_registered_engines("postprocessing")` to view available engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+
+To apply a postprocessing engine:
+
+```r
+control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
+control$params$postprocessing <- controller_postprocessing(
+  params = list()
+)
+```
+
+Postprocessing takes place after model predictions are generated and optionally inprocessed.
+
+---
+
+## 🛠️ Writing Your Own Postprocessing Engine
+
+To create a custom postprocessing engine:
+
+1. Implement `engine_*()` to manipulate predictions.
+2. Wrap it with a `wrapper_*()` function for validation and formatting.
+3. Return output via `initialize_output_fairness_post()`.
+
+For examples, see:
+- `wrapper_postprocessing_residual_shift()`
+
+---
+
+## 🎯 Possible Use-Case: Group-Specific Bias Correction
+
+Postprocessing is particularly suited for correcting systematic errors in prediction outcomes. One use case is adjusting predictions by shifting residuals in favor of disadvantaged groups based on prior fairness evaluation.
+
+This method is implemented in the engine `postprocessing_fairness_genresidual`, which analyzes prediction residuals across protected groups and applies correction factors to reduce group-level disparities.
+
+Example:
+
+```r
+control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
+control$params$postprocessing <- controller_postprocessing(
+  params = list()
+)
+```
+
+This approach is minimally invasive to the original model and allows for fairness gains without retraining.

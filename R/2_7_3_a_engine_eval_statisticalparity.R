@@ -49,7 +49,7 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #' **Standardized Inputs:**
 #' - `control$params$eval$eval_data`: Data frame including predictions and protected attributes (injected by workflow).
 #' - `control$params$eval$protected_name`: Character vector of protected attribute names.
-#'   → This field is auto-filled from `control$vars$protected_vars_binary` and must not be set manually.
+#'   → This field is auto-filled from `control$data$vars$protected_vars_binary` and must not be set manually.
 #' - `control$params$eval$params`: Optional engine-specific parameters (not used here).
 #'
 #' **Binary Attribute Requirement:**

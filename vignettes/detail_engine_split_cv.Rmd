@@ -1,0 +1,60 @@
+---
+title: "In Detail: Split Engine - Cross-Validation (CV)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Split Engine - Cross-Validation (CV)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Cross-Validation Split (`engine_split_cv`)
+
+### Purpose and Function
+This engine performs stratified k-fold cross-validation on a given dataset. It uses the `caret::createFolds()` function to generate fold indices based on the target variable, ensuring class balance across folds. This engine is typically used in training-validation scenarios where performance robustness is assessed across multiple splits.
+
+### Input Structure (via Wrapper)
+Inputs are standardized and passed through the `wrapper_split_cv()` function, typically defined in the `control` object.
+
+**Standardized Inputs:**
+- `data`: The full dataset to split (⚠️ provided directly by the workflow).
+- `target_var`: Character; the column used for stratified sampling (⚠️ provided directly by the workflow).
+- `seed`: Integer; ensures reproducibility.
+- `params`: Engine-specific settings, passed from `control$params$split$params`.
+
+### Engine-specific Parameters
+
+| Parameter   | Type     | Default | Description                                |
+|-------------|----------|---------|--------------------------------------------|
+| `cv_folds`  | integer  | `5`     | Number of cross-validation folds to create |
+
+### Output Structure
+
+The wrapper returns a list via `initialize_output_split()` with the following components:
+- `split_type`: `"cv"`
+- `splits`: A named list of folds, each containing a `train` and `test` data frame.
+- `seed`: The seed value used for splitting.
+- `params`: Parameter list (merged default and user-defined).
+- `specific_output`: List including `folds` and `stratified_on`.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_split()`
+- **Engine Wrapper:** `wrapper_split_cv()`
+- **Engine Function:** `engine_split_cv()`
+- **Position in Flow:** Split phase (first major decision point in the workflow)
+- **Downstream Dependencies:** The resulting splits are passed to execution engines and later training stages.
+
+### Template Reference
+
+This engine's control template is located at:
+`inst/templates_control/1_a_template_control_split_cv.R`
+
+### Example Configuration
+```r
+control$engine_select$split <- "split_cv"
+control$params$split <- controller_split(
+  seed = 42,
+  target_var = "default",
+  params = list(cv_folds = 5)
+)
+```

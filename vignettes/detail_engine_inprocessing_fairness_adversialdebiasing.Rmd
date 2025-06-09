@@ -1,0 +1,88 @@
+---
+title: "In Detail: Inprocessing Engine: Adversarial Debiasing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Inprocessing Engine: Adversarial Debiasing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Adversarial Debiasing (`inprocessing_fairness_adversialdebiasing`)
+
+### Purpose and Function
+
+This engine implements *Adversarial Debiasing* as an in-processing method to mitigate bias during model training. It trains a main predictive model together with an adversarial model that attempts to infer protected attributes from the main model’s predictions. The main model is iteratively adjusted to reduce this leakage of protected information.
+
+Inspired by Zhang et al. (2018), this method formulates the fairness constraint as a minimax optimization: the main model tries to minimize prediction loss while maximizing the adversary's error.
+
+Compatability: Currently, this engine is only tested and compatible with the included train_glm engine (Generalized Linear Model). While combining it with other training engines is theoretically possible, it requires specific modifications in how instance weights are applied and how model predictions are accessed within the training loop.
+
+```text
+Training Data
+   ↓
+Train Main Model → Predictions
+   ↓                      ↓
+Train Adversary ← Protected Attributes
+   ↓
+Compute Adversary Loss
+   ↓
+Adjust Instance Weights
+   ↓
+Next Epoch
+```
+
+Weights are updated so that instances highly indicative of protected attributes receive lower importance.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `driver_train`: Training engine for the main model (⚠️ provided directly by the workflow).
+- `data`: Training data frame (⚠️ provided directly by the workflow).
+- `protected_attribute_names`: Character vector (e.g., `c("gender")`) (⚠️ provided directly by the workflow).
+- `learning_rate`: Numeric value (e.g., `0.01`).
+- `num_epochs`: Integer (e.g., `10`).
+- `num_adversary_steps`: Integer (e.g., `3`).
+- `control_for_training`: Control object passed to `driver_train()` (⚠️ provided directly by the workflow).
+
+### Engine-specific Parameters
+
+| Parameter            | Type     | Default | Description |
+|---------------------|----------|---------|-------------|
+| `learning_rate`      | numeric  | `0.01`  | Learning rate for adversarial updates |
+| `num_epochs`         | integer  | `10`    | Number of main training iterations    |
+| `num_adversary_steps`| integer  | `3`     | Adversary training steps per epoch    |
+
+### Output Structure
+
+Returned via `initialize_output_inprocessing()`:
+
+- `adjusted_model`: The trained model after adjustment.
+- `model_type`: A short string describing the model type (e.g., `"randomForest"`, `"glm"`).
+- `predictions`: Optional numeric vector of model predictions (can be added externally).
+- `params`: Optional list of engine-specific parameters used during training.
+- `specific_output`: Optional method-specific results (e.g., adversary loss, weights).
+
+## Workflow Integration
+
+- Called via `wrapper_inprocessing_fairness_adversialdebiasing()`
+- Configured via `controller_inprocessing()`
+- Uses `driver_train` for compatibility with arbitrary main models
+- Injected into the workflow between pre-processing and model training
+
+## Example Control Setup
+
+```r
+control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$params$inprocessing <- controller_inprocessing(
+  norm_data = TRUE,
+  params = list(
+    learning_rate = 0.01,
+    num_epochs = 10,
+    num_adversary_steps = 3
+  )
+)
+```
+
+## Template Reference
+
+`inst/templates_control/5_a_template_inprocessing_fairness_adversialdebiasing.R`

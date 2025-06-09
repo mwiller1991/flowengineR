@@ -44,9 +44,9 @@
     execution_basic_batchtools_slurm = wrapper_execution_basic_batchtools_slurm,
     
     # Execution (adaptive)
-    execution_adaptive_sequential = wrapper_execution_adaptive_output_sequential,
-    execution_adaptive_batchtools_multicore = wrapper_execution_adaptive_output_batchtools_multicore,
-    execution_adaptive_batchtools_slurm = wrapper_execution_adaptive_output_batchtools_slurm,
+    execution_adaptive_output_sequential = wrapper_execution_adaptive_output_sequential,
+    execution_adaptive_output_batchtools_multicore = wrapper_execution_adaptive_output_batchtools_multicore,
+    execution_adaptive_output_batchtools_slurm = wrapper_execution_adaptive_output_batchtools_slurm,
     execution_adaptive_input_scalar_sequential = wrapper_execution_adaptive_input_scalar_sequential,
     
     # preprocessing
@@ -55,6 +55,7 @@
     # Training
     train_lm = wrapper_train_lm,
     train_glm = wrapper_train_glm,
+    train_rf = wrapper_train_rf,
     
     # inprocessing
     inprocessing_fairness_adversialdebiasing = wrapper_inprocessing_fairness_adversialdebiasing,

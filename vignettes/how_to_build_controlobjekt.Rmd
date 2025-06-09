@@ -1,0 +1,179 @@
+---
+title: "Defining Control Objects in flowengineR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Defining Control Objects in flowengineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The `control` object is the central configuration element in the `flowengineR` framework. It defines the workflow structure, selected engines, data handling, and engine-specific parameters. This vignette explains each component in detail.
+
+---
+
+## Overview
+
+A complete `control` object is a named list with the following top-level components:
+
+- `settings`: global options and logging
+- `data`: dataset and variable configuration
+- `engine_select`: engine types used in the workflow
+- `params`: engine-specific configurations passed to controller functions
+
+Each section is optional and can be partially filled. Defaults are inserted automatically by a helper if not provided.
+
+---
+
+## 📦 1. `settings`
+
+Defines global behavior of the workflow, such as logging or output type.
+
+```r
+settings = list(
+  log = list(
+    log_show = TRUE,
+    log_level = "info"
+  ),
+  global_seed = 1,
+  output_type = "response"  # "response" or "prob"
+)
+```
+
+- `log_show`: Show log output during execution
+- `log_level`: Level of verbosity (`"info"`, `"warn"`, `"error"`)
+- `output_type`: Choose between predicted class label (`"response"`) or probability (`"prob"`) if the model supports it
+
+---
+
+## 🧮 2. `data`
+
+Contains dataset paths and a variable definition created via [`controller_vars()`](reference/controller_vars.html).
+
+```r
+data = list(
+  vars = controller_vars(...),
+  full = your_data_frame,
+  train = NULL,
+  test = NULL
+)
+```
+
+- `vars`: A list of variables (features, targets, protected attributes)
+- `full`: Full dataset used if a splitting engine is employed
+- `train`, `test`: Optionally provide pre-split data
+
+---
+
+## ⚙️ 3. `engine_select`
+
+Specifies which engine types are used at each stage of the workflow.
+
+```r
+engine_select = list(
+  split = "split_random_stratified",
+  execution = "execution_basic_sequential",
+  preprocessing = NULL,
+  train = "train_lm",
+  inprocessing = NULL,
+  postprocessing = NULL,
+  evaluation = list("eval_mse"),
+  reportelement = list(...),
+  report = list(...),
+  publish = list(...)
+)
+```
+
+Each entry refers to a registered engine name. Components can be set to `NULL` if unused.
+
+---
+
+## 🔧 4. `params`
+
+Each engine used in `engine_select` should have a corresponding parameter entry using a controller function. Each controller defines the structure for a specific engine type:
+
+- [`controller_split()`](reference/controller_split.html)
+- [`controller_execution()`](reference/controller_execution.html)
+- [`controller_training()`](reference/controller_training.html)
+- [`controller_preprocessing()`](reference/controller_preprocessing.html)
+- [`controller_inprocessing()`](reference/controller_inprocessing.html)
+- [`controller_postprocessing()`](reference/controller_postprocessing.html)
+- [`controller_evaluation()`](reference/controller_evaluation.html)
+- [`controller_reportelement()`](reference/controller_reportelement.html)
+- [`controller_report()`](reference/controller_report.html)
+- [`controller_publish()`](reference/controller_publish.html)
+
+Each controller accepts parameters specific to the engine being used.
+The controller has to be used to ensure the input-format is fitting for the following workflow.
+
+---
+
+## 🧪 Example
+
+Below is a full example of a control object with all key components defined.
+
+```r
+# Load variable definitions
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),
+  protected_vars = c("genderFemale", "genderMale", "age"),
+  target_var = "default",
+  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")
+)
+
+# Construct control object
+control <- list(
+  settings = list(
+    log = list(log_show = TRUE, log_level = "info"),
+    global_seed = 1,
+    output_type = "response"
+  ),
+  data = list(
+    vars = vars,
+    full = flowengineR::test_data_2_base_credit_example,
+    train = NULL,
+    test = NULL
+  ),
+  engine_select = list(
+    split = "split_random_stratified",
+    execution = "execution_basic_sequential",
+    preprocessing = NULL,
+    train = "train_glm",
+    inprocessing = NULL,
+    postprocessing = NULL,
+    evaluation = list("eval_mse", "eval_summarystats", "eval_statisticalparity"),
+    reportelement = NULL,
+    report = NULL,
+    publish = NULL
+  ),
+  params = list()
+)
+```
+
+This control object can now be passed into the main workflow function:
+
+```r
+results <- run_workflow_variants(control = control)
+```
+
+---
+
+## 📌 Tip: Default Behavior
+
+If you define only parts of the `control` object, the helper function `complete_control_with_defaults()` will automatically complete missing values. 
+
+Here is a summary of default values that will be filled:
+
+- `settings$global_seed`: `1`
+- `data$full`: `flowengineR::test_data_2_base_credit_example` (unless you provide your own)
+- `data$vars`: a default `controller_vars()` call for the demo dataset
+- `engine_select$split`: `"split_random_stratified"`
+- `params$split`: empty `controller_split()`
+- `engine_select$execution`: `"execution_basic_sequential"`
+- `params$execution`: empty `controller_execution()`
+- `engine_select$train`: `"train_glm"`
+- `params$train`: default GLM formula using `vars`
+- `engine_select$evaluation`: list of `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`
+- `params$eval`: empty `controller_evaluation()`
+
+Optional components like `preprocessing`, `inprocessing`, `postprocessing`, `reportelement`, `report`, and `publish` are only initialized if selected in `engine_select`.
+The function is triggered automaticaly in the main worklfow.
