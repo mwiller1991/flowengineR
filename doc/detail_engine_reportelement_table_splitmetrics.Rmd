@@ -1,0 +1,64 @@
+---
+title: "In Detail: Reportelement Engine - Table of Evaluation Metrics per Split"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Reportelement Engine - Table of Evaluation Metrics per Split}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Table of Evaluation Metrics per Split (`engine_reportelement_table_splitmetrics`)
+
+### Purpose and Function
+
+This engine compiles selected evaluation metrics from each individual split into a structured table. It supports modular metric extraction (e.g., `"mse"`, `"summarystats"`, `"spd"`), enabling side-by-side comparison of model performance and fairness characteristics across splits.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `workflow_results`: Named list of results (one per split) (⚠️ provided directly by the workflow).
+- `split_output`: Not used by this engine (⚠️ provided directly by the workflow).
+- `alias`: Name of this reportelement instance
+- `params`: Optional parameters defined via `controller_reportelement()`
+
+### Engine-specific Parameters
+
+| Parameter | Type             | Default             | Description                                    |
+|----------|------------------|---------------------|------------------------------------------------|
+| `metrics` | character vector | `c("summarystats")` | Metrics to extract per split (e.g., `"mse"`) |
+
+Supported values include `"mse"`, `"summarystats"`, `"spd"` – or others depending on registered evaluation engines.
+
+### Output Structure
+
+Returned via `initialize_output_reportelement()`:
+
+- `type`: `"table"`
+- `content`: Data frame with one row per split and columns per selected metric
+- `compatible_formats`: `c("pdf", "html", "xlsx", "json")`
+- `input_data`: Names of all evaluated splits
+- `params`: Used engine parameters
+- `specific_output`: Metadata (`n_splits`, `alias`)
+
+### Workflow Integration
+
+- **Controller Function:** `controller_reportelement()`
+- **Wrapper Function:** `wrapper_reportelement_table_splitmetrics()`
+- **Engine Function:** `engine_reportelement_table_splitmetrics()`
+- **Position in Flow:** Reporting phase
+- **Use Case:** Comparison of multiple evaluation metrics across all splits
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/8_b_template_reportelement_table_splitmetrics.R`
+
+### Example Configuration
+```r
+control$engine_select$reportelement <- list("split_table" = "reportelement_table_splitmetrics")
+control$params$reportelement <- controller_reportelement(
+  params = list("split_table" = list(
+    metrics = c("mse", "summarystats")
+  ))
+)
+```

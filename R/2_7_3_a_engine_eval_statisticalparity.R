@@ -47,23 +47,23 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #' and invokes the SPD engine. Wraps the result using `initialize_output_eval()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$eval$eval_data`: Data frame including predictions and protected attributes (injected by workflow).
-#' - `control$params$eval$protected_name`: Character vector of protected attribute names.
+#' - `control$params$evaluation$eval_data`: Data frame including predictions and protected attributes (injected by workflow).
+#' - `control$params$evaluation$protected_name`: Character vector of protected attribute names.
 #'   → This field is auto-filled from `control$data$vars$protected_vars_binary` and must not be set manually.
-#' - `control$params$eval$params`: Optional engine-specific parameters (not used here).
+#' - `control$params$evaluation$params`: Optional engine-specific parameters (not used here).
 #'
 #' **Binary Attribute Requirement:**
 #' - All variables listed in `protected_name` must be binary (e.g., 0/1, TRUE/FALSE).
 #' - Multi-class or continuous variables must be transformed into binary dummies during setup (via `controller_vars()`).
 #' - This wrapper validates binary structure and returns an error if invalid formats are detected.
 #'
-#' **Engine-Specific Parameters (`control$params$eval$params`):**
+#' **Engine-Specific Parameters (`control$params$evaluation$params`):**
 #' - None. This engine evaluates group fairness based on fixed logic.
 #'
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$evaluation <- "eval_statisticalparity"
-#' control$params$eval <- controller_evaluation(
+#' control$params$evaluation <- controller_evaluation(
 #'   params = list()
 #' )
 #' ```
@@ -91,7 +91,7 @@ engine_eval_statisticalparity <- function(eval_data, protected_name) {
 #' @return A standardized evaluation output object.
 #' @keywords internal
 wrapper_eval_statisticalparity <- function(control) {
-  eval_params <- control$params$eval
+  eval_params <- control$params$evaluation
   
   # Validate inputs
   if (is.null(eval_params$eval_data)) {

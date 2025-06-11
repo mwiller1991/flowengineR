@@ -36,12 +36,12 @@ engine_eval_mse <- function(predictions, actuals) {
 #' and invokes the MSE evaluation engine. Wraps the result using `initialize_output_eval()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$eval$eval_data$predictions`: Numeric vector of predicted values (injected by workflow).
-#' - `control$params$eval$eval_data$actuals`: Numeric vector of actual values (injected by workflow).
-#' - `control$params$eval$protected_attributes`: Names of protected attributes (optional; included in output).
-#' - `control$params$eval$params$eval_mse`: Optional engine-specific parameters.
+#' - `control$params$evaluation$eval_data$predictions`: Numeric vector of predicted values (injected by workflow).
+#' - `control$params$evaluation$eval_data$actuals`: Numeric vector of actual values (injected by workflow).
+#' - `control$params$evaluation$protected_attributes`: Names of protected attributes (optional; included in output).
+#' - `control$params$evaluation$params$eval_mse`: Optional engine-specific parameters.
 #'
-#' **Engine-Specific Parameters (`control$params$eval$params$eval_mse`):**
+#' **Engine-Specific Parameters (`control$params$evaluation$params$eval_mse`):**
 #' - None. This engine has no tunable settings and simply computes the MSE.
 #'
 #' **Variable Handling:**
@@ -51,7 +51,7 @@ engine_eval_mse <- function(predictions, actuals) {
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$evaluation <- "eval_mse"
-#' control$params$eval <- controller_evaluation(
+#' control$params$evaluation <- controller_evaluation(
 #'   params = list()
 #' )
 #' ```
@@ -79,7 +79,7 @@ engine_eval_mse <- function(predictions, actuals) {
 #' @return A standardized evaluation output object.
 #' @keywords internal
 wrapper_eval_mse <- function(control) {
-  eval_params <- control$params$eval  # Accessing the evaluation parameters
+  eval_params <- control$params$evaluation  # Accessing the evaluation parameters
   
   if (is.null(eval_params$eval_data$predictions)) {
     stop("wrapper_eval_mse: Missing required input: predictions")

@@ -1,0 +1,206 @@
+---
+title: "How to Build a Custom Engine in flowengineR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to Build a Custom Engine in flowengineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+**Engine Development Guide: Creating Custom Engines in flowengineR**
+
+This guide explains the standardized structure required to build and register a new engine within the `flowengineR` framework. All engines—whether for training, evaluation, processing, reporting, or publishing—must follow the same core architectural pattern.
+
+---
+
+### Overview
+
+Each custom engine must be implemented as **three distinct functions**:
+
+1. `engine_<type>_<name>()`
+   ➜ The core logic (model fitting, metric computation, transformation, etc.)
+
+2. `wrapper_<type>_<name>()`
+   ➜ The interface between the control object and the engine logic
+
+3. `default_params_<type>_<name>()`
+   ➜ The default hyperparameters for this engine (optional, but recommended)
+
+These functions form a **minimal, complete engine definition**. If one is missing, the engine cannot be used.
+
+---
+
+### 1. Engine Function (`engine_*()`)
+
+This is the pure computation layer. It contains **no validation**, **no logic related to the control object**, and **no standardization**.
+
+#### Rules:
+
+* Input arguments must be clean and explicit
+* No assumptions about data preprocessing or training configuration
+* Returns a raw output object (e.g., fitted model, metrics, or plots)
+
+#### Example:
+
+```r
+engine_train_glm <- function(formula, family, data, sample_weight) {
+  glm(formula = formula, family = family, data = data, weights = sample_weight)
+}
+```
+
+---
+
+### 2. Wrapper Function (`wrapper_*()`)
+
+This function prepares inputs for the engine, validates user control, and constructs standardized outputs.
+
+#### Responsibilities:
+
+* Merge user-defined and default parameters (`merge_with_defaults()`)
+* Validate presence of all required fields
+* Optionally skip validation if `control$internal_skip_validation` is set
+* Measure runtime or other metadata
+* Return standardized output via `initialize_output_<type>()`
+
+r
+if (isTRUE(control\$internal\_skip\_validation)) {
+return(list(skip\_validation = TRUE))
+}
+
+````
+
+#### Example:
+```r
+wrapper_train_glm <- function(control) {
+  train_data <- select_training_data(control$params$train$norm_data, control$params$train$data)
+  hyperparameters <- merge_with_defaults(control$params$train$params, default_params_train_glm())
+  model <- engine_train_glm(...)
+
+  initialize_output_train(
+    model = model,
+    model_type = "glm",
+    formula = control$params$train$formula,
+    hyperparameters = hyperparameters,
+    specific_output = list(training_time = ...)
+  )
+}
+````
+
+---
+
+### 3. Default Parameter Function (`default_params_*()`)
+
+Returns a named list of default values for engine-specific hyperparameters.
+
+#### Guidelines:
+
+* Should include all optional inputs that affect engine behavior
+* Does not require user interaction
+* Used only internally by the wrapper
+
+#### Example:
+
+```r
+default_params_train_glm <- function() {
+  list(
+    sample_weight = NULL,
+    family = gaussian()
+  )
+}
+```
+
+---
+
+### Registration Convention
+
+Before an engine can be used via the control object, it must first be registered in the global engine registry using the `register_engine()` function.
+
+This function loads an external R script containing the three required components and validates their structure. It ensures full modularity and plug-in capability.
+
+#### Automatic Validation During Registration
+
+When you call `register_engine()`, a **type-specific validation function** is invoked based on the engine prefix (e.g., `train_`, `split_`, `eval_`). This function verifies:
+
+* Wrapper signature (must match expected arguments)
+* Correct use of the output initializer (e.g., `initialize_output_train()`)
+* Functional behavior, where applicable (e.g., dummy predictions for eval engines)
+
+**Validation can be skipped** during development. To do so, insert the following snippet **at the top of your wrapper function**:
+
+```r
+if (isTRUE(control$internal_skip_validation)) {
+  return(list(skip_validation = TRUE))
+}
+```
+
+This bypass mechanism is useful for meta-engines, prototypes, or non-functional test stubs.
+When you call `register_engine()`, a **type-specific validation function** is invoked based on the engine prefix (e.g., `train_`, `split_`, `eval_`). This function verifies:
+
+* Wrapper signature (must match expected arguments)
+* Correct use of the output initializer (e.g., `initialize_output_train()`)
+* Functional behavior, where applicable (e.g., dummy predictions for eval engines)
+
+#### Example: Registering a training engine file
+
+```r
+register_engine(
+  engine_name = "train_glm",
+  file_path = "engines/train/train_glm.R"
+)
+```
+
+After registration, you can reference the engine by name in the control object:
+Before an engine can be used via the control object, it must first be registered in the global engine registry using the `register_engine()` function.
+
+This function loads an external R script containing the three required components and validates their structure. It ensures full modularity and plug-in capability.
+
+#### Example: Registering a training engine file
+
+```r
+register_engine(
+  engine_name = "train_glm",
+  file_path = "engines/train/train_glm.R"
+)
+```
+
+After registration, you can reference the engine by name in the control object:
+To use a custom engine in the flowengineR workflow, only the **wrapper function needs to be referenced** in the control object. The engine and default functions are automatically picked up via naming conventions.
+
+#### Example: Registering a training engine
+
+```r
+control$engine_select$train <- "train_glm"  # This calls wrapper_train_glm()
+
+control$params$train <- controller_training(
+  formula = target ~ .,
+  norm_data = TRUE,
+  params = list(
+    family = binomial(),
+    sample_weight = rep(1, nrow(data))
+  )
+)
+```
+
+This setup is sufficient to execute the entire training phase using your custom engine trio.
+
+* The name of the engine determines how it is referenced in the control object, e.g.:
+
+```r
+control$engine_select$train <- "train_glm"  # matches wrapper_train_glm
+```
+
+* The wrapper is always registered by the user; engine and default function are used internally
+
+---
+
+### Summary Table
+
+| Component            | Purpose                           | Used by   | Required                        |
+| -------------------- | --------------------------------- | --------- | ------------------------------- |
+| `engine_*()`         | Performs the core computation     | wrapper   | ✅ Yes                           |
+| `wrapper_*()`        | Validates input, standardizes I/O | framework | ✅ Yes                           |
+| `default_params_*()` | Supplies default parameters       | wrapper   | ❌ No (but strongly recommended) |
+
+---
+
+Next step: Read the engine-specific sections to understand the standardized inputs and required outputs for each engine type.

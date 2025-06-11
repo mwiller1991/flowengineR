@@ -48,11 +48,11 @@ engine_eval_summarystats <- function(predictions) {
 #' and wraps the result using `initialize_output_eval()`.
 #'
 #' **Standardized Inputs:**
-#' - `control$params$eval$eval_data$predictions`: Numeric vector of predictions (automatically provided by workflow).
-#' - `control$params$eval$protected_name`: Character vector of protected attributes (not used by this engine, but passed through for completeness).
-#' - `control$params$eval$params$eval_summarystats`: Optional engine-specific parameters (not used here).
+#' - `control$params$evaluation$eval_data$predictions`: Numeric vector of predictions (automatically provided by workflow).
+#' - `control$params$evaluation$protected_name`: Character vector of protected attributes (not used by this engine, but passed through for completeness).
+#' - `control$params$evaluation$params$eval_summarystats`: Optional engine-specific parameters (not used here).
 #'
-#' **Engine-Specific Parameters (`control$params$eval$params$eval_summarystats`):**
+#' **Engine-Specific Parameters (`control$params$evaluation$params$eval_summarystats`):**
 #' - None. This engine performs statistical evaluation using fixed metrics.
 #'
 #' **Variable Handling:**
@@ -91,7 +91,7 @@ engine_eval_summarystats <- function(predictions) {
 #' @return A standardized evaluation output object.
 #' @keywords internal
 wrapper_eval_summarystats <- function(control) {
-  eval_params <- control$params$eval
+  eval_params <- control$params$evaluation
   
   # Validate input: Predictions must be present
   if (is.null(eval_params$eval_data$predictions)) {

@@ -1,0 +1,69 @@
+---
+title: "Why flowengineR had to be built"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Why flowengineR had to be built}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Motivation
+
+The development of `flowengineR` did not begin with the intention to create a new 
+framework. In fact, we initially hoped to use an existing solution. Our goal was 
+to design a modular and reproducible workflow for analytical modeling that could:
+
+- apply method-specific fairness adjustments (pre-, in-, or postprocessing),
+- support systematic comparison of workflow variants (e.g., different modeling strategies),
+- compute multiple evaluation metrics in a consistent structure,
+- and generate standardized outputs for automated reporting and aggregation.
+
+We explored a number of established tools — both inside and outside of R — to see 
+whether they could support this use case.
+
+## Why we couldn't use existing tools
+
+We found that several tools offered **valuable components** of what we needed — but 
+none of them could support the **entire workflow logic** in a transparent and reusable way.
+
+### KNIME
+
+KNIME provides a flexible graphical environment and strong support for modular data science 
+pipelines. However, implementing the kind of method-driven logic we needed would have required 
+a significant number of custom nodes and duplicated workflow branches. Core ideas like 
+structured variant control, reusable engine types, and logic-driven execution 
+were difficult to represent within a GUI-based, node-centric architecture.
+
+### Other tools we considered
+
+- `mlr3pipelines`: very effective for modeling and tuning pipelines, but not designed to 
+  manage full analysis workflows or reporting steps.
+- `targets` and `drake`: excellent for reproducibility and dependency management, 
+  but focused on data rather than modular process components.
+- `mlflow`: useful for experiment tracking, but not designed to structure workflows themselves.
+
+Each of these tools offered valuable capabilities — but in our case, **none of them allowed us 
+to combine modeling, fairness logic, metric evaluation, and standardized reporting in a single, 
+scriptable, reusable, and extensible architecture**.
+
+## Why flowengineR was built
+
+Because no existing tool aligned with our needs, we designed `flowengineR` with the following 
+core ideas:
+
+- **Typed engines** for distinct workflow roles (e.g., splitting, training, postprocessing, evaluation),
+- **Controller functions** that validate inputs and manage execution logic,
+- **Standardized interfaces** to encourage reuse, comparison, and aggregation,
+- **Native R structure** to support transparency, testing, and extension by advanced users,
+- **Support for adaptive or parallel execution**, e.g., through SLURM or batchtools.
+
+This structure gave us what we needed: a way to develop complex workflows with fairness methods 
+and performance evaluation — while maintaining reproducibility and modularity throughout.
+
+## Conclusion
+
+We would have preferred to use an existing tool if it had met our requirements. 
+But since no such solution completly fitting, we created `flowengineR` in the progress: 
+a focused, engine-based framework for reproducible, logic-driven analysis workflows in R. 
+It fills a gap between general-purpose workflow tools and domain-specific ML libraries — 
+and aims to support structured, extensible, and well-documented analytical pipelines.

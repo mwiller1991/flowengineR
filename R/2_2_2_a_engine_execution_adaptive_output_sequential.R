@@ -121,7 +121,7 @@ wrapper_execution_adaptive_output_sequential <- function(control, split_output) 
     repeat_seed <- params$seed_base + i
     control$params$split$seed <- repeat_seed
     
-    split_result <- engines[[control$engine_select$split]](control)
+    split_result <- flowengineR_env$engines[[control$engine_select$split]](control)
     split <- split_result$splits[[1]]
     split_id <- paste0("split", i)
     

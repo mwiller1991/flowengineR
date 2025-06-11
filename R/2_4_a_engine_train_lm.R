@@ -44,7 +44,7 @@ engine_train_lm <- function(formula, data) {
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$train <- "train_lm"
-#' control$params$train <- controller_train(
+#' control$params$train <- controller_training(
 #'   formula = target ~ .,
 #'   norm_data = TRUE
 #' )
@@ -65,10 +65,10 @@ engine_train_lm <- function(formula, data) {
 #'   [engine_train_lm()],  
 #'   [default_params_train_lm()],  
 #'   [initialize_output_train()],  
-#'   [controller_train()],  
+#'   [controller_training()],  
 #'   Template: `inst/templates_control/3_a_template_train_lm.R`
 #'
-#' @param control A standardized control object (see `controller_train()`).
+#' @param control A standardized control object (see `controller_training()`).
 #' @return A standardized output list structured via `initialize_output_train()`.
 #' @keywords internal
 wrapper_train_lm <- function(control) {

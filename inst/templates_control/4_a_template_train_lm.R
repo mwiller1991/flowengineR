@@ -6,7 +6,7 @@
 control$engine_select$train <- "train_lm"
 
 # 2. Training Parameters
-control$params$train <- controller_train(
+control$params$train <- controller_training(
   formula = target ~ .,      # R formula specifying model structure
   norm_data = TRUE           # If TRUE, the workflow uses normalized data
   # params = list()          # Not required for lm engine

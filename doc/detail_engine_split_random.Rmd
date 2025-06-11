@@ -1,0 +1,62 @@
+---
+title: "In Detail: Split Engine - Random Split"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Split Engine - Random Split}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Random Split (`engine_split_random`)
+
+### Purpose and Function
+This engine performs a random split of the input dataset into training and test sets based on a specified ratio. The splitting does **not** use stratification and simply samples rows randomly. It is suitable when stratification is unnecessary or undesirable.
+
+### Input Structure (via Wrapper)
+Inputs are passed through the `wrapper_split_random()` function and originate from the `control` object.
+
+**Standardized Inputs:**
+- `data`: A data frame containing the full dataset (⚠️ provided directly by the workflow).
+- `target_var`: Required for structural reasons, but ignored in this engine (⚠️ provided directly by the workflow).
+- `seed`: Integer for reproducibility.
+- `params`: Additional engine-specific parameters.
+
+### Engine-specific Parameters
+
+| Parameter      | Type     | Default | Description                                          |
+|----------------|----------|---------|------------------------------------------------------|
+| `split_ratio`  | numeric  | `0.7`   | Ratio of data to be used for training (0–1 interval) |
+
+These parameters are defined in `control$params$split$params`.
+
+### Output Structure
+
+The output is a standardized list created via `initialize_output_split()`:
+
+- `split_type`: `"random"`
+- `splits`: A list with one named element `random`, containing both `train` and `test` data frames.
+- `seed`: Random seed used in the split.
+- `params`: Final list of used parameters.
+- `specific_output`: `NULL` (no additional metadata generated).
+
+### Workflow Integration
+
+- **Controller Function:** `controller_split()`
+- **Engine Wrapper:** `wrapper_split_random()`
+- **Position in Flow:** Appears as a basic option in the Split phase.
+- **Downstream Compatibility:** Fully compatible with training and fairness engines.
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates/1_c_template_control_split_random.R`
+
+### Example Configuration
+```r
+control$engine_select$split <- "split_random"
+control$params$split <- controller_split(
+  seed = 42,
+  target_var = "default",  # Required by framework, ignored here
+  params = list(split_ratio = 0.6)
+)
+```

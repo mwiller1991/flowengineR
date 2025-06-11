@@ -64,12 +64,12 @@ validate_engine_split <- function(wrapper_function, default_params_function, eng
     params = list(
       split = controller_split(
         seed = 42,
-        target_var = "y",
         params = default_params_function()
       )
     ),
     internal_skip_validation = TRUE  # internal flag for the wrapper to be able to jump the validation if neccessary
   )
+  dummy_control$params$split$target_var <- "y"
   
   # Call the wrapper and validate the output
   output <- tryCatch({
@@ -211,8 +211,6 @@ validate_engine_preprocessing <- function(wrapper_function, default_params_funct
   dummy_control <- list(
     params = list(
       preprocessing = controller_preprocessing(
-        protected_attributes = names(dummy_protected_attributes),
-        target_var = "target_var",
         params = default_params_function()  # Use default parameters
       )
     ),
@@ -220,6 +218,8 @@ validate_engine_preprocessing <- function(wrapper_function, default_params_funct
   )
   
   # Inject dummy data into control
+  dummy_control$params$preprocessing$protected_attributes <- names(dummy_protected_attributes)
+  dummy_control$params$preprocessing$target_var <- "target_var"
   dummy_control$params$preprocessing$data <- dummy_data
   
   # Call the wrapper and validate the output
@@ -452,7 +452,6 @@ validate_engine_postprocessing <- function(wrapper_function, default_params_func
       ),
     params = list(
       postprocessing = controller_postprocessing(
-        protected_name = names(dummy_protected_attributes),
         params = default_params_function()  # Use default parameters
       )
     ),
@@ -465,6 +464,7 @@ validate_engine_postprocessing <- function(wrapper_function, default_params_func
     actuals = dummy_actuals,
     dummy_protected_attributes
   )
+  dummy_control$params$postprocessing$protected_name <- names(dummy_protected_attributes)
 
   # Call the wrapper and validate the output
   output <- tryCatch({
@@ -562,19 +562,20 @@ validate_engine_eval <- function(wrapper_function, default_params_function, engi
       ),
     params = list(
       eval = controller_evaluation(
-        protected_name = names(dummy_protected_attributes),
         params = default_params_function()  # Use default parameters
       )
     ),
     internal_skip_validation = TRUE  # internal flag for the wrapper to be able to jump the validation if neccessary
   )
   # Manually add `eval_data` to the `eval` list
-  dummy_control$params$eval$eval_data <- cbind(
+  dummy_control$params$evaluation$eval_data <- cbind(
     predictions = as.numeric(dummy_predictions),
     actuals = as.numeric(dummy_actuals),
     dummy_protected_attributes
   )
   
+  dummy_control$params$evaluation$protected_name <- names(dummy_protected_attributes)
+    
   # Call the wrapper and validate the output
   output <- tryCatch({
     result <- wrapper_function(dummy_control)

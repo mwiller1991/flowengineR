@@ -1,0 +1,111 @@
+---
+title: "In Detail: Training Engines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Training Engines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Training Engines in `flowengineR` are responsible for fitting a predictive model to the (optionally preprocessed) training data. They define how a model is built and what output is returned for later evaluation and postprocessing steps.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are passed to the engine wrapper and partially pre-filled by the framework:
+
+| Input         | Type        | Description                                                                 |
+|---------------|-------------|-----------------------------------------------------------------------------|
+| `data`        | data.frame  | Original training dataset (⚠️ provided by the framework from split output) |
+| `norm_data`   | logical     | Whether to apply normalization in the main workflow (user-defined switch from controller)  |
+| `formula`     | formula     | Model formula used for training (from controller)                    |
+| `params`      | list        | Additional engine-specific parameters (from controller)                   |
+
+Framework resolution:
+- `data`: provided by the framework (split output)
+- `norm_data`: logical flag, passed via `control$params$train$norm_data`
+- `formula`: passed via `control$params$train$formula`
+- `params`: passed via `control$params$train$params`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_train()`:
+
+| Output            | Type         | Description                                                                  |
+|-------------------|--------------|------------------------------------------------------------------------------|
+| `model`           | model object | Trained model object (e.g., caret model, lm object, etc.)                   |
+| `model_type`      | character    | Short string indicating model type (e.g., "lm", "rf")                      |
+| `formula`         | formula      | Model formula used                                                           |
+| `predictions`     | vector       | Optional: fitted values or predictions on training set                      |
+| `hyperparameters` | list / NULL  | Optional: hyperparameter values (if applicable)                             |
+| `specific_output` | list / NULL  | Optional: engine-specific metadata                                          |
+
+---
+
+## ⚙️ Available Training Engines
+
+| Engine Name  | Function Name                 | Description                      | Template Path                                                 | Detail Page |
+|--------------|-------------------------------|----------------------------------|----------------------------------------------------------------|--------------|
+| `lm`         | `engine_train_lm()`           | Ordinary least squares regression | `inst/templates_control/2_a_template_control_train_lm.R`       | [📄](detail_engine_train_lm.html) |
+| `rf`         | `engine_train_rf()`           | Random forest via `randomForest` | `inst/templates_control/2_a_template_control_train_rf.R`       | [📄](detail_engine_train_rf.html) |
+| `gbm`        | `engine_train_gbm()`          | Gradient boosting models         | `inst/templates_control/2_a_template_control_train_gbm.R`      | [📄](detail_engine_train_gbm.html) |
+
+Use `list_registered_engines("train")` to inspect all currently loaded training engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+To use a training engine, define it in the control object:
+
+```r
+control$engine_select$train <- "rf"
+control$params$train <- controller_train(
+  params = list(ntree = 500)
+)
+```
+
+The engine is invoked automatically on each split during workflow execution.
+
+---
+
+## 🛠️ Writing Your Own Training Engine
+
+To implement a custom training engine:
+
+1. Define an `engine_*()` function that performs model training.
+2. Create a `wrapper_*()` function that manages parameters and output formatting.
+3. Return results via `initialize_output_train()`.
+
+For examples, see:
+- `wrapper_train_lm()`
+- `wrapper_train_rf()`
+- `wrapper_train_gbm()`
+
+---
+
+## 🔍 Possible Use-Case: Benchmarking Algorithms
+
+Training engines allow consistent benchmarking of different modeling approaches within the same preprocessing and evaluation pipeline. This is especially useful when testing multiple algorithms under controlled conditions, such as cross-validation or fairness-aware setups.
+
+By separating model fitting into standardized training engines, it becomes easy to:
+- Compare performance across different algorithms
+- Evaluate robustness with respect to hyperparameters
+- Integrate with postprocessing and evaluation modules
+
+Example:
+```r
+control$engine_select$train <- "gbm"
+control$params$train <- controller_train(
+  params = list(n.trees = 200, interaction.depth = 3)
+)
+```
+
+These capabilities make the training engine system a central component of the overall modular framework.

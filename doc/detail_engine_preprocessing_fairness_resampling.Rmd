@@ -1,0 +1,59 @@
+---
+title: "In Detail: Preprocessing Engine - Fairness Resampling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Preprocessing Engine - Fairness Resampling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Fairness Resampling (`engine_preprocessing_fairness_resampling`)
+
+### Purpose and Function
+This preprocessing engine addresses class imbalance by applying resampling strategies such as oversampling or undersampling. It modifies the training data before model fitting to ensure more balanced target class distributions.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `data`: Training data to be resampled (⚠️ provided directly by the workflow).
+- `target_var`: The target variable used to determine class imbalance (⚠️ provided directly by the workflow).
+- `params`: Optional parameters defining the resampling method.
+
+### Engine-specific Parameters
+
+| Parameter       | Type      | Default         | Description                                                |
+|----------------|-----------|------------------|------------------------------------------------------------|
+| `method`        | character | `"oversampling"` | Type of resampling to apply: `"oversampling"` or `"undersampling"` |
+| `target_ratio`  | numeric   | `1`              | Intended target class ratio (reserved for future use)      |
+
+### Output Structure
+
+Returned via `initialize_output_preprocessing()`:
+
+- `preprocessed_data`: The training data after resampling
+- `method`: `"resampling"`
+- `params`: Final parameter configuration
+- `specific_output`: A list with:
+    - `original_counts`: Class distribution before resampling
+    - `new_counts`: Class distribution after resampling
+
+### Workflow Integration
+
+- **Controller Function:** `controller_preprocessing()`
+- **Wrapper Function:** `wrapper_preprocessing_fairness_resampling()`
+- **Engine Function:** `engine_preprocessing_fairness_resampling()`
+- **Position in Flow:** Preprocessing phase, before model training
+- **Compatibility:** Output is used as input to training engines
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/3_a_template_preprocessing_fairness_resampling.R`
+
+### Example Configuration
+```r
+control$engine_select$preprocessing <- "preprocessing_fairness_resampling"
+control$params$preprocessing <- controller_preprocessing(
+  params = list(method = "undersampling")
+)
+```

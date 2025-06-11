@@ -23,9 +23,9 @@
 #' initialize_output_eval(
 #'   metrics = list(mse = 0.053),
 #'   eval_type = "mse_eval",
-#'   input_data = control$params$eval$eval_data,
+#'   input_data = control$params$evaluation$eval_data,
 #'   protected_attributes = control$data$vars$protected_vars_binary,
-#'   params = control$params$eval$params[["mse_eval"]],
+#'   params = control$params$evaluation$params[["mse_eval"]],
 #'   specific_output = list(residuals = resid(model))
 #' )
 #' ```

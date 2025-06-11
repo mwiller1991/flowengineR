@@ -1,0 +1,66 @@
+---
+title: "In Detail: Training Engine - Generalized Linear Model (GLM)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Training Engine - Generalized Linear Model (GLM)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Generalized Linear Model (`engine_train_glm`)
+
+### Purpose and Function
+This engine fits a generalized linear model (GLM) using the `stats::glm()` function. It is part of the training component in the `flowengineR` framework and is suitable for linear regression, logistic regression, and other exponential family models.
+
+### Input Structure (via Wrapper)
+Inputs are provided through the wrapper function `wrapper_train_glm()` and standardized by the control object.
+
+**Standardized Inputs:**
+- `formula`: A formula defining the model structure (e.g., `target ~ .`).
+- `data`: A data frame with either original or normalized training data.
+- `norm_data`: Logical; whether to use normalized data.
+- `params`: A list of engine-specific parameters.
+
+### Engine-specific Parameters
+
+| Parameter       | Type         | Default        | Description                                      |
+|----------------|--------------|----------------|--------------------------------------------------|
+| `family`        | function     | `gaussian()`   | GLM family function (e.g., `binomial()`).        |
+| `sample_weight` | numeric[]    | Equal weights  | Observation weights for the training process.    |
+
+These parameters can be supplied through `control$params$train$params`.
+
+### Output Structure
+
+The engine returns a structured list created by `initialize_output_train()` containing:
+
+- `model`: A fitted GLM object (`class = "glm"`).
+- `model_type`: Identifier string `"glm"`.
+- `formula`: The formula used for training.
+- `hyperparameters`: Merged parameter list (defaults + user-defined).
+- `specific_output`: Training duration and optional metadata.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_train()`
+- **Engine Wrapper:** `wrapper_train_glm()`
+- **Execution Position:** Appears in the training phase of the main workflow.
+- **Downstream Compatibility:** Outputs are compatible with fairness in-processing, postprocessing, evaluation, and reporting steps.
+
+### Template Reference
+
+This engine's control template is located at:
+`inst/templates_control/4_b_template_control_train_glm.R`
+
+### Example Configuration
+```r
+control$engine_select$train <- "train_glm"
+control$params$train <- controller_train(
+  formula = target ~ .,
+  norm_data = TRUE,
+  params = list(
+    family = binomial()
+    # sample_weight = rep(1, nrow(train_data))  # optional
+  )
+)
+```

@@ -10,7 +10,7 @@
 #'
 #' **Inputs:**
 #' - `control`: A standardized control object. This must contain all relevant components for the workflow:
-#'   - `engines`: A list with the used engines.
+#'   - `flowengineR_env$engines`: A list with the used engines.
 #'      - `split`: Name of a registered splitter engine (e.g. "split_random_stratified")
 #'      - `execution`: Name of a registered execution engine (optional; defaults to "execution_sequential")
 #'   - `params`: Parameter structure used by downstream engines (e.g., split ratio, seeds, evaluation metrics)
@@ -39,12 +39,12 @@ run_workflow <- function(control = list()) {
   # 1. Call splitter engine
   log_msg(paste0("[MASTER] Using split engine: ", control$engine_select$split), level = "info", control = control)
   control$params$split$target_var <- control$data$vars$target_var
-  split_engine <- engines[[control$engine_select$split]]
+  split_engine <- flowengineR_env$engines[[control$engine_select$split]]
   split_output <- split_engine(control)
   
   # 2. Choose execution engine
   log_msg(paste0("[MASTER] Using execution engine: ", control$engine_select$execution), level = "info", control = control)
-  execution_engine <- engines[[control$engine_select$execution]]
+  execution_engine <- flowengineR_env$engines[[control$engine_select$execution]]
   execution_output <- execution_engine(control, split_output)
   
   # for adaptive procedures, where the split is done in the wrapper
@@ -119,12 +119,12 @@ continue_workflow <- function(control, split_output, execution_output) {
     reportelements_results <- list()
     for (alias in names(control$engine_select$reportelement)) {
       engine_name <- control$engine_select$reportelement[[alias]]
-      if (!engine_name %in% names(engines)) {
+      if (!engine_name %in% names(flowengineR_env$engines)) {
         log_msg(sprintf("[WARNING] Reportelement engine '%s' not found. Skipping alias '%s'.", engine_name, alias), level = "warn", control = control)
         next
       }
       log_msg(sprintf("[CONTINUE] Running reportelement engine '%s' for alias '%s'...", engine_name, alias), level = "debug", control = control)
-      reportelements_results[[alias]] <- engines[[engine_name]](
+      reportelements_results[[alias]] <- flowengineR_env$engines[[engine_name]](
         control = control,
         workflow_results = workflow_results,
         split_output = split_output,
@@ -140,12 +140,12 @@ continue_workflow <- function(control, split_output, execution_output) {
     reports_results <- list()
     for (alias_report in names(control$engine_select$report)) {
       engine_name <- control$engine_select$report[[alias_report]]
-      if (!engine_name %in% names(engines)) {
+      if (!engine_name %in% names(flowengineR_env$engines)) {
         log_msg(sprintf("[WARNING] Report engine '%s' not found. Skipping alias '%s'.", engine_name, alias_report), level = "warn", control = control)
         next
       }
       log_msg(sprintf("[CONTINUE] Running report engine '%s' for alias '%s'...", engine_name, alias_report), level = "debug", control = control)
-      reports_results[[alias_report]] <- engines[[engine_name]](
+      reports_results[[alias_report]] <- flowengineR_env$engines[[engine_name]](
         control = control,
         reportelements = reportelements_results,
         alias_report = alias_report
@@ -186,13 +186,13 @@ continue_workflow <- function(control, split_output, execution_output) {
       }
       
       engine_name <- control$engine_select$publish[[alias_publish]]
-      if (!engine_name %in% names(engines)) {
+      if (!engine_name %in% names(flowengineR_env$engines)) {
         log_msg(sprintf("[WARNING] Publishing engine '%s' not found. Skipping.", engine_name), level = "warn", control = control)
         next
       }
       
       log_msg(sprintf("[CONTINUE] Publishing '%s' with engine '%s'...", alias_publish, engine_name), level = "debug", control = control)
-      publishing_results[[alias_publish]] <- engines[[engine_name]](
+      publishing_results[[alias_publish]] <- flowengineR_env$engines[[engine_name]](
         control = control,
         object = object,
         file_path = file_path,
@@ -326,7 +326,7 @@ run_workflow_singlesplitloop <- function(control) {
     control$params$preprocessing$data <- control$data$train
     control$params$preprocessing$protected_attributes <- control$data$vars$protected_vars
     control$params$preprocessing$target_var <- control$data$vars$target_var
-    driver_pre <- engines[[control$engine_select$preprocessing]]
+    driver_pre <- flowengineR_env$engines[[control$engine_select$preprocessing]]
     output_pre <- driver_pre(control)
     control$params$train$data <- output_pre$preprocessed_data
     results$output_preprocessing <- output_pre
@@ -355,7 +355,7 @@ run_workflow_singlesplitloop <- function(control) {
   
   # Step 4: Model training
   log_msg(paste0("[SINGLE] Training base model: ", control$engine_select$train), level = "info", control = control)
-  driver_train <- engines[[control$engine_select$train]]
+  driver_train <- flowengineR_env$engines[[control$engine_select$train]]
   output_train <- driver_train(control)
 
   # Step 4.2: Select prediction data
@@ -387,7 +387,7 @@ run_workflow_singlesplitloop <- function(control) {
     log_msg(paste0("[SINGLE] Running in-processing engine: ", control$engine_select$inprocessing), level = "info", control = control)
     control$params$inprocessing$protected_attributes <- control$data$vars$protected_vars
     control$params$inprocessing$target_var <- control$data$vars$target_var
-    driver_in <- engines[[control$engine_select$inprocessing]]
+    driver_in <- flowengineR_env$engines[[control$engine_select$inprocessing]]
     output_in <- driver_in(control, driver_train)
     
     if (control$settings$output_type == "prob") {
@@ -414,7 +414,7 @@ run_workflow_singlesplitloop <- function(control) {
       testdata[control$data$vars$protected_vars_binary]
     )
     control$params$postprocessing$protected_name <- control$data$vars$protected_vars_binary
-    driver_post <- engines[[control$engine_select$postprocessing]]
+    driver_post <- flowengineR_env$engines[[control$engine_select$postprocessing]]
     output_post <- driver_post(control)
     predictions <- as.numeric(output_post$adjusted_predictions)
     results$output_postprocessing <- output_post
@@ -424,14 +424,14 @@ run_workflow_singlesplitloop <- function(control) {
   # Step 6: Evaluation (if defined)
   if (!is.null(control$engine_select$evaluation)) {
     log_msg("[SINGLE] Running evaluation step...", level = "info", control = control)
-    control$params$eval$eval_data <- cbind(
+    control$params$evaluation$eval_data <- cbind(
       predictions = predictions,
       actuals = control$data$test$original[[control$data$vars$target_var]],
       control$data$test$original[control$data$vars$protected_vars_binary]
     )
-    control$params$eval$protected_name <- control$data$vars$protected_vars_binary
+    control$params$evaluation$protected_name <- control$data$vars$protected_vars_binary
     output_eval <- lapply(control$engine_select$evaluation, function(metric) {
-      engines[[metric]](control)
+      flowengineR_env$engines[[metric]](control)
     })
     names(output_eval) <- control$engine_select$evaluation
     results$output_eval <- output_eval

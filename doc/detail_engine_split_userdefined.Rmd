@@ -1,0 +1,65 @@
+---
+title: "In Detail: Split Engine - User-Defined"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Split Engine - User-Defined}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: User-Defined Split (`engine_split_userdefined`)
+
+### Purpose and Function
+This engine is used when train/test splits are provided externally by the user. No splitting or modification of the data is performed internally. It is ideal for workflows with pre-computed or externally managed splits, e.g., from manual stratification, domain-specific partitioning, or custom batch generation.
+
+### Input Structure (via Wrapper)
+Inputs are provided via the `wrapper_split_userdefined()` and originate directly from the control object:
+
+**Standardized Inputs:**
+- `control$data$train`: User-specified training dataset through `control$data$train`.
+- `control$data$test`: User-specified test dataset through `control$data$test`.
+
+This engine **does not** use or require a `target_var`, `params`, or `seed`.
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| –         | –    | –       | No parameters are supported or needed. |
+
+### Output Structure
+
+The output is created via `initialize_output_split()` and contains:
+
+- `split_type`: `"userdefined"`
+- `splits`: A named list `user` with `train` and `test` data frames.
+- `seed`: `NULL`
+- `params`: `NULL`
+- `specific_output`: `list(source = "user_provided")`
+
+Internally, this wrapper sets `internal_skip_validation = TRUE` to bypass automatic structural checks.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_split()`
+- **Engine Wrapper:** `wrapper_split_userdefined()`
+- **Position in Flow:** Split phase
+- **Use Case:** Required when the data is already partitioned externally.
+- **Validation Exception:** Automatically excluded from standard engine validation.
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/1_d_template_control_split_userdefined.R`
+
+### Example Configuration
+```r
+control$engine_select$split <- "split_userdefined"
+control$data$train <- my_train_data
+control$data$test  <- my_test_data
+control$params$split <- controller_split(
+  seed = NULL,
+  target_var = NULL,
+  params = NULL
+)
+```

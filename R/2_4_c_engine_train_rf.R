@@ -24,13 +24,15 @@
 #' @return A fitted model object of class `"randomForest"`.
 #' @keywords internal
 engine_train_rf <- function(formula, data, sample_weight, ntree, mtry) {
-  randomForest::randomForest(
+  args <- list(
     formula = formula,
     data = data,
     weights = sample_weight,
-    ntree = ntree,
-    mtry = mtry
+    ntree = ntree
   )
+  if (!is.null(mtry)) args$mtry <- mtry
+  
+  do.call(randomForest::randomForest, args)
 }
 #--------------------------------------------------------------------
 
@@ -59,7 +61,7 @@ engine_train_rf <- function(formula, data, sample_weight, ntree, mtry) {
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$train <- "train_rf"
-#' control$params$train <- controller_train(
+#' control$params$train <- controller_training(
 #'   formula = target ~ .,
 #'   norm_data = TRUE,
 #'   params = list(
@@ -69,14 +71,25 @@ engine_train_rf <- function(formula, data, sample_weight, ntree, mtry) {
 #'   )
 #' )
 #' ```
+#' **Template Reference:**
+#' See full template in `inst/templates_control/4_c_template_train_rf.R`
 #'
+#' **Standardized Output (returned to framework):**
+#' - A structured list created by `initialize_output_train()`:
+#'   - `model`: Fitted model object.
+#'   - `model_type`: Identifier string ("rf").
+#'   - `formula`: Used training formula.
+#'   - `hyperparameters`: Merged hyperparameter set.
+#'   - `specific_output`: Training duration and optional metadata.
+#' 
 #' @seealso 
 #'   [engine_train_rf()],  
 #'   [default_params_train_rf()],  
 #'   [initialize_output_train()],  
-#'   [controller_train()]
+#'   [controller_training()]
+#'   Template: `inst/templates_control/4_c_template_train_rf.R`
 #'
-#' @param control A standardized control object (see `controller_train()`).
+#' @param control A standardized control object (see `controller_training()`).
 #' @return A standardized output list structured via `initialize_output_train()`.
 #' @keywords internal
 wrapper_train_rf <- function(control) {

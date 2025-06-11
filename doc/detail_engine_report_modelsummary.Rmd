@@ -1,0 +1,66 @@
+---
+title: "In Detail: Report Engine – Model Summary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Report Engine – Model Summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Model Summary (`engine_report_modelsummary`)
+
+### Purpose and Function
+
+This report engine combines two individual reportelements () into a structured summary view. It is designed to create human-readable sections, such as text summaries, visualizations, and evaluation tables, in a modular format.
+
+The report elements are referenced by their alias names defined in the control object and grouped into sections (e.g., MSE summary, plots, and metrics).
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `reportelements`: A named list of previously generated reportelement outputs (⚠️ provided directly by the workflow).
+- `params`: A list defining the mapping of section content to reportelement aliases.
+
+### Engine-specific Parameters
+
+| Parameter       | Type      | Default | Description                                |
+|----------------|------------|---------|--------------------------------------------|
+| `mse_text`      | character | –       | Alias name of the text summary element     |
+| `gender_box`    | character | –       | Alias for the gender-based plot            |
+| `age_box`       | character | –       | Alias for the age-based plot               |
+| `metrics_table` | character | –       | Alias for the evaluation metrics table     |
+
+### Output Structure
+
+Returned via `initialize_output_report()`:
+
+- `report_title`: `"Modellzusammenfassung"`
+- `report_type`: `"modelsummary"`
+- `compatible_formats`: `c("pdf", "html", "json")`
+- `sections`: List of sections, each with a `heading` and `content` (reportelements)
+- `params`: Original alias mapping passed through
+
+### Workflow Integration
+
+- **Controller Function:** `controller_report()`
+- **Wrapper Function:** `wrapper_report_modelsummary()`
+- **Engine Function:** `engine_report_modelsummary()`
+- **Position in Flow:** Report generation phase, after all reportelements have been calculated
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/9_a_template_report_modelsummary.R`
+
+### Example Configuration
+```r
+control$engine_select$report <- list("main_report" = "report_modelsummary")
+control$params$report <- controller_report(
+  params = list("main_report" = list(
+    mse_text = "mse_text",
+    gender_box = "pred_plot_gender",
+    age_box = "pred_plot_age",
+    metrics_table = "split_table"
+  ))
+)
+```

@@ -1,0 +1,85 @@
+---
+title: "How to: Engine Types in flowengineR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to: Engine Types in flowengineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The `flowengineR` framework is designed around modular components called **engines**. Engines encapsulate functionality at specific stages of the workflow and follow a standardized interface.
+
+This article introduces all engine types, their role in the pipeline, and how to configure or extend them.
+
+---
+
+## 🧩 What is an Engine?
+
+An engine is a plug-in component that handles one task in the workflow. It processes standardized inputs and returns standardized outputs. 
+
+The modular structure allows you to:
+- Swap engines for different methods
+- Combine engines across workflow stages
+- Implement your own custom engines
+
+Each engine type has a corresponding `controller_*()` function and an internal `engine_*()` implementation.
+
+---
+
+## ⚙️ Engine Types
+
+Here is an overview of all supported engine types in `flowengineR`:
+
+| Engine Type         | Purpose                                             | Example Engine                      | More Info |
+|---------------------|-----------------------------------------------------|-------------------------------------|-----------|
+| Splitter            | Splits full data into train/test sets              | `split_random_stratified`           | [Details](detail_engines_split.html) |
+| Execution           | Executes models across multiple splits             | `execution_basic_sequential`        | [Details](detail_engines_execution.html) |
+| Preprocessing       | Modifies training data before model training       | `preprocessing_fairness_resampling` | [Details](detail_engines_preprocessing.html) |
+| Training            | Trains a prediction model                          | `train_lm`, `train_rf`              | [Details](detail_engines_train.html) |
+| Inprocessing        | Fairness adjustment during model training          | `inprocessing_fairness_adversarialdebiasing` | [Details](detail_engines_inprocessing.html) |
+| Postprocessing      | Adjusts model predictions                          | `postprocessing_fairness_genresidual` | [Details](detail_engines_postprocessing.html) |
+| Evaluation          | Computes performance and other metrics             | `eval_mse`, `eval_statisticalparity` | [Details](detail_engines_evaluation.html) |
+| Reportelement       | Generates graphical or tabular output objects      | `reportelement_boxplot_predictions` | [Details](detail_engines_reportelements.html) |
+| Report              | Assembles a complete report from report elements   | `report_modelsummary`               | [Details](detail_engines_report.html) |
+| Publish             | Exports reports or elements to file formats        | `publish_pdf_basis`, `publish_excel_basis` | [Details](detail_engines_publish.html) |
+
+---
+
+## 🛠️ Engine Interface Design
+
+Each engine:
+- Is called via its corresponding controller
+- Accepts **standardized inputs**
+- Returns **standardized outputs**
+- Can include `params`, `specific_output`, and meta-information
+
+This ensures compatibility and flexibility.
+
+---
+
+## 🔄 Engine Registration
+
+All engines must be registered and are looked up by name. Use:
+
+```r
+list_registered_engines()        # Show all available engines
+list_registered_engines("train") # Show only training engines
+```
+
+---
+
+## 📦 Adding Your Own Engine
+
+To add a custom engine:
+1. Implement a function with the required input/output structure.
+2. Register the engine under a unique name.
+3. Call it via `engine_select` and provide its `params`.
+
+For details, see [How to: Custom Engines](how_to_build_custom_engine.html).
+
+---
+
+## ⛓️ Workflow Interaction
+
+Each engine is executed in a defined sequence in `run_workflow()` or `run_workflow_singlesplitloop()`.  
+For a full picture, see [In Detail: Full Package Flow Chart in Mermaid](metalevel_flowchart.html).

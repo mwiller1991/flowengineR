@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>In Detail: Execution Engines</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">In Detail: Execution Engines</h1>
+
+
+
+<p>Execution Engines in <code>flowengineR</code> orchestrate the
+application of models over multiple data splits. They define
+<strong>how</strong> and <strong>where</strong> model training and
+evaluation are carried out — sequentially, in parallel, or deferred to
+external systems like SLURM. Each of the listed execution engines below
+defines a distinct way to repeatedly call
+<code>run_workflow_singlesplitloop()</code> on one or more splits. Some
+execute all splits directly, others submit them to external systems, and
+a few (adaptive engines) decide at runtime how many splits or parameter
+configurations to evaluate.</p>
+<p>They represent one of the most flexible and extensible components of
+the framework.</p>
+<hr />
+<div id="standardized-inputs-via-wrapper" class="section level2">
+<h2>📥 Standardized Inputs (via Wrapper)</h2>
+<p>Passed via <code>wrapper_execution_*()</code> and automatically
+pre-filled by the framework:</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="10%" />
+<col width="74%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>control</code></td>
+<td>list</td>
+<td>Full control object (⚠️ provided directly by the workflow)</td>
+</tr>
+<tr class="even">
+<td><code>split_output</code></td>
+<td>list</td>
+<td>Output from splitter engine, containing multiple
+<code>train</code>/<code>test</code> splits (⚠️ provided directly by the
+workflow)</td>
+</tr>
+<tr class="odd">
+<td><code>params</code></td>
+<td>list</td>
+<td>Engine-specific execution parameters from
+<code>controller_execution()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Framework resolution: - <code>params</code>: from
+<code>control$params$execution$params</code></p>
+<hr />
+</div>
+<div id="standardized-output-via-wrapper" class="section level2">
+<h2>📤 Standardized Output (via Wrapper)</h2>
+<p>Returned via <code>initialize_output_execution()</code>:</p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="12%" />
+<col width="69%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>execution_type</code></td>
+<td>character</td>
+<td>Name of execution engine used</td>
+</tr>
+<tr class="even">
+<td><code>workflow_results</code></td>
+<td>list/null</td>
+<td>List of results from model executions (or <code>NULL</code> for
+deferred workflows)</td>
+</tr>
+<tr class="odd">
+<td><code>params</code></td>
+<td>list</td>
+<td>Parameters used (merged defaults and user-specified)</td>
+</tr>
+<tr class="even">
+<td><code>continue_workflow</code></td>
+<td>logical</td>
+<td>Should downstream engines be triggered (<code>TRUE</code>) or is
+manual continuation needed?</td>
+</tr>
+<tr class="odd">
+<td><code>specific_output</code></td>
+<td>list/null</td>
+<td>Optional metadata (e.g. registry path, number of jobs)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="adaptive-execution-stability-monitoring" class="section level2">
+<h2>🔄 Adaptive Execution: Stability Monitoring</h2>
+<p>Some execution engines, such as
+<code>execution_adaptive_output_sequential</code>, are designed to run
+<code>run_workflow_singlesplitloop()</code> multiple times <strong>until
+a monitored metric stabilizes</strong>. They generate one split at a
+time, execute the model, and evaluate a metric (e.g. MSE) using a
+stability strategy (e.g. Cohen’s d, standard deviation).</p>
+<p>These engines require: - Splitters that return only <strong>one split
+at a time</strong> - Definitions of monitored metric, strategy,
+threshold, and window size - Control over loop iterations via min/max
+number of splits</p>
+<p>To assess stability, they use strategy functions such as
+<code>check_stability_cohen_absolute()</code>,
+<code>check_stability_sd_relative()</code>, etc., which follow a common
+interface:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">check_stability_xxx</span>(values, threshold, window, <span class="at">fun =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p>These helpers return a list with elements like
+<code>is_stable</code>, <code>stability_value</code>, and
+<code>threshold_value</code>.</p>
+<hr />
+</div>
+<div id="adaptive-execution-hyperparameter-optimization" class="section level2">
+<h2>🔧 Adaptive Execution: Hyperparameter Optimization</h2>
+<p>Other engines like
+<code>execution_adaptive_input_scalar_sequential</code> focus on
+<strong>scalar hyperparameter optimization</strong>. These iterate over
+parameter values (e.g. number of trees), run a workflow per value, and
+evaluate performance based on a defined metric. Execution stops when
+improvements become negligible or a maximum number of steps is
+reached.</p>
+<p>Key elements: - Path to the parameter in the control object
+(<code>param_path</code>) - Start value, step size, and optimization
+direction (minimize/maximize) - Metric source and threshold for
+improvement</p>
+<p>This strategy is ideal for lightweight and interpretable tuning of a
+single hyperparameter in scenarios with high model cost.</p>
+<hr />
+</div>
+<div id="available-execution-engines" class="section level2">
+<h2>⚙️ Available Execution Engines</h2>
+<p>Below is an overview of all execution engines included in
+<code>flowengineR</code>, including a short description and path to the
+corresponding template.</p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="22%" />
+<col width="18%" />
+<col width="34%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Engine Name</th>
+<th>Function Name</th>
+<th>Description</th>
+<th>Template Path</th>
+<th>Detail Page</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>execution_basic_sequential</code></td>
+<td><code>engine_execution_basic_sequential()</code></td>
+<td>Simple sequential execution loop</td>
+<td><code>inst/templates_control/2_1_a_template_control_execution_basic_sequential.R</code></td>
+<td><a href="detail_engine_execution_basic_sequential.html">📄</a></td>
+</tr>
+<tr class="even">
+<td><code>execution_basic_slurm_array</code></td>
+<td><code>engine_execution_basic_slurm_array()</code></td>
+<td>Prepare SLURM input for external execution</td>
+<td><code>inst/templates_control/2_1_b_template_control_execution_basic_slurm_array.R</code></td>
+<td><a href="detail_engine_execution_basic_slurm_array.html">📄</a></td>
+</tr>
+<tr class="odd">
+<td><code>execution_basic_batchtools_local</code></td>
+<td><code>engine_execution_basic_batchtools_local()</code></td>
+<td>Local batchtools backend execution</td>
+<td><code>inst/templates_control/2_1_c_template_control_execution_basic_batchtools_local.R</code></td>
+<td><a href="detail_engine_execution_basic_batchtools_local.html">📄</a></td>
+</tr>
+<tr class="even">
+<td><code>execution_basic_batchtools_multicore</code></td>
+<td><code>engine_execution_basic_batchtools_multicore()</code></td>
+<td>Parallel execution using multicore backend</td>
+<td><code>inst/templates_control/2_1_d_template_control_execution_basic_batchtools_multicore.R</code></td>
+<td><a href="detail_engine_execution_basic_batchtools_multicore.html">📄</a></td>
+</tr>
+<tr class="odd">
+<td><code>execution_basic_batchtools_slurm</code></td>
+<td><code>engine_execution_basic_batchtools_slurm()</code></td>
+<td>Parallel execution via SLURM backend</td>
+<td><code>inst/templates_control/2_1_e_template_control_execution_basic_batchtools_slurm.R</code></td>
+<td><a href="detail_engine_execution_basic_batchtools_slurm.html">📄</a></td>
+</tr>
+<tr class="even">
+<td><code>execution_adaptive_output_sequential</code></td>
+<td><code>engine_execution_adaptive_output_sequential()</code></td>
+<td>Adaptive execution until metric stabilizes</td>
+<td><code>inst/templates_control/2_2_a_template_execution_adaptive_output_sequential.R</code></td>
+<td><a href="detail_engine_execution_adaptive_output_sequential.html">📄</a></td>
+</tr>
+<tr class="odd">
+<td><code>execution_adaptive_output_batchtools_multicore</code></td>
+<td><code>engine_execution_adaptive_output_batchtools_multicore()</code></td>
+<td>Adaptive metric stabilization via multicore</td>
+<td><code>inst/templates_control/2_2_b_template_execution_adaptive_output_batchtools_multicore.R</code></td>
+<td><a href="detail_engine_execution_adaptive_output_batchtools_multicore.html">📄</a></td>
+</tr>
+<tr class="even">
+<td><code>execution_adaptive_output_batchtools_slurm</code></td>
+<td><code>engine_execution_adaptive_output_batchtools_slurm()</code></td>
+<td>Adaptive metric stabilization via SLURM</td>
+<td><code>inst/templates_control/2_2_c_template_execution_adaptive_output_batchtools_slurm.R</code></td>
+<td><a href="detail_engine_execution_adaptive_output_batchtools_slurm.html">📄</a></td>
+</tr>
+<tr class="odd">
+<td><code>execution_adaptive_input_scalar_sequential</code></td>
+<td><code>engine_execution_adaptive_input_scalar_sequential()</code></td>
+<td>Sequential scalar hyperparameter optimization</td>
+<td><code>inst/templates_control/2_3_a_template_execution_adaptive_input_scalar_sequential.R</code></td>
+<td><a href="detail_engine_execution_adaptive_input_scalar_sequential.html">📄</a></td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>list_registered_engines(&quot;execution&quot;)</code> to inspect all
+currently loaded splitter engines.</p>
+<hr />
+</div>
+<div id="engine-usage-in-workflow" class="section level2">
+<h2>🧩 Engine Usage <em>in</em> Workflow</h2>
+<p>To use an execution engine, configure it within your control
+object:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>control<span class="sc">$</span>engine_select<span class="sc">$</span>execution <span class="ot">&lt;-</span> <span class="st">&quot;execution_basic_sequential&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>control<span class="sc">$</span>params<span class="sc">$</span>execution <span class="ot">&lt;-</span> <span class="fu">controller_execution</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>()  <span class="co"># optional parameters</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>You can use any of the registered engines shown above, or create your
+own.</p>
+<hr />
+</div>
+<div id="resuming-after-external-execution" class="section level2">
+<h2>🔁 Resuming After External Execution</h2>
+<p>Some engines such as <code>execution_basic_slurm_array</code> prepare
+the workflow for deferred execution outside of R (e.g. SLURM).</p>
+<p>These engines write <code>control</code> and
+<code>split_output</code> to disk and expect external systems to return
+the corresponding <code>workflow_results</code>.</p>
+<p>To continue the workflow afterward, use the controller
+<code>controller_resume_execution()</code> in combination with
+<code>resume_workflow()</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>workflow_results <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;slurm_outputs/workflow_results.rds&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>resume_object <span class="ot">&lt;-</span> <span class="fu">controller_resume_execution</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">control =</span> control,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">split_output =</span> split_output,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">workflow_results =</span> workflow_results,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">metadata =</span> <span class="fu">list</span>(<span class="at">slurm_job_id =</span> <span class="st">&quot;batch123&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">resume_workflow</span>(resume_object)</span></code></pre></div>
+<p>Only the final stages (e.g., reporting and publishing) will be
+executed. Evaluation and postprocessing are expected to have been
+handled externally.</p>
+<hr />
+</div>
+<div id="writing-your-own-execution-engine" class="section level2">
+<h2>🛠️ Writing Your Own Execution Engine</h2>
+<ol style="list-style-type: decimal">
+<li>Write a wrapper <code>wrapper_execution_*()</code> with the
+standardized input/output interface.</li>
+<li>Wrap internal engine logic in an <code>engine_execution_*()</code>
+function.</li>
+<li>Use <code>initialize_output_execution()</code> to return results in
+a uniform format.</li>
+<li>(Optional) Define default parameters with
+<code>default_params_execution_*()</code>.</li>
+</ol>
+<p>You may implement engines that: - run models sequentially or in
+parallel - distribute computation to clusters or cloud environments -
+defer execution and trigger manual resumption later (e.g. SLURM)</p>
+<hr />
+</div>
+<div id="further-reading" class="section level2">
+<h2>🔍 Further Reading</h2>
+<ul>
+<li><a href="reference/run_workflow_singlesplitloop.html"><code>run_workflow_singlesplitloop()</code></a>:
+internal function used to process individual splits.</li>
+<li><a href="reference/prepare_resume_from_slurm_array.html"><code>prepare_resume_from_slurm_array()</code></a>:
+utility to continue SLURM-based execution.</li>
+<li><a href="reference/initialize_output_execution.html"><code>initialize_output_execution()</code></a>:
+creates standardized wrapper output.</li>
+<li>Templates and defaults in
+<code>inst/templates_control/2_1_*/</code></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

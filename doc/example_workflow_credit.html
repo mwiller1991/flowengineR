@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Example: Full Workflow (Credit Risk)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Example: Full Workflow (Credit Risk)</h1>
+
+
+
+<div id="objective" class="section level2">
+<h2>Objective</h2>
+<p>This vignette demonstrates a complete <code>flowengineR</code>
+workflow using a credit risk dataset, a GLM model, an in-processing
+fairness method, and reporting/publishing components.</p>
+<hr />
+</div>
+<div id="step-1-load-data-and-define-variables" class="section level2">
+<h2>Step 1: Load data and define variables</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> test_data_2_base_credit_example</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">controller_vars</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;marital_statusDivorced&quot;</span>, <span class="st">&quot;marital_statusMarried&quot;</span>, <span class="st">&quot;marital_statusSingle&quot;</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>, <span class="st">&quot;marital_statusDivorced&quot;</span>, <span class="st">&quot;marital_statusMarried&quot;</span>, <span class="st">&quot;marital_statusSingle&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="step-2-build-the-control-object" class="section level2">
+<h2>Step 2: Build the control object</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="at">log =</span> <span class="fu">list</span>(<span class="at">log_show =</span> <span class="cn">TRUE</span>, <span class="at">log_level =</span> <span class="st">&quot;info&quot;</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="at">global_seed =</span> <span class="dv">1</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="at">output_type =</span> <span class="st">&quot;response&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  ),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">list</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="at">vars =</span> vars,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">full =</span> data,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">train =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">test =</span> <span class="cn">NULL</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  ),</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">engine_select =</span> <span class="fu">list</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="at">split =</span> <span class="st">&quot;split_random_stratified&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="at">execution =</span> <span class="st">&quot;execution_adaptive_output_sequential&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="at">preprocessing =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    <span class="at">train =</span> <span class="st">&quot;train_glm&quot;</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    <span class="at">inprocessing =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="st">&quot;postprocessing_fairness_genresidual&quot;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>    <span class="at">evaluation =</span> <span class="fu">list</span>(<span class="st">&quot;eval_mse&quot;</span>, <span class="st">&quot;eval_summarystats&quot;</span>, <span class="st">&quot;eval_statisticalparity&quot;</span>),</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>    <span class="at">reportelement =</span> <span class="fu">list</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>      <span class="at">gender_box_raw =</span> <span class="st">&quot;reportelement_boxplot_predictions&quot;</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>      <span class="at">gender_box_adjusted =</span> <span class="st">&quot;reportelement_boxplot_predictions&quot;</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>      <span class="at">age_box =</span> <span class="st">&quot;reportelement_boxplot_predictions&quot;</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>      <span class="at">metrics_table =</span> <span class="st">&quot;reportelement_table_splitmetrics&quot;</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>      <span class="at">text_mse_summary =</span> <span class="st">&quot;reportelement_text_msesummary&quot;</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>    ),</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>    <span class="at">report =</span> <span class="fu">list</span>(<span class="at">modelsummary =</span> <span class="st">&quot;report_modelsummary&quot;</span>),</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>    <span class="at">publish =</span> <span class="fu">list</span>(</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>      <span class="at">pdf_basis_test_report =</span> <span class="st">&quot;publish_pdf_basis&quot;</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>      <span class="at">pdf_basis_test_singleelement =</span> <span class="st">&quot;publish_pdf_basis&quot;</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>      <span class="at">excel_basis_test_singleelement =</span> <span class="st">&quot;publish_excel_basis&quot;</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>    )</span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>  ),</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>    <span class="at">split =</span> <span class="fu">controller_split</span>(</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>      <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(<span class="at">split_ratio =</span> <span class="fl">0.6</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a>    ),</span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>    <span class="at">execution =</span> <span class="fu">controller_execution</span>(</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>        <span class="at">metric_name =</span> <span class="st">&quot;mse&quot;</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a>        <span class="at">metric_source =</span> <span class="st">&quot;eval_mse&quot;</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>        <span class="at">stability_strategy =</span> <span class="st">&quot;cohen_absolute&quot;</span>,</span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a>        <span class="at">threshold =</span> <span class="fl">0.2</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>        <span class="at">window =</span> <span class="dv">3</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a>        <span class="at">min_splits =</span> <span class="dv">5</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>        <span class="at">max_splits =</span> <span class="dv">10</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a>      )</span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>    ),</span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">controller_training</span>(</span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>      <span class="at">formula =</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(vars<span class="sc">$</span>target_var, <span class="st">&quot;~&quot;</span>, <span class="fu">paste</span>(vars<span class="sc">$</span>feature_vars, <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>), <span class="st">&quot;+&quot;</span>, <span class="fu">paste</span>(vars<span class="sc">$</span>protected_vars, <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>))),</span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a>      <span class="at">norm_data =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a>    ),</span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a>    <span class="at">inprocessing =</span> <span class="fu">controller_preprocessing</span>(</span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(<span class="at">learning_rate =</span> <span class="fl">0.1</span>, <span class="at">num_epochs =</span> <span class="dv">1000</span>, <span class="at">num_adversary_steps =</span> <span class="dv">10</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a>    ),</span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">controller_evaluation</span>(</span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a>        <span class="at">eval_mse =</span> <span class="fu">list</span>(),</span>
+<span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a>        <span class="at">eval_statisticalparity =</span> <span class="fu">list</span>()</span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a>      )</span>
+<span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a>    ),</span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>    <span class="at">reportelement =</span> <span class="fu">controller_reportelement</span>(</span>
+<span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>        <span class="at">gender_box_raw =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;genderMale&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>        <span class="at">gender_box_adjusted =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;genderMale&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>        <span class="at">age_box =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;age_group.50+&quot;</span>),</span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>        <span class="at">metrics_table =</span> <span class="fu">list</span>(<span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">&quot;mse&quot;</span>, <span class="st">&quot;statisticalparity&quot;</span>, <span class="st">&quot;summarystats&quot;</span>)),</span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>        <span class="at">text_mse_summary =</span> <span class="fu">list</span>()</span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>      )</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>    ),</span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a>    <span class="at">report =</span> <span class="fu">controller_report</span>(</span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(<span class="at">modelsummary =</span> <span class="fu">list</span>(</span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a>        <span class="at">mse_text =</span> <span class="st">&quot;text_mse_summary&quot;</span>,</span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a>        <span class="at">gender_box =</span> <span class="st">&quot;gender_box_adjusted&quot;</span>,</span>
+<span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a>        <span class="at">age_box =</span> <span class="st">&quot;age_box&quot;</span>,</span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a>        <span class="at">metrics_table =</span> <span class="st">&quot;metrics_table&quot;</span></span>
+<span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a>      ))</span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a>    ),</span>
+<span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a>    <span class="at">publish =</span> <span class="fu">controller_publish</span>(</span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a>      <span class="at">output_folder =</span> <span class="st">&quot;~/publish_exports&quot;</span>,</span>
+<span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>        <span class="at">pdf_basis_test_singleelement =</span> <span class="fu">list</span>(<span class="at">obj_name =</span> <span class="st">&quot;text_mse_summary&quot;</span>, <span class="at">obj_type =</span> <span class="st">&quot;reportelement&quot;</span>),</span>
+<span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a>        <span class="at">pdf_basis_test_report =</span> <span class="fu">list</span>(<span class="at">obj_name =</span> <span class="st">&quot;modelsummary&quot;</span>, <span class="at">obj_type =</span> <span class="st">&quot;report&quot;</span>),</span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>        <span class="at">excel_basis_test_singleelement =</span> <span class="fu">list</span>(<span class="at">obj_name =</span> <span class="st">&quot;metrics_table&quot;</span>, <span class="at">obj_type =</span> <span class="st">&quot;reportelement&quot;</span>)</span>
+<span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a>      )</span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>    )</span>
+<span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a>  )</span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="step-3-run-the-workflow" class="section level2">
+<h2>Step 3: Run the workflow</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">run_workflow</span>(control)</span></code></pre></div>
+<pre><code>## [94m[MASTER] Initializing control object with defaults...[0m</code></pre>
+<pre><code>## [94m[MASTER] Using split engine: split_random_stratified[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 123.[0m</code></pre>
+<pre><code>## [94m[MASTER] Using execution engine: execution_adaptive_output_sequential[0m</code></pre>
+<pre><code>## [94m[EXECUTION] Starting adaptive sequential execution...[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1001.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.102720[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.018067, genderMale 0.018067, age_group.&lt;30 0.024256, age_group.30-50 0.001780, age_group.50+ 0.019443, marital_statusDivorced 0.001502, marital_statusMarried 0.025674, marital_statusSingle 0.023581[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1002.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.084323[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.009373, genderMale 0.009373, age_group.&lt;30 0.017950, age_group.30-50 0.010376, age_group.50+ 0.022604, marital_statusDivorced 0.050876, marital_statusMarried 0.048831, marital_statusSingle 0.003680[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1003.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.113620[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.002576, genderMale 0.002576, age_group.&lt;30 0.023195, age_group.30-50 0.016946, age_group.50+ 0.030993, marital_statusDivorced 0.008446, marital_statusMarried 0.041024, marital_statusSingle 0.033548[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1004.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.107880[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.005279, genderMale 0.005279, age_group.&lt;30 0.002062, age_group.30-50 0.004726, age_group.50+ 0.005709, marital_statusDivorced 0.009148, marital_statusMarried 0.002583, marital_statusSingle 0.007504[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1005.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.105812[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.007707, genderMale 0.007707, age_group.&lt;30 0.009854, age_group.30-50 0.005385, age_group.50+ 0.012196, marital_statusDivorced 0.006608, marital_statusMarried 0.010803, marital_statusSingle 0.004275[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1006.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.07 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.101297[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.005333, genderMale 0.005333, age_group.&lt;30 0.002159, age_group.30-50 0.004579, age_group.50+ 0.005552, marital_statusDivorced 0.009204, marital_statusMarried 0.025471, marital_statusSingle 0.013172[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1007.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.093352[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.027225, genderMale 0.027225, age_group.&lt;30 0.031301, age_group.30-50 0.002556, age_group.50+ 0.023549, marital_statusDivorced 0.008944, marital_statusMarried 0.010039, marital_statusSingle 0.000595[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[EXECUTION] Stability reached (cohen_absolute): 0.1979 &lt; 0.2000 after 7 splits.[0m</code></pre>
+<pre><code>## [94m[MASTER] Proceeding to reporting and publishing...[0m</code></pre>
+<pre><code>## [94m[CONTINUE] Aggregating workflow results...[0m</code></pre>
+<pre><code>## [94m[CONTINUE] Generating reportelements...[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;gender_box_raw&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;genderMale&#39; and source = &#39;train&#39;.[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;gender_box_adjusted&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;genderMale&#39; and source = &#39;train&#39;.[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;age_box&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;age_group.50+&#39; and source = &#39;train&#39;.[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_table_splitmetrics&#39; for alias &#39;metrics_table&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Table generated with 7 rows and 22 columns.[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_text_msesummary&#39; for alias &#39;text_mse_summary&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] MSE summary generated: Der durchschnittliche MSE ueber alle Splits betraegt 0.1013.[0m</code></pre>
+<pre><code>## [94m[CONTINUE] Generating full reports...[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Running report engine &#39;report_modelsummary&#39; for alias &#39;modelsummary&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORT] Generating model summary report for alias &#39;modelsummary&#39;...[0m</code></pre>
+<pre><code>## [94m[REPORT] Model summary report generated with 3 sections.[0m</code></pre>
+<pre><code>## [94m[CONTINUE] Running publishing engines...[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Publishing &#39;pdf_basis_test_report&#39; with engine &#39;publish_pdf_basis&#39;...[0m</code></pre>
+<pre><code>## [94m[PUBLISH] Starting PDF export for alias &#39;pdf_basis_test_report&#39;...[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Publishing &#39;pdf_basis_test_singleelement&#39; with engine &#39;publish_pdf_basis&#39;...[0m</code></pre>
+<pre><code>## [94m[PUBLISH] Starting PDF export for alias &#39;pdf_basis_test_singleelement&#39;...[0m</code></pre>
+<pre><code>## [90m[CONTINUE] Publishing &#39;excel_basis_test_singleelement&#39; with engine &#39;publish_excel_basis&#39;...[0m</code></pre>
+<pre><code>## [94m[PUBLISH] Starting Excel export for alias &#39;excel_basis_test_singleelement&#39;...[0m</code></pre>
+<pre><code>## Warning in file.create(to[okay]): cannot create file
+## &#39;~/publish_exports/excel_basis_test_singleelement.xlsx&#39;, reason &#39;No such file
+## or directory&#39;</code></pre>
+<pre><code>## Warning in normalizePath(final_path):
+## path[1]=&quot;/Users/maximilianwiller/publish_exports/excel_basis_test_singleelement.xlsx&quot;:
+## No such file or directory</code></pre>
+<pre><code>## [94m[PUBLISH] Excel export completed: /Users/maximilianwiller/publish_exports/excel_basis_test_singleelement.xlsx[0m</code></pre>
+<pre><code>## [94m[CONTINUE] Workflow fully completed.[0m</code></pre>
+<hr />
+</div>
+<div id="step-4-inspect-results" class="section level2">
+<h2>Step 4: Inspect results</h2>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" tabindex="-1"></a><span class="co"># Aggregated metrics across all splits</span></span>
+<span id="cb171-2"><a href="#cb171-2" tabindex="-1"></a>result<span class="sc">$</span>aggregated_results</span></code></pre></div>
+<pre><code>## $mse
+## $mse$mean
+## [1] 0.1012864
+## 
+## $mse$sd
+## [1] 0.009736867
+## 
+## $mse$min
+## [1] 0.0843231
+## 
+## $mse$max
+## [1] 0.1136203
+## 
+## 
+## $summary_stats
+## $summary_stats$mean
+## $summary_stats$mean$mean
+## [1] 0.1128571
+## 
+## $summary_stats$mean$sd
+## [1] 0.01286375
+## 
+## 
+## $summary_stats$median
+## $summary_stats$median$mean
+## [1] 0.1140003
+## 
+## $summary_stats$median$sd
+## [1] 0.01357497
+## 
+## 
+## $summary_stats$sd
+## $summary_stats$sd$mean
+## [1] 0.03206645
+## 
+## $summary_stats$sd$sd
+## [1] 0.006890034
+## 
+## 
+## $summary_stats$var
+## $summary_stats$var$mean
+## [1] 0.001068948
+## 
+## $summary_stats$var$sd
+## [1] 0.0004159606
+## 
+## 
+## $summary_stats$min
+## $summary_stats$min$mean
+## [1] 0.02062472
+## 
+## $summary_stats$min$sd
+## [1] 0.02526891
+## 
+## 
+## $summary_stats$max
+## $summary_stats$max$mean
+## [1] 0.1985774
+## 
+## $summary_stats$max$sd
+## [1] 0.02400438
+## 
+## 
+## $summary_stats$`quantile_25.25%`
+## $summary_stats$`quantile_25.25%`$mean
+## [1] 0.08994455
+## 
+## $summary_stats$`quantile_25.25%`$sd
+## [1] 0.01535497
+## 
+## 
+## $summary_stats$`quantile_75.75%`
+## $summary_stats$`quantile_75.75%`$mean
+## [1] 0.1350589
+## 
+## $summary_stats$`quantile_75.75%`$sd
+## [1] 0.0132565
+## 
+## 
+## $summary_stats$iqr
+## $summary_stats$iqr$mean
+## [1] 0.04511436
+## 
+## $summary_stats$iqr$sd
+## [1] 0.01118795
+## 
+## 
+## $summary_stats$skewness
+## $summary_stats$skewness$mean
+## [1] -0.03413554
+## 
+## $summary_stats$skewness$sd
+## [1] 0.1851195
+## 
+## 
+## $summary_stats$kurtosis
+## $summary_stats$kurtosis$mean
+## [1] 2.749781
+## 
+## $summary_stats$kurtosis$sd
+## [1] 0.2729235
+## 
+## 
+## $summary_stats$range
+## $summary_stats$range$mean
+## [1] 0.1779526
+## 
+## $summary_stats$range$sd
+## [1] 0.03818754
+## 
+## 
+## 
+## $spd
+## $spd$genderFemale
+## $spd$genderFemale$mean
+## [1] 0.01079425
+## 
+## $spd$genderFemale$sd
+## [1] 0.008776777
+## 
+## 
+## $spd$genderMale
+## $spd$genderMale$mean
+## [1] 0.01079425
+## 
+## $spd$genderMale$sd
+## [1] 0.008776777
+## 
+## 
+## $spd$`age_group.&lt;30`
+## $spd$`age_group.&lt;30`$mean
+## [1] 0.0158254
+## 
+## $spd$`age_group.&lt;30`$sd
+## [1] 0.01141088
+## 
+## 
+## $spd$`age_group.30-50`
+## $spd$`age_group.30-50`$mean
+## [1] 0.006621018
+## 
+## $spd$`age_group.30-50`$sd
+## [1] 0.005322103
+## 
+## 
+## $spd$`age_group.50+`
+## $spd$`age_group.50+`$mean
+## [1] 0.01714948
+## 
+## $spd$`age_group.50+`$sd
+## [1] 0.009639486
+## 
+## 
+## $spd$marital_statusDivorced
+## $spd$marital_statusDivorced$mean
+## [1] 0.01353271
+## 
+## $spd$marital_statusDivorced$sd
+## [1] 0.01669385
+## 
+## 
+## $spd$marital_statusMarried
+## $spd$marital_statusMarried$mean
+## [1] 0.02348943
+## 
+## $spd$marital_statusMarried$sd
+## [1] 0.01701639
+## 
+## 
+## $spd$marital_statusSingle
+## $spd$marital_statusSingle$mean
+## [1] 0.01233649
+## 
+## $spd$marital_statusSingle$sd
+## [1] 0.01209841</code></pre>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="#cb173-1" tabindex="-1"></a><span class="co"># Reportelement outputs</span></span>
+<span id="cb173-2"><a href="#cb173-2" tabindex="-1"></a>result<span class="sc">$</span>reportelements<span class="sc">$</span>metrics_table</span></code></pre></div>
+<pre><code>## $type
+## [1] &quot;table&quot;
+## 
+## $content
+##    split    mse_mse statisticalparity_genderFemale statisticalparity_genderMale
+## 1 split1 0.10272019                    0.018066504                  0.018066504
+## 2 split2 0.08432310                    0.009372929                  0.009372929
+## 3 split3 0.11362033                    0.002575941                  0.002575941
+## 4 split4 0.10788020                    0.005278672                  0.005278672
+## 5 split5 0.10581175                    0.007707337                  0.007707337
+## 6 split6 0.10129683                    0.005333285                  0.005333285
+## 7 split7 0.09335247                    0.027225066                  0.027225066
+##   statisticalparity_age_group..30 statisticalparity_age_group.30.50
+## 1                     0.024256065                       0.001779861
+## 2                     0.017950095                       0.010376259
+## 3                     0.023194899                       0.016945504
+## 4                     0.002062142                       0.004725861
+## 5                     0.009854350                       0.005384936
+## 6                     0.002159066                       0.004578749
+## 7                     0.031301179                       0.002555960
+##   statisticalparity_age_group.50. statisticalparity_marital_statusDivorced
+## 1                     0.019443193                              0.001501953
+## 2                     0.022603526                              0.050876149
+## 3                     0.030993001                              0.008446429
+## 4                     0.005709225                              0.009148478
+## 5                     0.012196436                              0.006608252
+## 6                     0.005552002                              0.009203658
+## 7                     0.023548994                              0.008944030
+##   statisticalparity_marital_statusMarried
+## 1                             0.025674342
+## 2                             0.048831403
+## 3                             0.041024423
+## 4                             0.002582905
+## 5                             0.010803008
+## 6                             0.025471290
+## 7                             0.010038618
+##   statisticalparity_marital_statusSingle summarystats_mean summarystats_median
+## 1                           0.0235813608            0.1150          0.11701134
+## 2                           0.0036797818            0.0900          0.08996893
+## 3                           0.0335484332            0.1275          0.12750030
+## 4                           0.0075037108            0.1225          0.12463423
+## 5                           0.0042753337            0.1200          0.12177798
+## 6                           0.0131717762            0.1125          0.11576455
+## 7                           0.0005950538            0.1025          0.10134448
+##   summarystats_sd summarystats_var summarystats_min summarystats_max
+## 1      0.03331519     0.0011099018       0.01167685        0.2176667
+## 2      0.03441766     0.0011845756       0.00447937        0.1776686
+## 3      0.04122958     0.0016998787       0.02117260        0.2397811
+## 4      0.02660430     0.0007077887       0.04529079        0.1962854
+## 5      0.01979315     0.0003917689       0.06188608        0.1696309
+## 6      0.03524317     0.0012420809      -0.01277292        0.1881168
+## 7      0.03386209     0.0011466412       0.01264026        0.2008920
+##   summarystats_quantile_25.25. summarystats_quantile_75.75. summarystats_iqr
+## 1                   0.09232846                    0.1367439       0.04441540
+## 2                   0.06358617                    0.1165209       0.05293474
+## 3                   0.09727602                    0.1572202       0.05994421
+## 4                   0.10490466                    0.1407836       0.03587892
+## 5                   0.10676880                    0.1334901       0.02672125
+## 6                   0.08678764                    0.1385964       0.05180876
+## 7                   0.07796012                    0.1220573       0.04409722
+##   summarystats_skewness summarystats_kurtosis summarystats_range
+## 1            0.04616137              3.206831          0.2059898
+## 2            0.02004858              2.424961          0.1731892
+## 3            0.04849271              2.500900          0.2186085
+## 4           -0.18517959              2.864474          0.1509947
+## 5           -0.18490221              2.558871          0.1077448
+## 6           -0.25661730              2.811722          0.2008897
+## 7            0.27304765              2.880704          0.1882518
+## 
+## $compatible_formats
+## [1] &quot;pdf&quot;  &quot;html&quot; &quot;xlsx&quot; &quot;json&quot;
+## 
+## $input_data
+## [1] &quot;split1&quot; &quot;split2&quot; &quot;split3&quot; &quot;split4&quot; &quot;split5&quot; &quot;split6&quot; &quot;split7&quot;
+## 
+## $params
+## $params$metrics
+## [1] &quot;mse&quot;               &quot;statisticalparity&quot; &quot;summarystats&quot;     
+## 
+## 
+## $specific_output
+## $specific_output$n_splits
+## [1] 7
+## 
+## $specific_output$alias
+## [1] &quot;metrics_table&quot;</code></pre>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" tabindex="-1"></a><span class="co"># Published report file info</span></span>
+<span id="cb175-2"><a href="#cb175-2" tabindex="-1"></a>result<span class="sc">$</span>publishing</span></code></pre></div>
+<pre><code>## $pdf_basis_test_report
+## $pdf_basis_test_report$alias
+## function (object, ...) 
+## UseMethod(&quot;alias&quot;)
+## &lt;bytecode: 0x110f01008&gt;
+## &lt;environment: namespace:stats&gt;
+## 
+## $pdf_basis_test_report$type
+## [1] &quot;report&quot;
+## 
+## $pdf_basis_test_report$engine
+## [1] &quot;publish_pdf_basis&quot;
+## 
+## $pdf_basis_test_report$path
+## [1] &quot;~/publish_exports/pdf_basis_test_report.pdf&quot;
+## 
+## $pdf_basis_test_report$success
+## [1] FALSE
+## 
+## $pdf_basis_test_report$params
+## $pdf_basis_test_report$params$obj_name
+## [1] &quot;modelsummary&quot;
+## 
+## $pdf_basis_test_report$params$obj_type
+## [1] &quot;report&quot;
+## 
+## 
+## $pdf_basis_test_report$specific_output
+## $pdf_basis_test_report$specific_output$error
+## [1] &quot;The directory &#39;/Users/maximilianwiller/publish_exports&#39; does not exist.&quot;
+## 
+## 
+## 
+## $pdf_basis_test_singleelement
+## $pdf_basis_test_singleelement$alias
+## function (object, ...) 
+## UseMethod(&quot;alias&quot;)
+## &lt;bytecode: 0x110f01008&gt;
+## &lt;environment: namespace:stats&gt;
+## 
+## $pdf_basis_test_singleelement$type
+## [1] &quot;reportelement&quot;
+## 
+## $pdf_basis_test_singleelement$engine
+## [1] &quot;publish_pdf_basis&quot;
+## 
+## $pdf_basis_test_singleelement$path
+## [1] &quot;~/publish_exports/pdf_basis_test_singleelement.pdf&quot;
+## 
+## $pdf_basis_test_singleelement$success
+## [1] FALSE
+## 
+## $pdf_basis_test_singleelement$params
+## $pdf_basis_test_singleelement$params$obj_name
+## [1] &quot;text_mse_summary&quot;
+## 
+## $pdf_basis_test_singleelement$params$obj_type
+## [1] &quot;reportelement&quot;
+## 
+## 
+## $pdf_basis_test_singleelement$specific_output
+## $pdf_basis_test_singleelement$specific_output$error
+## [1] &quot;The directory &#39;/Users/maximilianwiller/publish_exports&#39; does not exist.&quot;
+## 
+## 
+## 
+## $excel_basis_test_singleelement
+## $excel_basis_test_singleelement$alias
+## [1] &quot;excel_basis_test_singleelement&quot;
+## 
+## $excel_basis_test_singleelement$type
+## [1] &quot;reportelement&quot;
+## 
+## $excel_basis_test_singleelement$engine
+## [1] &quot;publish_excel_basis&quot;
+## 
+## $excel_basis_test_singleelement$path
+## [1] &quot;/Users/maximilianwiller/publish_exports/excel_basis_test_singleelement.xlsx&quot;
+## 
+## $excel_basis_test_singleelement$success
+## [1] TRUE
+## 
+## $excel_basis_test_singleelement$params
+## $excel_basis_test_singleelement$params$obj_name
+## [1] &quot;metrics_table&quot;
+## 
+## $excel_basis_test_singleelement$params$obj_type
+## [1] &quot;reportelement&quot;
+## 
+## 
+## $excel_basis_test_singleelement$specific_output
+## NULL</code></pre>
+<hr />
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>This full workflow demonstrates how <code>flowengineR</code> can be
+used to perform a modular algorithmic analysis, including fairness
+optimization and publishing support.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

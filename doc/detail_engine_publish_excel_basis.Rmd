@@ -1,0 +1,70 @@
+---
+title: "In Detail: Publishing Engine – Excel Basis Export"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Publishing Engine – Excel Basis Export}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Excel Basis Export (`publish_excel_basis`)
+
+### Purpose and Function
+This publishing engine creates an Excel (.xlsx) file from a structured report object, using the `openxlsx` package. Each report section is written to a separate sheet, and both text and table elements are rendered in a linear top-down layout.
+This engine is useful for exporting model reports in a format suitable for further editing or integration into external tools such as Excel dashboards or project documentation.
+
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `object`: A structured report object created using `initialize_output_report()` or `initialize_output_reportelement()`(⚠️ provided directly by the workflow).
+- `file_path`: Transformed from `control$params$publish$output_folder` and alias_publish. File path where the Excel file should be saved.
+- `params`: Optional list of publishing parameters (not used in this engine).
+- `alias_publish`: Character string identifying this publishing instance.
+
+### Engine-specific Parameters
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| –        | –    | –       | This engine does not use any engine-specific parameters. |
+
+### Output Structure
+
+Returned via `initialize_output_publish()`:
+
+- `alias`: The publishing alias.
+- `type`: `"report"` or `"reportelement"`.
+- `engine`: `"publish_excel_basis"`.
+- `path`: Path to the saved Excel file.
+- `success`: TRUE/FALSE depending on render outcome.
+- `params`: Parameters used for publishing.
+- `specific_output`: Error info or metadata.
+
+### Format Compatibility
+
+This engine **requires** the input object to support `"excel"` in its `compatible_formats` field. Otherwise, publishing will fail.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_publish()`
+- **Wrapper Function:** `wrapper_publish_excel_basis()`
+- **Engine Function:** `engine_publish_excel_basis()`
+- **Position in Flow:** End of pipeline
+- **Use Case:** Export reports as shareable excel documents
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/10_b_template_publish_excel.R`
+
+### Example Configuration
+```r
+control$engine_select$publish <- list("main_excel" = "publish_excel_basis")
+control$params$publish <- controller_publish(
+  params = list(
+    main_excel = list(
+    obj_name = "reportelement_table_splitmetrics", 
+    obj_type = "reportelement")    
+  )
+)
+```

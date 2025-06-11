@@ -26,7 +26,7 @@
 #' @param abort Logical. If `TRUE` and level is `"error"`, the function will stop execution.
 #'
 #' @return Invisibly returns `NULL`. Used for side-effect printing only.
-#' @keywords internal
+#' @export
 log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
   if (is.null(control) || !isTRUE(control$settings$log$log_show)) return(invisible(NULL))
   
@@ -173,8 +173,8 @@ complete_control_with_defaults <- function(control) {
   if (is.null(control$engine_select$evaluation)) {
     control$engine_select$evaluation <- list("eval_mse", "eval_summarystats", "eval_statisticalparity")
   }
-  if (is.null(control$params$eval)) {
-    control$params$eval <- controller_evaluation()
+  if (is.null(control$params$evaluation)) {
+    control$params$evaluation <- controller_evaluation()
   }
   
   # Optional modules: initialize only if selected
@@ -231,7 +231,7 @@ complete_control_with_defaults <- function(control) {
 #' @return Either a filtered named list (if `type` is provided), or a named list of engine groups.
 #' @export
 list_registered_engines <- function(type = NULL) {
-  all_engines <- engines
+  all_engines <- flowengineR_env$engines
   
   if (!is.null(type)) {
     filtered <- all_engines[grepl(paste0("^", type, "_"), names(all_engines))]
@@ -392,11 +392,12 @@ apply_minmax_params <- function(data, params) {
 #'
 #' **Usage Example (inside training engine):**
 #' ```r
-#' training_data <- select_training_data(control)
+#' training_data <- select_training_data(control$params$train$norm_data, control$params$train$data)
 #' model <- train(formula = control$params$train$formula, data = training_data, ...)
 #' ```
 #'
-#' @param control The standardized control object passed to the training engine.
+#' @param norm_data Logical flag indicating if normalized data should be used.
+#' @param data A list with `original` and `normalized` elements.
 #'
 #' @return A data frame used for model training.
 #' @export

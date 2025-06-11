@@ -6,7 +6,7 @@
 control$engine_select$train <- "train_glm"
 
 # 2. Training Parameters
-control$params$train <- controller_train(
+control$params$train <- controller_training(
   formula = target ~ .,           # Formula for GLM
   norm_data = TRUE,               # Use normalized data if available
   params = list(

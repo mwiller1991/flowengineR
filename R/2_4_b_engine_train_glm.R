@@ -52,7 +52,7 @@ engine_train_glm <- function(formula, family, data, sample_weight) {
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$train <- "train_glm"
-#' control$params$train <- controller_train(
+#' control$params$train <- controller_training(
 #'   formula = target ~ .,
 #'   norm_data = TRUE,
 #'   params = list(
@@ -63,7 +63,7 @@ engine_train_glm <- function(formula, family, data, sample_weight) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/3_b_template_train_glm.R`
+#' See full template in `inst/templates_control/4_b_template_train_glm.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' - A structured list created by `initialize_output_train()`:
@@ -77,10 +77,10 @@ engine_train_glm <- function(formula, family, data, sample_weight) {
 #'   [engine_train_glm()],  
 #'   [default_params_train_glm()],  
 #'   [initialize_output_train()],  
-#'   [controller_train()],  
-#'   Template: `inst/templates_control/3_b_template_train_glm.R`
+#'   [controller_training()],  
+#'   Template: `inst/templates_control/4_b_template_train_glm.R`
 #'
-#' @param control A standardized control object (see `controller_train()`).
+#' @param control A standardized control object (see `controller_training()`).
 #' @return A standardized output list structured via `initialize_output_train()`.
 #' @keywords internal
 wrapper_train_glm <- function(control) {

@@ -8,7 +8,7 @@ control$engine_select$execution <- "execution_adaptive_input_scalar_sequential"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    param_path = "train_params$n.trees",   # Path to scalar param (dot/`$` notation inside control)
+    param_path = "train$params$ntree",   # Path to scalar param (dot/`$` notation inside control)
     param_start = 10,                      # Initial value for param
     param_step = 10,                       # Step size between iterations
     direction = "minimize",                # Either "minimize" or "maximize"

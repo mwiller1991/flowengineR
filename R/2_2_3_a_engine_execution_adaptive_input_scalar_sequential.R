@@ -101,11 +101,20 @@ engine_execution_adaptive_input_scalar_sequential <- function(control) {
 wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_output) {
   log_msg("[EXECUTION] Starting scalar parameter optimization...", level = "info", control = control)
   
+  if (length(split_output$splits) != 1) {
+    stop(sprintf(
+      "Adaptive execution requires a splitter that returns exactly one split. Got %d from '%s'.",
+      length(split_output$splits),
+      control$engine_select$split
+    ))
+  }
+  
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_adaptive_input_scalar_sequential())
   
   metric_values <- numeric()
   param_values <- numeric()
   workflow_results <- list()
+  all_workflow_results <- list()
   
   split <- split_output$splits[[1]]
   control$data$train <- split$train
@@ -115,16 +124,16 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
   best_metric <- if (params$direction == "minimize") Inf else -Inf
   best_result <- NULL
   best_param <- NULL
-  
+
   for (i in seq_len(params$max_iterations)) {
     param_values[i] <- current_value
     split_id <- paste0("param", i)
     
     # Set value via dynamic assignment
-    eval(parse(text = paste0("control$", params$param_path, " <- ", current_value)))
+    eval(parse(text = paste0("control$params$", params$param_path, " <- ", current_value)))
     
     result <- run_workflow_singlesplitloop(control)
-    workflow_results[[split_id]] <- result
+    all_workflow_results[[split_id]] <- result
     metric <- result$output_eval[[params$metric_source]]$metrics[[params$metric_name]]
     metric_values[i] <- metric
     
@@ -145,6 +154,7 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
         "[EXECUTION] No further improvement after %d iterations (best = %.4f). Stopping.",
         i, best_metric
       ), level = "info", control = control)
+      workflow_results[[split_output$split_type]] <- result
       break
     }
   }
@@ -159,6 +169,7 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
       metric_source = params$metric_source,
       values = metric_values,
       param_values = param_values,
+      all_workflow_results = all_workflow_results,
       best_metric = best_metric,
       best_param = best_param,
       best_result = best_result
@@ -192,7 +203,7 @@ wrapper_execution_adaptive_input_scalar_sequential <- function(control, split_ou
 #' @keywords internal
 default_params_execution_adaptive_input_scalar_sequential <- function() {
   list(
-    param_path = "train_params$n.trees",
+    param_path = "train$params$ntree",
     param_start = 10,
     param_step = 10,
     direction = "minimize",

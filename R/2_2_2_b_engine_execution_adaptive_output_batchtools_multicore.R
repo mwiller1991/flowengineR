@@ -147,7 +147,7 @@ wrapper_execution_adaptive_output_batchtools_multicore <- function(control, spli
     for (j in seq_along(seeds)) {
       split_seed <- seeds[j]
       control$params$split$seed <- split_seed
-      split_result <- engines[[control$engine_select$split]](control)
+      split_result <- flowengineR_env$engines[[control$engine_select$split]](control)
       split <- split_result$splits[[1]]
       
       split_id <- paste0("split", length(metric_values) + j)

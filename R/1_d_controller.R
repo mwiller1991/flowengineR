@@ -68,13 +68,11 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' - Facilitates modular extension of the framework.
 #'
 #' **Automated Variable Handling:**
-#' - `target_var` is **optional** and will be automatically set via `control$data$vars$target_var`
-#'   using `autofill_controllers_from_vars()` if not provided.
+#' - target_var will be automatically set via `control$data$vars$target_var`
 #' - This requires the prior use of `controller_vars()` when setting up the control object.
 #'
 #' **Standardized Structure:**
 #' - `seed`: Integer seed for reproducibility.
-#' - `target_var`: *(autofilled)* Character string used for stratified or CV-based splitting.
 #' - `params`: Named list of engine-specific hyperparameters (e.g., `split_ratio`, `cv_folds`).
 #'
 #' **Usage Example:**
@@ -86,7 +84,6 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' ```
 #'
 #' @param seed Optional integer for reproducibility. Default is `123`.
-#' @param target_var Optional character. Name of the target variable (autofilled if not provided).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{flowengineR} modules.
@@ -164,13 +161,10 @@ controller_execution <- function(params = list()) {
 #' - Enables flexible customization of the data pipeline (e.g., stratification, normalization helpers, resampling strategies).
 #'
 #' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are **automatically filled** from `control$data$vars`
-#'   if not manually specified.
+#' - protected_attributes and target_var are **automatically filled** from `control$data$vars`
 #' - This requires the use of `controller_vars()` to define the necessary references.
 #'
 #' **Standardized Structure:**
-#' - `protected_attributes`: *(autofilled)* Character vector of attribute names used for group-wise preprocessing (optional).
-#' - `target_var`: *(autofilled)* Character string of the prediction target variable.
 #' - `params`: A named list of engine-specific configuration options.
 #'
 #' **Usage Example:**
@@ -259,13 +253,11 @@ controller_training <- function(formula = as.formula(paste(vars$target_var, "~",
 #' - Enables direct influence on the model training logic (e.g., bias penalties, group-specific loss weights).
 #'
 #' **Automated Variable Handling:**
-#' - `protected_attributes` and `target_var` are **automatically derived** from `control$data$vars`
+#' - protected_attributes and target_var are **automatically derived** from `control$data$vars`
 #'   if not manually specified.
 #' - This requires prior definition via `controller_vars()`.
 #'
 #' **Standardized Structure:**
-#' - `protected_attributes`: *(autofilled)* Character vector of relevant attributes (e.g., grouping or constraint targets).
-#' - `target_var`: *(autofilled)* Name of the target variable.
 #' - `norm_data`: Logical. Whether to use normalized data (default: `TRUE`).
 #' - `params`: A named list of engine-specific hyperparameters.
 #'
@@ -325,7 +317,6 @@ controller_inprocessing <- function(norm_data = TRUE, params = list()) {
 #' - Column names used in postprocessing must match those in `protected_vars_binary`.
 #'
 #' **Standardized Structure:**
-#' - `protected_name`: *(autofilled)* Character vector of binary/grouping attributes.
 #' - `params`: Named list of additional configuration passed to the engine.
 #'
 #' **Usage Example:**
@@ -365,17 +356,16 @@ controller_postprocessing <- function(params = list()) {
 #' - Defines engine-specific configurations for individual evaluation methods.
 #'
 #' **Automated Variable Handling:**
-#' - `protected_name` is **automatically derived** from `control$data$vars$protected_vars_binary`.
+#' - protected_name is **automatically derived** from `control$data$vars$protected_vars_binary`.
 #' - Users do **not need to set this manually**.
 #' - This requires prior use of `controller_vars()` to define binary indicators for protected attributes.
 #'
 #' **Binary Attribute Requirement:**
-#' - All attributes in `protected_name` must be **binary** (e.g., 0/1, TRUE/FALSE).
+#' - All attributes in protected_name must be **binary** (e.g., 0/1, TRUE/FALSE).
 #' - Multi-class or continuous variables must be converted to binary before being passed into `protected_vars_binary`.
 #' - Evaluation engines will throw an error or produce invalid results if this condition is not met.
 #'
 #' **Standardized Structure:**
-#' - `protected_name`: *(autofilled)* Character vector of binary/grouped protected attributes.
 #' - `params`: Named list of parameter lists, each keyed by evaluation engine name (e.g., `"eval_mse"`).
 #'
 #' **Usage Example:**

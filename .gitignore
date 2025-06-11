@@ -1,6 +1,56 @@
-.Rproj.user
+# -------------------------------------
+# RStudio-specific
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
+.RDataTmp
+
+# -------------------------------------
+# R package build artifacts
+.Rcheck/
+.Rbuildignore
+*.tar.gz
+*.tgz
+*.zip
+*.Rproj
+NAMESPACE
+man/*.Rd
+
+# roxygen2 cache (falls aktiviert)
+.R/ 
+.Rhistory
+.Rapp.history
+
+# Vignettes and docs
+vignettes/*.html
+vignettes/*.pdf
+docs/
+
+# Test and report outputs
+tests/testthat/_snaps/
+coverage.html
+covr.html
+testthat.Rout
+*.log
+*.aux
+*.toc
+*.out
+
+# R Markdown cache/output
+*_cache/
+*.utf8.md
+*.knit.md
+*.nb.html
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Python / Conda (falls verwendet)
+__pycache__/
+*.py[cod]
+.env/
+.venv/
 /doc/
 /Meta/

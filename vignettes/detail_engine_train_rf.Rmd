@@ -1,0 +1,68 @@
+---
+title: "In Detail: Training Engine - Random Forest (RF)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Training Engine - Random Forest (RF)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Random Forest (`engine_train_rf`)
+
+### Purpose and Function
+This engine fits a random forest model using the `randomForest::randomForest()` function. It is part of the training component in the `flowengineR` framework and is suitable for classification and regression tasks using ensemble trees.
+
+### Input Structure (via Wrapper)
+Inputs are provided through the wrapper function `wrapper_train_rf()` and standardized by the control object.
+
+**Standardized Inputs:**
+- `formula`: A formula defining the model structure (e.g., `target ~ .`).
+- `data`: A data frame with either original or normalized training data.
+- `norm_data`: Logical; whether to use normalized data.
+- `params`: A list of engine-specific parameters.
+
+### Engine-specific Parameters
+
+| Parameter       | Type         | Default        | Description                                                    |
+|----------------|--------------|----------------|----------------------------------------------------------------|
+| `ntree`         | integer      | 500            | Number of trees to grow.                                       |
+| `mtry`          | integer      | NULL           | Number of variables randomly sampled at each split.            |
+| `sample_weight` | numeric[]    | Equal weights  | Observation weights for the training process.                  |
+
+These parameters can be supplied through `control$params$train$params`.
+
+### Output Structure
+
+The engine returns a structured list created by `initialize_output_train()` containing:
+
+- `model`: A fitted random forest object (`class = "randomForest"`).
+- `model_type`: Identifier string `"rf"`.
+- `formula`: The formula used for training.
+- `hyperparameters`: Merged parameter list (defaults + user-defined).
+- `specific_output`: Training duration and optional metadata.
+
+### Workflow Integration
+
+- **Controller Function:** `controller_train()`
+- **Engine Wrapper:** `wrapper_train_rf()`
+- **Execution Position:** Appears in the training phase of the main workflow.
+- **Downstream Compatibility:** Outputs are compatible with fairness in-processing, postprocessing, evaluation, and reporting steps.
+
+### Template Reference
+
+This engine's control template is located at:
+`inst/templates_control/4_c_template_control_train_rf.R`
+
+### Example Configuration
+```r
+control$engine_select$train <- "train_rf"
+control$params$train <- controller_train(
+  formula = target ~ .,
+  norm_data = TRUE,
+  params = list(
+    ntree = 100,
+    mtry = 3
+    # sample_weight = rep(1, nrow(train_data))  # optional
+  )
+)
+```

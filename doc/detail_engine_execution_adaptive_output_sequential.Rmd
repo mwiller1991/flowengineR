@@ -1,0 +1,76 @@
+---
+title: "In Detail: Execution Engine - Adaptive Sequential Stability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Sequential Stability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Adaptive Sequential Stability (`engine_execution_adaptive_output_sequential`)
+
+### Purpose and Function
+This engine repeatedly executes the workflow on a single-split basis and monitors a selected metric to detect convergence or stability. It is useful for adaptive workflows that aim to determine how many iterations are sufficient based on empirical stability.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: Control object, dynamically updated per iteration (⚠️ provided directly by the workflow).
+- `split_output`: Initial placeholder split output (used for validation only) (⚠️ provided directly by the workflow).
+- `params`: Execution control settings (metric, thresholds, seeds, etc.)
+
+### Engine-specific Parameters
+
+| Parameter                  | Type           | Default        | Description                                                             |
+|---------------------------|----------------|----------------|-------------------------------------------------------------------------|
+| `metric_name`             | character      | `"mse"`        | Metric to monitor                                                       |
+| `metric_source`           | character      | `"eval_mse"`   | Name of the evaluation engine providing the metric                      |
+| `stability_strategy`      | character      | `"cohen_absolute"` | Strategy for assessing convergence                              |
+| `threshold`               | numeric        | `0.2`          | Threshold for stability                                                 |
+| `window`                  | integer        | `3`            | Window of trailing metrics used for checking stability                  |
+| `min_splits`              | integer        | `5`            | Minimum number of iterations before stability is assessed               |
+| `max_splits`              | integer        | `50`           | Maximum number of iterations                                            |
+| `seed_base`               | integer        | `1000`         | Seed base (each iteration uses `seed_base + i`)                         |
+| `custom_stability_function` | function or NULL | `NULL`      | Optional user-defined function to assess stability                      |
+
+### Output Structure
+
+Output is generated using `initialize_output_execution()` and includes:
+
+- `execution_type`: `"adaptive_output_sequential"`
+- `workflow_results`: Results from each split execution
+- `params`: Merged configuration
+- `continue_workflow`: Always `TRUE`
+- `specific_output`: List containing:
+    - `metric_name`, `metric_source`
+    - `values`: Collected metric values across iterations
+    - `split_output`: Aggregated output with all splits used
+    - `used_seeds`: Seed values per iteration
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_adaptive_output_sequential()`
+- **Position in Flow:** Execution phase
+- **Execution Control:** Adaptive loop until convergence or hard stop
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_2_a_template_execution_adaptive_output_sequential.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_adaptive_output_sequential"
+control$params$execution <- controller_execution(
+  params = list(
+    metric_name = "mse",
+    stability_strategy = "cohen_absolute",
+    threshold = 0.2,
+    window = 3,
+    min_splits = 5,
+    max_splits = 50,
+    seed_base = 1000
+  )
+)
+```

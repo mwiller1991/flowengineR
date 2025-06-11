@@ -1,0 +1,65 @@
+---
+title: "In Detail: Execution Engine - Batchtools Multicore Execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools Multicore Execution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: Batchtools Multicore Execution (`engine_execution_basic_batchtools_multicore`)
+
+### Purpose and Function
+This engine executes one job per data split using `batchtools` with the `multicore` backend. Each job runs `run_workflow_singlesplitloop()` on a single split. It is optimized for local parallel execution on Unix-like systems (Linux, macOS, WSL) and does not work on Windows.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: Fully prepared control object (⚠️ provided directly by the workflow).
+- `split_output`: List of splits as returned by a splitter engine (⚠️ provided directly by the workflow).
+- `params`: Engine-specific options for the registry and execution resources.
+
+### Engine-specific Parameters
+
+| Parameter         | Type            | Default                                                   | Description                                |
+|------------------|------------------|-----------------------------------------------------------|--------------------------------------------|
+| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore"` | Registry path for job tracking         |
+| `seed`           | integer          | `123`                                                     | Seed for reproducibility                   |
+| `required_packages` | character[]   | `character(0)`                                            | R packages to load inside each job         |
+| `ncpus`          | integer          | `parallel::detectCores()`                                 | Number of parallel jobs                    |
+
+### Output Structure
+
+The output is created via `initialize_output_execution()`:
+
+- `execution_type`: `"basic_batchtools_multicore"`
+- `workflow_results`: Named list with results from each executed split
+- `params`: Engine parameters (merged)
+- `continue_workflow`: `TRUE`
+- `specific_output`: List with:
+    - `n_splits`: Number of splits
+    - `registry`: Path to registry used
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_basic_batchtools_multicore()`
+- **Position in Flow:** Execution phase
+- **Platform Constraint:** Only runs on Unix-like systems
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_1_d_template_control_execution_basic_batchtools_multicore.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_basic_batchtools_multicore"
+control$params$execution <- controller_execution(
+  params = list(
+    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    seed = 42,
+    ncpus = 4
+  )
+)
+```

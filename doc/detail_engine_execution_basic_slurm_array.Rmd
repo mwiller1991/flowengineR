@@ -1,0 +1,70 @@
+---
+title: "In Detail: Execution Engine - SLURM Array Preparation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In Detail: Execution Engine - SLURM Array Preparation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Engine: SLURM Array Preparation (`engine_execution_basic_slurm_array`)
+
+### Purpose and Function
+This engine prepares the required inputs to distribute split execution via SLURM array jobs. It does **not** run any workflows directly but serializes the control object and split definitions to disk for external execution.
+
+### Input Structure (via Wrapper)
+
+**Standardized Inputs:**
+- `control`: A fully initialized control object with configuration and metadata (⚠️ provided directly by the workflow).
+- `split_output`: List of splits as returned by a splitter engine (⚠️ provided directly by the workflow).
+- `params`: Optional engine-specific parameters (only used to define output location).
+
+### Engine-specific Parameters
+
+| Parameter        | Type      | Default         | Description                                      |
+|------------------|-----------|------------------|--------------------------------------------------|
+| `output_folder`  | character | `"slurm_inputs"` | Path to store serialized inputs for SLURM batch. |
+
+### Output Structure
+
+The wrapper returns a standardized output via `initialize_output_execution()`:
+
+- `execution_type`: `"basic_slurm_array"`
+- `workflow_results`: `NULL` (deferred execution)
+- `params`: Parameter list (merged default + user-specified)
+- `continue_workflow`: `FALSE`
+- `specific_output`: List with:
+    - `message`: Status message
+    - `output_dir`: Path to saved control and split files
+    - `n_splits`: Number of splits prepared
+
+### Workflow Integration
+
+- **Controller Function:** `controller_execution()`
+- **Engine Wrapper:** `wrapper_execution_basic_slurm_array()`
+- **Position in Flow:** Execution phase, with deferred processing
+- **Follow-Up:** Workflow must be resumed using `resume_workflow()` after SLURM completion
+- **Helper:** As a helper to remerge the SLURM-Output `prepare_resume_from_slurm_array()` can be used
+
+### Template Reference
+
+This engine's control template is located at:  
+`inst/templates_control/2_1_b_template_control_execution_basic_slurm_array.R`
+
+### Example Configuration
+```r
+control$engine_select$execution <- "execution_basic_slurm_array"
+control$params$execution <- controller_execution(
+  params = list(output_folder = "slurm_inputs")
+)
+```
+
+### Resume Workflow Example
+```r
+resume_object <- prepare_resume_from_slurm_array(
+  control_path = "slurm_inputs/control_base.rds",
+  split_output_path = "slurm_inputs/split_output.rds",
+  result_dir = "slurm_outputs/"
+)
+result <- resume_workflow(resume_object)
+```

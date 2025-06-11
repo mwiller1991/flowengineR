@@ -15,7 +15,7 @@
 #'    - `engine_<engine_name>`: Core logic function
 #'    - `default_params_<engine_name>`: List of default hyperparameters
 #' 3. Calls a type-specific validation function, e.g., `validate_engine_train()`
-#' 4. If validation passes, the wrapper function is registered under `.GlobalEnv$engines`
+#' 4. If validation passes, the wrapper function is registered under `flowengineR_env$engines`
 #'
 #' **Supported Engine Types:**
 #' - `split_*`: Data splitting engines
@@ -49,11 +49,11 @@
 #' @param engine_name Character. Name of the engine, e.g., `"train_lm"`.
 #' @param file_path Character. Path to the R script that defines the engine components.
 #'
-#' @return Invisibly registers the engine into `.GlobalEnv$engines[[engine_name]]` if valid.
+#' @return Invisibly registers the engine into `flowengineR_env$engines[[engine_name]]` if valid.
 #' @export
 register_engine <- function(engine_name, file_path) {
   tryCatch({
-      full_engine_type <- strsplit(engine_name, "_")[[1]]
+    full_engine_type <- strsplit(engine_name, "_")[[1]][1]
     
     # Source the engine file
     source(file_path, local = FALSE)
@@ -74,20 +74,20 @@ register_engine <- function(engine_name, file_path) {
     if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
       stop(paste("Default params function", default_params_function_name, "not found in file:", file_path))
     }
-    if (!exists(validate_function_name, mode = "function", envir = .GlobalEnv)) {
+    if (!exists(validate_function_name, mode = "function", envir = asNamespace("flowengineR"))) {
       stop(paste("Validation function", validate_function_name, "not found for engine type:", full_engine_type))
     }
     
     # Get the functions
     wrapper_function <- get(wrapper_function_name, envir = .GlobalEnv)
     default_params_function <- get(default_params_function_name, envir = .GlobalEnv)
-    validate_function <- get(validate_function_name, envir = .GlobalEnv)
+    validate_function <- get(validate_function_name, mode = "function", envir = parent.env(environment()))
     
     # Validate the engine
     validate_function(wrapper_function, default_params_function, engine_name)
     
     # Register the engine
-    .GlobalEnv$engines[[engine_name]] <- wrapper_function
+    flowengineR_env$engines[[engine_name]] <- wrapper_function
     message(paste("[SUCCESS] Engine registered successfully:", engine_name, "as type:", full_engine_type))
     message("---------------------------------------------------------------------------------------------")
     

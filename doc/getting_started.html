@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started with flowengineR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started with flowengineR</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>🚀 Introduction</h2>
+<p>The core strength of <code>flowengineR</code> is its <strong>fully
+modular architecture</strong>: any engine—whether used for data
+preprocessing, core algorithm execution, evaluation, or reporting—can be
+replaced or extended without changing the surrounding workflow.</p>
+<p>This means you can: - Test different preprocessing or postprocessing
+strategies with the same core algorithm - Swap the algorithm engine
+(e.g., switch from a statistical model to a simulation) without touching
+the reporting logic - Extend the workflow to entirely new domains, such
+as robustness testing, explainability, or compliance validation</p>
+<blockquote>
+<p>⚡ In short: You only need to care about the “connection points”—not
+the entire workflow structure.</p>
+<p>All default engines are just examples. The real power lies in
+defining your own logic using the framework’s unified interface.</p>
+</blockquote>
+<p><code>flowengineR</code> is a general-purpose workflow framework for
+algorithmic experimentation and analysis. One of its primary use cases
+is <strong>fairness-aware modeling</strong>, for which several
+ready-to-use engines are included.</p>
+<p>This vignette introduces the basic workflow by walking through a
+minimal example.</p>
+<p>You will learn how to: - Define variables and model inputs -
+Configure and run a training engine - Apply a post-processing method -
+Evaluate model performance and fairness</p>
+<hr />
+</div>
+<div id="step-1-define-variables" class="section level2">
+<h2>🔧 Step 1: Define Variables</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>vars <span class="ot">=</span> <span class="fu">controller_vars</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>),   </span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,            </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="step-2-define-the-control-object" class="section level2">
+<h2>🧠 Step 2: Define the Control Object</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="at">log =</span> <span class="fu">list</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>      <span class="at">log_show =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>      <span class="at">log_level =</span> <span class="st">&quot;info&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    )</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  ),</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">engine_select =</span> <span class="fu">list</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">train =</span> <span class="st">&quot;train_lm&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="st">&quot;postprocessing_fairness_genresidual&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">c</span>(<span class="st">&quot;eval_statisticalparity&quot;</span>, <span class="st">&quot;eval_mse&quot;</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    ),</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">controller_training</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>      <span class="at">formula =</span> default <span class="sc">~</span> income <span class="sc">+</span> loan_amount,</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>      <span class="at">norm_data =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    ),</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="fu">controller_postprocessing</span>(),</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">controller_evaluation</span>()</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>  )</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>)</span></code></pre></div>
+<p>A detailed introduction to the control object can be found <a href="how_to_build_controlobjekt.html">here</a>.</p>
+<hr />
+</div>
+<div id="step-3-run-the-workflow" class="section level2">
+<h2>▶️ Step 3: Run the Workflow</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_workflow</span>(control)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Initializing control object with defaults...[0m</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using split engine: split_random_stratified[0m</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; [94m[SPLIT] Performing stratified random split with training ratio 0.70 and seed 123.[0m</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using execution engine: execution_basic_sequential[0m</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; [94m[EXECUTION] Starting sequential execution over 1 split(s)...[0m</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Starting single workflow iteration...[0m</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Train/test data successfully detected.[0m</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Normalizing datasets (based on training)...[0m</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Normalization complete.[0m</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Training base model: train_lm[0m</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] Starting LM training...[0m</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] LM training finished in 0.00 seconds.[0m</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Generating predictions from base model...[0m</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Starting general residual adjustment...[0m</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Adjustment complete.[0m</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Post-processing completed.[0m</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running evaluation step...[0m</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] MSE evaluation complete. MSE = 0.097815[0m</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Summary statistics evaluation complete.[0m</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.000136, genderMale 0.000136, age_group.&lt;30 0.000079, age_group.30-50 0.000437, age_group.50+ 0.000342[0m</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Evaluation completed.[0m</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Workflow iteration completed. Returning results.[0m</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Proceeding to reporting and publishing...[0m</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Aggregating workflow results...[0m</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Workflow fully completed.[0m</span></span></code></pre></div>
+<p>This returns a list of standardized results: - model and predictions
+- adjusted predictions (if fairness post-processing is used) -
+evaluation metrics</p>
+<hr />
+</div>
+<div id="step-4-inspect-results" class="section level2">
+<h2>📊 Step 4: Inspect Results</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>results<span class="sc">$</span>metrics  <span class="co"># all computed metrics</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>results<span class="sc">$</span>model    <span class="co"># trained model object</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+<hr />
+</div>
+<div id="logging-and-debugging" class="section level2">
+<h2>🧪 Logging and Debugging</h2>
+<p><code>flowengineR</code> includes a built-in logging system to
+improve transparency and simplify debugging throughout the entire
+workflow.</p>
+<p>Logging is <strong>enabled and configured via the
+<code>settings</code> section</strong> of the <code>control</code>
+object:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>settings <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">log_level =</span> <span class="st">&quot;debug&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>Each internal function—especially within engines—can issue structured
+log messages through the centralized <code>log_msg()</code> helper.
+Messages are color-coded in the console and categorized by severity:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Description</th>
+<th>Console Color</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>debug</code></td>
+<td>Detailed diagnostics</td>
+<td>Grey</td>
+</tr>
+<tr class="even">
+<td><code>info</code></td>
+<td>Standard process messages</td>
+<td>Blue</td>
+</tr>
+<tr class="odd">
+<td><code>warn</code></td>
+<td>Recoverable issues and warnings</td>
+<td>Yellow</td>
+</tr>
+<tr class="even">
+<td><code>error</code></td>
+<td>Critical errors (can abort)</td>
+<td>Red</td>
+</tr>
+</tbody>
+</table>
+<div id="example" class="section level4">
+<h4>Example</h4>
+<pre><code>#&gt; [INFO] Starting run_workflow
+#&gt; [DEBUG] Calling training engine: train_lm
+#&gt; [WARN] Postprocessing skipped: no predictions found
+#&gt; [ERROR] Protected attributes missing (aborted)</code></pre>
+<p>This allows flexible diagnostics and helps users trace issues without
+manually inspecting intermediate objects.</p>
+<hr />
+</div>
+</div>
+<div id="overview-of-modular-engine-types" class="section level2">
+<h2>🧩 Overview of Modular Engine Types</h2>
+<p>One of the core principles of <strong>flowengineR</strong> is
+modularity through interchangeable components called
+<em>engines</em>—these include engines for training, splitting,
+execution, evaluation, preprocessing, and reporting.</p>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="7%" />
+<col width="30%" />
+<col width="23%" />
+<col width="17%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Engine Type</th>
+<th>Workflow Position</th>
+<th>Description</th>
+<th>Input (via Wrapper)</th>
+<th>Output (via Initializer)</th>
+<th>Example Engines</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="detail_engines_split.html"><code>split_*</code></a></td>
+<td>Dataset Splitting</td>
+<td>Splits the full dataset into training and test subsets</td>
+<td><code>data</code>, <code>target_var</code>, <code>seed</code>,
+<code>params</code></td>
+<td><code>splits</code>, <code>split_type</code>, <code>seed</code></td>
+<td><code>split_random</code>, <code>split_stratified</code></td>
+</tr>
+<tr class="even">
+<td><a href="detail_engines_execution.html"><code>execution_*</code></a></td>
+<td>Execution Strategy</td>
+<td>Executes the workflow logic across all splits (sequentially or in
+parallel)</td>
+<td><code>control</code>, <code>split_output</code>,
+<code>params</code></td>
+<td><code>workflow_results</code>, <code>execution_type</code></td>
+<td><code>execution_sequential</code></td>
+</tr>
+<tr class="odd">
+<td><a href="detail_engines_preprocessing.html"><code>preprocessing_*</code></a></td>
+<td>Pre-Processing</td>
+<td>Modifies input data before algorithm execution</td>
+<td><code>data</code>, <code>params</code>,
+<code>protected_attributes</code>, <code>target_var</code></td>
+<td><code>preprocessed_data</code>, <code>method</code></td>
+<td><code>preprocessing_fairness_resampling</code></td>
+</tr>
+<tr class="even">
+<td><a href="detail_engines_train.html"><code>train_*</code></a></td>
+<td>Core Algorithm</td>
+<td>Fits a model or runs an algorithm on training data</td>
+<td><code>formula</code>, <code>data</code>, <code>norm_data</code>,
+<code>params</code></td>
+<td><code>model</code>, <code>model_type</code>,
+<code>predictions</code></td>
+<td><code>train_lm</code>, <code>train_gbm</code></td>
+</tr>
+<tr class="odd">
+<td><a href="detail_engines_inprocessing.html"><code>inprocessing_*</code></a></td>
+<td>In-Processing</td>
+<td>Alters internal training logic (e.g., constraints, weighting)</td>
+<td><code>driver_train</code>, <code>data</code>, <code>params</code>,
+<code>protected_attributes</code></td>
+<td><code>adjusted_model</code>, <code>predictions</code></td>
+<td><code>inpro(..)_adversialdebiasing</code></td>
+</tr>
+<tr class="even">
+<td><a href="detail_engines_postprocessing.html"><code>postprocessing_*</code></a></td>
+<td>Post-Processing</td>
+<td>Modifies predictions after model execution</td>
+<td><code>predictions</code>, <code>params</code>,
+<code>protected_attributes</code></td>
+<td><code>adjusted_predictions</code>, <code>method</code></td>
+<td><code>postprocessing_fairness_genresidual</code></td>
+</tr>
+<tr class="odd">
+<td><a href="detail_engines_evaluation.html"><code>eval_*</code></a></td>
+<td>Evaluation</td>
+<td>Calculates performance or bias metrics</td>
+<td><code>predictions</code>, <code>actuals</code>, <code>params</code>,
+<code>protected_attributes</code></td>
+<td><code>metrics</code>, <code>eval_type</code></td>
+<td><code>eval_statisticalparity</code>, <code>eval_mse</code></td>
+</tr>
+<tr class="even">
+<td><a href="detail_engines_reportelements.html"><code>reportelement_*</code></a></td>
+<td>Reporting Element</td>
+<td>Creates tables or plots from results</td>
+<td><code>workflow_results</code>, <code>split_output</code>,
+<code>alias</code>, <code>params</code></td>
+<td><code>report_object</code>, <code>report_type</code></td>
+<td><code>reportelement_table_splitmetrics</code></td>
+</tr>
+<tr class="odd">
+<td><a href="detail_engines_report.html"><code>report_*</code></a></td>
+<td>Report Composition</td>
+<td>Assembles report elements into a structured document</td>
+<td><code>reportelements</code>, <code>alias_report</code>,
+<code>params</code></td>
+<td><code>report</code>, <code>sections</code>,
+<code>compatible_formats</code></td>
+<td><code>report_modelsummary</code></td>
+</tr>
+<tr class="even">
+<td><a href="detail_engines_publish.html"><code>publish_*</code></a></td>
+<td>Output Publishing</td>
+<td>Exports objects or results to external targets</td>
+<td><code>object</code>, <code>file_path</code>,
+<code>alias_publish</code>, <code>params</code></td>
+<td><code>path</code>, <code>success</code>, <code>type</code></td>
+<td><code>publish_excel_basis</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="listing-available-engines" class="section level2">
+<h2>🔍 Listing Available Engines</h2>
+<p>To get an overview of all currently registered engines, use the
+helper function <code>list_registered_engines()</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Show all registered engines, grouped by type</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>()</span></code></pre></div>
+<p>This will output all available engines, grouped by engine type such
+as <code>train</code>, <code>split</code>, <code>execution</code>,
+<code>evaluation</code>, <code>preprocessing</code>, and
+<code>postprocessing</code>.</p>
+<p>You can also filter the output to a specific engine type:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Show only execution engines</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>(<span class="at">type =</span> <span class="st">&quot;execution&quot;</span>)</span></code></pre></div>
+<p>This function is especially useful if: - you have registered your own
+custom engines and want to verify their integration, - you are unsure
+about the correct naming of available engines, - you want to introspect
+the internal engine setup during debugging or development.</p>
+<p>It is a key utility for working transparently and flexibly within the
+flowengineR framework.</p>
+<hr />
+</div>
+<div id="next-steps" class="section level2">
+<h2>➕ Next Steps</h2>
+<ul>
+<li><a href="how_to_build_custom_engine.html">Engine Development
+Guide</a></li>
+<li><a href="metalevel_flowchart.html">Metalevel Flowchart</a></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

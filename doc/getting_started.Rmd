@@ -1,0 +1,193 @@
+---
+title: "Getting Started with flowengineR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with flowengineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  library(flowengineR)
+)
+```
+
+## 🚀 Introduction
+
+The core strength of `flowengineR` is its **fully modular architecture**: any engine—whether used for data preprocessing, core algorithm execution, evaluation, or reporting—can be replaced or extended without changing the surrounding workflow.
+
+This means you can:
+- Test different preprocessing or postprocessing strategies with the same core algorithm
+- Swap the algorithm engine (e.g., switch from a statistical model to a simulation) without touching the reporting logic
+- Extend the workflow to entirely new domains, such as robustness testing, explainability, or compliance validation
+
+> ⚡ In short: You only need to care about the "connection points"—not the entire workflow structure.
+> 
+> All default engines are just examples. The real power lies in defining your own logic using the framework’s unified interface.
+
+`flowengineR` is a general-purpose workflow framework for algorithmic experimentation and analysis. One of its primary use cases is **fairness-aware modeling**, for which several ready-to-use engines are included.
+
+This vignette introduces the basic workflow by walking through a minimal example.
+
+You will learn how to:
+- Define variables and model inputs
+- Configure and run a training engine
+- Apply a post-processing method
+- Evaluate model performance and fairness
+
+---
+
+## 🔧 Step 1: Define Variables
+
+```{r}
+vars = controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),
+  protected_vars = c("genderFemale", "genderMale", "age"),   
+  target_var = "default",            
+  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")
+)
+```
+
+---
+
+## 🧠 Step 2: Define the Control Object
+
+```{r}
+control <- list(
+  settings = list(
+    log = list(
+      log_show = TRUE,
+      log_level = "info"
+    )
+  ),
+  engine_select = list(
+    train = "train_lm",
+    postprocessing = "postprocessing_fairness_genresidual",
+    eval = c("eval_statisticalparity", "eval_mse")
+    ),
+  params = list(
+    train = controller_training(
+      formula = default ~ income + loan_amount,
+      norm_data = TRUE
+    ),
+    postprocessing = controller_postprocessing(),
+    eval = controller_evaluation()
+  )
+)
+```
+
+A detailed introduction to the control object can be found [here](how_to_build_controlobjekt.html).
+
+---
+
+## ▶️ Step 3: Run the Workflow
+
+```{r}
+results <- run_workflow(control)
+```
+
+This returns a list of standardized results:
+- model and predictions
+- adjusted predictions (if fairness post-processing is used)
+- evaluation metrics
+
+---
+
+## 📊 Step 4: Inspect Results
+
+```{r}
+results$metrics  # all computed metrics
+results$model    # trained model object
+```
+
+---
+
+## 🧪 Logging and Debugging
+
+`flowengineR` includes a built-in logging system to improve transparency and simplify debugging throughout the entire workflow.
+
+Logging is **enabled and configured via the `settings` section** of the `control` object:
+
+```{r}
+settings = list(
+  log = TRUE,
+  log_level = "debug"
+)
+```
+
+Each internal function—especially within engines—can issue structured log messages through the centralized `log_msg()` helper. Messages are color-coded in the console and categorized by severity:
+
+| Level   | Description                        | Console Color |
+|---------|------------------------------------|---------------|
+| `debug` | Detailed diagnostics               | Grey          |
+| `info`  | Standard process messages          | Blue          |
+| `warn`  | Recoverable issues and warnings    | Yellow        |
+| `error` | Critical errors (can abort)        | Red           |
+
+#### Example
+
+```
+#> [INFO] Starting run_workflow
+#> [DEBUG] Calling training engine: train_lm
+#> [WARN] Postprocessing skipped: no predictions found
+#> [ERROR] Protected attributes missing (aborted)
+```
+
+This allows flexible diagnostics and helps users trace issues without manually inspecting intermediate objects.
+
+---
+
+## 🧩 Overview of Modular Engine Types
+
+One of the core principles of **flowengineR** is modularity through interchangeable components called *engines*—these include engines for training, splitting, execution, evaluation, preprocessing, and reporting.
+
+| Engine Type       | Workflow Position  | Description                                                                 | Input (via Wrapper)                                        | Output (via Initializer)                   | Example Engines                      |
+| ----------------- | ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
+| [`split_*`](detail_engines_split.html)         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_stratified`   |
+| [`execution_*`](detail_engines_execution.html)     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
+| [`preprocessing_*`](detail_engines_preprocessing.html) | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `preprocessing_fairness_resampling`  |
+| [`train_*`](detail_engines_train.html)         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_gbm`              |
+| [`inprocessing_*`](detail_engines_inprocessing.html)  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `inpro(..)_adversialdebiasing`       |
+| [`postprocessing_*`](detail_engines_postprocessing.html)| Post-Processing    | Modifies predictions after model execution                                  | `predictions`, `params`, `protected_attributes`            | `adjusted_predictions`, `method`           | `postprocessing_fairness_genresidual`|
+| [`eval_*`](detail_engines_evaluation.html)          | Evaluation         | Calculates performance or bias metrics                                      | `predictions`, `actuals`, `params`, `protected_attributes` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
+| [`reportelement_*`](detail_engines_reportelements.html) | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
+| [`report_*`](detail_engines_report.html)        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_modelsummary`                |
+| [`publish_*`](detail_engines_publish.html)       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_excel_basis`                |
+
+
+---
+
+## 🔍 Listing Available Engines
+
+To get an overview of all currently registered engines, use the helper function `list_registered_engines()`:
+
+```r
+# Show all registered engines, grouped by type
+list_registered_engines()
+```
+
+This will output all available engines, grouped by engine type such as `train`, `split`, `execution`, `evaluation`, `preprocessing`, and `postprocessing`.
+
+You can also filter the output to a specific engine type:
+
+```r
+# Show only execution engines
+list_registered_engines(type = "execution")
+```
+
+This function is especially useful if:
+- you have registered your own custom engines and want to verify their integration,
+- you are unsure about the correct naming of available engines,
+- you want to introspect the internal engine setup during debugging or development.
+
+It is a key utility for working transparently and flexibly within the flowengineR framework.
+
+---
+
+## ➕ Next Steps
+
+- [Engine Development Guide](how_to_build_custom_engine.html)
+- [Metalevel Flowchart](metalevel_flowchart.html)
