@@ -1,13 +1,14 @@
+---
+output: github_document
+---
 
 # flowengineR
 
 [![R-CMD-check](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml)
 
-`flowengineR` is an R package for defining and running modular
-workflows, including fairness-aware preprocessing, in-processing, and
-post-processing options.
+`flowengineR` is an R package for defining and running modular workflows, including fairness-aware preprocessing, in-processing, and post-processing options.
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Features
 
@@ -17,28 +18,28 @@ post-processing options.
 - Support for batchtools and adaptive execution
 - Integrated reporting and publishing engines
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Installation
 
-``` r
+```r
 # Install from GitHub
 # install.packages("devtools")
 devtools::install_github("mwiller1991/flowengineR")
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🧪 Example
 
-``` r
+```r
 control <- list()
 )
 
 results <- run_workflow(control)
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 📚 Learn more
 
@@ -49,11 +50,11 @@ Check out the vignettes for detailed examples and explanations:
 
 You can also view them in R using:
 
-``` r
+```r
 vignette(package = "flowengineR")
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 📄 License
 
