@@ -46,6 +46,7 @@ results <- run_workflow(control)
 Check out the vignettes for detailed examples and explanations:
 
 - [Getting Started with flowengineR](vignettes/getting-started.html)
+- [Index Vignette for flowengineR](vignettes/index.html)
 - [End-to-End Workflow Example](vignettes/end-to-end-example.html)
 
 You can also view them in R using:
