@@ -49,6 +49,7 @@ Imports:
     parallel
 Suggests:
     testthat (>= 3.0.0),
-    knitr
+    knitr,
+    rmarkdowndevtools
 VignetteBuilder: knitr
 Config/testthat/edition: 3
