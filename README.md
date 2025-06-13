@@ -33,7 +33,6 @@ devtools::install_github("mwiller1991/flowengineR")
 
 ``` r
 control <- list()
-)
 
 results <- run_workflow(control)
 ```
