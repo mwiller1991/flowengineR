@@ -22,11 +22,13 @@ man/*.Rd
 .Rhistory
 .Rapp.history
 
+# -------------------------------------
 # Vignettes and docs
 vignettes/*.html
 vignettes/*.pdf
 docs/
 
+# -------------------------------------
 # Test and report outputs
 tests/testthat/_snaps/
 coverage.html
@@ -37,16 +39,19 @@ testthat.Rout
 *.toc
 *.out
 
+# -------------------------------------
 # R Markdown cache/output
 *_cache/
 *.utf8.md
 *.knit.md
 *.nb.html
 
+# -------------------------------------
 # Operating system files
 .DS_Store
 Thumbs.db
 
+# -------------------------------------
 # Python / Conda (falls verwendet)
 __pycache__/
 *.py[cod]
@@ -55,3 +60,11 @@ __pycache__/
 /doc/
 /Meta/
 docs
+
+# -------------------------------------
+# GitHub Actions workflow (exclude from CRAN package build)
+^\.github$
+
+# -------------------------------------
+# Optional: ignore Rmd README if using README.md
+^README\.Rmd$
