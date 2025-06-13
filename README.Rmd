@@ -45,14 +45,19 @@ results <- run_workflow(control)
 
 Check out the vignettes for detailed examples and explanations:
 
-- [Getting Started with flowengineR](vignettes/getting-started.html)
-- [Index Vignette for flowengineR](vignettes/index.html)
-- [End-to-End Workflow Example](vignettes/end-to-end-example.html)
+- Index Vignette for flowengineR
+- Getting Started with flowengineR
+- Why flowengineR had to be built
+- End-to-End Workflow Example
+...and many more
 
-You can also view them in R using:
+You can view them in R using:
 
 ```r
-vignette(package = "flowengineR")
+vignette("index", package = "flowengineR")
+vignette("getting_started", package = "flowengineR")
+vignette("why_flowengineR", package = "flowengineR")
+vignette("example_workflow_credit", package = "flowengineR")
 ```
 
 ---
