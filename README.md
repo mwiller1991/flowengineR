@@ -47,7 +47,8 @@ Check out the vignettes for detailed examples and explanations:
 - Index Vignette for flowengineR
 - Getting Started with flowengineR
 - Why flowengineR had to be built
-- End-to-End Workflow Example …and many more
+- End-to-End Workflow Example
+- …and many more
 
 You can view them in R using:
 
