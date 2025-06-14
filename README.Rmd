@@ -25,7 +25,8 @@ output: github_document
 ```r
 # Install from GitHub
 install.packages("devtools")
-devtools::install_github("mwiller1991/flowengineR")
+devtools::install_github("mwiller1991/flowengineR", build_vignettes = TRUE)
+library(flowengineR)
 ```
 
 ---
@@ -53,10 +54,14 @@ Check out the vignettes for detailed examples and explanations:
 You can view them in R using:
 
 ```r
+browseVignettes("flowengineR")
+
 vignette("index", package = "flowengineR")
 vignette("getting_started", package = "flowengineR")
 vignette("why_flowengineR", package = "flowengineR")
 vignette("example_workflow_credit", package = "flowengineR")
+
+?run_workflow
 ```
 
 ---
