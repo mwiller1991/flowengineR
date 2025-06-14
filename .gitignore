@@ -19,8 +19,8 @@
 
 # -------------------------------------
 # Vignettes and docs
-#vignettes/*.html
-#vignettes/*.pdf
+vignettes/*.html
+vignettes/*.pdf
 
 # -------------------------------------
 # Test and report outputs
@@ -52,5 +52,6 @@ Thumbs.db
 # -------------------------------------
 # Optional: ignore Rmd README if using README.md
 ^README\.Rmd$
+
 /doc/
 /Meta/
