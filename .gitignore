@@ -19,9 +19,8 @@
 
 # -------------------------------------
 # Vignettes and docs
-vignettes/*.html
-vignettes/*.pdf
-docs/
+#vignettes/*.html
+#vignettes/*.pdf
 
 # -------------------------------------
 # Test and report outputs
@@ -47,19 +46,11 @@ testthat.Rout
 Thumbs.db
 
 # -------------------------------------
-# Python / Conda (falls verwendet)
-__pycache__/
-*.py[cod]
-.env/
-.venv/
-/doc/
-/Meta/
-docs
-
-# -------------------------------------
 # GitHub Actions workflow (exclude from CRAN package build)
 ^\.github$
 
 # -------------------------------------
 # Optional: ignore Rmd README if using README.md
 ^README\.Rmd$
+/doc/
+/Meta/
