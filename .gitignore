@@ -47,11 +47,11 @@ Thumbs.db
 
 # -------------------------------------
 # GitHub Actions workflow (exclude from CRAN package build)
-^\.github$
+\.github$
 
 # -------------------------------------
 # Optional: ignore Rmd README if using README.md
-^README\.Rmd$
+README\.Rmd$
 
 /doc/
 /Meta/
