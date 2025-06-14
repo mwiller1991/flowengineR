@@ -23,7 +23,7 @@ post-processing options.
 
 ``` r
 # Install from GitHub
-# install.packages("devtools")
+install.packages("devtools")
 devtools::install_github("mwiller1991/flowengineR")
 ```
 

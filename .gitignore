@@ -14,13 +14,8 @@
 *.tgz
 *.zip
 *.Rproj
-NAMESPACE
-man/*.Rd
-
-# roxygen2 cache (falls aktiviert)
-.R/ 
-.Rhistory
-.Rapp.history
+#NAMESPACE
+#man/*.Rd
 
 # -------------------------------------
 # Vignettes and docs
