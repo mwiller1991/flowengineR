@@ -16,7 +16,7 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 
 ### Getting Started & Motivation
 - [Getting Started](getting_started.html): Introduction to the core concepts and basic usage.
-- [Why flwoengineR was build](why_flowengineR.html): Thematic classification why our problem could not be solved with an existing workflow-manager.
+- [Why flowengineR was build](why_flowengineR.html): Thematic classification why our problem could not be solved with an existing workflow-manager.
 - [Example](example_workflow_credit.html): A basic workflow to demonstrate how to use the package on a dataset.
 
 ### How-To Guides
