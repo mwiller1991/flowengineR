@@ -4,7 +4,7 @@
 #'
 #' @export
 flowengineR_start <- function() {
-  cat("\n Welcome to flowengineR - your modular workflow engine for data science.\n\n")
+  cat("\nWelcome to flowengineR - your modular workflow engine for data science.\n\n")
   
   repeat {
     choice <- menu(
@@ -15,7 +15,7 @@ flowengineR_start <- function() {
         "List available engines",
         "Help for run_workflow()",
         "Show structure of control-object",
-        "xit"
+        "Exit"
       )
     )
     
