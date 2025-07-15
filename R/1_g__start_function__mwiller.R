@@ -10,12 +10,12 @@ flowengineR_start <- function() {
     choice <- menu(
       title = "Where would you like to start?",
       choices = c(
-        "▶ Run example workflow",
-        "📘 Open 'Getting Started' vignette",
-        "🧩 List available engines",
-        "📂 Help for run_workflow()",
-        "📄 Show structure of control-object",
-        "❌ Exit"
+        "Run example workflow",
+        "Open 'Getting Started' vignette",
+        "List available engines",
+        "Help for run_workflow()",
+        "Show structure of control-object",
+        "xit"
       )
     )
     
