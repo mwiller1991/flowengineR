@@ -11,6 +11,7 @@ flowengineR_start <- function() {
       title = "Where would you like to start?",
       choices = c(
         paste(cli::symbol$play, "Run example workflow"),
+        paste(cli::symbol$menu, "Open 'Index' vignette for overview of all vignettes"),
         paste(cli::symbol$info, "Open 'Getting Started' vignette"),
         paste(cli::symbol$record, "List available engines"),
         paste(cli::symbol$fancy_question_mark, "Help for run_workflow()"),
@@ -24,6 +25,10 @@ flowengineR_start <- function() {
              message("\nRunning example workflow...\n")
              results_example <- run_workflow()
              assign("results_example", results_example, envir = .GlobalEnv)
+           },
+           {
+             message("\nOpening overview vignette 'index'...\n")
+             print(utils::vignette("index"))
            },
            {
              message("\nOpening vignette 'getting_started'...\n")
