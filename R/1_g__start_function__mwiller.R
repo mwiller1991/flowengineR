@@ -10,12 +10,12 @@ flowengineR_start <- function() {
     choice <- menu(
       title = "Where would you like to start?",
       choices = c(
-        "Run example workflow",
-        "Open 'Getting Started' vignette",
-        "List available engines",
-        "Help for run_workflow()",
-        "Show structure of control-object",
-        "Exit"
+        paste(cli::symbol$play, "Run example workflow"),
+        paste(cli::symbol$info, "Open 'Getting Started' vignette"),
+        paste(cli::symbol$record, "List available engines"),
+        paste(cli::symbol$fancy_question_mark, "Help for run_workflow()"),
+        paste(cli::symbol$star, "Show structure of control-object"),
+        paste(cli::symbol$cross, "Exit")
       )
     )
     
@@ -37,7 +37,7 @@ flowengineR_start <- function() {
            },
            {
              message("\nOpening help for run_workflow()...\n")
-             utils::help("run_workflow", package = "flowengineR")
+             print(utils::help("run_workflow", package = "flowengineR"))
            },
            {
              message("\nStructure of control-object:\n")

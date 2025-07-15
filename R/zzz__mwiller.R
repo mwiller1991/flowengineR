@@ -1,9 +1,7 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(
-    "\nWelcome to flowengineR!\n\n",
-    "Get started: run_workflow() or vignette(\"getting_started\")\n",
-    "Try: flowengineR_start() for an interactive tour\n",
-    "Help: ?run_workflow\n",
-    cli::cli_alert_success("All done!")
-  )
+  cli::cli_text("\n{.strong Welcome to flowengineR!}")
+  cli::cli_text("{cli::symbol$star} Try: {.code flowengineR_start()} for an interactive tour")
+  cli::cli_text("{cli::symbol$info} Get started: {.code vignette(\"getting_started\")} to dive in")
+  cli::cli_text("{cli::symbol$play} First use: {.code run_workflow()} to start a pipeline")
+  cli::cli_text("{cli::symbol$fancy_question_mark} Help: {.code ?run_workflow} for help")
 }
