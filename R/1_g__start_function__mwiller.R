@@ -2,6 +2,8 @@
 #'
 #' This function offers an interactive menu to explore flowengineR.
 #'
+#' @importFrom utils menu str
+#'
 #' @export
 flowengineR_start <- function() {
   cat("\nWelcome to flowengineR - your modular workflow engine for data science.\n\n")
