@@ -5,6 +5,9 @@ on:
     branches: [main, dev]
   pull_request:
     branches: [main, dev]
+    
+permissions:
+  contents: write
 
 jobs:
   R-CMD-check:
