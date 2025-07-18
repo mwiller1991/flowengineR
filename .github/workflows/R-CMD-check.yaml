@@ -30,6 +30,10 @@ jobs:
         with:
           extra-packages: devtools
           needs: devtools
+          
+      - name: Copy LLM engine files to inst/ for ZIP builder
+        run: |
+          Rscript tools/dev/copy_engine_files.R
 
       - name: Run R CMD check
         run: |
