@@ -33,7 +33,7 @@ jobs:
           
       - name: Copy LLM engine files to inst/ for ZIP builder
         run: |
-          Rscript dev/copy_engine_files.R
+          Rscript tools/dev/copy_engine_build_materials.R
 
       - name: Run R CMD check
         run: |
