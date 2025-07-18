@@ -34,6 +34,3 @@ Supported engine types:
 \item "publishing"
 }
 }
-\examples{
-cat(build_engine_with_llm("eval", "Calculate the mean absolute error between predictions and actuals"))
-}

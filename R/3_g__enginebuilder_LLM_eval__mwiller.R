@@ -23,7 +23,7 @@ All code must follow these conventions:
 ---
 
 ### \U0001F527 ENGINE TYPE
-`evaluation`
+`eval`
 
 ### \U0001F4C4 FUNCTIONAL DESCRIPTION
 [[task_description]]

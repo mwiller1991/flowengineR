@@ -21,9 +21,6 @@
 #'
 #' @return A character string to copy-paste into an LLM like ChatGPT.
 #' @export
-#'
-#' @examples
-#' cat(build_engine_with_llm("eval", "Calculate the mean absolute error between predictions and actuals"))
 build_engine_with_llm <- function(engine_type, task_description) {
   engine_type <- tolower(engine_type)
   
@@ -48,11 +45,8 @@ build_engine_with_llm <- function(engine_type, task_description) {
 #'
 #' @return Path to the created zip file.
 #' @export
-#'
-#' @examples
-#' build_engine_with_llm_zip("evaluation", "Calculate the median of predictions")
-build_engine_with_llm_zip <- function(engine_type = "eval",
-                                      task_description = "The Median of all predictions.",
+build_engine_with_llm_zip <- function(engine_type,
+                                      task_description,
                                       zip_path = NULL) {
   
   engine_type <- tolower(engine_type)
