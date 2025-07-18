@@ -47,7 +47,8 @@ Imports:
     randomForest,
     grDevices,
     parallel,
-    cli
+    cli,
+    glue
 Suggests:
     testthat (>= 3.0.0),
     knitr

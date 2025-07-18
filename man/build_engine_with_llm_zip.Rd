@@ -4,7 +4,11 @@
 \alias{build_engine_with_llm_zip}
 \title{Build LLM Prompt Package for Engine Creation}
 \usage{
-build_engine_with_llm_zip(engine_type, task_description, zip_path = NULL)
+build_engine_with_llm_zip(
+  engine_type = "eval",
+  task_description = "The Median of all predictions.",
+  zip_path = NULL
+)
 }
 \arguments{
 \item{engine_type}{Character. The engine type (e.g., "evaluation").}

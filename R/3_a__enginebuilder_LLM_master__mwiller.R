@@ -58,16 +58,19 @@ build_engine_with_llm_zip <- function(engine_type = "eval",
   engine_type <- tolower(engine_type)
   prompt_text <- build_engine_with_llm(engine_type, task_description)
   
-  # resolve example + vignette based on engine_type
+  # resolve files from installed package
   default_example <- switch(engine_type,
-                            eval = system.file("R", "2_7_2_a__engine_eval_mse__mwiller.R", package = "flowengineR"),
+                            eval = system.file("example_enginebuild_LLM", "engine_eval_mse.R", package = "flowengineR"),
                             stop("No default example defined for engine type: ", engine_type)
   )
   
   default_vignette <- switch(engine_type,
-                             eval = "inst/vignettes/detail_engines_evaluation.Rmd",
+                             eval = system.file("example_enginebuild_LLM", "detail_engines_evaluation.Rmd", package = "flowengineR"),
                              stop("No default vignette defined for engine type: ", engine_type)
   )
+  
+  if (default_example == "") stop("Example file not found in installed package.")
+  if (default_vignette == "") stop("Vignette file not found in installed package.")
   
   tmp_dir <- file.path(tempdir(), paste0("llm_package_", engine_type, "_", format(Sys.time(), "%Y%m%d%H%M%S")))
   dir.create(tmp_dir, recursive = TRUE, showWarnings = FALSE)
@@ -77,8 +80,7 @@ build_engine_with_llm_zip <- function(engine_type = "eval",
   writeLines(prompt_text, prompt_file)
   
   # 2. Add example file
-  example_file <- file.path(tmp_dir, basename(default_example))
-  file.copy(default_example, example_file, overwrite = TRUE)
+  file.copy(default_example, file.path(tmp_dir, basename(default_example)), overwrite = TRUE)
   
   # 3. Add vignette file as-is (.Rmd)
   file.copy(default_vignette, file.path(tmp_dir, basename(default_vignette)), overwrite = TRUE)
