@@ -1,6 +1,4 @@
-#' Build LLM Prompt for Engine Creation
-#'
-#' Generates a ready-to-copy prompt for an LLM (e.g., ChatGPT) to generate a complete R engine implementation.
+#' Build LLM Prompt Package for Engine Creation
 #'
 #' This master function dispatches to engine-type-specific helpers that return an LLM prompt template.
 #'
@@ -15,24 +13,6 @@
 #' - "reportelement"
 #' - "report"
 #' - "publishing"
-#' 
-#' @param engine_type Character. The type of engine (e.g., "eval", "training", "fairness_pre", etc.)
-#' @param task_description Character. A plain language description of what the engine should do.
-#'
-#' @return A character string to copy-paste into an LLM like ChatGPT.
-#' @export
-build_engine_with_llm <- function(engine_type, task_description) {
-  engine_type <- tolower(engine_type)
-  
-  if (engine_type == "eval") {
-    return(build_llm_template_eval(task_description))
-  } else {
-    stop(paste0("[build_engine_with_llm] Unsupported engine type: ", engine_type))
-  }
-}
-
-
-#' Build LLM Prompt Package for Engine Creation
 #'
 #' Creates a zip file containing:
 #' - A structured prompt text for the LLM
@@ -50,7 +30,12 @@ build_engine_with_llm_zip <- function(engine_type,
                                       zip_path = NULL) {
   
   engine_type <- tolower(engine_type)
-  prompt_text <- build_engine_with_llm(engine_type, task_description)
+  
+  # Inline switch-based prompt builder
+  prompt_text <- switch(engine_type,
+                        eval = build_llm_template_eval(task_description),
+                        stop("No prompt template defined for engine type: ", engine_type)
+  )
   
   # resolve files from installed package
   default_example <- switch(engine_type,
@@ -88,5 +73,17 @@ build_engine_with_llm_zip <- function(engine_type,
   utils::zip(zipfile = zip_path, files = list.files(tmp_dir))
   
   message("LLM zip package created at: ", zip_path)
+  message("\nTo use this ZIP with an LLM (e.g., ChatGPT), follow these instructions:")
+  message("\n1. Upload the ZIP file in your chat.")
+  message("2. Paste the following instruction afterwards:")
+  message("\n--- COPY INTO CHAT ---")
+  message("I have uploaded a ZIP containing a prompt, a working example engine, and a vignette.")
+  message("Please read the prompt first (llm_prompt_", engine_type, ".R). Then carefully review:")
+  message("- engine_", engine_type, "_mse.R as a concrete reference implementation")
+  message("- detail_engines_", engine_type, ".Rmd as documentation of required structure")
+  message("Be precise and complete.")
+  message("Then generate a new engine as specified in the prompt.")
+  message("---")
+  
   invisible(zip_path)
 }

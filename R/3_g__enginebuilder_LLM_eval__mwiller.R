@@ -56,7 +56,8 @@ consult the included vignette file `detail_engines_evaluation.Rmd`.
 ---
 
 ### \U0001F4DD STANDARDIZED INPUT (via wrapper)
-The engine will receive inputs from the wrapper function, which are passed automatically by the framework:
+All inputs must be accessed via the standardized control object structure. See the example engine for how predictions and actuals are passed via control.
+The engine will receive inputs from the wrapper function, which are passed automatically by the framework through the control-object:
 
 - `eval_data`: a `data.frame` with at least the columns:
   - `prediction`: numeric vector of predicted values
