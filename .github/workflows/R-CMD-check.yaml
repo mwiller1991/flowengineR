@@ -8,6 +8,7 @@ on:
 
 jobs:
   R-CMD-check:
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +21,6 @@ jobs:
       - name: Install TinyTeX
         run: |
           Rscript -e 'install.packages("tinytex"); tinytex::install_tinytex(force = TRUE)'
-          echo "TinyTeX installed"
 
       - name: Verify LaTeX installation
         run: pdflatex --version || echo "pdflatex not found"
@@ -34,6 +34,16 @@ jobs:
       - name: Copy LLM engine files to inst/ for ZIP builder
         run: |
           Rscript tools/dev/copy_engine_build_materials.R
+          
+      - name: Commit and push engine files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add inst/example_enginebuild_LLM/
+          git diff --cached --quiet || git commit -m "Auto-sync LLM example/vignette [skip-ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run R CMD check
         run: |
