@@ -17,6 +17,23 @@ build_engine_with_llm_zip(engine_type, task_description, zip_path = NULL)
 Path to the created zip file.
 }
 \description{
+This master function dispatches to engine-type-specific helpers that return an LLM prompt template.
+}
+\details{
+Supported engine types:
+\itemize{
+\item "split"
+\item "execution"
+\item "train"
+\item "preprocessing"
+\item "inprocessing"
+\item "postprocessing"
+\item "eval"
+\item "reportelement"
+\item "report"
+\item "publishing"
+}
+
 Creates a zip file containing:
 \itemize{
 \item A structured prompt text for the LLM
