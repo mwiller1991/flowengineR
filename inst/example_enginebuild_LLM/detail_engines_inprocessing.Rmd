@@ -1,0 +1,130 @@
+---
+title: "In Detail: Engines - Inprocessing"
+subtitle: "Fairness-aware methods applied during model training"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{In Detail: Engines - Inprocessing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **inprocessing engines**.  
+> It explains how fairness interventions can be embedded directly into the training process of models, integrating fairness-aware methods while keeping compatibility with the flowengineR control structure.
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Inprocessing Engines in `flowengineR` are used to modify or extend the behavior of the training process. They operate directly on the model or training logic and can implement various techniques such as custom optimization strategies, model adjustments, or fairness-related modifications.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+
+These inputs are passed to the engine wrapper and are provided directly by the workflow:
+
+| Input                       | Type             | Description                                                        |
+| --------------------------- | ---------------- | ------------------------------------------------------------------ |
+| `driver_train`              | list             | Output from the main training engine (⚠️ provided by the framework from train output)                               |
+| `data`                      | data.frame       | Original training data (⚠️ provided by the framework)                                             |
+| `protected_attribute_names` | character vector | Protected group variables (e.g., "gender", "race") (⚠️ provided by the framework)                 |
+| `params`                    | list             | Additional parameters for fairness inprocessing                    |
+| `control_for_training`      | list             | Training-specific control settings (e.g., hyperparams, model type) (⚠️ provided by the framework)  |
+
+Framework resolution:
+
+- `driver_train`: provided by the workflow (output from training engine)
+- `data`: provided by the workflow (preprocessed or raw training dataset)
+- `protected_attribute_names`: resolved via `control$data$vars$protected`
+- `params`: passed via `control$params$inprocessing$params`
+- `control_for_training`: provided by the workflow (includes training-related configuration)
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+
+Returned via `initialize_output_fairness_in()`:
+
+| Output            | Type         | Description                                           |
+| ----------------- | ------------ | ----------------------------------------------------- |
+| `adjusted_model`  | model object | Modified model object after fairness-aware adjustment |
+| `model_type`      | character    | Identifier of the adjusted model type                 |
+| `predictions`     | vector       | Optional: Predictions or adjusted outputs             |
+| `params`          | list         | Parameters used                                       |
+| `specific_output` | list / NULL  | Engine-specific metadata                              |
+
+---
+
+## ⚙️ Available Inprocessing Engines
+
+| Engine Name                      | Function Name                                  | Description                          | Template Path                                                                 | Detail Page |
+|----------------------------------|-----------------------------------------------|--------------------------------------|--------------------------------------------------------------------------------|-------------|
+| `inprocessing_fairness_adversialdebiasing` | `engine_inprocessing_fairness_adversialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_control_inprocessing_fairness_adversialdebiasing.R` | [📄](detail_inprocessing_fairness_adversialdebiasing.html) |
+
+Use `list_registered_engines("inprocessing")` to inspect all currently loaded inprocessing engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+
+To activate an inprocessing engine:
+
+```r
+control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$params$inprocessing <- controller_inprocessing(
+  params = list(adversary_epochs = 10, lambda = 1.0)
+)
+```
+
+The engine is called *after* the main model is trained and can access both raw data and model output.
+
+---
+
+## 🔄 Compatibility Considerations
+
+Due to the complexity of inprocessing logic, not every inprocessing engine is compatible with all training engines. For example, some inprocessing methods may require access to internal model structures or specific training behaviors that are only available for certain model types (e.g., neural networks or ensemble methods).
+
+Compatibility must therefore be checked individually for each engine combination. It is recommended to consult the engine documentation or implementation before combining inprocessing with custom training engines.
+
+---
+
+## 🛠️ Writing Your Own Inprocessing Engine
+
+To implement a custom inprocessing engine:
+
+1. Write an `engine_*()` function that adjusts a model based on fairness criteria.
+2. Create a wrapper that receives all required inputs and produces a standardized output.
+3. Return your result via `initialize_output_inprocessing()`.
+
+For examples, see:
+
+- `wrapper_inprocessing_fairness_adversialdebiasing()`
+
+---
+
+## 🎯 Possible Use-Case: Fairness-Aware Inprocessing
+
+Inprocessing is ideal when model training must be adapted to meet fairness constraints directly. A prominent example is **adversarial debiasing**, where a secondary model (the adversary) learns to predict group membership from intermediate representations of the main model. The training then minimizes the adversary’s success while retaining predictive accuracy.
+
+This technique can be applied to neural networks and other flexible learners, enforcing fairness without compromising overall model structure.
+
+Example:
+
+```r
+control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$params$inprocessing <- controller_inprocessing(
+  params = list(adversary_epochs = 10, lambda = 1.0)
+)
+```
+
+This method integrates fairness into the optimization loop and is especially useful when working with complex model representations or high-capacity learners.
