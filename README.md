@@ -16,6 +16,7 @@ post-processing options.
 - Fairness integration at all pipeline levels
 - Support for batchtools and adaptive execution
 - Integrated reporting and publishing engines
+- LLM-assisted engine builder for rapid prototyping of new engines
 
 ------------------------------------------------------------------------
 
@@ -48,6 +49,8 @@ Check out the vignettes for detailed examples and explanations:
 - Getting Started with flowengineR
 - Why flowengineR had to be built
 - End-to-End Workflow Example
+- How to Build Custom Engines
+- How to Use the LLM-Assisted Engine Builder
 - …and many more
 
 You can view them in R using:
@@ -67,6 +70,6 @@ vignette("example_workflow_credit", package = "flowengineR")
 
 ## 📄 License
 
-MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com)
+MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com) and Peter Ruckdeschel
 
 For full license terms, see the LICENSE file in this repository.
