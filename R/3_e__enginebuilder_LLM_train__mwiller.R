@@ -53,7 +53,7 @@ The engine is called by the wrapper; the wrapper receives a standardized `contro
   - `normalized`: normalized training data (if available)
 - `control$params$train$norm_data`: **logical**; whether to use normalized data
 - `control$params$train$params`: optional **list** with engine-specific hyperparameters, such as:
-  - `family`: GLM family function (`gaussian()`, `binomial()`, `poisson()`, …)
+  - `family`: GLM family function (`gaussian()`, `binomial()`, `poisson()`, ...)
   - `sample_weight`: numeric vector of observation weights
 
 Parameter merging in the wrapper must use:
