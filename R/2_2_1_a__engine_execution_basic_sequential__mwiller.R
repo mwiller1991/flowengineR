@@ -102,7 +102,7 @@ wrapper_execution_basic_sequential <- function(control, split_output) {
     workflow_results = workflow_results,
     params = params,
     continue_workflow = TRUE,
-    specific_output = list(n_splits = length(split_output))
+    specific_output = list(n_splits = length(split_output$splits))
   )
 }
 #--------------------------------------------------------------------

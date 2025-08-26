@@ -4,7 +4,7 @@ Title: Modular and extensible framework for designing and executing algorithmic 
 Version: 1.0.0
 Authors@R: 
     person("Maximilian", "Willer", email = "willer.maximilian@googlemail.com", role = c("aut", "cre"))
-    person("Peter", "Ruckdeschel", role = c("ctb"))
+    person("Peter", "Ruckdeschel", email = "peter.ruckdeschel@uni-oldenburg.de", role = c("ctb"))
 Description: 
     flowengineR is a modular and extensible framework for designing and executing 
     algorithmic workflows in R. It provides a standardized infrastructure to combine
