@@ -1,0 +1,193 @@
+---
+title: "LLM-Assisted Engine Builder in flowengineR"
+subtitle: "From idea to a runnable engine package (ZIP)"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{LLM-Assisted Engine Builder in flowengineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette demonstrates how to generate a complete ZIP package for a new engine using `build_engine_with_llm_zip()`.  
+> The ZIP contains:  
+> 1. A structured prompt for the LLM  
+> 2. A working reference engine  
+> 3. A reference vignette describing the engine type  
+
+---
+
+## 💡 Motivation
+
+The architecture of **flowengineR** allows modular integration of engines (Train, Pre/In/Postprocessing, Evaluation, Reporting, Publishing).  
+To speed up prototyping and ensure consistency, the package provides an **LLM-assisted engine builder**.  
+It generates a curated ZIP package that guides a Large-Language-Model (LLM) to produce a structurally correct engine.
+
+**Benefits**
+
+- Enforces naming and I/O conventions automatically  
+- Provides a working reference engine  
+- Supplies a clear, reproducible prompt for the LLM  
+- Ensures that the output is a portable R script with three required functions:  
+  - `engine_*()`  
+  - `wrapper_*()`  
+  - `default_params_*()`  
+
+---
+
+## ⚙️ Functionality
+
+The builder supports all engine type. 
+
+Core functions:
+
+- `build_engine_with_llm_zip(engine_type, task_description, zip_path = NULL)`  
+  Creates the ZIP package (prompt, example engine, reference vignette).
+
+- `build_llm_template_split(task_description)`  
+  Internal helper that generates the LLM prompt text for splitter engines [📄](detail_engines_split.html).
+  
+- `build_llm_template_execution(task_description)`  
+  Internal helper that generates the LLM prompt text for execution engines [📄](detail_engines_execution.html).
+  
+- `build_llm_template_preprocessing(task_description)`  
+  Internal helper that generates the LLM prompt text for preprocessing engines [📄](detail_engines_preprocessing.html).
+  
+- `build_llm_template_train(task_description)`  
+  Internal helper that generates the LLM prompt text for training engines [📄](detail_engines_train.html).
+  
+- `build_llm_template_inprocessing(task_description)`  
+  Internal helper that generates the LLM prompt text for inprocessing engines [📄](detail_engines_inprocessing.html).
+  
+- `build_llm_template_postprocessing(task_description)`  
+  Internal helper that generates the LLM prompt text for postprocessing engines [📄](detail_engines_postprocessing.html).
+  
+- `build_llm_template_eval(task_description)`  
+  Internal helper that generates the LLM prompt text for execution engines [📄](detail_engines_execution.html).
+  
+- `build_llm_template_reportelement(task_description)`  
+  Internal helper that generates the LLM prompt text for reportelement engines [📄](detail_engines_reportelement.html).
+  
+- `build_llm_template_report(task_description)`  
+  Internal helper that generates the LLM prompt text for report engines [📄](detail_engines_report.html).
+  
+- `build_llm_template_publish(task_description)`  
+  Internal helper that generates the LLM prompt text for publish engines [📄](detail_engines_publish.html).
+
+---
+
+## 📦 Requirements
+
+- Installed `flowengineR` package (to access internal reference files)  
+- Write access to the target directory  
+
+```r
+# Install & load
+# install.packages("flowengineR")
+library(flowengineR)
+```
+
+---
+
+## 🚀 Quickstart: Build an Evaluation Engine with LLM
+
+As an example, we create an evaluation engine for **Mean Absolute Error (MAE)**.
+
+```r
+# Build ZIP for eval engine via LLM
+zip_file <- build_engine_with_llm_zip(
+  engine_type      = "eval",
+  task_description = "Compute Mean Absolute Error (MAE) over numeric predictions vs. actuals."
+)
+zip_file
+```
+
+**Output contents:**
+
+1. `llm_prompt_eval.R` – structured LLM prompt  
+2. `engine_eval_mse.R` – reference implementation (MSE)  
+3. `detail_engines_evaluation.Rmd` – documentation of I/O conventions  
+
+---
+
+## 🤖 How to Use the ZIP with an LLM
+
+1. Upload the ZIP file in your LLM chat.  
+2. Paste the instruction block printed by `build_engine_with_llm_zip()`.  
+3. The LLM will first read the prompt, then the example engine, then the vignette.  
+4. The LLM should return a **single R file** containing a new engine, e.g. `engine_eval_mae.R`.
+
+---
+
+## 🧩 Structural Requirements
+
+Every generated engine **must** include three functions:  
+
+```r
+# engine_eval_mae.R
+# Comments are in English
+
+#' Core MAE computation
+engine_eval_mae <- function(eval_data, params = list(), protected_attributes = NULL) {
+  stopifnot(all(c("prediction", "actual") %in% names(eval_data)))
+  mae <- mean(abs(eval_data$prediction - eval_data$actual), na.rm = TRUE)
+  list(metrics = list(mae = mae))
+}
+
+#' Wrapper function
+wrapper_eval_mae <- function(control) {
+  if (isTRUE(control$internal_skip_validation)) {
+    return(list(skip_validation = TRUE))
+  }
+  params <- merge_with_defaults(control$params$eval$params,
+                                default_params_eval_mae())
+  eval_data <- control$params$eval$eval_data
+  core_res <- engine_eval_mae(eval_data = eval_data, params = params)
+  initialize_output_eval(
+    metrics              = core_res$metrics,
+    eval_type            = "mae",
+    input_data           = eval_data,
+    protected_attributes = control$params$eval$protected_attributes,
+    params               = params,
+    specific_output      = NULL
+  )
+}
+
+#' Default parameters
+default_params_eval_mae <- function() {
+  list(na_rm = TRUE)
+}
+```
+
+---
+
+## 🛠️ Validation and Debugging
+
+Engines may allow early exit during registration:
+
+```r
+if (isTRUE(control$internal_skip_validation)) {
+  return(list(skip_validation = TRUE))
+}
+```
+
+This is useful for workflow integration before a complete implementation is ready.
+
+---
+
+## ❓ FAQ
+
+**Why only one R file?**  
+Keeps engines portable, testable, and aligned with package conventions.  
+
+**Can multiple metrics be returned?**  
+Yes, `metrics` can contain several named values (`mse`, `mae`, etc.).  
+
+**What about protected attributes?**  
+For `eval` they are optional, passed through by the wrapper. For fairness engines, they are part of the core input.  
+
+---
