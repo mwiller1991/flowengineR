@@ -43,11 +43,11 @@ build_engine_with_llm_zip <- function(engine_type,
       vignette  = c("example_enginebuild_LLM", "detail_engines_execution.Rmd")
     ),
     train = list(
-      example   = c("example_enginebuild_LLM", "engine_train_lm.R"),
+      example   = c("example_enginebuild_LLM", "engine_train_glm.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_train.Rmd")
     ),
     preprocessing = list(
-      example   = c("example_enginebuild_LLM", "engine_preprocessing_disparate_impact_remover.R"),
+      example   = c("example_enginebuild_LLM", "engine_preprocessing_fairness_resampling.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_preprocessing.Rmd")
     ),
     inprocessing = list(
