@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Preprocessing Engine - Fairness Resampling"
-output: rmarkdown::html_vignette
+subtitle: "Balancing training data to reduce bias before model fitting"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Preprocessing Engine - Fairness Resampling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette presents the **fairness resampling preprocessing engine**.  
+> It shows how training data is resampled to balance distributions across protected groups, reducing bias before any model fitting is performed in the workflow.
+
 ---
 
 ## Engine: Fairness Resampling (`engine_preprocessing_fairness_resampling`)

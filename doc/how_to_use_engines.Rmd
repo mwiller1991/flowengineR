@@ -1,10 +1,21 @@
 ---
-title: "How to: Engine Types in flowengineR"
-output: rmarkdown::html_vignette
+title: "How to Use Engines"
+subtitle: "Practical usage of engines within workflows"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{How to: Engine Types in flowengineR}
+  %\VignetteIndexEntry{How to Use Engines}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **practical usage of engines**.  
+> It demonstrates how engines are called within workflows, how wrappers standardize inputs and outputs, and how users can configure or replace engines to customize behavior.
+
 ---
 
 The `flowengineR` framework is designed around modular components called **engines**. Engines encapsulate functionality at specific stages of the workflow and follow a standardized interface.

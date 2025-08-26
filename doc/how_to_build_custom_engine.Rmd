@@ -1,10 +1,21 @@
 ---
-title: "How to Build a Custom Engine in flowengineR"
-output: rmarkdown::html_vignette
+title: "How to Build a Custom Engine"
+subtitle: "Step-by-step guide to writing your own engines"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{How to Build a Custom Engine in flowengineR}
+  %\VignetteIndexEntry{How to Build a Custom Engine}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette provides a **step-by-step guide** to building custom engines.  
+> It describes the required input/output conventions, wrapper functions, and default parameter handling, ensuring that new engines integrate seamlessly into the `flowengineR` framework.
+
 ---
 
 **Engine Development Guide: Creating Custom Engines in flowengineR**
@@ -13,7 +24,7 @@ This guide explains the standardized structure required to build and register a 
 
 ---
 
-### Overview
+### 📝 Overview
 
 Each custom engine must be implemented as **three distinct functions**:
 
@@ -30,17 +41,17 @@ These functions form a **minimal, complete engine definition**. If one is missin
 
 ---
 
-### 1. Engine Function (`engine_*()`)
+### 🛠️ 1. Engine Function (`engine_*()`)
 
 This is the pure computation layer. It contains **no validation**, **no logic related to the control object**, and **no standardization**.
 
-#### Rules:
+#### 📐 Rules:
 
 * Input arguments must be clean and explicit
 * No assumptions about data preprocessing or training configuration
 * Returns a raw output object (e.g., fitted model, metrics, or plots)
 
-#### Example:
+#### 🔍 Example:
 
 ```r
 engine_train_glm <- function(formula, family, data, sample_weight) {
@@ -50,11 +61,11 @@ engine_train_glm <- function(formula, family, data, sample_weight) {
 
 ---
 
-### 2. Wrapper Function (`wrapper_*()`)
+### 🔄 2. Wrapper Function (`wrapper_*()`)
 
 This function prepares inputs for the engine, validates user control, and constructs standardized outputs.
 
-#### Responsibilities:
+#### 📐 Responsibilities:
 
 * Merge user-defined and default parameters (`merge_with_defaults()`)
 * Validate presence of all required fields
@@ -62,14 +73,14 @@ This function prepares inputs for the engine, validates user control, and constr
 * Measure runtime or other metadata
 * Return standardized output via `initialize_output_<type>()`
 
-r
+```r
 if (isTRUE(control\$internal\_skip\_validation)) {
 return(list(skip\_validation = TRUE))
 }
+```
 
-````
+#### 🔍 Example:
 
-#### Example:
 ```r
 wrapper_train_glm <- function(control) {
   train_data <- select_training_data(control$params$train$norm_data, control$params$train$data)
@@ -84,7 +95,7 @@ wrapper_train_glm <- function(control) {
     specific_output = list(training_time = ...)
   )
 }
-````
+```
 
 ---
 
@@ -92,13 +103,13 @@ wrapper_train_glm <- function(control) {
 
 Returns a named list of default values for engine-specific hyperparameters.
 
-#### Guidelines:
+#### 📐 Guidelines:
 
 * Should include all optional inputs that affect engine behavior
 * Does not require user interaction
 * Used only internally by the wrapper
 
-#### Example:
+#### 🔍 Example:
 
 ```r
 default_params_train_glm <- function() {
@@ -204,3 +215,8 @@ control$engine_select$train <- "train_glm"  # matches wrapper_train_glm
 ---
 
 Next step: Read the engine-specific sections to understand the standardized inputs and required outputs for each engine type.
+
+
+---
+
+> While this vignette focuses on the manual creation of custom engines, the package also offers an alternative workflow: the *LLM-Assisted Engine Builder*. See the vignette *[How to: Use LLm Engine Builder](how_to_use_llm_engine_builder.html)* for details on how to prototype new engines quickly using Large Language Models.

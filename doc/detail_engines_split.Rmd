@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Splitter Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Split"
+subtitle: "Data splitting strategies for training and evaluation"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Splitter Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Split}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **split engines**.  
+> It explains how datasets are partitioned into training and testing subsets, supporting random, stratified, cross-validation, and user-defined approaches, all standardized within `flowengineR`.
+
 ---
 
 Splitter Engines in `flowengineR` are responsible for dividing a full dataset into training and test sets. This operation is critical, as all downstream modeling and evaluation relies on this split. Splitters can support single splits, repeated random splits, or cross-validation.

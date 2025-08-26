@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>Example: Full Workflow (Credit Risk)</title>
+<title>Example Workflow - Credit Data</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,34 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Example: Full Workflow (Credit Risk)</h1>
+<h1 class="title toc-ignore">Example Workflow - Credit Data</h1>
+<h3 class="subtitle">End-to-end demonstration on credit risk
+prediction</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#objective" id="toc-objective">Objective</a></li>
+<li><a href="#step-1-load-data-and-define-variables" id="toc-step-1-load-data-and-define-variables">Step 1: Load data and
+define variables</a></li>
+<li><a href="#step-2-build-the-control-object" id="toc-step-2-build-the-control-object">Step 2: Build the control
+object</a></li>
+<li><a href="#step-3-run-the-workflow" id="toc-step-3-run-the-workflow">Step 3: Run the workflow</a></li>
+<li><a href="#step-4-inspect-results" id="toc-step-4-inspect-results">Step 4: Inspect results</a></li>
+<li><a href="#summary" id="toc-summary">Summary</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette demonstrates a full workflow on <strong>credit risk
+prediction</strong>.<br />
+It walks through data preparation, model training, fairness methods,
+evaluation, and publishing, illustrating how <code>flowengineR</code>
+integrates all components in a real-world example.</p>
+</blockquote>
+<hr />
 <div id="objective" class="section level2">
 <h2>Objective</h2>
 <p>This vignette demonstrates a complete <code>flowengineR</code>
@@ -902,7 +927,7 @@ fairness method, and reporting/publishing components.</p>
 ## $pdf_basis_test_report$alias
 ## function (object, ...) 
 ## UseMethod(&quot;alias&quot;)
-## &lt;bytecode: 0x15ac40208&gt;
+## &lt;bytecode: 0x1210f0608&gt;
 ## &lt;environment: namespace:stats&gt;
 ## 
 ## $pdf_basis_test_report$type
@@ -935,7 +960,7 @@ fairness method, and reporting/publishing components.</p>
 ## $pdf_basis_test_singleelement$alias
 ## function (object, ...) 
 ## UseMethod(&quot;alias&quot;)
-## &lt;bytecode: 0x15ac40208&gt;
+## &lt;bytecode: 0x1210f0608&gt;
 ## &lt;environment: namespace:stats&gt;
 ## 
 ## $pdf_basis_test_singleelement$type

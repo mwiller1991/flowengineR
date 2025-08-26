@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engine - Batchtools Local Execution"
-output: rmarkdown::html_vignette
+title: "In Detail: Execution Engine - Basic Batchtools Local"
+subtitle: "Basic execution engine using batchtools in local mode"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools Local Execution}
+  %\VignetteIndexEntry{In Detail: Execution Engine - Basic Batchtools Local}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **basic batchtools local execution engine**.  
+> It describes how to run workflows sequentially in a local environment while leveraging the `batchtools` API for consistent job handling and reproducibility.
+
 ---
 
 ## Engine: Batchtools Local Execution (`engine_execution_basic_batchtools_local`)

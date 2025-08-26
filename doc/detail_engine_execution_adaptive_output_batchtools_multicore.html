@@ -10,6 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
 <title>In Detail: Execution Engine - Adaptive Batchtools Multicore Stability</title>
@@ -338,9 +339,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">In Detail: Execution Engine - Adaptive
 Batchtools Multicore Stability</h1>
+<h3 class="subtitle">Adaptive output execution via batchtools multicore
+backend</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-adaptive-batchtools-multicore-stability-engine_execution_adaptive_output_batchtools_multicore" id="toc-engine-adaptive-batchtools-multicore-stability-engine_execution_adaptive_output_batchtools_multicore">Engine:
+Adaptive Batchtools Multicore Stability
+(<code>engine_execution_adaptive_output_batchtools_multicore</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette documents the <strong>multicore</strong> variant of
+adaptive output execution using <code>batchtools</code>.<br />
+It covers parallel scheduling on a single machine, required control
+parameters, and how results are merged into the workflow outputs while
+preserving reproducibility.</p>
+</blockquote>
+<hr />
 <div id="engine-adaptive-batchtools-multicore-stability-engine_execution_adaptive_output_batchtools_multicore" class="section level2">
 <h2>Engine: Adaptive Batchtools Multicore Stability
 (<code>engine_execution_adaptive_output_batchtools_multicore</code>)</h2>

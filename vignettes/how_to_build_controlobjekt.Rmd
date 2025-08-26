@@ -1,10 +1,21 @@
 ---
-title: "Defining Control Objects in flowengineR"
-output: rmarkdown::html_vignette
+title: "How to Build a Control Object"
+subtitle: "Creating and configuring control objects in flowengineR"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Defining Control Objects in flowengineR}
+  %\VignetteIndexEntry{How to Build a Control Object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette explains how to **create and configure control objects**.  
+> It introduces the structure of control objects, how they define workflows, and how users can specify engines and parameters consistently across the package.
+
 ---
 
 The `control` object is the central configuration element in the `flowengineR` framework. It defines the workflow structure, selected engines, data handling, and engine-specific parameters. This vignette explains each component in detail.

@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Training Engines</title>
+<title>In Detail: Engines - Train</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,35 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Training Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Train</h1>
+<h3 class="subtitle">Training engines for predictive models</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-training-engines" id="toc-available-training-engines">⚙️ Available Training
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-training-engine" id="toc-writing-your-own-training-engine">🛠️ Writing Your Own Training
+Engine</a></li>
+<li><a href="#possible-use-case-benchmarking-algorithms" id="toc-possible-use-case-benchmarking-algorithms">🔍 Possible Use-Case:
+Benchmarking Algorithms</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette describes the <strong>training engines</strong>.<br />
+It shows how different modeling approaches (e.g., linear models, GLMs,
+random forests) are encapsulated into standardized training functions,
+ensuring interoperability within the workflow.</p>
+</blockquote>
+<hr />
 <p>Training Engines in <code>flowengineR</code> are responsible for
 fitting a predictive model to the (optionally preprocessed) training
 data. They define how a model is built and what output is returned for

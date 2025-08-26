@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Inprocessing Engines</title>
+<title>In Detail: Engines - Inprocessing</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,39 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Inprocessing Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Inprocessing</h1>
+<h3 class="subtitle">Fairness-aware methods applied during model
+training</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-inprocessing-engines" id="toc-available-inprocessing-engines">⚙️ Available Inprocessing
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#compatibility-considerations" id="toc-compatibility-considerations">🔄 Compatibility
+Considerations</a></li>
+<li><a href="#writing-your-own-inprocessing-engine" id="toc-writing-your-own-inprocessing-engine">🛠️ Writing Your Own
+Inprocessing Engine</a></li>
+<li><a href="#possible-use-case-fairness-aware-inprocessing" id="toc-possible-use-case-fairness-aware-inprocessing">🎯 Possible
+Use-Case: Fairness-Aware Inprocessing</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>inprocessing
+engines</strong>.<br />
+It explains how fairness interventions can be embedded directly into the
+training process of models, integrating fairness-aware methods while
+keeping compatibility with the flowengineR control structure.</p>
+</blockquote>
+<hr />
 <p>Inprocessing Engines in <code>flowengineR</code> are used to modify
 or extend the behavior of the training process. They operate directly on
 the model or training logic and can implement various techniques such as

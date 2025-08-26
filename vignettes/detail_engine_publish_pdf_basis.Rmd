@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Publishing Engine – PDF Basis Export"
-output: rmarkdown::html_vignette
+title: "In Detail: Publishing Engine - PDF Basis"
+subtitle: "Exporting workflow results to PDF format"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Publishing Engine – PDF Basis Export}
+  %\VignetteIndexEntry{In Detail: Publishing Engine - PDF Basis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **PDF publishing engine**.  
+> It describes how workflow results can be exported into structured PDF reports, allowing for portable and shareable documentation of model evaluation and fairness results.
+
 ---
 
 ## Engine: PDF Export (`publish_pdf_basis`)

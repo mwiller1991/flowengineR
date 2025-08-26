@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Split Engine - Cross-Validation (CV)"
-output: rmarkdown::html_vignette
+title: "In Detail: Split Engine - Cross Validation"
+subtitle: "Splitting data into k folds for cross-validation"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Split Engine - Cross-Validation (CV)}
+  %\VignetteIndexEntry{In Detail: Split Engine - Cross Validation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **cross-validation split engine**.  
+> It explains how datasets are divided into multiple folds, ensuring reproducible train-test splits for robust performance evaluation in workflows.
+
 ---
 
 ## Engine: Cross-Validation Split (`engine_split_cv`)

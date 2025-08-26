@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Training Engine - Generalized Linear Model (GLM)"
-output: rmarkdown::html_vignette
+title: "In Detail: Train Engine - GLM"
+subtitle: "Training generalized linear models within flowengineR"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Training Engine - Generalized Linear Model (GLM)}
+  %\VignetteIndexEntry{In Detail: Train Engine - GLM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **GLM training engine**.  
+> It shows how generalized linear models are trained inside the workflow, covering parameter handling, standardized inputs, and integration into the control-object structure.
+
 ---
 
 ## Engine: Generalized Linear Model (`engine_train_glm`)

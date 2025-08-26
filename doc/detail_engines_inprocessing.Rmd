@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Inprocessing Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Inprocessing"
+subtitle: "Fairness-aware methods applied during model training"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Inprocessing Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Inprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **inprocessing engines**.  
+> It explains how fairness interventions can be embedded directly into the training process of models, integrating fairness-aware methods while keeping compatibility with the flowengineR control structure.
+
 ---
 
 ```{r setup, include = FALSE}

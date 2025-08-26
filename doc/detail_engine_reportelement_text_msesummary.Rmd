@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Reportelement Engine - Textblock – MSE Summary"
-output: rmarkdown::html_vignette
+title: "In Detail: Reportelement Engine - Text MSE Summary"
+subtitle: "Textual summary of mean squared error results"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Reportelement Engine - Textblock – MSE Summary}
+  %\VignetteIndexEntry{In Detail: Reportelement Engine - Text MSE Summary}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **text MSE summary reportelement engine**.  
+> It describes how mean squared error results are transformed into concise text output, enabling quick interpretation and integration into narrative-style reports.
+
 ---
 
 ## Engine: Textblock – MSE Summary (`engine_reportelement_text_msesummary`)

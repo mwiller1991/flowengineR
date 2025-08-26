@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Execution"
+subtitle: "Execution strategies for running workflow components"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Execution}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the family of **execution engines**.  
+> It covers how different execution strategies (sequential, parallel, cluster-based) are structured, how they interact with splitters and other engines, and how results are merged into a unified workflow output.
+
 ---
 
 Execution Engines in `flowengineR` orchestrate the application of models over multiple data splits. They define **how** and **where** model training and evaluation are carried out — sequentially, in parallel, or deferred to external systems like SLURM. Each of the listed execution engines below defines a distinct way to repeatedly call `run_workflow_singlesplitloop()` on one or more splits. Some execute all splits directly, others submit them to external systems, and a few (adaptive engines) decide at runtime how many splits or parameter configurations to evaluate.

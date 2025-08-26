@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Split Engine - Stratified Random Split"
-output: rmarkdown::html_vignette
+title: "In Detail: Split Engine - Random Stratified"
+subtitle: "Random stratified sampling for balanced data splits"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Split Engine - Stratified Random Split}
+  %\VignetteIndexEntry{In Detail: Split Engine - Random Stratified}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette presents the **random stratified split engine**.  
+> It describes how splits are generated with preserved proportions of target or protected attributes, improving fairness and representativeness of training and test sets.
+
 ---
 
 ## Engine: Stratified Random Split (`engine_split_random_stratified`)

@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>Why flowengineR had to be built</title>
+<title>Why flowengineR?</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -235,10 +236,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Why flowengineR had to be built</h1>
+<h1 class="title toc-ignore">Why flowengineR?</h1>
+<h3 class="subtitle">Motivation, design principles, and key
+advantages</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#motivation" id="toc-motivation">Motivation</a></li>
+<li><a href="#why-we-couldnt-use-existing-tools" id="toc-why-we-couldnt-use-existing-tools">Why we couldn’t use existing
+tools</a>
+<ul>
+<li><a href="#knime" id="toc-knime">KNIME</a></li>
+<li><a href="#other-tools-we-considered" id="toc-other-tools-we-considered">Other tools we considered</a></li>
+</ul></li>
+<li><a href="#why-flowenginer-was-built" id="toc-why-flowenginer-was-built">Why flowengineR was built</a></li>
+<li><a href="#conclusion" id="toc-conclusion">Conclusion</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette explains <strong>why <code>flowengineR</code> was
+developed</strong>.<br />
+It outlines the motivation behind the package, its modular design
+principles, and the advantages it provides compared to existing
+approaches, with a focus on extensibility, fairness integration, and
+reproducibility.</p>
+</blockquote>
+<hr />
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
 <p>The development of <code>flowengineR</code> did not begin with the

@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Training Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Train"
+subtitle: "Training engines for predictive models"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Training Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Train}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **training engines**.  
+> It shows how different modeling approaches (e.g., linear models, GLMs, random forests) are encapsulated into standardized training functions, ensuring interoperability within the workflow.
+
 ---
 
 ```{r setup, include = FALSE}

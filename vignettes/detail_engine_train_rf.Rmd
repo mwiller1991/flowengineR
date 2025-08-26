@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Training Engine - Random Forest (RF)"
-output: rmarkdown::html_vignette
+title: "In Detail: Train Engine - RF"
+subtitle: "Training random forest models within flowengineR"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Training Engine - Random Forest (RF)}
+  %\VignetteIndexEntry{In Detail: Train Engine - RF}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **RF training engine**.  
+> It shows how random forest models are fitted, including parameter control, wrapper integration, and how model objects and metadata are returned in a standardized format.
+
 ---
 
 ## Engine: Random Forest (`engine_train_rf`)

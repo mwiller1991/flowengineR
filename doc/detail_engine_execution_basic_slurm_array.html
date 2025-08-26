@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Execution Engine - SLURM Array Preparation</title>
+<title>In Detail: Execution Engine - Basic SLURM Array</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,11 +337,42 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Execution Engine - SLURM Array
-Preparation</h1>
+<h1 class="title toc-ignore">In Detail: Execution Engine - Basic SLURM
+Array</h1>
+<h3 class="subtitle">Basic execution engine using SLURM job arrays</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-slurm-array-preparation-engine_execution_basic_slurm_array" id="toc-engine-slurm-array-preparation-engine_execution_basic_slurm_array">Engine:
+SLURM Array Preparation
+(<code>engine_execution_basic_slurm_array</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+<li><a href="#resume-workflow-example" id="toc-resume-workflow-example">Resume Workflow Example</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette describes the <strong>basic SLURM array execution
+engine</strong>.<br />
+It explains how large sets of jobs can be efficiently scheduled as SLURM
+arrays, and how results are merged back into the standardized outputs of
+<code>flowengineR</code>.</p>
+</blockquote>
+<hr />
 <div id="engine-slurm-array-preparation-engine_execution_basic_slurm_array" class="section level2">
 <h2>Engine: SLURM Array Preparation
 (<code>engine_execution_basic_slurm_array</code>)</h2>

@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engine - Batchtools SLURM Execution"
-output: rmarkdown::html_vignette
+title: "In Detail: Execution Engine - Basic Batchtools SLURM"
+subtitle: "Basic execution engine using batchtools on SLURM clusters"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools SLURM Execution}
+  %\VignetteIndexEntry{In Detail: Execution Engine - Basic Batchtools SLURM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **basic batchtools SLURM execution engine**.  
+> It explains how jobs are submitted to SLURM clusters through `batchtools`, covering template configuration, resource management, and result collection in the standardized `flowengineR` format.
+
 ---
 
 ## Engine: Batchtools SLURM Execution (`engine_execution_basic_batchtools_slurm`)

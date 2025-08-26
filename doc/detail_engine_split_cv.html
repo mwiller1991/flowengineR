@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Split Engine - Cross-Validation (CV)</title>
+<title>In Detail: Split Engine - Cross Validation</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,11 +337,41 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Split Engine - Cross-Validation
-(CV)</h1>
+<h1 class="title toc-ignore">In Detail: Split Engine - Cross
+Validation</h1>
+<h3 class="subtitle">Splitting data into k folds for
+cross-validation</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-cross-validation-split-engine_split_cv" id="toc-engine-cross-validation-split-engine_split_cv">Engine:
+Cross-Validation Split (<code>engine_split_cv</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette documents the <strong>cross-validation split
+engine</strong>.<br />
+It explains how datasets are divided into multiple folds, ensuring
+reproducible train-test splits for robust performance evaluation in
+workflows.</p>
+</blockquote>
+<hr />
 <div id="engine-cross-validation-split-engine_split_cv" class="section level2">
 <h2>Engine: Cross-Validation Split (<code>engine_split_cv</code>)</h2>
 <div id="purpose-and-function" class="section level3">

@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Report Engines</title>
+<title>In Detail: Engines - Report</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Report Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Report</h1>
+<h3 class="subtitle">Generating structured reports from workflow
+outputs</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#relationship-to-other-layers" id="toc-relationship-to-other-layers">🔗 Relationship to Other
+Layers</a></li>
+<li><a href="#available-report-engines" id="toc-available-report-engines">⚙️ Available Report Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-report-engine" id="toc-writing-your-own-report-engine">🛠️ Writing Your Own Report
+Engine</a></li>
+<li><a href="#possible-use-case-standardized-model-summary" id="toc-possible-use-case-standardized-model-summary">🎯 Possible
+Use-Case: Standardized Model Summary</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>report engines</strong>.<br />
+It shows how workflow results are processed into structured report
+elements, enabling both human-readable summaries and integration with
+publishing engines.</p>
+</blockquote>
+<hr />
 <p>Report Engines in <code>flowengineR</code> are used to
 <strong>assemble multiple reportelements into structured
 reports</strong>. They serve as an intermediate layer between modular

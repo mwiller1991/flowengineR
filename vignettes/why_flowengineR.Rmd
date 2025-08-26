@@ -1,10 +1,21 @@
 ---
-title: "Why flowengineR had to be built"
-output: rmarkdown::html_vignette
+title: "Why flowengineR?"
+subtitle: "Motivation, design principles, and key advantages"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Why flowengineR had to be built}
+  %\VignetteIndexEntry{Why flowengineR?}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette explains **why `flowengineR` was developed**.  
+> It outlines the motivation behind the package, its modular design principles, and the advantages it provides compared to existing approaches, with a focus on extensibility, fairness integration, and reproducibility.
+
 ---
 
 ## Motivation

@@ -1,10 +1,21 @@
 ---
-title: "Example: Full Workflow (Credit Risk)"
-output: rmarkdown::html_vignette
+title: "Example Workflow - Credit Data"
+subtitle: "End-to-end demonstration on credit risk prediction"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Example: Full Workflow (Credit Risk)}
+  %\VignetteIndexEntry{Example Workflow - Credit Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette demonstrates a full workflow on **credit risk prediction**.  
+> It walks through data preparation, model training, fairness methods, evaluation, and publishing, illustrating how `flowengineR` integrates all components in a real-world example.
+
 ---
 
 ```{r setup, include=FALSE}

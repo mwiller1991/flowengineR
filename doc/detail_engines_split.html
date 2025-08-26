@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Splitter Engines</title>
+<title>In Detail: Engines - Split</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,35 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Splitter Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Split</h1>
+<h3 class="subtitle">Data splitting strategies for training and
+evaluation</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-splitter-engines" id="toc-available-splitter-engines">⚙️ Available Splitter
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-splitter-engine" id="toc-writing-your-own-splitter-engine">🛠️ Writing Your Own Splitter
+Engine</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>split engines</strong>.<br />
+It explains how datasets are partitioned into training and testing
+subsets, supporting random, stratified, cross-validation, and
+user-defined approaches, all standardized within
+<code>flowengineR</code>.</p>
+</blockquote>
+<hr />
 <p>Splitter Engines in <code>flowengineR</code> are responsible for
 dividing a full dataset into training and test sets. This operation is
 critical, as all downstream modeling and evaluation relies on this

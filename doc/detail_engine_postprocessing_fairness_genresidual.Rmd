@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Post-Processing Engine - General Residual Adjustment"
-output: rmarkdown::html_vignette
+title: "In Detail: Postprocessing Engine - Fairness Generalized Residual"
+subtitle: "Adjusting residuals to improve group fairness after training"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Post-Processing Engine - General Residual Adjustment}
+  %\VignetteIndexEntry{In Detail: Postprocessing Engine - Fairness Generalized Residual}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **generalized residual postprocessing engine**.  
+> It outlines how prediction residuals are modified after model training to reduce group-level bias, thereby improving fairness while keeping predictive accuracy intact.
+
 ---
 
 ## Engine: General Residual Adjustment (`engine_postprocessing_fairness_genresidual`)

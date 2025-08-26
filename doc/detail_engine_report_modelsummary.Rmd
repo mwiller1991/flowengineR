@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Report Engine – Model Summary"
-output: rmarkdown::html_vignette
+title: "In Detail: Report Engine - Model Summary"
+subtitle: "Generating summary reports of trained models"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Report Engine – Model Summary}
+  %\VignetteIndexEntry{In Detail: Report Engine - Model Summary}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **model summary report engine**.  
+> It shows how to generate structured summary outputs of trained models, including key metrics and configurations, for inclusion in downstream reporting workflows.
+
 ---
 
 ## Engine: Model Summary (`engine_report_modelsummary`)

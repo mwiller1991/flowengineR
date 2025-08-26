@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Postprocessing Engines</title>
+<title>In Detail: Engines - Postprocessing</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Postprocessing Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Postprocessing</h1>
+<h3 class="subtitle">Fairness and adjustment methods applied after
+training</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-postprocessing-engines" id="toc-available-postprocessing-engines">⚙️ Available Postprocessing
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-postprocessing-engine" id="toc-writing-your-own-postprocessing-engine">🛠️ Writing Your Own
+Postprocessing Engine</a></li>
+<li><a href="#possible-use-case-group-specific-bias-correction" id="toc-possible-use-case-group-specific-bias-correction">🎯 Possible
+Use-Case: Group-Specific Bias Correction</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette describes the <strong>postprocessing
+engines</strong>.<br />
+It covers methods that operate on model predictions after training to
+improve fairness or performance, showing how they adjust outputs while
+maintaining the standardized workflow interface.</p>
+</blockquote>
+<hr />
 <p>Postprocessing Engines in <code>flowengineR</code> are used to adjust
 model predictions after training. These adjustments do not alter the
 model itself but operate on its output, making them especially useful

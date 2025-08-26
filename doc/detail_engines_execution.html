@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Execution Engines</title>
+<title>In Detail: Engines - Execution</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,45 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Execution Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Execution</h1>
+<h3 class="subtitle">Execution strategies for running workflow
+components</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#adaptive-execution-stability-monitoring" id="toc-adaptive-execution-stability-monitoring">🔄 Adaptive Execution:
+Stability Monitoring</a></li>
+<li><a href="#adaptive-execution-hyperparameter-optimization" id="toc-adaptive-execution-hyperparameter-optimization">🔧 Adaptive
+Execution: Hyperparameter Optimization</a></li>
+<li><a href="#available-execution-engines" id="toc-available-execution-engines">⚙️ Available Execution
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage <em>in</em>
+Workflow</a></li>
+<li><a href="#resuming-after-external-execution" id="toc-resuming-after-external-execution">🔁 Resuming After External
+Execution</a></li>
+<li><a href="#writing-your-own-execution-engine" id="toc-writing-your-own-execution-engine">🛠️ Writing Your Own Execution
+Engine</a></li>
+<li><a href="#further-reading" id="toc-further-reading">🔍 Further
+Reading</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette documents the family of <strong>execution
+engines</strong>.<br />
+It covers how different execution strategies (sequential, parallel,
+cluster-based) are structured, how they interact with splitters and
+other engines, and how results are merged into a unified workflow
+output.</p>
+</blockquote>
+<hr />
 <p>Execution Engines in <code>flowengineR</code> orchestrate the
 application of models over multiple data splits. They define
 <strong>how</strong> and <strong>where</strong> model training and

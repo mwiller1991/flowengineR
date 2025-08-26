@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Reportelement – Boxplot of Predictions"
-output: rmarkdown::html_vignette
+title: "In Detail: Reportelement Engine - Boxplot Predictions"
+subtitle: "Visualizing predictions as boxplots in reports"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Reportelement – Boxplot of Predictions}
+  %\VignetteIndexEntry{In Detail: Reportelement Engine - Boxplot Predictions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette presents the **boxplot predictions reportelement engine**.  
+> It explains how prediction results are visualized as boxplots to provide quick insights into distribution and spread, enhancing the interpretability of evaluation results in reports.
+
 ---
 
 ## Engine: Boxplot of Predictions (`reportelement_boxplot_predictions`)

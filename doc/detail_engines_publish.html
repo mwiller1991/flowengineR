@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Publishing Engines</title>
+<title>In Detail: Engines - Publish</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,38 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Publishing Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Publish</h1>
+<h3 class="subtitle">Publishing workflow outputs into external
+formats</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#dependency-to-other-layers" id="toc-dependency-to-other-layers">🔗 Dependency to Other
+Layers</a></li>
+<li><a href="#available-publishing-engines" id="toc-available-publishing-engines">⚙️ Available Publishing
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-publishing-engine" id="toc-writing-your-own-publishing-engine">🛠️ Writing Your Own
+Publishing Engine</a></li>
+<li><a href="#possible-use-cases-export-options-for-different-stakeholders" id="toc-possible-use-cases-export-options-for-different-stakeholders">🎯
+Possible Use-Cases: Export Options for Different Stakeholders</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette documents the <strong>publishing engines</strong>.<br />
+It explains how workflow results are exported into external formats such
+as Excel or PDF, ensuring reproducibility and enabling flexible
+downstream use outside of R.</p>
+</blockquote>
+<hr />
 <p>Publishing Engines in <code>flowengineR</code> are used to
 <strong>export reportelements or full reports to external
 formats</strong> such as PDF, Excel, or HTML. They are the final stage

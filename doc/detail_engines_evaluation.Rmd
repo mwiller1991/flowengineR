@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Evaluation Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Evaluation"
+subtitle: "Overview and structure of evaluation engines"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Evaluation Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Evaluation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette provides an overview of **evaluation engines**.  
+> It introduces their standardized input/output design, explains how different evaluation methods can be plugged into workflows, and illustrates how metrics are returned and documented.
+
 ---
 
 ```{r setup, include = FALSE}

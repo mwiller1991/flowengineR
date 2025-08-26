@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Execution Engine - Adaptive Scalar Param Optimization (Sequential)"
-output: rmarkdown::html_vignette
+subtitle: "Sequential adaptive execution for scalar parameter optimization"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Scalar Param Optimization (Sequential)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette details the sequential strategy for **adaptive scalar parameter optimization**.  
+> It explains how the engine performs stepwise updates, integrates stability checks, and adheres to the standardized wrapper I/O so that results are recorded consistently within `flowengineR`.
+
 ---
 
 ## Engine: Adaptive Scalar Param Optimization (Sequential) (`engine_execution_adaptive_input_scalar_sequential`)

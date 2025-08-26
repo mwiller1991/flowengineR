@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>How to: Engine Types in flowengineR</title>
+<title>How to Use Engines</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">How to: Engine Types in flowengineR</h1>
+<h1 class="title toc-ignore">How to Use Engines</h1>
+<h3 class="subtitle">Practical usage of engines within workflows</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#what-is-an-engine" id="toc-what-is-an-engine">🧩 What is
+an Engine?</a></li>
+<li><a href="#engine-types" id="toc-engine-types">⚙️ Engine
+Types</a></li>
+<li><a href="#engine-interface-design" id="toc-engine-interface-design">🛠️ Engine Interface Design</a></li>
+<li><a href="#engine-registration" id="toc-engine-registration">🔄
+Engine Registration</a></li>
+<li><a href="#adding-your-own-engine" id="toc-adding-your-own-engine">📦
+Adding Your Own Engine</a></li>
+<li><a href="#workflow-interaction" id="toc-workflow-interaction">⛓️
+Workflow Interaction</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>practical usage of
+engines</strong>.<br />
+It demonstrates how engines are called within workflows, how wrappers
+standardize inputs and outputs, and how users can configure or replace
+engines to customize behavior.</p>
+</blockquote>
+<hr />
 <p>The <code>flowengineR</code> framework is designed around modular
 components called <strong>engines</strong>. Engines encapsulate
 functionality at specific stages of the workflow and follow a

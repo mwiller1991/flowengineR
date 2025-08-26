@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Publishing Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Publish"
+subtitle: "Publishing workflow outputs into external formats"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Publishing Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Publish}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **publishing engines**.  
+> It explains how workflow results are exported into external formats such as Excel or PDF, ensuring reproducibility and enabling flexible downstream use outside of R.
+
 ---
 
 ```{r setup, include = FALSE}

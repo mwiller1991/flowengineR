@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Split Engine - Random Split</title>
+<title>In Detail: Split Engine - Random</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,38 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Split Engine - Random Split</h1>
+<h1 class="title toc-ignore">In Detail: Split Engine - Random</h1>
+<h3 class="subtitle">Simple random splitting of datasets</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-random-split-engine_split_random" id="toc-engine-random-split-engine_split_random">Engine: Random Split
+(<code>engine_split_random</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>random split engine</strong>.<br />
+It explains how datasets are randomly divided into training and testing
+parts, providing a lightweight baseline method for split generation in
+workflows.</p>
+</blockquote>
+<hr />
 <div id="engine-random-split-engine_split_random" class="section level2">
 <h2>Engine: Random Split (<code>engine_split_random</code>)</h2>
 <div id="purpose-and-function" class="section level3">

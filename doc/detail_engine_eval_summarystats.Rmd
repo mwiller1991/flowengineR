@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Evaluation Engine - Summary Statistics"
-output: rmarkdown::html_vignette
+subtitle: "Basic descriptive metrics for evaluation"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Evaluation Engine - Summary Statistics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette presents the evaluation engine for **Summary Statistics**.  
+> It shows how to compute basic descriptive measures (mean, variance, quantiles, etc.) for predictions, providing a quick overview of model output characteristics within `flowengineR`.
+
 ---
 
 ## Engine: Summary Statistics (`engine_eval_summarystats`)

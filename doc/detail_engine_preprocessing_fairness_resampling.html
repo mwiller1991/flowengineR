@@ -10,6 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
 <title>In Detail: Preprocessing Engine - Fairness Resampling</title>
@@ -338,9 +339,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">In Detail: Preprocessing Engine - Fairness
 Resampling</h1>
+<h3 class="subtitle">Balancing training data to reduce bias before model
+fitting</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-fairness-resampling-engine_preprocessing_fairness_resampling" id="toc-engine-fairness-resampling-engine_preprocessing_fairness_resampling">Engine:
+Fairness Resampling
+(<code>engine_preprocessing_fairness_resampling</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette presents the <strong>fairness resampling preprocessing
+engine</strong>.<br />
+It shows how training data is resampled to balance distributions across
+protected groups, reducing bias before any model fitting is performed in
+the workflow.</p>
+</blockquote>
+<hr />
 <div id="engine-fairness-resampling-engine_preprocessing_fairness_resampling" class="section level2">
 <h2>Engine: Fairness Resampling
 (<code>engine_preprocessing_fairness_resampling</code>)</h2>

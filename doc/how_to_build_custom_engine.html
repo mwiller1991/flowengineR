@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>How to Build a Custom Engine in flowengineR</title>
+<title>How to Build a Custom Engine</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,11 +337,35 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">How to Build a Custom Engine in
-flowengineR</h1>
+<h1 class="title toc-ignore">How to Build a Custom Engine</h1>
+<h3 class="subtitle">Step-by-step guide to writing your own engines</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">📝 Overview</a></li>
+<li><a href="#engine-function-engine_" id="toc-engine-function-engine_">🛠️ 1. Engine Function
+(<code>engine_*()</code>)</a></li>
+<li><a href="#wrapper-function-wrapper_" id="toc-wrapper-function-wrapper_">🔄 2. Wrapper Function
+(<code>wrapper_*()</code>)</a></li>
+<li><a href="#default-parameter-function-default_params_" id="toc-default-parameter-function-default_params_">3. Default Parameter
+Function (<code>default_params_*()</code>)</a></li>
+<li><a href="#registration-convention" id="toc-registration-convention">Registration Convention</a></li>
+<li><a href="#summary-table" id="toc-summary-table">Summary
+Table</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette provides a <strong>step-by-step guide</strong> to building
+custom engines.<br />
+It describes the required input/output conventions, wrapper functions,
+and default parameter handling, ensuring that new engines integrate
+seamlessly into the <code>flowengineR</code> framework.</p>
+</blockquote>
+<hr />
 <p><strong>Engine Development Guide: Creating Custom Engines in
 flowengineR</strong></p>
 <p>This guide explains the standardized structure required to build and
@@ -349,7 +374,7 @@ engines—whether for training, evaluation, processing, reporting, or
 publishing—must follow the same core architectural pattern.</p>
 <hr />
 <div id="overview" class="section level3">
-<h3>Overview</h3>
+<h3>📝 Overview</h3>
 <p>Each custom engine must be implemented as <strong>three distinct
 functions</strong>:</p>
 <ol style="list-style-type: decimal">
@@ -366,12 +391,12 @@ definition</strong>. If one is missing, the engine cannot be used.</p>
 <hr />
 </div>
 <div id="engine-function-engine_" class="section level3">
-<h3>1. Engine Function (<code>engine_*()</code>)</h3>
+<h3>🛠️ 1. Engine Function (<code>engine_*()</code>)</h3>
 <p>This is the pure computation layer. It contains <strong>no
 validation</strong>, <strong>no logic related to the control
 object</strong>, and <strong>no standardization</strong>.</p>
 <div id="rules" class="section level4">
-<h4>Rules:</h4>
+<h4>📐 Rules:</h4>
 <ul>
 <li>Input arguments must be clean and explicit</li>
 <li>No assumptions about data preprocessing or training
@@ -381,7 +406,7 @@ plots)</li>
 </ul>
 </div>
 <div id="example" class="section level4">
-<h4>Example:</h4>
+<h4>🔍 Example:</h4>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>engine_train_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, family, data, sample_weight) {</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">glm</span>(<span class="at">formula =</span> formula, <span class="at">family =</span> family, <span class="at">data =</span> data, <span class="at">weights =</span> sample_weight)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span></code></pre></div>
@@ -389,11 +414,11 @@ plots)</li>
 </div>
 </div>
 <div id="wrapper-function-wrapper_" class="section level3">
-<h3>2. Wrapper Function (<code>wrapper_*()</code>)</h3>
+<h3>🔄 2. Wrapper Function (<code>wrapper_*()</code>)</h3>
 <p>This function prepares inputs for the engine, validates user control,
 and constructs standardized outputs.</p>
 <div id="responsibilities" class="section level4">
-<h4>Responsibilities:</h4>
+<h4>📐 Responsibilities:</h4>
 <ul>
 <li>Merge user-defined and default parameters
 (<code>merge_with_defaults()</code>)</li>
@@ -404,24 +429,25 @@ and constructs standardized outputs.</p>
 <li>Return standardized output via
 <code>initialize_output_&lt;type&gt;()</code></li>
 </ul>
-<p>r if (isTRUE(control$internal_skip_validation)) {
-return(list(skip_validation = TRUE)) }</p>
-<pre><code>
-#### Example:
-```r
-wrapper_train_glm &lt;- function(control) {
-  train_data &lt;- select_training_data(control$params$train$norm_data, control$params$train$data)
-  hyperparameters &lt;- merge_with_defaults(control$params$train$params, default_params_train_glm())
-  model &lt;- engine_train_glm(...)
-
-  initialize_output_train(
-    model = model,
-    model_type = &quot;glm&quot;,
-    formula = control$params$train$formula,
-    hyperparameters = hyperparameters,
-    specific_output = list(training_time = ...)
-  )
-}</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">isTRUE</span>(control\<span class="sc">$</span>internal\_skip\_validation)) {</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">return</span>(<span class="fu">list</span>(skip\<span class="at">_validation =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="example-1" class="section level4">
+<h4>🔍 Example:</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>wrapper_train_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(control) {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> <span class="fu">select_training_data</span>(control<span class="sc">$</span>params<span class="sc">$</span>train<span class="sc">$</span>norm_data, control<span class="sc">$</span>params<span class="sc">$</span>train<span class="sc">$</span>data)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  hyperparameters <span class="ot">&lt;-</span> <span class="fu">merge_with_defaults</span>(control<span class="sc">$</span>params<span class="sc">$</span>train<span class="sc">$</span>params, <span class="fu">default_params_train_glm</span>())</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">engine_train_glm</span>(...)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">initialize_output_train</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">model =</span> model,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="st">&quot;glm&quot;</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">formula =</span> control<span class="sc">$</span>params<span class="sc">$</span>train<span class="sc">$</span>formula,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">hyperparameters =</span> hyperparameters,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">specific_output =</span> <span class="fu">list</span>(<span class="at">training_time =</span> ...)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  )</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>}</span></code></pre></div>
 <hr />
 </div>
 </div>
@@ -430,21 +456,21 @@ wrapper_train_glm &lt;- function(control) {
 <p>Returns a named list of default values for engine-specific
 hyperparameters.</p>
 <div id="guidelines" class="section level4">
-<h4>Guidelines:</h4>
+<h4>📐 Guidelines:</h4>
 <ul>
 <li>Should include all optional inputs that affect engine behavior</li>
 <li>Does not require user interaction</li>
 <li>Used only internally by the wrapper</li>
 </ul>
 </div>
-<div id="example-1" class="section level4">
-<h4>Example:</h4>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>default_params_train_glm <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">sample_weight =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">gaussian</span>()</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  )</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>}</span></code></pre></div>
+<div id="example-2" class="section level4">
+<h4>🔍 Example:</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>default_params_train_glm <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">sample_weight =</span> <span class="cn">NULL</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">gaussian</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  )</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>}</span></code></pre></div>
 <hr />
 </div>
 </div>
@@ -472,9 +498,9 @@ eval engines)</li>
 <p><strong>Validation can be skipped</strong> during development. To do
 so, insert the following snippet <strong>at the top of your wrapper
 function</strong>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">isTRUE</span>(control<span class="sc">$</span>internal_skip_validation)) {</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">skip_validation =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">isTRUE</span>(control<span class="sc">$</span>internal_skip_validation)) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">skip_validation =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>}</span></code></pre></div>
 <p>This bypass mechanism is useful for meta-engines, prototypes, or
 non-functional test stubs. When you call <code>register_engine()</code>,
 a <strong>type-specific validation function</strong> is invoked based on
@@ -490,10 +516,10 @@ eval engines)</li>
 </div>
 <div id="example-registering-a-training-engine-file" class="section level4">
 <h4>Example: Registering a training engine file</h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">register_engine</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">engine_name =</span> <span class="st">&quot;train_glm&quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">file_path =</span> <span class="st">&quot;engines/train/train_glm.R&quot;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">register_engine</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">engine_name =</span> <span class="st">&quot;train_glm&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">file_path =</span> <span class="st">&quot;engines/train/train_glm.R&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>)</span></code></pre></div>
 <p>After registration, you can reference the engine by name in the
 control object: Before an engine can be used via the control object, it
 must first be registered in the global engine registry using the
@@ -504,10 +530,10 @@ modularity and plug-in capability.</p>
 </div>
 <div id="example-registering-a-training-engine-file-1" class="section level4">
 <h4>Example: Registering a training engine file</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">register_engine</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">engine_name =</span> <span class="st">&quot;train_glm&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">file_path =</span> <span class="st">&quot;engines/train/train_glm.R&quot;</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">register_engine</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">engine_name =</span> <span class="st">&quot;train_glm&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">file_path =</span> <span class="st">&quot;engines/train/train_glm.R&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span></code></pre></div>
 <p>After registration, you can reference the engine by name in the
 control object: To use a custom engine in the flowengineR workflow, only
 the <strong>wrapper function needs to be referenced</strong> in the
@@ -516,23 +542,23 @@ picked up via naming conventions.</p>
 </div>
 <div id="example-registering-a-training-engine" class="section level4">
 <h4>Example: Registering a training engine</h4>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>control<span class="sc">$</span>engine_select<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="st">&quot;train_glm&quot;</span>  <span class="co"># This calls wrapper_train_glm()</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>control<span class="sc">$</span>params<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="fu">controller_training</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">formula =</span> target <span class="sc">~</span> .,</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">norm_data =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">sample_weight =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(data))</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  )</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>control<span class="sc">$</span>engine_select<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="st">&quot;train_glm&quot;</span>  <span class="co"># This calls wrapper_train_glm()</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>control<span class="sc">$</span>params<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="fu">controller_training</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">formula =</span> target <span class="sc">~</span> .,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">norm_data =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="at">sample_weight =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(data))</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  )</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>)</span></code></pre></div>
 <p>This setup is sufficient to execute the entire training phase using
 your custom engine trio.</p>
 <ul>
 <li>The name of the engine determines how it is referenced in the
 control object, e.g.:</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>control<span class="sc">$</span>engine_select<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="st">&quot;train_glm&quot;</span>  <span class="co"># matches wrapper_train_glm</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>control<span class="sc">$</span>engine_select<span class="sc">$</span>train <span class="ot">&lt;-</span> <span class="st">&quot;train_glm&quot;</span>  <span class="co"># matches wrapper_train_glm</span></span></code></pre></div>
 <ul>
 <li>The wrapper is always registered by the user; engine and default
 function are used internally</li>
@@ -581,6 +607,14 @@ function are used internally</li>
 <hr />
 <p>Next step: Read the engine-specific sections to understand the
 standardized inputs and required outputs for each engine type.</p>
+<hr />
+<blockquote>
+<p>While this vignette focuses on the manual creation of custom engines,
+the package also offers an alternative workflow: the <em>LLM-Assisted
+Engine Builder</em>. See the vignette <em><a href="how_to_use_llm_engine_builder.html">How to: Use LLm Engine
+Builder</a></em> for details on how to prototype new engines quickly
+using Large Language Models.</p>
+</blockquote>
 </div>
 
 

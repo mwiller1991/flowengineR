@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Evaluation Engine - Statistical Parity Difference (SPD)"
-output: rmarkdown::html_vignette
+subtitle: "Measuring group fairness in predictions"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Evaluation Engine - Statistical Parity Difference (SPD)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the evaluation engine for **Statistical Parity**.  
+> It provides background on the fairness concept, outlines the required inputs, and illustrates how the engine returns group-level parity metrics to evaluate bias in model predictions.
+
 ---
 
 ## Engine: Statistical Parity Difference (`engine_eval_statisticalparity`)

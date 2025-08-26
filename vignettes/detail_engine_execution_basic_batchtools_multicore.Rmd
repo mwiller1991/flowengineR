@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engine - Batchtools Multicore Execution"
-output: rmarkdown::html_vignette
+title: "In Detail: Execution Engine - Basic Batchtools Multicore"
+subtitle: "Basic execution engine using batchtools with multicore parallelism"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engine - Batchtools Multicore Execution}
+  %\VignetteIndexEntry{In Detail: Execution Engine - Basic Batchtools Multicore}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette covers the **basic batchtools multicore execution engine**.  
+> It demonstrates how multiple splits or jobs can be executed in parallel on a multicore machine, while results are automatically aggregated into the standardized `flowengineR` workflow output.
+
 ---
 
 ## Engine: Batchtools Multicore Execution (`engine_execution_basic_batchtools_multicore`)

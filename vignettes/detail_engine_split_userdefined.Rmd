@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Split Engine - User-Defined"
-output: rmarkdown::html_vignette
+title: "In Detail: Split Engine - User Defined"
+subtitle: "Custom user-defined data splitting strategies"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Split Engine - User-Defined}
+  %\VignetteIndexEntry{In Detail: Split Engine - User Defined}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **user-defined split engine**.  
+> It describes how users can supply their own splitting logic, giving full flexibility to control train/test partitioning beyond the built-in strategies of `flowengineR`.
+
 ---
 
 ## Engine: User-Defined Split (`engine_split_userdefined`)

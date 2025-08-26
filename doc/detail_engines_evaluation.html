@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Evaluation Engines</title>
+<title>In Detail: Engines - Evaluation</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Evaluation Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Evaluation</h1>
+<h3 class="subtitle">Overview and structure of evaluation engines</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-evaluation-engines" id="toc-available-evaluation-engines">⚙️ Available Evaluation
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-evaluation-engine" id="toc-writing-your-own-evaluation-engine">🛠️ Writing Your Own
+Evaluation Engine</a></li>
+<li><a href="#possible-use-case-combined-metric-tracking" id="toc-possible-use-case-combined-metric-tracking">🎯 Possible
+Use-Case: Combined Metric Tracking</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette provides an overview of <strong>evaluation
+engines</strong>.<br />
+It introduces their standardized input/output design, explains how
+different evaluation methods can be plugged into workflows, and
+illustrates how metrics are returned and documented.</p>
+</blockquote>
+<hr />
 <p>Evaluation Engines in <code>flowengineR</code> are used to assess
 model output. They compute and return evaluation results for different
 purposes, such as:</p>

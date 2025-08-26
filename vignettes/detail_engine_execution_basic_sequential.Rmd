@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engine - Sequential Split Execution"
-output: rmarkdown::html_vignette
+title: "In Detail: Execution Engine - Basic Sequential"
+subtitle: "Basic execution engine for sequential workflow execution"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engine - Sequential Split Execution}
+  %\VignetteIndexEntry{In Detail: Execution Engine - Basic Sequential}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **basic sequential execution engine**.  
+> It describes how splits or tasks are executed one after another, providing a transparent baseline mode for debugging, testing, and reproducible runs within `flowengineR`.
+
 ---
 
 ## Engine: Sequential Split Execution (`engine_execution_basic_sequential`)

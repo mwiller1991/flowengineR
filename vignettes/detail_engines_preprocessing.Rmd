@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Preprocessing Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Preprocessing"
+subtitle: "Fairness and data preparation methods before training"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Preprocessing Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Preprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **preprocessing engines**.  
+> It outlines how fairness and resampling techniques are applied to datasets before training, ensuring balanced inputs while adhering to the standardized engine and wrapper structure in `flowengineR`.
+
 ---
 
 ```{r setup, include = FALSE}

@@ -1,10 +1,21 @@
 ---
-title: "Workflow: Metalevel Flowchart"
-output: rmarkdown::html_vignette
+title: "Metalevel Flowchart"
+subtitle: "Visualizing the orchestration of engines in workflows"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Workflow: Metalevel Flowchart}
+  %\VignetteIndexEntry{Metalevel Flowchart}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette presents the **metalevel flowchart** of `flowengineR`.  
+> It visualizes how engines are orchestrated across different stages (splitting, training, fairness, evaluation, reporting, publishing) and clarifies the standardized data flow between them.
+
 ---
 
 This vignette visualizes the internal structure of the `flowengineR` framework.  

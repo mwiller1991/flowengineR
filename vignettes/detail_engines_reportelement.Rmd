@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Reportelement Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Reportelement"
+subtitle: "Creating atomic report elements for summaries and visuals"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Reportelement Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Reportelement}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette covers the **reportelement engines**.  
+> It describes how atomic report components—such as tables, text snippets, and plots—are generated, which can then be composed into larger reports and published via other engines.
+
 ---
 
 ```{r setup, include = FALSE}

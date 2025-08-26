@@ -1,10 +1,21 @@
 ---
 title: "Getting Started with flowengineR"
-output: rmarkdown::html_vignette
+subtitle: "First steps and basic workflow introduction"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{Getting Started with flowengineR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette provides a **getting started guide** for `flowengineR`.  
+> It covers installation, basic concepts of engines and workflows, and demonstrates a minimal example to help users set up their first experiments quickly.
+
 ---
 
 ```{r setup, include = FALSE}
@@ -37,6 +48,41 @@ You will learn how to:
 - Configure and run a training engine
 - Apply a post-processing method
 - Evaluate model performance and fairness
+
+---
+
+## 🎮 Interactive Start Menu
+
+To make the first steps with `flowengineR` easier, the package provides an **interactive start menu**.  
+This menu helps you explore the most important entry points, including running the example workflow, browsing vignettes, or inspecting the structure of control objects.
+
+```r
+# Launch the start menu
+flowengineR_start()
+```
+
+When you run the function, you will see a menu in your console:
+
+```
+Where would you like to start?
+1: ▶ Run example workflow
+2: ☰ Open 'Index' vignette for overview of all vignettes
+3: ℹ Open 'Getting Started' vignette
+4: ⏺ List available engines
+5: ❓ Help for run_workflow()
+6: ★ Show structure of control-object
+7: ℹ Open 'How to build custom Engines' vignette
+8: ℹ Open 'How to use LLM-Engine-Builder' vignette
+9: ✖ Exit
+```
+
+Choose an option by typing its number. For example:
+
+- **1** runs the example workflow and assigns the results to `results_example`.  
+- **4** lists all registered engines and assigns them to `engine_list`.  
+- **6** shows the structure of the control object (`control_example`).  
+
+This interactive helper is a great way to explore `flowengineR` without memorizing function names from the start.
 
 ---
 

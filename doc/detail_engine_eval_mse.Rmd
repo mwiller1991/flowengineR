@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Evaluation Engine - Mean Squared Error (MSE)"
-output: rmarkdown::html_vignette
+subtitle: "Quantifying prediction accuracy with squared error loss"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Evaluation Engine - Mean Squared Error (MSE)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the evaluation engine for **Mean Squared Error (MSE)**.  
+> It explains the standardized input/output structure, demonstrates the wrapper logic, and shows how to use this engine within a `flowengineR` workflow to quantify model accuracy.
+
 ---
 
 ## Engine: Mean Squared Error (`engine_eval_mse`)

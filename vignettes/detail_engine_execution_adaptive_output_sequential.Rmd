@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Execution Engine - Adaptive Sequential Stability"
-output: rmarkdown::html_vignette
+subtitle: "Adaptive output execution with sequential stability checks"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Sequential Stability}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **sequential stability execution engine**.  
+> It explains how adaptive output evaluation is performed step by step, including stability criteria and the standardized wrapper output structure for seamless integration in `flowengineR`.
+
 ---
 
 ## Engine: Adaptive Sequential Stability (`engine_execution_adaptive_output_sequential`)

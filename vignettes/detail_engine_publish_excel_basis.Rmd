@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Publishing Engine – Excel Basis Export"
-output: rmarkdown::html_vignette
+title: "In Detail: Publishing Engine - Excel Basis"
+subtitle: "Exporting workflow results to Excel format"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Publishing Engine – Excel Basis Export}
+  %\VignetteIndexEntry{In Detail: Publishing Engine - Excel Basis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **Excel publishing engine**.  
+> It explains how workflow results are exported into structured Excel spreadsheets, enabling easy reporting, inspection, and sharing of model and fairness outcomes.
+
 ---
 
 ## Engine: Excel Basis Export (`publish_excel_basis`)

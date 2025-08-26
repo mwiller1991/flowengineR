@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Postprocessing Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Postprocessing"
+subtitle: "Fairness and adjustment methods applied after training"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Postprocessing Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Postprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **postprocessing engines**.  
+> It covers methods that operate on model predictions after training to improve fairness or performance, showing how they adjust outputs while maintaining the standardized workflow interface.
+
 ---
 
 ```{r setup, include = FALSE}

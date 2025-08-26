@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Reportelement Engine - Table of Evaluation Metrics per Split"
-output: rmarkdown::html_vignette
+title: "In Detail: Reportelement Engine - Table Split Metrics"
+subtitle: "Tabular representation of metrics across data splits"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Reportelement Engine - Table of Evaluation Metrics per Split}
+  %\VignetteIndexEntry{In Detail: Reportelement Engine - Table Split Metrics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **table split metrics reportelement engine**.  
+> It shows how evaluation metrics are aggregated and displayed in tabular form across different data splits, providing structured results for reporting within `flowengineR`.
+
 ---
 
 ## Engine: Table of Evaluation Metrics per Split (`engine_reportelement_table_splitmetrics`)

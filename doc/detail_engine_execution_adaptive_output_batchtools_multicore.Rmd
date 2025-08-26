@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Execution Engine - Adaptive Batchtools Multicore Stability"
-output: rmarkdown::html_vignette
+subtitle: "Adaptive output execution via batchtools multicore backend"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Batchtools Multicore Stability}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **multicore** variant of adaptive output execution using `batchtools`.  
+> It covers parallel scheduling on a single machine, required control parameters, and how results are merged into the workflow outputs while preserving reproducibility.
+
 ---
 
 ## Engine: Adaptive Batchtools Multicore Stability (`engine_execution_adaptive_output_batchtools_multicore`)

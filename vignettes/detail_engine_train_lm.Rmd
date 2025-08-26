@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Training Engine - Linear Model (LM)"
-output: rmarkdown::html_vignette
+title: "In Detail: Train Engine - LM"
+subtitle: "Training linear models within flowengineR"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Training Engine - Linear Model (LM)}
+  %\VignetteIndexEntry{In Detail: Train Engine - LM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **LM training engine**.  
+> It explains how standard linear models are trained, how parameters are passed through the wrapper, and how results are captured in the standardized training output format.
+
 ---
 
 ## Engine: Linear Model (`engine_train_lm`)

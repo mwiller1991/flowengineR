@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Preprocessing Engines</title>
+<title>In Detail: Engines - Preprocessing</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,10 +337,45 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Preprocessing Engines</h1>
+<h1 class="title toc-ignore">In Detail: Engines - Preprocessing</h1>
+<h3 class="subtitle">Fairness and data preparation methods before
+training</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#standardized-inputs-via-wrapper" id="toc-standardized-inputs-via-wrapper">📥 Standardized Inputs (via
+Wrapper)</a></li>
+<li><a href="#standardized-output-via-wrapper" id="toc-standardized-output-via-wrapper">📤 Standardized Output (via
+Wrapper)</a></li>
+<li><a href="#available-preprocessing-engines" id="toc-available-preprocessing-engines">⚙️ Available Preprocessing
+Engines</a></li>
+<li><a href="#engine-usage-in-workflow" id="toc-engine-usage-in-workflow">🧩 Engine Usage in Workflow</a></li>
+<li><a href="#writing-your-own-preprocessing-engine" id="toc-writing-your-own-preprocessing-engine">🛠️ Writing Your Own
+Preprocessing Engine</a></li>
+<li><a href="#possible-use-case-fairness-preprocessing" id="toc-possible-use-case-fairness-preprocessing">🔬 Possible Use-Case:
+Fairness Preprocessing</a>
+<ul>
+<li><a href="#motivation" id="toc-motivation">Motivation</a></li>
+<li><a href="#typical-techniques" id="toc-typical-techniques">Typical
+Techniques</a></li>
+<li><a href="#usage-example" id="toc-usage-example">Usage
+Example</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette describes the <strong>preprocessing
+engines</strong>.<br />
+It outlines how fairness and resampling techniques are applied to
+datasets before training, ensuring balanced inputs while adhering to the
+standardized engine and wrapper structure in
+<code>flowengineR</code>.</p>
+</blockquote>
+<hr />
 <p>Preprocessing Engines in <code>flowengineR</code> are responsible for
 transforming the dataset before training begins. This includes general
 data transformations (e.g., scaling or feature engineering) as well as

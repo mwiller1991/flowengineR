@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>Workflow: Metalevel Flowchart</title>
+<title>Metalevel Flowchart</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -235,10 +236,33 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Workflow: Metalevel Flowchart</h1>
+<h1 class="title toc-ignore">Metalevel Flowchart</h1>
+<h3 class="subtitle">Visualizing the orchestration of engines in
+workflows</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#diagram-overview" id="toc-diagram-overview">🔎 Diagram
+Overview</a></li>
+<li><a href="#mermaid-source-code" id="toc-mermaid-source-code">🧾
+Mermaid Source Code</a></li>
+<li><a href="#developer-notes" id="toc-developer-notes">Developer
+Notes</a></li>
+<li><a href="#last-updated-2025-08-26" id="toc-last-updated-2025-08-26">Last updated: 2025-08-26</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette presents the <strong>metalevel flowchart</strong> of
+<code>flowengineR</code>.<br />
+It visualizes how engines are orchestrated across different stages
+(splitting, training, fairness, evaluation, reporting, publishing) and
+clarifies the standardized data flow between them.</p>
+</blockquote>
+<hr />
 <p>This vignette visualizes the internal structure of the
 <code>flowengineR</code> framework.<br />
 The flowchart highlights how user input is routed through controllers
@@ -537,8 +561,8 @@ classDef helper_style fill:#D5B3E6,stroke:#000,stroke-width:2px,color:#000;
 </ul>
 <hr />
 </div>
-<div id="last-updated-2025-07-18" class="section level2">
-<h2>Last updated: 2025-07-18</h2>
+<div id="last-updated-2025-08-26" class="section level2">
+<h2>Last updated: 2025-08-26</h2>
 </div>
 
 

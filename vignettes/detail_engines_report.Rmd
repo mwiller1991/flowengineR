@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Report Engines"
-output: rmarkdown::html_vignette
+title: "In Detail: Engines - Report"
+subtitle: "Generating structured reports from workflow outputs"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Report Engines}
+  %\VignetteIndexEntry{In Detail: Engines - Report}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **report engines**.  
+> It shows how workflow results are processed into structured report elements, enabling both human-readable summaries and integration with publishing engines.
+
 ---
 
 ```{r setup, include = FALSE}

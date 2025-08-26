@@ -1,10 +1,21 @@
 ---
-title: "In Detail: Execution Engine - SLURM Array Preparation"
-output: rmarkdown::html_vignette
+title: "In Detail: Execution Engine - Basic SLURM Array"
+subtitle: "Basic execution engine using SLURM job arrays"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{In Detail: Execution Engine - SLURM Array Preparation}
+  %\VignetteIndexEntry{In Detail: Execution Engine - Basic SLURM Array}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **basic SLURM array execution engine**.  
+> It explains how large sets of jobs can be efficiently scheduled as SLURM arrays, and how results are merged back into the standardized outputs of `flowengineR`.
+
 ---
 
 ## Engine: SLURM Array Preparation (`engine_execution_basic_slurm_array`)

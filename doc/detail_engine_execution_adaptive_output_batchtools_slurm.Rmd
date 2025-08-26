@@ -1,10 +1,21 @@
 ---
 title: "In Detail: Execution Engine - Adaptive Batchtools SLURM Stability"
-output: rmarkdown::html_vignette
+subtitle: "Adaptive output execution on SLURM clusters with batchtools"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{In Detail: Execution Engine - Adaptive Batchtools SLURM Stability}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette describes the **SLURM**-based adaptive output execution using `batchtools` on HPC clusters.  
+> It explains cluster-side dispatch, resource templates, and how the engine aggregates results and stability diagnostics back into the standardized `flowengineR` outputs.
+
 ---
 
 ## Engine: Adaptive Batchtools SLURM Stability (`engine_execution_adaptive_output_batchtools_slurm`)

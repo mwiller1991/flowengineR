@@ -10,9 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
-<title>In Detail: Execution Engine - Sequential Split Execution</title>
+<title>In Detail: Execution Engine - Basic Sequential</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,11 +337,42 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">In Detail: Execution Engine - Sequential
-Split Execution</h1>
+<h1 class="title toc-ignore">In Detail: Execution Engine - Basic
+Sequential</h1>
+<h3 class="subtitle">Basic execution engine for sequential workflow
+execution</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#engine-sequential-split-execution-engine_execution_basic_sequential" id="toc-engine-sequential-split-execution-engine_execution_basic_sequential">Engine:
+Sequential Split Execution
+(<code>engine_execution_basic_sequential</code>)</a>
+<ul>
+<li><a href="#purpose-and-function" id="toc-purpose-and-function">Purpose and Function</a></li>
+<li><a href="#input-structure-via-wrapper" id="toc-input-structure-via-wrapper">Input Structure (via
+Wrapper)</a></li>
+<li><a href="#engine-specific-parameters" id="toc-engine-specific-parameters">Engine-specific Parameters</a></li>
+<li><a href="#output-structure" id="toc-output-structure">Output
+Structure</a></li>
+<li><a href="#workflow-integration" id="toc-workflow-integration">Workflow Integration</a></li>
+<li><a href="#template-reference" id="toc-template-reference">Template
+Reference</a></li>
+<li><a href="#example-configuration" id="toc-example-configuration">Example Configuration</a></li>
+</ul></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette introduces the <strong>basic sequential execution
+engine</strong>.<br />
+It describes how splits or tasks are executed one after another,
+providing a transparent baseline mode for debugging, testing, and
+reproducible runs within <code>flowengineR</code>.</p>
+</blockquote>
+<hr />
 <div id="engine-sequential-split-execution-engine_execution_basic_sequential" class="section level2">
 <h2>Engine: Sequential Split Execution
 (<code>engine_execution_basic_sequential</code>)</h2>

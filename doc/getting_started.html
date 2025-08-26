@@ -10,6 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<meta name="author" content="mwiller" />
 
 
 <title>Getting Started with flowengineR</title>
@@ -337,9 +338,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Getting Started with flowengineR</h1>
+<h3 class="subtitle">First steps and basic workflow introduction</h3>
+<h4 class="author">mwiller</h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">🚀
+Introduction</a></li>
+<li><a href="#interactive-start-menu" id="toc-interactive-start-menu">🎮
+Interactive Start Menu</a></li>
+<li><a href="#step-1-define-variables" id="toc-step-1-define-variables">🔧 Step 1: Define Variables</a></li>
+<li><a href="#step-2-define-the-control-object" id="toc-step-2-define-the-control-object">🧠 Step 2: Define the Control
+Object</a></li>
+<li><a href="#step-3-run-the-workflow" id="toc-step-3-run-the-workflow">▶️ Step 3: Run the Workflow</a></li>
+<li><a href="#step-4-inspect-results" id="toc-step-4-inspect-results">📊
+Step 4: Inspect Results</a></li>
+<li><a href="#logging-and-debugging" id="toc-logging-and-debugging">🧪
+Logging and Debugging</a></li>
+<li><a href="#overview-of-modular-engine-types" id="toc-overview-of-modular-engine-types">🧩 Overview of Modular Engine
+Types</a></li>
+<li><a href="#listing-available-engines" id="toc-listing-available-engines">🔍 Listing Available Engines</a></li>
+<li><a href="#next-steps" id="toc-next-steps">➕ Next Steps</a></li>
+</ul>
+</div>
 
+<blockquote>
+<p><strong>Summary</strong><br />
+This vignette provides a <strong>getting started guide</strong> for
+<code>flowengineR</code>.<br />
+It covers installation, basic concepts of engines and workflows, and
+demonstrates a minimal example to help users set up their first
+experiments quickly.</p>
+</blockquote>
+<hr />
 <div id="introduction" class="section level2">
 <h2>🚀 Introduction</h2>
 <p>The core strength of <code>flowengineR</code> is its <strong>fully
@@ -368,71 +400,107 @@ Configure and run a training engine - Apply a post-processing method -
 Evaluate model performance and fairness</p>
 <hr />
 </div>
+<div id="interactive-start-menu" class="section level2">
+<h2>🎮 Interactive Start Menu</h2>
+<p>To make the first steps with <code>flowengineR</code> easier, the
+package provides an <strong>interactive start menu</strong>.<br />
+This menu helps you explore the most important entry points, including
+running the example workflow, browsing vignettes, or inspecting the
+structure of control objects.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Launch the start menu</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">flowengineR_start</span>()</span></code></pre></div>
+<p>When you run the function, you will see a menu in your console:</p>
+<pre><code>Where would you like to start?
+1: ▶ Run example workflow
+2: ☰ Open &#39;Index&#39; vignette for overview of all vignettes
+3: ℹ Open &#39;Getting Started&#39; vignette
+4: ⏺ List available engines
+5: ❓ Help for run_workflow()
+6: ★ Show structure of control-object
+7: ℹ Open &#39;How to build custom Engines&#39; vignette
+8: ℹ Open &#39;How to use LLM-Engine-Builder&#39; vignette
+9: ✖ Exit</code></pre>
+<p>Choose an option by typing its number. For example:</p>
+<ul>
+<li><strong>1</strong> runs the example workflow and assigns the results
+to <code>results_example</code>.<br />
+</li>
+<li><strong>4</strong> lists all registered engines and assigns them to
+<code>engine_list</code>.<br />
+</li>
+<li><strong>6</strong> shows the structure of the control object
+(<code>control_example</code>).</li>
+</ul>
+<p>This interactive helper is a great way to explore
+<code>flowengineR</code> without memorizing function names from the
+start.</p>
+<hr />
+</div>
 <div id="step-1-define-variables" class="section level2">
 <h2>🔧 Step 1: Define Variables</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>vars <span class="ot">=</span> <span class="fu">controller_vars</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>),   </span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,            </span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>vars <span class="ot">=</span> <span class="fu">controller_vars</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>),   </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,            </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="step-2-define-the-control-object" class="section level2">
 <h2>🧠 Step 2: Define the Control Object</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="at">log =</span> <span class="fu">list</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>      <span class="at">log_show =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>      <span class="at">log_level =</span> <span class="st">&quot;info&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    )</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  ),</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">engine_select =</span> <span class="fu">list</span>(</span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">train =</span> <span class="st">&quot;train_lm&quot;</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="st">&quot;postprocessing_fairness_genresidual&quot;</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">c</span>(<span class="st">&quot;eval_statisticalparity&quot;</span>, <span class="st">&quot;eval_mse&quot;</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    ),</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">controller_training</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>      <span class="at">formula =</span> default <span class="sc">~</span> income <span class="sc">+</span> loan_amount,</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>      <span class="at">norm_data =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    ),</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="fu">controller_postprocessing</span>(),</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">controller_evaluation</span>()</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>  )</span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">settings =</span> <span class="fu">list</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">log =</span> <span class="fu">list</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>      <span class="at">log_show =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>      <span class="at">log_level =</span> <span class="st">&quot;info&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    )</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ),</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">engine_select =</span> <span class="fu">list</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="at">train =</span> <span class="st">&quot;train_lm&quot;</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="st">&quot;postprocessing_fairness_genresidual&quot;</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">c</span>(<span class="st">&quot;eval_statisticalparity&quot;</span>, <span class="st">&quot;eval_mse&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    ),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="at">train =</span> <span class="fu">controller_training</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>      <span class="at">formula =</span> default <span class="sc">~</span> income <span class="sc">+</span> loan_amount,</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>      <span class="at">norm_data =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    ),</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    <span class="at">postprocessing =</span> <span class="fu">controller_postprocessing</span>(),</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="at">eval =</span> <span class="fu">controller_evaluation</span>()</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  )</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>)</span></code></pre></div>
 <p>A detailed introduction to the control object can be found <a href="how_to_build_controlobjekt.html">here</a>.</p>
 <hr />
 </div>
 <div id="step-3-run-the-workflow" class="section level2">
 <h2>▶️ Step 3: Run the Workflow</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_workflow</span>(control)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Initializing control object with defaults...[0m</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using split engine: split_random_stratified[0m</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; [94m[SPLIT] Performing stratified random split with training ratio 0.70 and seed 123.[0m</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using execution engine: execution_basic_sequential[0m</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; [94m[EXECUTION] Starting sequential execution over 1 split(s)...[0m</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Starting single workflow iteration...[0m</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Train/test data successfully detected.[0m</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Normalizing datasets (based on training)...[0m</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Normalization complete.[0m</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Training base model: train_lm[0m</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] Starting LM training...[0m</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] LM training finished in 0.00 seconds.[0m</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Generating predictions from base model...[0m</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Starting general residual adjustment...[0m</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Adjustment complete.[0m</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Post-processing completed.[0m</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running evaluation step...[0m</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] MSE evaluation complete. MSE = 0.097815[0m</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Summary statistics evaluation complete.[0m</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.000136, genderMale 0.000136, age_group.&lt;30 0.000079, age_group.30-50 0.000437, age_group.50+ 0.000342[0m</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Evaluation completed.[0m</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Workflow iteration completed. Returning results.[0m</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Proceeding to reporting and publishing...[0m</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Aggregating workflow results...[0m</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Workflow fully completed.[0m</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_workflow</span>(control)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Initializing control object with defaults...[0m</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using split engine: split_random_stratified[0m</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; [94m[SPLIT] Performing stratified random split with training ratio 0.70 and seed 123.[0m</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Using execution engine: execution_basic_sequential[0m</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [94m[EXECUTION] Starting sequential execution over 1 split(s)...[0m</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Starting single workflow iteration...[0m</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Train/test data successfully detected.[0m</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Normalizing datasets (based on training)...[0m</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Normalization complete.[0m</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Training base model: train_lm[0m</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] Starting LM training...[0m</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; [94m[TRAIN] LM training finished in 0.00 seconds.[0m</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Generating predictions from base model...[0m</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Starting general residual adjustment...[0m</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Adjustment complete.[0m</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Post-processing completed.[0m</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running evaluation step...[0m</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] MSE evaluation complete. MSE = 0.097815[0m</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Summary statistics evaluation complete.[0m</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.000136, genderMale 0.000136, age_group.&lt;30 0.000079, age_group.30-50 0.000437, age_group.50+ 0.000342[0m</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Evaluation completed.[0m</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Workflow iteration completed. Returning results.[0m</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Proceeding to reporting and publishing...[0m</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Aggregating workflow results...[0m</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; [94m[CONTINUE] Workflow fully completed.[0m</span></span></code></pre></div>
 <p>This returns a list of standardized results: - model and predictions
 - adjusted predictions (if fairness post-processing is used) -
 evaluation metrics</p>
@@ -440,10 +508,10 @@ evaluation metrics</p>
 </div>
 <div id="step-4-inspect-results" class="section level2">
 <h2>📊 Step 4: Inspect Results</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>results<span class="sc">$</span>metrics  <span class="co"># all computed metrics</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>results<span class="sc">$</span>model    <span class="co"># trained model object</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>results<span class="sc">$</span>metrics  <span class="co"># all computed metrics</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>results<span class="sc">$</span>model    <span class="co"># trained model object</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
 <hr />
 </div>
 <div id="logging-and-debugging" class="section level2">
@@ -454,10 +522,10 @@ workflow.</p>
 <p>Logging is <strong>enabled and configured via the
 <code>settings</code> section</strong> of the <code>control</code>
 object:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>settings <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">log_level =</span> <span class="st">&quot;debug&quot;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>settings <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">log_level =</span> <span class="st">&quot;debug&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span></code></pre></div>
 <p>Each internal function—especially within engines—can issue structured
 log messages through the centralized <code>log_msg()</code> helper.
 Messages are color-coded in the console and categorized by severity:</p>
@@ -630,15 +698,15 @@ parallel)</td>
 <h2>🔍 Listing Available Engines</h2>
 <p>To get an overview of all currently registered engines, use the
 helper function <code>list_registered_engines()</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Show all registered engines, grouped by type</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Show all registered engines, grouped by type</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>()</span></code></pre></div>
 <p>This will output all available engines, grouped by engine type such
 as <code>train</code>, <code>split</code>, <code>execution</code>,
 <code>evaluation</code>, <code>preprocessing</code>, and
 <code>postprocessing</code>.</p>
 <p>You can also filter the output to a specific engine type:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Show only execution engines</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>(<span class="at">type =</span> <span class="st">&quot;execution&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Show only execution engines</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">list_registered_engines</span>(<span class="at">type =</span> <span class="st">&quot;execution&quot;</span>)</span></code></pre></div>
 <p>This function is especially useful if: - you have registered your own
 custom engines and want to verify their integration, - you are unsure
 about the correct naming of available engines, - you want to introspect
