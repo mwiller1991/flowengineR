@@ -124,3 +124,54 @@ fs::file_copy(
   "inst/example_enginebuild_LLM/detail_engines_evaluation.Rmd",
   overwrite = TRUE
 )
+
+
+#---
+#reportelement  
+#---
+
+fs::file_copy(
+  "R/2_8_b__engine_reportelement_table_splitmetrics__mwiller.R",
+  "inst/example_enginebuild_LLM/engine_reportelement_table_splitmetrics.R",
+  overwrite = TRUE
+)
+
+fs::file_copy(
+  "vignettes/detail_engines_reportelement.Rmd",
+  "inst/example_enginebuild_LLM/detail_engines_reportelement.Rmd",
+  overwrite = TRUE
+)
+
+
+#---
+#report  
+#---
+
+fs::file_copy(
+  "R/2_9_a__engine_report_modelsummary__mwiller.R",
+  "inst/example_enginebuild_LLM/engine_report_modelsummary.R",
+  overwrite = TRUE
+)
+
+fs::file_copy(
+  "vignettes/detail_engines_evaluation.Rmd",
+  "inst/example_enginebuild_LLM/detail_engines_evaluation.Rmd",
+  overwrite = TRUE
+)
+
+
+#---
+#publish  
+#---
+
+fs::file_copy(
+  "R/2_10_a__engine_publish_pdf_basis__mwiller.R",
+  "inst/example_enginebuild_LLM/engine_publish_pdf_basis.R",
+  overwrite = TRUE
+)
+
+fs::file_copy(
+  "vignettes/detail_engines_evaluation.Rmd",
+  "inst/example_enginebuild_LLM/detail_engines_evaluation.Rmd",
+  overwrite = TRUE
+)

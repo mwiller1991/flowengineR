@@ -63,16 +63,16 @@ build_engine_with_llm_zip <- function(engine_type,
       vignette  = c("example_enginebuild_LLM", "detail_engines_evaluation.Rmd")
     ),
     reportelement = list(
-      example   = c("example_enginebuild_LLM", "engine_report_table_splitmetrics.R"),
+      example   = c("example_enginebuild_LLM", "engine_reportelement_table_splitmetrics.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_reportelement.Rmd")
     ),
     report = list(
-      example   = c("example_enginebuild_LLM", "engine_report_boxplot_predictions.R"),
+      example   = c("example_enginebuild_LLM", "engine_report_modelsummary.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_report.Rmd")
     ),
     publishing = list(
-      example   = c("example_enginebuild_LLM", "engine_publishing_quarto.R"),
-      vignette  = c("example_enginebuild_LLM", "detail_engines_publishing.Rmd")
+      example   = c("example_enginebuild_LLM", "engine_publish_pdf_basis.R"),
+      vignette  = c("example_enginebuild_LLM", "detail_engines_publish.Rmd")
     )
   )
   
