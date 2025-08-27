@@ -1,0 +1,141 @@
+---
+title: "In Detail: Engines - Reportelement"
+subtitle: "Creating atomic report elements for summaries and visuals"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{In Detail: Engines - Reportelement}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette covers the **reportelement engines**.  
+> It describes how atomic report components—such as tables, text snippets, and plots—are generated, which can then be composed into larger reports and published via other engines.
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Reportelement Engines in `flowengineR` create specific analysis outputs such as tables, plots, or aggregated summaries. These elements are designed to be modular and reusable. They operate directly on workflow results (e.g., predictions, metrics, splits) and can be combined into full reports.
+
+> **Note:** Reportelement Engines can be used independently without defining a full report or publishing step.
+
+---
+
+## 📥 Standardized Inputs (via Wrapper)
+These inputs are passed from the workflow directly. The `alias` is mandatory and used to assign names to reportelements, which must match those used in `control$engine_select$reportelement`:
+
+| Input               | Type         | Description                                                   |
+|---------------------|--------------|---------------------------------------------------------------|
+| `workflow_results`  | list         | Output from completed workflow (⚠️ provided by the framework) |
+| `split_output`      | list         | Splitting information from workflow (⚠️ provided by the framework) |
+| `alias`             | character    | Required unique identifier for this element                   |
+| `params`            | list         | Engine-specific parameters                                     |
+
+Framework resolution:
+- `workflow_results`: provided by the framework 
+- `split_output`: provided by the framework
+- `alias`: defined by user in `control$engine_select$reportelement`
+- `params`: from `control$params$reportelement$params[[alias_report]]`
+
+---
+
+## 📤 Standardized Output (via Wrapper)
+Returned via `initialize_output_reportelement()`:
+
+| Output              | Type         | Description                                                              |
+|---------------------|--------------|--------------------------------------------------------------------------|
+| `report_object`     | object       | Output element (e.g., ggplot, data.frame)                                |
+| `report_type`       | character    | Type of report element (e.g., "plot", "table")                          |
+| `input_data`        | list         | Any relevant inputs passed through the workflow                          |
+| `params`            | list         | Parameters applied                                                       |
+| `specific_output`   | list / NULL  | Engine-specific additional values                                        |
+
+---
+
+## 🔗 Relationship to Report and Publishing Engines
+
+The reporting system in `flowengineR` is composed of three layers:
+
+1. **Reportelement Engines** generate modular components based on workflow outputs.
+2. **Report Engines** assemble multiple reportelements into a cohesive report.
+3. **Publishing Engines** export that report or single elements outside of R (e.g., as PDF, HTML).
+
+You can use reportelements directly—for instance, to generate and compare plots for internal review—without having to define a full report. However, Reports always build on one or more Reportelements, and Publishing always requires at least a Reportelement or Report.
+
+---
+
+## ⚙️ Available Reportelement Engines
+
+| Engine Name                           | Function Name                                      | Description                              | Template Path                                                                             | Detail Page |
+|----------------------------------------|----------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------|-------------|
+| `reportelement_text_msesummary`       | `engine_reportelement_text_msesummary()`          | Textual summary of MSE values           | `inst/templates_control/8_a_engine_reportelement_text_msesummary.R`                     | [📄](detail_engine_reportelement_text_msesummary.html) |
+| `reportelement_table_splitmetrics`    | `engine_reportelement_table_splitmetrics()`       | Table summarizing metrics per split     | `inst/templates_control/8_b_engine_reportelement_table_splitmetrics.R`                  | [📄](detail_engine_reportelement_table_splitmetrics.html) |
+| `reportelement_boxplot_predictions`   | `engine_reportelement_boxplot_predictions()`      | Boxplot of predicted values by group    | `inst/templates_control/8_c_engine_reportelement_boxplot_predictions.R`                 | [📄](detail_engine_reportelement_boxplot_predictions.html) |
+
+Use `list_registered_engines("reportelement")` to view all currently loaded engines.
+
+---
+
+## 🧩 Engine Usage in Workflow
+
+```r
+control$engine_select$reportelement <- list(
+  gender_box_raw = "reportelement_boxplot_predictions",
+  gender_box_adjusted = "reportelement_boxplot_predictions",
+  age_box = "reportelement_boxplot_predictions",
+  metrics_table = "reportelement_table_splitmetrics",
+  text_mse_summary = "reportelement_text_msesummary"
+)
+
+control$params$reportelement <- controller_reportelement(
+  params = list(
+    gender_box_raw = list(group_var = "genderMale", source = "train"),
+    gender_box_adjusted = list(group_var = "genderMale", source = "train"),
+    age_box = list(group_var = "age_group.50+"),
+    metrics_table = list(metrics = c("mse", "statisticalparity", "summarystats")),
+    text_mse_summary = list()
+  )
+)
+```
+
+---
+
+## 🛠️ Writing Your Own Reportelement Engine
+
+To build a custom reportelement engine:
+
+1. Implement `engine_*()` to generate a visual or tabular object.
+2. Wrap it in `wrapper_*()` to standardize input/output.
+3. Return the output using `initialize_output_reportelement()`.
+
+---
+
+## 🎯 Possible Use-Case: Modular Report Assembly
+
+Each reportelement serves a specific communication purpose. For example, the engine reportelement_text_msesummary generates a **compact text-based summary of the mean squared error (MSE)** across all splits. This is particularly helpful when the focus is on presenting a concise numerical evaluation—e.g., in executive summaries, automated model selection reports, or dashboards where interpretability and brevity are prioritized.
+
+You can also define several reportelements to track different aspects of a workflow (e.g., prediction accuracy, fairness over splits). These elements can then be reused across different reports:
+
+```r
+control$engine_select$reportelement <- list(
+  text_mse_summary = "reportelement_text_msesummary"
+)
+
+control$params$reportelement <- controller_reportelement(
+  params = list(
+    text_mse_summary = list()
+  )
+)
+```
+
+This approach supports flexible and reusable reporting pipelines.
