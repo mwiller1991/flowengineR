@@ -1,0 +1,82 @@
+---
+title: "LLM Demonstration: Eval Median"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{LLM Demonstration: Eval Median}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "#>")
+library(flowengineR)
+library(jsonlite)
+
+demo_dir <- system.file("llm_demonstrations", "2025-08-29_eval_median", package = "flowengineR")
+```
+
+# 📝 Overview
+
+This vignette documents a complete LLM-assisted engine build in *flowengineR*.  
+The example shows how the evaluation engine `eval_median` was generated, registered, and executed.  
+All inputs, transcripts, outputs, and provenance are archived under:
+
+```{r}
+demo_dir
+list.files(demo_dir, recursive = TRUE)
+```
+
+# 📂 Prompt & Inputs
+
+```{r}
+prompt_file <- file.path(demo_dir, "prompt", "llm_prompt_eval.R")
+cat(readLines(prompt_file), sep = "\n")
+```
+
+# 💬 Transcript
+
+The full LLM conversation is included as a Quarto file:
+
+```{r}
+file.path(demo_dir, "conversation", "transcript.qmd")
+```
+
+# ⚙️ Generated Engine
+
+```{r}
+engine_file <- file.path(demo_dir, "outputs", "engine_eval_median.R")
+cat(readLines(engine_file), sep = "\n")
+```
+
+# 🧾 Provenance
+
+Console log and build call:
+
+```{r}
+cat(readLines(file.path(demo_dir, "provenance", "console_build.txt")), sep = "\n")
+```
+
+Session info and workflow results:
+
+```{r}
+cat(readLines(file.path(demo_dir, "provenance", "sessionInfo.txt"))[1:15], sep = "\n")
+```
+
+# 📊 Workflow Results
+
+```{r}
+res_file <- file.path(demo_dir, "provenance", "workflow_results.rds")
+if (file.exists(res_file)) {
+  results <- readRDS(res_file)
+  str(results, max.level = 2)
+}
+```
+
+# 🔒 Integrity
+
+Manifest with MD5 checksums:
+
+```{r}
+manifest <- fromJSON(file.path(demo_dir, "manifest.json"))
+manifest$files
+```

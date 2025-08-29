@@ -191,3 +191,20 @@ Yes, `metrics` can contain several named values (`mse`, `mae`, etc.).
 For `eval` they are optional, passed through by the wrapper. For fairness engines, they are part of the core input.  
 
 ---
+
+
+# 📑 Reproducibility Material
+
+For transparency and reproducibility, a complete worked example of 
+LLM-assisted engine development is included in this package.  
+The demonstration archives the full process — prompt, conversation transcript, 
+generated engine, provenance logs, and a workflow run — for the evaluation 
+engine **eval_median**.
+
+You can explore it via the dedicated vignette:
+
+- **Vignette:** *LLM Demonstration: Eval Median*(llm_demonstration_eval_median.html)
+- **Files:** accessible under  
+  ```r
+  system.file("llm_demonstrations/2025-08-29_eval_median", package = "flowengineR")
+  ```

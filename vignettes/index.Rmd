@@ -24,6 +24,7 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 - [How to: Use Engine-Types](how_to_use_engines.html): Overview of all engine types in `flowengineR`, their roles in the workflow, and how they interact within the control object.
 - [How to: Build Custom Engines](how_to_build_custom_engine.html): Step-by-step instructions for creating your own engine, including registration and integration into the framework.
 - [How to: Use LLm Engine Builder](how_to_use_llm_engine_builder.html): Step-by-step instructions for creating your own engine with the help of a LLM.
+- [Example: Use LLm Engine Builder](llm_demonstration_eval_median.html): Documentation of example.
 
 ### Detailled Workflow-Information
 - [In Detail: Full Package Flow Chart in Mermaid](metalevel_flowchart.html): Showing the entire workflow with all relevant parameters and functions as a Picture and as Mermaid-Code.
