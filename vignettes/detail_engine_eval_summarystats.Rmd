@@ -63,7 +63,7 @@ This engine's control template is located at:
 ### Example Configuration
 ```r
 control$engine_select$evaluation <- "eval_summarystats"
-control$params$eval <- controller_evaluation(
+control$params$evaluation <- controller_eval(
   params = list()
 )
 ```

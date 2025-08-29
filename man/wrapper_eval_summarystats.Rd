@@ -39,7 +39,7 @@ and wraps the result using \code{initialize_output_eval()}.
 \strong{Example Control Snippet:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$evaluation <- "eval_summarystats"
-control$params$eval <- controller_evaluation(
+control$params$evaluation <- controller_evaluation(
   params = list()
 )
 }\if{html}{\out{</div>}}

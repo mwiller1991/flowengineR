@@ -6,7 +6,7 @@
 control$engine_select$evaluation <- "eval_statisticalparity"
 
 # 2. Evaluation Parameters
-control$params$eval <- controller_evaluation(
+control$params$evaluation <- controller_evaluation(
   protected_name = c("gender", "race")   # Binary protected attributes only
   # params = list()                      # Not required
 )

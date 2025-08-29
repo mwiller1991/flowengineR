@@ -41,7 +41,7 @@ test_that("wrapper_execution_basic_sequential executes all splits and returns st
   run_workflow_singlesplitloop <- function(ctrl) {
     model <- flowengineR_env$engines[[ctrl$engine_select$train]](ctrl)
     eval <- flowengineR_env$engines[[ctrl$engine_select$evaluation]](list(
-      params = list(eval = controller_evaluation(
+      params = list(evaluation = controller_evaluation(
         eval_data = list(
           predictions = model$predictions,
           actuals = ctrl$data$test$y

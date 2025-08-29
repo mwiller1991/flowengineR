@@ -36,7 +36,7 @@ selected by the user.
 \item Sets \code{train = "train_glm"} and \code{output_type = "response"} if missing.
 \item Calls \code{controller_training()} if \code{params$train} is missing.
 \item Adds default evaluation methods if not specified: \code{"eval_mse"}, \code{"eval_summarystats"}, \code{"eval_statisticalparity"}.
-\item Calls \code{controller_evaluation()} if \code{params$eval} is missing.
+\item Calls \code{controller_evaluation()} if \code{params$evaluation} is missing.
 \item For optional modules (\code{preprocessing}, \code{inprocessing}, \code{postprocessing}, \code{reportelement}, \code{report}, \code{publish}),
 corresponding controller functions are only called if the module is selected by the user.
 }

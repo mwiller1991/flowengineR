@@ -63,7 +63,7 @@ engine_eval_summarystats <- function(predictions) {
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$evaluation <- "eval_summarystats"
-#' control$params$eval <- controller_evaluation(
+#' control$params$evaluation <- controller_evaluation(
 #'   params = list()
 #' )
 #' ```

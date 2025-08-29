@@ -370,7 +370,7 @@ controller_postprocessing <- function(params = list()) {
 #'
 #' **Usage Example:**
 #' ```r
-#' control$params$eval <- controller_evaluation(
+#' control$params$evaluation <- controller_evaluation(
 #'   params = list(
 #'     eval_mse = list(),
 #'     eval_statisticalparity = list(threshold = 0.1)
@@ -380,7 +380,7 @@ controller_postprocessing <- function(params = list()) {
 #'
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.
 #'
-#' @return Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
+#' @return Named list. To be stored in \code{control$params$evaluation} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
 controller_evaluation <- function(params = list()) {
   list(

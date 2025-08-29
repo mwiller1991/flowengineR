@@ -143,15 +143,15 @@ wrapper_eval_mae <- function(control) {
   if (isTRUE(control$internal_skip_validation)) {
     return(list(skip_validation = TRUE))
   }
-  params <- merge_with_defaults(control$params$eval$params,
+  params <- merge_with_defaults(control$params$evaluation$params,
                                 default_params_eval_mae())
-  eval_data <- control$params$eval$eval_data
+  eval_data <- control$params$evaluation$eval_data
   core_res <- engine_eval_mae(eval_data = eval_data, params = params)
   initialize_output_eval(
     metrics              = core_res$metrics,
     eval_type            = "mae",
     input_data           = eval_data,
-    protected_attributes = control$params$eval$protected_attributes,
+    protected_attributes = control$params$evaluation$protected_attributes,
     params               = params,
     specific_output      = NULL
   )

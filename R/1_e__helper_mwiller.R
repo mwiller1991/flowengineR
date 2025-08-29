@@ -82,7 +82,7 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #' - Sets `train = "train_glm"` and `output_type = "response"` if missing.
 #' - Calls `controller_training()` if `params$train` is missing.
 #' - Adds default evaluation methods if not specified: `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`.
-#' - Calls `controller_evaluation()` if `params$eval` is missing.
+#' - Calls `controller_evaluation()` if `params$evaluation` is missing.
 #' - For optional modules (`preprocessing`, `inprocessing`, `postprocessing`, `reportelement`, `report`, `publish`),
 #'   corresponding controller functions are only called if the module is selected by the user.
 #'

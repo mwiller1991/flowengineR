@@ -6,7 +6,7 @@
 control$engine_select$evaluation <- "eval_mse"
 
 # 2. Evaluation Parameters
-control$params$eval <- controller_evaluation(
+control$params$evaluation <- controller_evaluation(
   protected_name = c("gender")    # Optional; included in output
   # params = list(eval_mse = list())  # Not required; engine uses no parameters
 )

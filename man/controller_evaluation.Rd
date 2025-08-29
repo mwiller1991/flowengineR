@@ -10,7 +10,7 @@ controller_evaluation(params = list())
 \item{params}{Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.}
 }
 \value{
-Named list. To be stored in \code{control$params$eval} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
+Named list. To be stored in \code{control$params$evaluation} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
 }
 \description{
 Generates a standardized input structure for evaluation engines used within the
@@ -48,7 +48,7 @@ attributes from metric-specific configuration, enabling flexible extensions.
 
 \strong{Usage Example:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$params$eval <- controller_evaluation(
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{control$params$evaluation <- controller_evaluation(
   params = list(
     eval_mse = list(),
     eval_statisticalparity = list(threshold = 0.1)

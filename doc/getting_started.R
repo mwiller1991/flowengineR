@@ -32,7 +32,7 @@ control <- list(
       norm_data = TRUE
     ),
     postprocessing = controller_postprocessing(),
-    eval = controller_evaluation()
+    evaluation = controller_evaluation()
   )
 )
 

@@ -6,7 +6,7 @@
 control$engine_select$evaluation <- "eval_summarystats"
 
 # 2. Evaluation Parameters
-control$params$eval <- controller_evaluation(
+control$params$evaluation <- controller_evaluation(
   protected_name = c("gender")    # Only tracked; not used for metric calculation
   # params = list()               # Not required for this engine
 )

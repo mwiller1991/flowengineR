@@ -70,7 +70,7 @@ control <- list(
     inprocessing = controller_preprocessing(
       params = list(learning_rate = 0.1, num_epochs = 1000, num_adversary_steps = 10)
     ),
-    eval = controller_evaluation(
+    evaluation = controller_evaluation(
       params = list(
         eval_mse = list(),
         eval_statisticalparity = list()
