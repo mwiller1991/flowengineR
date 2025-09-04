@@ -48,8 +48,8 @@ control_runtime_seq_glm_base <- function(data, execution_type){
     engine_select = list(
       split = "split_cv",
       execution = 
-        if (execution_type == "multicore"){execution = "execution_basic_batchtools_multicore"}
-        else {execution = "execution_basic_sequential"}
+        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
+        else {"execution_basic_sequential"}
       ,
       train = "train_glm"
       ),

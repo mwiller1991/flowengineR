@@ -73,17 +73,20 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #'
 #' **Standardized Structure:**
 #' - `seed`: Integer seed for reproducibility.
+#' - `target_var`: Name of the target variable to be predicted.
 #' - `params`: Named list of engine-specific hyperparameters (e.g., `split_ratio`, `cv_folds`).
 #'
 #' **Usage Example:**
 #' ```r
 #' control$params$split <- controller_split(
 #'   seed = 42,
+#'   target_var = "default",
 #'   params = list(split_ratio = 0.7)
 #' )
 #' ```
 #'
 #' @param seed Optional integer for reproducibility. Default is `123`.
+#' @param target_var Character. Name of the target variable (dependent variable).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{flowengineR} modules.
