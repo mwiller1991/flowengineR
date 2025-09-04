@@ -1,0 +1,97 @@
+# -------------------------------------------------------------------
+# Console Output: Build + Register Eval Median
+# -------------------------------------------------------------------
+# This file captures the console messages shown during the creation
+# of the ZIP prompt package and the registration and test of the new engine.
+# see also for skript: workflow_demo.R
+# -------------------------------------------------------------------
+
+
+> # -------------------------------------------------------------------
+> # Workflow Demo: Eval Median Engine
+> # ------------------------------------ .... [TRUNCATED] 
+
+> # 2) Use the LLM Builder
+> build_engine_with_llm_zip("eval","The Median of all predictions.", zip_path = NULL)
+updating: detail_engines_evaluation.Rmd (deflated 66%)
+updating: engine_eval_mse.R (deflated 71%)
+updating: llm_prompt_eval.R (deflated 53%)
+LLM zip package created at: /var/folders/m8/fbfgv9pn1t9_0w_n38qpk8xh0000gn/T//Rtmpb0ko59/llm_package_eval.zip
+
+To use this ZIP with an LLM (e.g., ChatGPT), follow these instructions:
+
+1. Upload the ZIP file in your chat.
+2. Paste the following instruction afterwards:
+
+--- COPY INTO CHAT ---
+I have uploaded a ZIP containing a prompt, a working example engine, and a vignette.
+Please read the prompt first (llm_prompt_eval.R). Then carefully review:
+- engine_eval_mse.R as a concrete reference implementation
+- detail_engines_evaluation.Rmd as documentation of required structure
+Be precise and complete.
+Then generate a new engine as specified in the prompt.
+---
+
+> # 3) Register the engine (already validated)
+> engine_file <- system.file(
++   "llm_demonstrations", 
++   "2025-08-27_eval_median", 
++   "outputs",  .... [TRUNCATED] 
+
+> register_engine("eval_median", engine_file)
+[SUCCESS] Evaluation engine validated successfully.
+[SUCCESS] Engine registered successfully: eval_median as type: eval
+---------------------------------------------------------------------------------------------
+
+> # 4) Prepare base control set
+> vars = controller_vars(
++   feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "profess ..." ... [TRUNCATED] 
+
+> control <- list(
++   settings = list(
++     log = list(
++       log_show = TRUE,
++       log_level = "info"
++     ),
++     global_seed = 1  ),
++   d .... [TRUNCATED] 
+
+> # 5) Run Workflow
+> results <- run_workflow(control)
+[MASTER] Initializing control object with defaults...
+[MASTER] Using split engine: split_random_stratified
+[SPLIT] Performing stratified random split with training ratio 0.70 and seed 123.
+[MASTER] Using execution engine: execution_basic_sequential
+[EXECUTION] Starting sequential execution over 1 split(s)...
+[SINGLE] Starting single workflow iteration...
+[SINGLE] Train/test data successfully detected.
+[SINGLE] Normalizing datasets (based on training)...
+[SINGLE] Normalization complete.
+[SINGLE] Training base model: train_glm
+[TRAIN] Starting GLM training...
+[TRAIN] GLM training finished in 0.00 seconds.
+[SINGLE] Generating predictions from base model...
+[SINGLE] Running evaluation step...
+[EVAL] Median of predictions computed. median = 0.0988789
+[SINGLE] Evaluation completed.
+[SINGLE] Workflow iteration completed. Returning results.
+[MASTER] Proceeding to reporting and publishing...
+[CONTINUE] Aggregating workflow results...
+[CONTINUE] Workflow fully completed.
+
+> # 6) Evaluate Results
+> median_calculated_by_engine <- results$execution_output$workflow_results$random_stratified$output_eval$eval_median$metrics$m .... [TRUNCATED] 
+
+> median_calculated_by_engine
+[1] 0.09887891
+
+> # 7) Check for plausibility
+> predictions <- results$execution_output$workflow_results$random_stratified$output_train$predictions
+
+> median_calculated_manually <- stats::median(predictions)
+
+> median_calculated_manually
+[1] 0.09887891
+
+> identical(median_calculated_by_engine, median_calculated_manually)
+[1] TRUE

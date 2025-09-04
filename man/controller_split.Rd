@@ -4,7 +4,7 @@
 \alias{controller_split}
 \title{Controller: Split Input Specification}
 \usage{
-controller_split(seed = 123, params = list())
+controller_split(seed = 123, target_var = "default", params = list())
 }
 \arguments{
 \item{seed}{Optional integer for reproducibility. Default is \code{123}.}

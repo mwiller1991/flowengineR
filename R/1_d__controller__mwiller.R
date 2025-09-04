@@ -16,7 +16,7 @@
 #' - Ensures compatibility with pre-, in-, and post-processing fairness engines as well as evaluation components.
 #'
 #' **Standardized Structure:**
-#' - `feature_vars`: Character vector of input features.
+#' - `feature_vars`: Character vector of input features exept protected_vars.
 #' - `protected_vars`: Character vector of protected attributes (e.g., gender, age_group).
 #' - `target_var`: Name of the target variable to be predicted.
 #' - `protected_vars_binary`: Character vector of grouped or binary-coded protected attributes used in evaluation.
@@ -90,9 +90,10 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' @export
 #--------------------------------------------------------------------
 
-controller_split <- function(seed = 123, params = list()) {
+controller_split <- function(seed = 123, target_var = "default", params = list()) {
   list(
     seed = seed,
+    target_var = target_var,
     params = params
   )
 }

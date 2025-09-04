@@ -41,7 +41,7 @@ training, fairness adjustments, and evaluation.
 
 \strong{Standardized Structure:}
 \itemize{
-\item \code{feature_vars}: Character vector of input features.
+\item \code{feature_vars}: Character vector of input features exept protected_vars.
 \item \code{protected_vars}: Character vector of protected attributes (e.g., gender, age_group).
 \item \code{target_var}: Name of the target variable to be predicted.
 \item \code{protected_vars_binary}: Character vector of grouped or binary-coded protected attributes used in evaluation.
