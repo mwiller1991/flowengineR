@@ -9,6 +9,8 @@ controller_split(seed = 123, target_var = "default", params = list())
 \arguments{
 \item{seed}{Optional integer for reproducibility. Default is \code{123}.}
 
+\item{target_var}{Character. Name of the target variable (dependent variable).}
+
 \item{params}{Named list. Engine-specific configuration. Default is empty list.}
 }
 \value{
@@ -39,6 +41,7 @@ Designed for use in the \code{control} object. This controller separates general
 \strong{Standardized Structure:}
 \itemize{
 \item \code{seed}: Integer seed for reproducibility.
+\item \code{target_var}: Name of the target variable to be predicted.
 \item \code{params}: Named list of engine-specific hyperparameters (e.g., \code{split_ratio}, \code{cv_folds}).
 }
 
@@ -46,6 +49,7 @@ Designed for use in the \code{control} object. This controller separates general
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{control$params$split <- controller_split(
   seed = 42,
+  target_var = "default",
   params = list(split_ratio = 0.7)
 )
 }\if{html}{\out{</div>}}

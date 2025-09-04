@@ -58,8 +58,7 @@ Imports:
     cli,
     glue,
     utils,
-    stats,
-    magrittr
+    stats
 Suggests:
     testthat (>= 3.0.0),
     knitr

@@ -1,6 +1,9 @@
 # control_factories.R
 # Define one or more control factories. Each returns a fully built control object.
-# Signature must be: function(data, vars) -> control
+# Signature must be: function(data, execution_type) -> control
+# Only works for execution 'execution_basic_batchtools_multicore' and 'execution_basic_sequential'
+
+#--------------------------------------------------------------------
 
 # Create vars-object for all runs
 vars_bank_classic <- controller_vars(
@@ -28,8 +31,65 @@ vars_bank_classic <- controller_vars(
   )
 )
 
+#--------------------------------------------------------------------
 
-# Example A1: Base GLM, 5-fold CV
+# Example 2: Base LM, 5-fold CV
+control_runtime_seq_lm_base <- function(data, execution_type){
+  list(
+    settings = list(
+      log = list(
+        log_show = TRUE,
+        log_level = "warn"
+      ),
+      global_seed = 42L
+    ),
+    data = list(
+      vars  = vars_bank_classic,
+      full  = data,
+      train = NULL,
+      test  = NULL
+    ),
+    engine_select = list(
+      split = "split_cv",
+      execution = 
+        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
+      else {"execution_basic_sequential"}
+      ,
+      train = "train_lm"
+    ),
+    params = list(
+      split = controller_split(
+        seed = 42L,
+        target_var = "default",
+        params = list(cv_folds = 5)
+      ),
+      execution = 
+        if (execution_type == "multicore"){controller_execution(
+          params = list(
+            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b2",
+            seed = 42,
+            ncpus = 4,
+            required_packages = character(0)
+          )
+        )
+        }
+      else {controller_execution()}
+      ,
+      train = controller_training(
+        formula = as.formula(paste(vars_bank_classic$target_var, "~", 
+                                   paste(vars_bank_classic$feature_vars, collapse = "+"), "+", 
+                                   paste(vars_bank_classic$protected_vars, collapse = "+")
+        )
+        ),
+        norm_data = TRUE
+      )
+    )
+  )
+}
+
+#--------------------------------------------------------------------
+
+# Example 2: Base GLM, 5-fold CV
 control_runtime_seq_glm_base <- function(data, execution_type){
   list(
     settings = list(
@@ -84,9 +144,10 @@ control_runtime_seq_glm_base <- function(data, execution_type){
     )
 }
 
+#--------------------------------------------------------------------
 
-# Example B1: Base GLM, 5-fold CV
-control_runtime_mc_glm_base <- function(data){
+# Example 3: Base RF, 5-fold CV
+control_runtime_seq_rf_base <- function(data, execution_type){
   list(
     settings = list(
       log = list(
@@ -103,8 +164,11 @@ control_runtime_mc_glm_base <- function(data){
     ),
     engine_select = list(
       split = "split_cv",
-      execution = "execution_basic_batchtools_multicore",
-      train = "train_glm"
+      execution = 
+        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
+      else {"execution_basic_sequential"}
+      ,
+      train = "train_rf"
     ),
     params = list(
       split = controller_split(
@@ -112,14 +176,18 @@ control_runtime_mc_glm_base <- function(data){
         target_var = "default",
         params = list(cv_folds = 5)
       ),
-      execution = controller_execution(
-        params = list(
-          registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test1", # Target registry folder
-          seed = 42,                   # Seed for reproducibility
-          ncpus = 4,                   # Number of CPU cores to use in parallel
-          required_packages = character(0)  # Add required packages here, e.g., c("ggplot2", "caret")
+      execution = 
+        if (execution_type == "multicore"){controller_execution(
+          params = list(
+            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b2",
+            seed = 42,
+            ncpus = 4,
+            required_packages = character(0)
+          )
         )
-      ),
+        }
+      else {controller_execution()}
+      ,
       train = controller_training(
         formula = as.formula(paste(vars_bank_classic$target_var, "~", 
                                    paste(vars_bank_classic$feature_vars, collapse = "+"), "+", 
@@ -127,12 +195,16 @@ control_runtime_mc_glm_base <- function(data){
         )
         ),
         norm_data = TRUE,
-        params = list(family = gaussian())
+        params = list(
+          ntree = 100,
+          mtry = 3
+          )
       )
     )
   )
 }
 
+#--------------------------------------------------------------------
 
 # Register which factories to run (order matters)
 CONTROL_FACTORIES <- list(

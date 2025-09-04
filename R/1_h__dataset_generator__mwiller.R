@@ -132,7 +132,7 @@ set.seed(seed)
   # --- Optional: full one-hot encoding (numeric-only output) ---
   if (isTRUE(onehot)) { 
     dv <- caret::dummyVars(" ~ .", data = df, fullRank = FALSE) 
-    df <- predict(dv, newdata = df) %>% as.data.frame()
+    df <- as.data.frame(predict(dv, newdata = df))
     }
   
   df
