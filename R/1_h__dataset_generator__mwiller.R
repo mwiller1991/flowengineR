@@ -11,7 +11,9 @@
 #' @param onehot Logical. If TRUE, returns one-hot encoded data via caret::dummyVars().
 #' @param pos_rate Numeric in (0,1). Target base default rate (approximate).
 #' @return data.frame with features, derived variables, and binary target `default` (0/1).
-#' @examples d <- create_dataset_bank(n = 2000, seed = 1)
+#' @examples 
+#' withr::local_options(list(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")))
+#' d <- create_dataset_bank(n = 2000, seed = 1)
 #' @importFrom stats rnorm rbinom runif plogis
 #' @export
 create_dataset_bank <- function(n = 10000, seed = 123, onehot = TRUE, pos_rate = 0.05){ 
