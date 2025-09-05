@@ -26,5 +26,4 @@ loan-to-income, credit_score, employment/housing stability, marital_status, etc.
 }
 \examples{
 d <- create_dataset_bank(n = 2000, seed = 1)
-table(d$default) / nrow(d)  # default rate
 }

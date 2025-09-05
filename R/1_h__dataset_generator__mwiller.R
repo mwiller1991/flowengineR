@@ -11,9 +11,7 @@
 #' @param onehot Logical. If TRUE, returns one-hot encoded data via caret::dummyVars().
 #' @param pos_rate Numeric in (0,1). Target base default rate (approximate).
 #' @return data.frame with features, derived variables, and binary target `default` (0/1).
-#' @examples
-#' d <- create_dataset_bank(n = 2000, seed = 1)
-#' table(d$default) / nrow(d)  # default rate
+#' @examples d <- create_dataset_bank(n = 2000, seed = 1)
 #' @importFrom stats rnorm rbinom runif plogis
 #' @export
 create_dataset_bank <- function(n = 10000, seed = 123, onehot = TRUE, pos_rate = 0.05){ 
@@ -130,10 +128,18 @@ set.seed(seed)
   )
   
   # --- Optional: full one-hot encoding (numeric-only output) ---
-  if (isTRUE(onehot)) { 
-    dv <- caret::dummyVars(" ~ .", data = df, fullRank = FALSE) 
+  if (isTRUE(onehot)) {
+    # English: guard against polluted CI/user environments; restore on exit
+    old <- options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
+    on.exit(options(old), add = TRUE)
+    
+    # English: drop any per-column contrasts attributes that would break encoding
+    bad_cols <- names(Filter(function(x) !is.null(attr(x, "contrasts")), df))
+    for (nm in bad_cols) attr(df[[nm]], "contrasts") <- NULL
+    
+    dv <- caret::dummyVars(" ~ .", data = df, fullRank = FALSE)
     df <- as.data.frame(predict(dv, newdata = df))
-    }
+  }
   
   df
 }

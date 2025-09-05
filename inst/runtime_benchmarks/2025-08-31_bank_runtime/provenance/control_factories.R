@@ -33,8 +33,8 @@ vars_bank_classic <- controller_vars(
 
 #--------------------------------------------------------------------
 
-# Example 2: Base LM, 5-fold CV
-control_runtime_seq_lm_base <- function(data, execution_type){
+# Example 1: Base LM, 5-fold CV
+control_runtime_lm_base <- function(data, execution_type){
   list(
     settings = list(
       log = list(
@@ -90,7 +90,7 @@ control_runtime_seq_lm_base <- function(data, execution_type){
 #--------------------------------------------------------------------
 
 # Example 2: Base GLM, 5-fold CV
-control_runtime_seq_glm_base <- function(data, execution_type){
+control_runtime_glm_base <- function(data, execution_type){
   list(
     settings = list(
       log = list(
@@ -147,7 +147,7 @@ control_runtime_seq_glm_base <- function(data, execution_type){
 #--------------------------------------------------------------------
 
 # Example 3: Base RF, 5-fold CV
-control_runtime_seq_rf_base <- function(data, execution_type){
+control_runtime_rf_base <- function(data, execution_type){
   list(
     settings = list(
       log = list(
