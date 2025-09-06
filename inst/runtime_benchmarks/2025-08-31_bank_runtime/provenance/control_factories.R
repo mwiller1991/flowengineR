@@ -33,8 +33,13 @@ vars_bank_classic <- controller_vars(
 
 #--------------------------------------------------------------------
 
-# Example 1: Base LM, 5-fold CV
-control_runtime_lm_base <- function(data, execution_type){
+control_runtime<- function(
+    data, 
+    execution_type = "execution_basic_sequential", 
+    train_type = "train_lm", 
+    preprocessing_switch = FALSE, 
+    inprocessing_switch = FALSE, 
+    postprocessing_switch = FALSE){
   list(
     settings = list(
       log = list(
@@ -52,10 +57,25 @@ control_runtime_lm_base <- function(data, execution_type){
     engine_select = list(
       split = "split_cv",
       execution = 
-        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
+        if (execution_type == "execution_basic_batchtools_multicore"){"execution_basic_batchtools_multicore"}
       else {"execution_basic_sequential"}
       ,
-      train = "train_lm"
+      preprocessing =         
+        if (preprocessing_switch == TRUE){"preprocessing_fairness_resampling"}
+        else {NULL}
+      ,
+      train =
+        if (train_type == "train_rf"){"train_rf"}
+        else if (train_type == "train_glm"){"train_glm"}
+        else {"train_lm"}
+      ,
+      inprocessing =         
+        if (inprocessing_switch == TRUE & train_type == "train_glm"){"inprocessing_fairness_adversialdebiasing"}
+      else {NULL}
+      ,
+      postprocessing =         
+        if (postprocessing_switch == TRUE){"postprocessing_fairness_genresidual"}
+      else {NULL}
     ),
     params = list(
       split = controller_split(
@@ -64,7 +84,7 @@ control_runtime_lm_base <- function(data, execution_type){
         params = list(cv_folds = 5)
       ),
       execution = 
-        if (execution_type == "multicore"){controller_execution(
+        if (execution_type == "execution_basic_batchtools_multicore"){controller_execution(
           params = list(
             registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b1",
             seed = 42,
@@ -81,124 +101,11 @@ control_runtime_lm_base <- function(data, execution_type){
                                    paste(vars_bank_classic$protected_vars, collapse = "+")
         )
         ),
-        norm_data = TRUE
-      )
-    )
-  )
-}
-
-#--------------------------------------------------------------------
-
-# Example 2: Base GLM, 5-fold CV
-control_runtime_glm_base <- function(data, execution_type){
-  list(
-    settings = list(
-      log = list(
-        log_show = TRUE,
-        log_level = "warn"
-        ),
-      global_seed = 42L
-      ),
-    data = list(
-      vars  = vars_bank_classic,
-      full  = data,
-      train = NULL,
-      test  = NULL
-      ),
-    engine_select = list(
-      split = "split_cv",
-      execution = 
-        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
-        else {"execution_basic_sequential"}
-      ,
-      train = "train_glm"
-      ),
-    params = list(
-      split = controller_split(
-        seed = 42L,
-        target_var = "default",
-        params = list(cv_folds = 5)
-        ),
-      execution = 
-        if (execution_type == "multicore"){controller_execution(
-              params = list(
-                registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b2",
-                seed = 42,
-                ncpus = 4,
-                required_packages = character(0)
-              )
-            )
-          }
-        else {controller_execution()}
-      ,
-      train = controller_training(
-        formula = as.formula(paste(vars_bank_classic$target_var, "~", 
-                                   paste(vars_bank_classic$feature_vars, collapse = "+"), "+", 
-                                   paste(vars_bank_classic$protected_vars, collapse = "+")
-                                   )
-                             ),
         norm_data = TRUE,
-        params = list(family = gaussian())
-        )
-      )
-    )
-}
-
-#--------------------------------------------------------------------
-
-# Example 3: Base RF, 5-fold CV
-control_runtime_rf_base <- function(data, execution_type){
-  list(
-    settings = list(
-      log = list(
-        log_show = TRUE,
-        log_level = "warn"
-      ),
-      global_seed = 42L
-    ),
-    data = list(
-      vars  = vars_bank_classic,
-      full  = data,
-      train = NULL,
-      test  = NULL
-    ),
-    engine_select = list(
-      split = "split_cv",
-      execution = 
-        if (execution_type == "multicore"){"execution_basic_batchtools_multicore"}
-      else {"execution_basic_sequential"}
-      ,
-      train = "train_rf"
-    ),
-    params = list(
-      split = controller_split(
-        seed = 42L,
-        target_var = "default",
-        params = list(cv_folds = 5)
-      ),
-      execution = 
-        if (execution_type == "multicore"){controller_execution(
-          params = list(
-            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b3",
-            seed = 42,
-            ncpus = 4,
-            required_packages = character(0)
-          )
-        )
-        }
-      else {controller_execution()}
-      ,
-      train = controller_training(
-        formula = as.formula(paste(vars_bank_classic$target_var, "~", 
-                                   paste(vars_bank_classic$feature_vars, collapse = "+"), "+", 
-                                   paste(vars_bank_classic$protected_vars, collapse = "+")
-        )
-        ),
-        norm_data = TRUE,
-        params = list(
-          ntree = 100,
-          mtry = 3
-          )
+        params = 
+          if (train_type == "train_rf"){list(ntree = 100, mtry = 3)}
+          else if (train_type == "train_glm"){list(family = gaussian())}
+          else {NULL}
       )
     )
   )
