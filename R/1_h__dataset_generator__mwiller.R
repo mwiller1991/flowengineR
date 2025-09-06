@@ -11,9 +11,7 @@
 #' @param onehot Logical. If TRUE, returns one-hot encoded data via caret::dummyVars().
 #' @param pos_rate Numeric in (0,1). Target base default rate (approximate).
 #' @return data.frame with features, derived variables, and binary target `default` (0/1).
-#' @examples 
-#' withr::local_options(list(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")))
-#' d <- create_dataset_bank(n = 2000, seed = 1)
+#' @examples d <- create_dataset_bank(n = 2000, seed = 1)
 #' @importFrom stats rnorm rbinom runif plogis
 #' @export
 create_dataset_bank <- function(n = 10000, seed = 123, onehot = TRUE, pos_rate = 0.05){ 
@@ -131,17 +129,67 @@ set.seed(seed)
   
   # --- Optional: full one-hot encoding (numeric-only output) ---
   if (isTRUE(onehot)) {
-    # English: guard against polluted CI/user environments; restore on exit
-    old <- options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
-    on.exit(options(old), add = TRUE)
+    cat_cols <- c("profession", "gender", "marital_status", "housing_status", "region", "age_group")
+    levels_map <- list(
+      profession     = c("Employee", "Selfemployed", "Unemployed"),
+      gender         = c("Male", "Female"),
+      marital_status = c("Single", "Married", "Divorced"),
+      housing_status = c("Own", "Rent", "WithParents"),
+      region         = c("Urban", "Suburban", "Rural"),
+      age_group      = c("<30", "30-50", "50+")
+    )
     
-    # English: drop any per-column contrasts attributes that would break encoding
-    bad_cols <- names(Filter(function(x) !is.null(attr(x, "contrasts")), df))
-    for (nm in bad_cols) attr(df[[nm]], "contrasts") <- NULL
-    
-    dv <- caret::dummyVars(" ~ .", data = df, fullRank = FALSE)
-    df <- as.data.frame(predict(dv, newdata = df))
+    # Set k_minus_1 = TRUE if you want reference coding; FALSE = all K columns
+    df <- .onehot_encode_known_pretty(
+      df,
+      cat_cols   = cat_cols,
+      levels_map = levels_map,
+      k_minus_1  = FALSE
+    )
   }
+  
   
   df
 }
+
+
+# English comments
+# Create one-hot columns for known categorical variables with exact names,
+# e.g., "profession.Employee", "age_group.<30". Supports K or K-1 coding.
+.onehot_encode_known_pretty <- function(df, cat_cols, levels_map, k_minus_1 = FALSE) {
+  stopifnot(all(cat_cols %in% names(df)))
+  stopifnot(all(cat_cols %in% names(levels_map)))
+  
+  # Split numeric/other vs. categorical
+  df_num <- df[setdiff(names(df), cat_cols)]
+  
+  # Build dummy matrix manually to preserve exact level labels in column names
+  dummy_list <- list()
+  
+  for (col in cat_cols) {
+    # force factor with the provided, stable levels
+    df_col <- factor(df[[col]], levels = levels_map[[col]], ordered = FALSE)
+    
+    lvls <- levels_map[[col]]
+    # For K-1 coding drop first level; otherwise keep all levels
+    if (isTRUE(k_minus_1) && length(lvls) > 0) {
+      lvls_use <- lvls[-1L]
+    } else {
+      lvls_use <- lvls
+    }
+    
+    # build 0/1 columns with exact names "<var>.<level>"
+    for (lvl in lvls_use) {
+      # be robust if a level is currently absent: column of zeros
+      col_vals <- as.integer(df_col == lvl)
+      nm <- paste0(col, ".", lvl)  # keep special characters
+      dummy_list[[nm]] <- col_vals
+    }
+  }
+  
+  # bind together; keep original numeric columns first (optional)
+  # check.names = FALSE is crucial to preserve "<" "-" "+" in names
+  out <- data.frame(df_num, dummy_list, check.names = FALSE)
+  out
+}
+

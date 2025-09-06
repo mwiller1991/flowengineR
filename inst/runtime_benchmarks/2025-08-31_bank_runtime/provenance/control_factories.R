@@ -9,24 +9,24 @@
 vars_bank_classic <- controller_vars(
   feature_vars = c(
     # profession dummies
-    "professionEmployee", "professionSelfemployed", "professionUnemployed",
+    "profession.Employee", "profession.Selfemployed", "profession.Unemployed",
     # marital_status dummies
-    "marital_statusDivorced", "marital_statusMarried", "marital_statusSingle",
+    "marital_status.Divorced", "marital_status.Married", "marital_status.Single",
     # housing_status dummies
-    "housing_statusOwn", "housing_statusRent", "housing_statusWithParents",
+    "housing_status.Own", "housing_status.Rent", "housing_status.WithParents",
     # region dummies
-    "regionRural", "regionSuburban", "regionUrban",
+    "region.Rural", "region.Suburban", "region.Urban",
     # numerical
     "employment_length", "credit_history_length", "number_prior_loans",
     "income", "loan_amount", "credit_score", "loan_to_income"
   ),
   protected_vars = c(
-    "genderMale", "genderFemale",
+    "gender.Male", "gender.Female",
     "age"
   ),
   target_var = "default",
   protected_vars_binary = c(
-    "genderMale", "genderFemale",
+    "gender.Male", "gender.Female",
     "age_group.<30", "age_group.30-50", "age_group.50+"
   )
 )
@@ -66,7 +66,7 @@ control_runtime_lm_base <- function(data, execution_type){
       execution = 
         if (execution_type == "multicore"){controller_execution(
           params = list(
-            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b2",
+            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b1",
             seed = 42,
             ncpus = 4,
             required_packages = character(0)
@@ -179,7 +179,7 @@ control_runtime_rf_base <- function(data, execution_type){
       execution = 
         if (execution_type == "multicore"){controller_execution(
           params = list(
-            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b2",
+            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b3",
             seed = 42,
             ncpus = 4,
             required_packages = character(0)
