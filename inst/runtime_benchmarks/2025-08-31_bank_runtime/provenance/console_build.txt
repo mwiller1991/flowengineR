@@ -1,9 +1,7 @@
 # -------------------------------------------------------------------
-# Console Output: Build + Register Eval Median
+# Console Output: Runtime-Test
 # -------------------------------------------------------------------
-# This file captures the console messages shown during the creation
-# of the ZIP prompt package and the registration and test of the new engine.
-# see also for skript: workflow_demo.R
+# This file captures the console messages shown during the runtimetest.
 # -------------------------------------------------------------------
 
 

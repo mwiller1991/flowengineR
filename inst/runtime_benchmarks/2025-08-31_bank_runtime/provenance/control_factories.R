@@ -33,18 +33,12 @@ vars_bank_classic <- controller_vars(
 
 #--------------------------------------------------------------------
 
-control_runtime<- function(
-    data, 
-    execution_type = "execution_basic_sequential", 
-    train_type = "train_lm", 
-    preprocessing_switch = FALSE, 
-    inprocessing_switch = FALSE, 
-    postprocessing_switch = FALSE){
+control_runtime<- function(data, execution_type = "execution_basic_sequential", train_type = "train_lm", 
+                           preprocessing_switch = FALSE, inprocessing_switch = FALSE, postprocessing_switch = FALSE){
   list(
     settings = list(
       log = list(
-        log_show = TRUE,
-        log_level = "warn"
+        log_show = FALSE
       ),
       global_seed = 42L
     ),
@@ -81,12 +75,12 @@ control_runtime<- function(
       split = controller_split(
         seed = 42L,
         target_var = "default",
-        params = list(cv_folds = 5)
+        params = list(cv_folds = 20)
       ),
       execution = 
         if (execution_type == "execution_basic_batchtools_multicore"){controller_execution(
           params = list(
-            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore/test_b1",
+            registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore",
             seed = 42,
             ncpus = 4,
             required_packages = character(0)
@@ -96,7 +90,7 @@ control_runtime<- function(
       else {controller_execution()}
       ,
       train = controller_training(
-        formula = as.formula(paste(vars_bank_classic$target_var, "~", 
+        formula = as.formula(paste(vars_bank_classic$target_var, "~ -1 +", 
                                    paste(vars_bank_classic$feature_vars, collapse = "+"), "+", 
                                    paste(vars_bank_classic$protected_vars, collapse = "+")
         )
@@ -104,7 +98,7 @@ control_runtime<- function(
         norm_data = TRUE,
         params = 
           if (train_type == "train_rf"){list(ntree = 100, mtry = 3)}
-          else if (train_type == "train_glm"){list(family = gaussian())}
+          else if (train_type == "train_glm"){list(family = binomial())}
           else {NULL}
       )
     )
@@ -112,9 +106,3 @@ control_runtime<- function(
 }
 
 #--------------------------------------------------------------------
-
-# Register which factories to run (order matters)
-CONTROL_FACTORIES <- list(
-  lm_cv5 = control_lm_cv5, 
-  rf_cv5 = control_rf_cv5
-)

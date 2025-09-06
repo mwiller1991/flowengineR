@@ -1,0 +1,61 @@
+"control","size","n","median","mem_alloc"
+"lm_base","S",100,  2.65s,NA
+"lm_base","S",100, 22.01ms,NA
+"glm_base","S",100,  5.15s,NA
+"glm_base","S",100, 28.61ms,NA
+"rf_base","S",100,  5.15s,NA
+"rf_base","S",100, 37.59ms,NA
+"lm_pre","S",100,  5.14s,NA
+"lm_pre","S",100, 22ms,NA
+"lm_post","S",100,  2.64s,NA
+"lm_post","S",100, 20.02ms,NA
+"glm_pre","S",100,  5.12s,NA
+"glm_pre","S",100, 36.72ms,NA
+"glm_in","S",100,  5.75s,NA
+"glm_in","S",100,236.33ms,NA
+"glm_post","S",100,  5.15s,NA
+"glm_post","S",100, 28.99ms,NA
+"rf_pre","S",100,  5.13s,NA
+"rf_pre","S",100, 52.24ms,NA
+"rf_post","S",100,  5.12s,NA
+"rf_post","S",100, 34.71ms,NA
+"lm_pre_post","S",100,  5.16s,NA
+"lm_pre_post","S",100, 25.52ms,NA
+"glm_pre_post","S",100,  5.12s,NA
+"glm_pre_post","S",100, 50.23ms,NA
+"rf_pre_post","S",100,  5.13s,NA
+"rf_pre_post","S",100, 54ms,NA
+"glm_pre_in_post","S",100,  6.3s,NA
+"glm_pre_in_post","S",100,326.5ms,NA
+"lm_base","M",1000,  5.18s,NA
+"lm_base","M",1000, 22.11ms,NA
+"glm_base","M",1000,  6.22s,NA
+"glm_base","M",1000, 40.66ms,NA
+"rf_base","M",1000,  6.32s,NA
+"rf_base","M",1000,310.87ms,NA
+"lm_pre","M",1000,  6.23s,NA
+"lm_pre","M",1000, 36.76ms,NA
+"lm_post","M",1000,  2.7s,NA
+"lm_post","M",1000, 26.85ms,NA
+"glm_pre","M",1000,  6.26s,NA
+"glm_pre","M",1000, 56.09ms,NA
+"glm_in","M",1000,  6.4s,NA
+"glm_in","M",1000,579.71ms,NA
+"glm_post","M",1000,  5.73s,NA
+"glm_post","M",1000, 42.17ms,NA
+"rf_pre","M",1000,  6.35s,NA
+"rf_pre","M",1000,539.77ms,NA
+"rf_post","M",1000,  6.31s,NA
+"rf_post","M",1000,322.54ms,NA
+"lm_pre_post","M",1000,  6.27s,NA
+"lm_pre_post","M",1000, 39.39ms,NA
+"glm_pre_post","M",1000,  6.35s,NA
+"glm_pre_post","M",1000, 72.91ms,NA
+"rf_pre_post","M",1000,  6.33s,NA
+"rf_pre_post","M",1000,551.87ms,NA
+"glm_pre_in_post","M",1000,  6.55s,NA
+"glm_pre_in_post","M",1000,921.6ms,NA
+"lm_base","L",5000,  1.51s,NA
+"lm_base","L",5000, 43.26ms,NA
+"glm_base","L",5000,  6.62s,NA
+"glm_base","L",5000,114.28ms,NA

@@ -1,4 +1,0 @@
-# Build Engine Call: Eval Median
-# Date executed: 2025-08-29 17:05:54 +0200
-
-build_engine_with_llm_zip("eval", "The Median of all predictions.", zip_path = NULL)
