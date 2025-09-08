@@ -33,7 +33,7 @@ vars_bank_classic <- controller_vars(
 
 #--------------------------------------------------------------------
 
-control_runtime<- function(data, execution_type = "execution_basic_sequential", train_type = "train_lm", 
+control_runtime<- function(data, cv_folds = 5, execution_type = "execution_basic_sequential", train_type = "train_lm", 
                            preprocessing_switch = FALSE, inprocessing_switch = FALSE, postprocessing_switch = FALSE){
   list(
     settings = list(
@@ -75,14 +75,14 @@ control_runtime<- function(data, execution_type = "execution_basic_sequential", 
       split = controller_split(
         seed = 42L,
         target_var = "default",
-        params = list(cv_folds = 20)
+        params = list(cv_folds = cv_folds)
       ),
       execution = 
         if (execution_type == "execution_basic_batchtools_multicore"){controller_execution(
           params = list(
             registry_folder = "~/flowengineR/inst/runtime_benchmarks/2025-08-31_bank_runtime/outputs/BATCHTOOLS/bt_registry_basic_multicore",
             seed = 42,
-            ncpus = 4,
+            ncpus = parallel::detectCores(),
             required_packages = character(0)
           )
         )

@@ -14,16 +14,12 @@ here <- tryCatch(normalizePath(file.path(dirname(sys.frame(1)$ofile %||% "."))),
 root <- normalizePath(file.path(here, ".."), mustWork = TRUE)
 dir.create(file.path(root, "outputs"), showWarnings = FALSE, recursive = TRUE)
 
-# Source user-defined control factories
-src_cf <- file.path(here, "control_factories.R")
-if (!file.exists(src_cf)) stop("Missing file: ", src_cf)
-sys.source(src_cf, envir = .GlobalEnv)
 
 # Sizes (enable L later if needed)
 SIZES <- list(
-  S = list(n = 100, seed = 42L),
-  M = list(n = 1000, seed = 42L),
-  L = list(n = 5000, seed = 42L)
+  S = list(n = 200, seed = 42L),
+  #M = list(n = 300, seed = 42L),
+  L = list(n = 100000, seed = 42L)
 )
 #SIZES <- list(
   #S = list(n = 1e4L, seed = 42L),
@@ -35,24 +31,31 @@ SIZES <- list(
 RUNTIME_CASES <- list(
   lm_base          = list(train_type="train_lm"),
   glm_base         = list(train_type="train_glm"),
-  rf_base          = list(train_type="train_rf"),
-  lm_pre           = list(train_type="train_lm", preprocessing=TRUE),
-  lm_post          = list(train_type="train_lm", postprocessing=TRUE),
-  glm_pre          = list(train_type="train_glm", preprocessing=TRUE),
-  glm_in           = list(train_type="train_glm", inprocessing=TRUE),
-  glm_post         = list(train_type="train_glm", postprocessing=TRUE),
-  rf_pre           = list(train_type="train_rf", preprocessing=TRUE),
-  rf_post          = list(train_type="train_rf", postprocessing=TRUE),
-  lm_pre_post      = list(train_type="train_lm", preprocessing=TRUE, postprocessing=TRUE),
-  glm_pre_post     = list(train_type="train_glm", preprocessing=TRUE, postprocessing=TRUE),
-  rf_pre_post      = list(train_type="train_rf", preprocessing=TRUE, postprocessing=TRUE),
-  glm_pre_in_post  = list(train_type="train_glm", preprocessing=TRUE, inprocessing=TRUE, postprocessing=TRUE)
+  rf_base          = list(train_type="train_rf") #,
+  #lm_pre           = list(train_type="train_lm", preprocessing=TRUE),
+  #lm_post          = list(train_type="train_lm", postprocessing=TRUE),
+  #glm_pre          = list(train_type="train_glm", preprocessing=TRUE),
+  #glm_in           = list(train_type="train_glm", inprocessing=TRUE),
+  #glm_post         = list(train_type="train_glm", postprocessing=TRUE),
+  #rf_pre           = list(train_type="train_rf", preprocessing=TRUE),
+  #rf_post          = list(train_type="train_rf", postprocessing=TRUE),
+  #lm_pre_post      = list(train_type="train_lm", preprocessing=TRUE, postprocessing=TRUE),
+  #glm_pre_post     = list(train_type="train_glm", preprocessing=TRUE, postprocessing=TRUE),
+  #rf_pre_post      = list(train_type="train_rf", preprocessing=TRUE, postprocessing=TRUE),
+  #glm_pre_in_post  = list(train_type="train_glm", preprocessing=TRUE, inprocessing=TRUE, postprocessing=TRUE)
 )
 
 # define execuation types
 EXECUTION_TYPES <- list (
   multicore        = list(execution_type = "execution_basic_batchtools_multicore"),
   sequential       =list(execution_type = "execution_basic_sequential")
+)
+
+# define execuation types
+CV_FOLDS <- list(
+  S = list(cv_folds = 2),
+  #M = list(cv_folds = 5),
+  L = list(cv_folds = 10)
 )
 
 # Dataset + vars builder
@@ -67,7 +70,7 @@ make_data <- function(n, seed) {
 }
 
 # Run exactly one full workflow and time it
-run_once <- function(size_name, cfg, control_name, exe_name, control_fun, iterations = 1L) {
+run_once <- function(size_name, cfg, control_name, exe_name, cv_folds, control_fun, iterations = 1L) {
   gc()
   data <- make_data(cfg$n, cfg$seed)
   
@@ -81,7 +84,8 @@ run_once <- function(size_name, cfg, control_name, exe_name, control_fun, iterat
     workflow = run_workflow(control = ctrl), 
     iterations = iterations, 
     check = FALSE,
-    memory = FALSE
+    memory = if(exe_name == "sequential"){TRUE}
+              else {FALSE}
     )
   
   bm$size        <- size_name
@@ -89,6 +93,7 @@ run_once <- function(size_name, cfg, control_name, exe_name, control_fun, iterat
   bm$seed        <- cfg$seed
   bm$control     <- control_name
   bm$execution   <- exe_name
+  bm$cv_folds    <- cv_folds
   bm$timestamp   <- Sys.time()
   bm
 }
@@ -99,44 +104,49 @@ try(writeLines(capture.output(sessionInfo()), file.path(here, "sessionInfo.txt")
 # Execute matrix: sizes x controls
 results <- list()
 
+#sz = names(SIZES)[1]
+#cn = names(RUNTIME_CASES)[1]
+#exe = names(EXECUTION_TYPES)[1]
+#cv = names(CV_FOLDS)[3]
+
 for (sz in names(SIZES)) {
-  
   cfg <- SIZES[[sz]]
   
   for (cn in names(RUNTIME_CASES)) {
-    
     case <- RUNTIME_CASES[[cn]]
     
     for (exe in names(EXECUTION_TYPES)) {
-      
       case_exe <- EXECUTION_TYPES[[exe]]
       
-      ctrl_object <-  control_runtime(data,
-                                      execution_type = case_exe$execution_type,
-                                      train_type = case$train_type,
-                                      preprocessing_switch = case$preprocessing %||% FALSE,
-                                      inprocessing_switch  = case$inprocessing %||% FALSE,
-                                      postprocessing_switch= case$postprocessing %||% FALSE
-      )
+      for (cv in names(CV_FOLDS)) {
+        cv_no <- CV_FOLDS[[cv]]
+
+        message(sprintf("Running size=%s (n=%s) | control=%s | execution=%s | cv_size=%s (n=%s)",
+                      sz, format(cfg$n, big.mark=","), cn, exe, cv, format(cv_no$cv_folds)))
+        
+        ctrl_function <- function(data) {
+          control_runtime(
+            data,
+            cv_folds = cv_no$cv_folds,
+            execution_type = case_exe$execution_type,
+            train_type = case$train_type,
+            preprocessing_switch = case$preprocessing %||% FALSE,
+            inprocessing_switch  = case$inprocessing %||% FALSE,
+            postprocessing_switch= case$postprocessing %||% FALSE
+          )
+        }
+        
+        res <- run_once(size_name = sz, 
+                        cfg = cfg, 
+                        control_name = cn, 
+                        exe_name = exe, 
+                        cv_folds = cv_no$cv_folds, 
+                        control_fun = ctrl_function, 
+                        iterations = 3L)
+        
+        results[[paste(sz, cn, exe, sep = "_")]] <- res
       
-      message(sprintf("Running size=%s (n=%s) | control=%s | execution=%s",
-                    sz, format(cfg$n, big.mark=","), cn, exe))
-      
-      ctrl_function <- function(data) {
-        control_runtime(
-          data,
-          execution_type = case_exe$execution_type,
-          train_type = case$train_type,
-          preprocessing_switch = case$preprocessing %||% FALSE,
-          inprocessing_switch  = case$inprocessing %||% FALSE,
-          postprocessing_switch= case$postprocessing %||% FALSE
-        )
       }
-    
-      res <- run_once(size_name = sz, cfg = cfg, control_name = cn, exe_name = exe, control_fun = ctrl_function, iterations = 3L)
-      
-      results[[paste(sz, cn, exe, sep = "_")]] <- res
-    
     }
   }
 }
@@ -147,7 +157,7 @@ out_csv <- file.path(root, "flowengineR/inst/runtime_benchmarks/2025-08-31_bank_
 
 if (length(results)) {
   df <- do.call(rbind, lapply(results, as.data.frame))
-  keep <- intersect(c("control","size","n","median","mem_alloc"), names(df))
+  keep <- intersect(c("control","size","n","median"), names(df))
   utils::write.csv(df[, keep, drop = FALSE], out_csv, row.names = FALSE)
   saveRDS(results, out_rds)
   message("Saved: ", out_csv)
