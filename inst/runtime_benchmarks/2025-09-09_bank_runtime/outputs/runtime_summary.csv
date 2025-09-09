@@ -1,0 +1,9 @@
+"control","size","execution","n","median"
+"lm_base","S","multicore",200, 5.18s
+"lm_base","S","sequential",200,23.7ms
+"glm_base","S","multicore",200, 5.19s
+"glm_base","S","sequential",200,49.47ms
+"lm_base","L","multicore",1e+05,13.56s
+"lm_base","L","sequential",1e+05, 1.06s
+"glm_base","L","multicore",1e+05,15.27s
+"glm_base","L","sequential",1e+05, 3.76s
