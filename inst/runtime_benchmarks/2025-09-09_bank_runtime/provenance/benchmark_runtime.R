@@ -165,7 +165,7 @@ out_csv <- file.path(root, path_outputs, "runtime_summary.csv")
 
 if (length(results)) {
   df <- do.call(rbind, lapply(results, as.data.frame))
-  keep <- intersect(c("control","execution","size","n","median"), names(df))
+  keep <- intersect(c("control","execution","cv_folds","size","n","median"), names(df))
   utils::write.csv(df[, keep, drop = FALSE], out_csv, row.names = FALSE)
   saveRDS(results, out_rds)
   message("Saved: ", out_csv)
