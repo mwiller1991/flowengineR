@@ -5,13 +5,16 @@
 \alias{test_data_2_base_credit_example}
 \title{Example Dataset: Credit Default Simulation (Wide Format)}
 \format{
-A data frame with 1000 observations and 16 variables:
+A data frame with 2000 observations and multiple variables:
 \describe{
-\item{professionEmployee, professionSelfemployed, professionUnemployed}{Binary dummies for profession status}
-\item{income, loan_amount, credit_score}{Financial attributes (numeric)}
+\item{profession.Employee, profession.Selfemployed, profession.Unemployed}{Binary dummies for profession status}
+\item{marital_status.Divorced, marital_status.Married, marital_status.Single}{Marital status dummies}
+\item{housing_status.Own, housing_status.Rent, housing_status.WithParents}{Housing status dummies}
+\item{region.Rural, region.Suburban, region.Urban}{Region dummies}
+\item{gender.Male, gender.Female}{Binary dummies for gender}
 \item{age}{Age in years (integer)}
-\item{genderFemale, genderMale}{Binary dummies for gender}
-\item{marital_statusDivorced, marital_statusMarried, marital_statusSingle}{Marital status dummies}
+\item{employment_length, credit_history_length, number_prior_loans}{Employment and credit history indicators}
+\item{income, loan_amount, credit_score, loan_to_income}{Financial attributes (numeric)}
 \item{default}{Binary indicator for default (0 = no default, 1 = default; target variable)}
 \item{age_group.<30, age_group.30-50, age_group.50+}{Binary age group indicators}
 }
@@ -20,9 +23,13 @@ A data frame with 1000 observations and 16 variables:
 data(test_data_2_base_credit_example)
 }
 \description{
-This synthetic dataset simulates the prediction of loan default risk based on demographic and financial indicators.
-It includes preprocessed dummy variables suitable for fairness-aware model evaluation.
-All values are artificially generated and do not represent real people or financial data.
+This synthetic dataset simulates the prediction of loan default risk based on
+demographic and financial indicators. It was generated with
+\code{\link[=create_dataset_bank]{create_dataset_bank()}}, which encodes realistic dependencies between income,
+profession, region, age, and credit history. The dataset includes preprocessed
+dummy variables suitable for fairness-aware model evaluation.
+All values are artificially generated and do not represent real people or
+financial data.
 }
 \examples{
 data(test_data_2_base_credit_example)
@@ -30,16 +37,20 @@ head(test_data_2_base_credit_example)
 
 # Example variable setup
 vars <- controller_vars(
-    feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee",
-      "professionSelfemployed", "professionUnemployed"),
-    protected_vars = c("genderFemale", "genderMale", "age", "marital_statusDivorced", 
-      "marital_statusMarried", "marital_statusSingle"
-     ),
-    target_var = "default",
-    protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30",
-      "age_group.30-50", "age_group.50+", "marital_statusDivorced", 
-      "marital_statusMarried", "marital_statusSingle"
-     )
+  feature_vars = c(
+    "profession.Employee", "profession.Selfemployed", "profession.Unemployed",
+    "marital_status.Divorced", "marital_status.Married", "marital_status.Single",
+    "housing_status.Own", "housing_status.Rent", "housing_status.WithParents",
+    "region.Rural", "region.Suburban", "region.Urban",
+    "employment_length", "credit_history_length", "number_prior_loans",
+    "income", "loan_amount", "credit_score", "loan_to_income"
+  ),
+  protected_vars = c("gender.Male", "gender.Female", "age"),
+  target_var = "default",
+  protected_vars_binary = c(
+    "gender.Male", "gender.Female",
+    "age_group.<30", "age_group.30-50", "age_group.50+"
+  )
 )
 }
 \keyword{datasets}

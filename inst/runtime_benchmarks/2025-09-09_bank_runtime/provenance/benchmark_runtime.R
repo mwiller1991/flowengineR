@@ -22,7 +22,9 @@ path_outputs <- "flowengineR/inst/runtime_benchmarks/2025-09-09_bank_runtime/out
 SIZES <- list(
   S = list(n = 200, seed = 42L),
   M = list(n = 300, seed = 42L),
-  L = list(n = 1000, seed = 42L)
+  L = list(n = 1000, seed = 42L),
+  XL = list(n = 5000, seed = 42L),
+  XXL = list(n = 20000, seed = 42L)
 )
 #SIZES <- list(
   #S = list(n = 1e4L, seed = 42L),
@@ -88,8 +90,7 @@ run_once <- function(size_name, cfg, control_name, exe_name, cv_folds, control_f
     workflow = run_workflow(control = ctrl), 
     iterations = iterations, 
     check = FALSE,
-    memory = if(exe_name == "sequential"){TRUE}
-              else {FALSE}
+    memory = FALSE
     )
   
   bm$size        <- size_name

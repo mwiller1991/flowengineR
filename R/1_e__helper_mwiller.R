@@ -128,12 +128,28 @@ complete_control_with_defaults <- function(control) {
   if (is.null(control$data$vars) && is.null(control$data$full)) {
     control$data$full <- flowengineR::test_data_2_base_credit_example
     vars <- controller_vars(
-      feature_vars = c("income", "loan_amount", "credit_score",
-                       "professionEmployee", "professionSelfemployed", "professionUnemployed"),
-      protected_vars = c("genderFemale", "genderMale", "age"),
+      feature_vars = c(
+        # profession dummies
+        "profession.Employee", "profession.Selfemployed", "profession.Unemployed",
+        # marital_status dummies
+        "marital_status.Divorced", "marital_status.Married", "marital_status.Single",
+        # housing_status dummies
+        "housing_status.Own", "housing_status.Rent", "housing_status.WithParents",
+        # region dummies
+        "region.Rural", "region.Suburban", "region.Urban",
+        # numerical
+        "employment_length", "credit_history_length", "number_prior_loans",
+        "income", "loan_amount", "credit_score", "loan_to_income"
+      ),
+      protected_vars = c(
+        "gender.Male", "gender.Female",
+        "age"
+      ),
       target_var = "default",
-      protected_vars_binary = c("genderFemale", "genderMale",
-                                "age_group.<30", "age_group.30-50", "age_group.50+")
+      protected_vars_binary = c(
+        "gender.Male", "gender.Female",
+        "age_group.<30", "age_group.30-50", "age_group.50+"
+      )
     )
     control$data$vars <- vars
   } else {
