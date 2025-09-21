@@ -7,6 +7,8 @@ suppressPackageStartupMessages({
   library(pryr)
 })
 
+source("~/flowengineR/inst/runtime_benchmarks/2025-09-09_bank_runtime/provenance/control_factories.R")
+
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 # Locate paths (script lives in provenance/)
@@ -20,7 +22,7 @@ path_outputs <- "flowengineR/inst/runtime_benchmarks/2025-09-09_bank_runtime/out
 
 # Sizes
 SIZES <- list(
-  S = list(n = 200, seed = 42L),
+  S = list(n = 250, seed = 42L),
   M = list(n = 300, seed = 42L),
   L = list(n = 1000, seed = 42L),
   XL = list(n = 5000, seed = 42L),
@@ -35,27 +37,28 @@ SIZES <- list(
 
 # define cv-size
 CV_FOLDS <- list(
-  S = list(cv_folds = 2),
-  M = list(cv_folds = 5),
-  L = list(cv_folds = 8)
+  S = list(cv_folds = 2)#,
+  #M = list(cv_folds = 5),
+  #L = list(cv_folds = 8)
 )
 
 # define all test cases
 RUNTIME_CASES <- list(
   lm_base          = list(train_type="train_lm"),
-  glm_base         = list(train_type="train_glm"),
-  rf_base          = list(train_type="train_rf"),
-  lm_pre           = list(train_type="train_lm", preprocessing=TRUE),
-  lm_post          = list(train_type="train_lm", postprocessing=TRUE),
-  glm_pre          = list(train_type="train_glm", preprocessing=TRUE),
-  glm_in           = list(train_type="train_glm", inprocessing=TRUE),
-  glm_post         = list(train_type="train_glm", postprocessing=TRUE),
-  rf_pre           = list(train_type="train_rf", preprocessing=TRUE),
-  rf_post          = list(train_type="train_rf", postprocessing=TRUE),
-  lm_pre_post      = list(train_type="train_lm", preprocessing=TRUE, postprocessing=TRUE),
-  glm_pre_post     = list(train_type="train_glm", preprocessing=TRUE, postprocessing=TRUE),
-  rf_pre_post      = list(train_type="train_rf", preprocessing=TRUE, postprocessing=TRUE),
-  glm_pre_in_post  = list(train_type="train_glm", preprocessing=TRUE, inprocessing=TRUE, postprocessing=TRUE)
+  glm_base         = list(train_type="train_glm") #,
+  #gbm_base          = list(train_type="train_gbm"),
+  #lm_pre           = list(train_type="train_lm", preprocessing=TRUE),
+  #lm_post          = list(train_type="train_lm", postprocessing=TRUE),
+  #glm_pre          = list(train_type="train_glm", preprocessing=TRUE),
+  #glm_in           = list(train_type="train_glm", inprocessing=TRUE),
+  #glm_post         = list(train_type="train_glm", postprocessing=TRUE),
+  #gbm_pre           = list(train_type="train_gbm", preprocessing=TRUE),
+  #gbm_post          = list(train_type="train_gbm", postprocessing=TRUE),
+  #lm_pre_post      = list(train_type="train_lm", preprocessing=TRUE, postprocessing=TRUE),
+  #glm_pre_post     = list(train_type="train_glm", preprocessing=TRUE, postprocessing=TRUE),
+  #gbm_pre_post      = list(train_type="train_gbm", preprocessing=TRUE, postprocessing=TRUE),
+  #glm_pre_in_post  = list(train_type="train_glm", preprocessing=TRUE, inprocessing=TRUE, postprocessing=TRUE)
+  #gbm_pre_in_post  = list(train_type="train_gbm", preprocessing=TRUE, inprocessing=TRUE, postprocessing=TRUE)
 )
 
 # define execution types
@@ -114,8 +117,9 @@ try(writeLines(capture.output(sessionInfo()), file.path(root, path_provenance, "
 
 # Execute matrix: sizes x controls
 results <- list()
-
-for (sz in names(SIZES)) {
+  
+runtime_test <- function(sz) {
+  results_interim <- list()
   cfg <- SIZES[[sz]]
   
   for (cn in names(RUNTIME_CASES)) {
@@ -150,15 +154,32 @@ for (sz in names(SIZES)) {
                         control_fun = ctrl_function, 
                         iterations = 3L)
         
-        results[[paste(sz, cn, exe, sep = "_")]] <- res
+        results_interim[[paste(sz, cn, exe, cv, sep = "_")]] <- res
         
         print_mem(sprintf("case=%s size=%s", cn, sz))
         gc()
+        
       
       }
     }
   }
+  return(results_interim)
 }
+
+results_interim_S <- runtime_test(sz = "S")
+results <- append(results, results_interim_S)
+
+results_interim_M <- runtime_test(sz = "M")
+results <- append(results, results_interim_M)
+
+results_interim_L <- runtime_test(sz = "L")
+results <- append(results, results_interim_L)
+
+results_interim_XL <- runtime_test(sz = "XL")
+results <- append(results, results_interim_XL)
+
+results_interim_XXL <- runtime_test(sz = "XXL")
+results <- append(results, results_interim_XXL)
 
 # Save outputs
 out_rds <- file.path(root, path_outputs, "runtime_results.rds")

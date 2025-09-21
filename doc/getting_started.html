@@ -49,8 +49,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -439,11 +440,24 @@ start.</p>
 <div id="step-1-define-variables" class="section level2">
 <h2>🔧 Step 1: Define Variables</h2>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>vars <span class="ot">=</span> <span class="fu">controller_vars</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>),   </span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,            </span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="st">&quot;profession.Employee&quot;</span>, <span class="st">&quot;profession.Selfemployed&quot;</span>, <span class="st">&quot;profession.Unemployed&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="st">&quot;marital_status.Divorced&quot;</span>, <span class="st">&quot;marital_status.Married&quot;</span>, <span class="st">&quot;marital_status.Single&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="st">&quot;housing_status.Own&quot;</span>, <span class="st">&quot;housing_status.Rent&quot;</span>, <span class="st">&quot;housing_status.WithParents&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="st">&quot;region.Rural&quot;</span>, <span class="st">&quot;region.Suburban&quot;</span>, <span class="st">&quot;region.Urban&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="st">&quot;employment_length&quot;</span>, <span class="st">&quot;credit_history_length&quot;</span>, <span class="st">&quot;number_prior_loans&quot;</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;loan_to_income&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  ),</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="st">&quot;gender.Male&quot;</span>, <span class="st">&quot;gender.Female&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="st">&quot;age&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  ),</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="st">&quot;gender.Male&quot;</span>, <span class="st">&quot;gender.Female&quot;</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  )</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="step-2-define-the-control-object" class="section level2">
@@ -493,9 +507,9 @@ start.</p>
 <span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; [94m[POST] Adjustment complete.[0m</span></span>
 <span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Post-processing completed.[0m</span></span>
 <span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Running evaluation step...[0m</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] MSE evaluation complete. MSE = 0.097815[0m</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] MSE evaluation complete. MSE = 0.031223[0m</span></span>
 <span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Summary statistics evaluation complete.[0m</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.000136, genderMale 0.000136, age_group.&lt;30 0.000079, age_group.30-50 0.000437, age_group.50+ 0.000342[0m</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.010082, gender.Female 0.010082, age_group.&lt;30 0.004930, age_group.30-50 0.008064, age_group.50+ 0.006937[0m</span></span>
 <span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; [90m[SINGLE] Evaluation completed.[0m</span></span>
 <span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; [94m[SINGLE] Workflow iteration completed. Returning results.[0m</span></span>
 <span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; [94m[MASTER] Proceeding to reporting and publishing...[0m</span></span>

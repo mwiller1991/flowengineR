@@ -293,8 +293,8 @@ results.</li>
 Engines</a>: Apply transformations or fairness adjustments to the
 training data before model fitting.</li>
 <li><a href="detail_engines_train.html">In Detail: Training Engines</a>:
-Fit predictive models using various algorithms like linear regression,
-random forest, or GBM.</li>
+Fit predictive models using various algorithms like linear regression or
+GBM.</li>
 <li><a href="detail_engines_inprocessing.html">In Detail: Inprocessing
 Engines</a>: Modify the model training process to embed fairness
 directly into model learning (e.g., via adversarial training).</li>
@@ -389,11 +389,10 @@ Linear Model (LM)</a>: Fits a simple linear regression model using
 Generalized Linear Model (GLM)</a>: Trains a GLM via the
 <code>caret</code> framework. Supports a range of link functions and
 model families.</li>
-<li><a href="detail_engine_train_rf.html">In Detail: Training Engine –
-Random Forrest (RF)</a>: Trains a Random Forest model using the
-<code>randomForest</code> package. Supports classification and
-regression with optional sample weighting and tunable tree
-parameters.</li>
+<li><a href="detail_engine_train_gbm.html">In Detail: Training Engine –
+Gradient boosting models (GBM)</a>: Trains a GBM using the
+<code>gbm</code> package. Supports classification and regression with
+optional sample weighting and tunable parameters.</li>
 </ul>
 </div>
 <div id="inprocessing-engines" class="section level4">

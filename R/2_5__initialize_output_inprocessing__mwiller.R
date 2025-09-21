@@ -13,7 +13,7 @@
 #'
 #' **Standardized Output:**
 #' - `adjusted_model`: The trained model after adjustment.
-#' - `model_type`: A short string describing the model type (e.g., `"randomForest"`, `"glm"`).
+#' - `model_type`: A short string describing the model type (e.g., `"gbm"`, `"glm"`).
 #' - `predictions`: Optional numeric vector of model predictions (can be added externally).
 #' - `params`: Optional list of engine-specific parameters used during training.
 #' - `specific_output`: Optional method-specific results (e.g., adversary loss, weights).
@@ -22,7 +22,7 @@
 #' ```r
 #' initialize_output_inprocessing(
 #'   adjusted_model = final_model,
-#'   model_type = "randomForest",
+#'   model_type = "gbm",
 #'   predictions = preds_after_adjustment,
 #'   params = control$params$inprocessing$params,
 #'   specific_output = list(adversary_accuracy = 0.67)

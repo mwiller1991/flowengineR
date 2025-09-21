@@ -41,7 +41,7 @@ across different training implementations.
 \strong{Standardized Output:}
 \itemize{
 \item \code{adjusted_model}: The trained model after adjustment.
-\item \code{model_type}: A short string describing the model type (e.g., \code{"randomForest"}, \code{"glm"}).
+\item \code{model_type}: A short string describing the model type (e.g., \code{"gbm"}, \code{"glm"}).
 \item \code{predictions}: Optional numeric vector of model predictions (can be added externally).
 \item \code{params}: Optional list of engine-specific parameters used during training.
 \item \code{specific_output}: Optional method-specific results (e.g., adversary loss, weights).
@@ -51,7 +51,7 @@ across different training implementations.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{initialize_output_inprocessing(
   adjusted_model = final_model,
-  model_type = "randomForest",
+  model_type = "gbm",
   predictions = preds_after_adjustment,
   params = control$params$inprocessing$params,
   specific_output = list(adversary_accuracy = 0.67)

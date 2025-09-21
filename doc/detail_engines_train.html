@@ -49,8 +49,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -362,8 +363,8 @@ Benchmarking Algorithms</a></li>
 <p><strong>Summary</strong><br />
 This vignette describes the <strong>training engines</strong>.<br />
 It shows how different modeling approaches (e.g., linear models, GLMs,
-random forests) are encapsulated into standardized training functions,
-ensuring interoperability within the workflow.</p>
+gbm) are encapsulated into standardized training functions, ensuring
+interoperability within the workflow.</p>
 </blockquote>
 <hr />
 <p>Training Engines in <code>flowengineR</code> are responsible for
@@ -507,17 +508,10 @@ passed via <code>control$params$train$formula</code> -
 <td><a href="detail_engine_train_glm.html">📄</a></td>
 </tr>
 <tr class="odd">
-<td><code>rf</code></td>
-<td><code>engine_train_rf()</code></td>
-<td>Random forest via <code>randomForest</code></td>
-<td><code>inst/templates_control/4_c_template_control_train_rf.R</code></td>
-<td><a href="detail_engine_train_rf.html">📄</a></td>
-</tr>
-<tr class="even">
 <td><code>gbm</code></td>
 <td><code>engine_train_gbm()</code></td>
 <td>Gradient boosting models</td>
-<td><code>inst/templates_control/4_d_template_control_train_gbm.R</code></td>
+<td><code>inst/templates_control/4_c_template_control_train_gbm.R</code></td>
 <td><a href="detail_engine_train_gbm.html">📄</a></td>
 </tr>
 </tbody>
@@ -548,7 +542,7 @@ and output formatting.</li>
 <li>Return results via <code>initialize_output_train()</code>.</li>
 </ol>
 <p>For examples, see: - <code>wrapper_train_lm()</code> -
-<code>wrapper_train_rf()</code> - <code>wrapper_train_gbm()</code></p>
+<code>wrapper_train_glm()</code> - <code>wrapper_train_gbm()</code></p>
 <hr />
 </div>
 <div id="possible-use-case-benchmarking-algorithms" class="section level2">

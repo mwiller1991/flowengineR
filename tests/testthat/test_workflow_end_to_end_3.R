@@ -33,7 +33,7 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
       split = "split_cv",
       execution = "execution_basic_batchtools_multicore",
       preprocessing = "preprocessing_fairness_resampling",
-      train = "train_rf",
+      train = "train_gbm",
       postprocessing = "postprocessing_fairness_genresidual",
       evaluation = list(
         "eval_mse", 

@@ -35,10 +35,23 @@ This vignette demonstrates a complete `flowengineR` workflow using a credit risk
 data <- test_data_2_base_credit_example
 
 vars <- controller_vars(
-  feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),
-  protected_vars = c("genderFemale", "genderMale", "age", "marital_statusDivorced", "marital_statusMarried", "marital_statusSingle"),
+  feature_vars = c(
+    "profession.Employee", "profession.Selfemployed", "profession.Unemployed",
+    "marital_status.Divorced", "marital_status.Married", "marital_status.Single",
+    "housing_status.Own", "housing_status.Rent", "housing_status.WithParents",
+    "region.Rural", "region.Suburban", "region.Urban",
+    "employment_length", "credit_history_length", "number_prior_loans",
+    "income", "loan_amount", "credit_score", "loan_to_income"
+  ),
+  protected_vars = c(
+    "gender.Male", "gender.Female",
+    "age"
+  ),
   target_var = "default",
-  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+", "marital_statusDivorced", "marital_statusMarried", "marital_statusSingle")
+  protected_vars_binary = c(
+    "gender.Male", "gender.Female",
+    "age_group.<30", "age_group.30-50", "age_group.50+"
+  )
 )
 ```
 
@@ -112,8 +125,8 @@ control <- list(
     ),
     reportelement = controller_reportelement(
       params = list(
-        gender_box_raw = list(group_var = "genderMale", source = "train"),
-        gender_box_adjusted = list(group_var = "genderMale", source = "train"),
+        gender_box_raw = list(group_var = "gender.Male", source = "train"),
+        gender_box_adjusted = list(group_var = "gender.Male", source = "train"),
         age_box = list(group_var = "age_group.50+"),
         metrics_table = list(metrics = c("mse", "statisticalparity", "summarystats")),
         text_mse_summary = list()

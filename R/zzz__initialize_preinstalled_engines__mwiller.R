@@ -42,7 +42,7 @@ flowengineR_env <- new.env(parent = emptyenv())
 #'
 #' **Example (internal use only):**
 #' ```r
-#' flowengineR_env$engines[["train_rf"]]
+#' flowengineR_env$engines[["train_gbm"]]
 #' flowengineR_env$engines[["eval_mse"]](input_data, params)
 #' ```
 #'
@@ -74,7 +74,7 @@ register_default_engines <- function() {
     # Training
     train_lm = wrapper_train_lm,
     train_glm = wrapper_train_glm,
-    train_rf = wrapper_train_rf,
+    train_gbm = wrapper_train_gbm,
     
     # Inprocessing
     inprocessing_fairness_adversialdebiasing = wrapper_inprocessing_fairness_adversialdebiasing,

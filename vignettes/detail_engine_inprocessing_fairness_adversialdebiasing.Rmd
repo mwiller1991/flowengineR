@@ -26,7 +26,7 @@ This engine implements *Adversarial Debiasing* as an in-processing method to mit
 
 Inspired by Zhang et al. (2018), this method formulates the fairness constraint as a minimax optimization: the main model tries to minimize prediction loss while maximizing the adversary's error.
 
-Compatability: Currently, this engine is only tested and compatible with the included train_glm (Generalized Linear Model) and train_rf (Random Forrest) engines. Beware of the training time of the rf inside this model and the calibration has to be choosen smart or the rf is running on an error. While combining it with other training engines is theoretically possible, it requires specific modifications in how instance weights are applied and how model predictions are accessed within the training loop.
+Compatability: Currently, this engine is only tested and compatible with the included train_glm (Generalized Linear Model) and train_gbm (Boost) engines. Beware of the training time of the rf inside this model and the calibration has to be choosen smart or the rf is running on an error. While combining it with other training engines is theoretically possible, it requires specific modifications in how instance weights are applied and how model predictions are accessed within the training loop.
 
 ```text
 Training Data
@@ -68,7 +68,7 @@ Weights are updated so that instances highly indicative of protected attributes 
 Returned via `initialize_output_inprocessing()`:
 
 - `adjusted_model`: The trained model after adjustment.
-- `model_type`: A short string describing the model type (e.g., `"randomForest"`, `"glm"`).
+- `model_type`: A short string describing the model type (e.g., `"gbm"`, `"glm"`).
 - `predictions`: Optional numeric vector of model predictions (can be added externally).
 - `params`: Optional list of engine-specific parameters used during training.
 - `specific_output`: Optional method-specific results (e.g., adversary loss, weights).

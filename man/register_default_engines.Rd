@@ -26,7 +26,7 @@ and automatically called when the package is loaded.
 
 \strong{Example (internal use only):}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{flowengineR_env$engines[["train_rf"]]
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{flowengineR_env$engines[["train_gbm"]]
 flowengineR_env$engines[["eval_mse"]](input_data, params)
 }\if{html}{\out{</div>}}
 }

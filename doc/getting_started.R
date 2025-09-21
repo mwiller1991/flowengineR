@@ -7,10 +7,23 @@ knitr::opts_chunk$set(
 
 ## -----------------------------------------------------------------------------
 vars = controller_vars(
-  feature_vars = c("income", "loan_amount", "credit_score", "professionEmployee", "professionSelfemployed", "professionUnemployed"),
-  protected_vars = c("genderFemale", "genderMale", "age"),   
-  target_var = "default",            
-  protected_vars_binary = c("genderFemale", "genderMale", "age_group.<30", "age_group.30-50", "age_group.50+")
+  feature_vars = c(
+    "profession.Employee", "profession.Selfemployed", "profession.Unemployed",
+    "marital_status.Divorced", "marital_status.Married", "marital_status.Single",
+    "housing_status.Own", "housing_status.Rent", "housing_status.WithParents",
+    "region.Rural", "region.Suburban", "region.Urban",
+    "employment_length", "credit_history_length", "number_prior_loans",
+    "income", "loan_amount", "credit_score", "loan_to_income"
+  ),
+  protected_vars = c(
+    "gender.Male", "gender.Female",
+    "age"
+  ),
+  target_var = "default",
+  protected_vars_binary = c(
+    "gender.Male", "gender.Female",
+    "age_group.<30", "age_group.30-50", "age_group.50+"
+  )
 )
 
 ## -----------------------------------------------------------------------------

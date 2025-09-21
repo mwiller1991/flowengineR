@@ -32,7 +32,7 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
     engine_select = list(
       split = "split_random_stratified",
       execution = "execution_adaptive_input_scalar_sequential",
-      train = "train_rf",
+      train = "train_gbm",
       evaluation = list(
         "eval_mse", 
         "eval_summarystats", 

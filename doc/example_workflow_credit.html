@@ -49,8 +49,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -377,11 +378,24 @@ fairness method, and reporting/publishing components.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> test_data_2_base_credit_example</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">controller_vars</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(<span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;professionEmployee&quot;</span>, <span class="st">&quot;professionSelfemployed&quot;</span>, <span class="st">&quot;professionUnemployed&quot;</span>),</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;marital_statusDivorced&quot;</span>, <span class="st">&quot;marital_statusMarried&quot;</span>, <span class="st">&quot;marital_statusSingle&quot;</span>),</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(<span class="st">&quot;genderFemale&quot;</span>, <span class="st">&quot;genderMale&quot;</span>, <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span>, <span class="st">&quot;marital_statusDivorced&quot;</span>, <span class="st">&quot;marital_statusMarried&quot;</span>, <span class="st">&quot;marital_statusSingle&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">feature_vars =</span> <span class="fu">c</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="st">&quot;profession.Employee&quot;</span>, <span class="st">&quot;profession.Selfemployed&quot;</span>, <span class="st">&quot;profession.Unemployed&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="st">&quot;marital_status.Divorced&quot;</span>, <span class="st">&quot;marital_status.Married&quot;</span>, <span class="st">&quot;marital_status.Single&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="st">&quot;housing_status.Own&quot;</span>, <span class="st">&quot;housing_status.Rent&quot;</span>, <span class="st">&quot;housing_status.WithParents&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="st">&quot;region.Rural&quot;</span>, <span class="st">&quot;region.Suburban&quot;</span>, <span class="st">&quot;region.Urban&quot;</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="st">&quot;employment_length&quot;</span>, <span class="st">&quot;credit_history_length&quot;</span>, <span class="st">&quot;number_prior_loans&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="st">&quot;income&quot;</span>, <span class="st">&quot;loan_amount&quot;</span>, <span class="st">&quot;credit_score&quot;</span>, <span class="st">&quot;loan_to_income&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  ),</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">protected_vars =</span> <span class="fu">c</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="st">&quot;gender.Male&quot;</span>, <span class="st">&quot;gender.Female&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="st">&quot;age&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  ),</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>  <span class="at">target_var =</span> <span class="st">&quot;default&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  <span class="at">protected_vars_binary =</span> <span class="fu">c</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="st">&quot;gender.Male&quot;</span>, <span class="st">&quot;gender.Female&quot;</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>    <span class="st">&quot;age_group.&lt;30&quot;</span>, <span class="st">&quot;age_group.30-50&quot;</span>, <span class="st">&quot;age_group.50+&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  )</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>)</span></code></pre></div>
 <hr />
 </div>
 <div id="step-2-build-the-control-object" class="section level2">
@@ -451,8 +465,8 @@ fairness method, and reporting/publishing components.</p>
 <span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a>    ),</span>
 <span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>    <span class="at">reportelement =</span> <span class="fu">controller_reportelement</span>(</span>
 <span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>      <span class="at">params =</span> <span class="fu">list</span>(</span>
-<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>        <span class="at">gender_box_raw =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;genderMale&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
-<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>        <span class="at">gender_box_adjusted =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;genderMale&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>        <span class="at">gender_box_raw =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;gender.Male&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>        <span class="at">gender_box_adjusted =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;gender.Male&quot;</span>, <span class="at">source =</span> <span class="st">&quot;train&quot;</span>),</span>
 <span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>        <span class="at">age_box =</span> <span class="fu">list</span>(<span class="at">group_var =</span> <span class="st">&quot;age_group.50+&quot;</span>),</span>
 <span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>        <span class="at">metrics_table =</span> <span class="fu">list</span>(<span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">&quot;mse&quot;</span>, <span class="st">&quot;statisticalparity&quot;</span>, <span class="st">&quot;summarystats&quot;</span>)),</span>
 <span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>        <span class="at">text_mse_summary =</span> <span class="fu">list</span>()</span>
@@ -500,9 +514,9 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.102720[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.040419[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.018067, genderMale 0.018067, age_group.&lt;30 0.024256, age_group.30-50 0.001780, age_group.50+ 0.019443, marital_statusDivorced 0.001502, marital_statusMarried 0.025674, marital_statusSingle 0.023581[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.003141, gender.Female 0.003141, age_group.&lt;30 0.018682, age_group.30-50 0.002496, age_group.50+ 0.017345[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1002.[0m</code></pre>
@@ -519,9 +533,9 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.084323[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.029090[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.009373, genderMale 0.009373, age_group.&lt;30 0.017950, age_group.30-50 0.010376, age_group.50+ 0.022604, marital_statusDivorced 0.050876, marital_statusMarried 0.048831, marital_statusSingle 0.003680[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.014874, gender.Female 0.014874, age_group.&lt;30 0.006562, age_group.30-50 0.001732, age_group.50+ 0.008023[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1003.[0m</code></pre>
@@ -538,31 +552,12 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.113620[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.035340[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.002576, genderMale 0.002576, age_group.&lt;30 0.023195, age_group.30-50 0.016946, age_group.50+ 0.030993, marital_statusDivorced 0.008446, marital_statusMarried 0.041024, marital_statusSingle 0.033548[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.017399, gender.Female 0.017399, age_group.&lt;30 0.006049, age_group.30-50 0.002706, age_group.50+ 0.008524[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1004.[0m</code></pre>
-<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
-<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
-<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
-<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
-<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
-<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
-<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
-<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
-<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
-<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
-<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
-<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
-<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.107880[0m</code></pre>
-<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.005279, genderMale 0.005279, age_group.&lt;30 0.002062, age_group.30-50 0.004726, age_group.50+ 0.005709, marital_statusDivorced 0.009148, marital_statusMarried 0.002583, marital_statusSingle 0.007504[0m</code></pre>
-<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
-<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
-<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1005.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
 <pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
@@ -576,9 +571,28 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.105812[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.039547[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.007707, genderMale 0.007707, age_group.&lt;30 0.009854, age_group.30-50 0.005385, age_group.50+ 0.012196, marital_statusDivorced 0.006608, marital_statusMarried 0.010803, marital_statusSingle 0.004275[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.011692, gender.Female 0.011692, age_group.&lt;30 0.016486, age_group.30-50 0.006585, age_group.50+ 0.023062[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1005.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.041105[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.013826, gender.Female 0.013826, age_group.&lt;30 0.008359, age_group.30-50 0.007135, age_group.50+ 0.015777[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1006.[0m</code></pre>
@@ -595,9 +609,9 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.101297[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.032959[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.005333, genderMale 0.005333, age_group.&lt;30 0.002159, age_group.30-50 0.004579, age_group.50+ 0.005552, marital_statusDivorced 0.009204, marital_statusMarried 0.025471, marital_statusSingle 0.013172[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.011446, gender.Female 0.011446, age_group.&lt;30 0.015399, age_group.30-50 0.003377, age_group.50+ 0.008162[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1007.[0m</code></pre>
@@ -614,25 +628,81 @@ fairness method, and reporting/publishing components.</p>
 <pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
 <pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
-<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.093352[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.040780[0m</code></pre>
 <pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
-<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: genderFemale 0.027225, genderMale 0.027225, age_group.&lt;30 0.031301, age_group.30-50 0.002556, age_group.50+ 0.023549, marital_statusDivorced 0.008944, marital_statusMarried 0.010039, marital_statusSingle 0.000595[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.008994, gender.Female 0.008994, age_group.&lt;30 0.021620, age_group.30-50 0.002606, age_group.50+ 0.012356[0m</code></pre>
 <pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
 <pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
-<pre><code>## [94m[EXECUTION] Stability reached (cohen_absolute): 0.1979 &lt; 0.2000 after 7 splits.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1008.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.031687[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.010615, gender.Female 0.010615, age_group.&lt;30 0.023294, age_group.30-50 0.003972, age_group.50+ 0.023022[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1009.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.01 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.031845[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.009878, gender.Female 0.009878, age_group.&lt;30 0.012750, age_group.30-50 0.009695, age_group.50+ 0.002966[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
+<pre><code>## [94m[SPLIT] Performing stratified random split with training ratio 0.60 and seed 1010.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Starting single workflow iteration...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Train/test data successfully detected.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Normalizing datasets (based on training)...[0m</code></pre>
+<pre><code>## [90m[SINGLE] Normalization complete.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Training base model: train_glm[0m</code></pre>
+<pre><code>## [94m[TRAIN] Starting GLM training...[0m</code></pre>
+<pre><code>## [94m[TRAIN] GLM training finished in 0.00 seconds.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Generating predictions from base model...[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running post-processing engine: postprocessing_fairness_genresidual[0m</code></pre>
+<pre><code>## [94m[POST] Starting general residual adjustment...[0m</code></pre>
+<pre><code>## [94m[POST] Adjustment complete.[0m</code></pre>
+<pre><code>## [90m[SINGLE] Post-processing completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Running evaluation step...[0m</code></pre>
+<pre><code>## [94m[EVAL] MSE evaluation complete. MSE = 0.038214[0m</code></pre>
+<pre><code>## [94m[EVAL] Summary statistics evaluation complete.[0m</code></pre>
+<pre><code>## [94m[EVAL] Statistical Parity evaluation complete: gender.Male 0.004616, gender.Female 0.004616, age_group.&lt;30 0.010213, age_group.30-50 0.002005, age_group.50+ 0.010422[0m</code></pre>
+<pre><code>## [90m[SINGLE] Evaluation completed.[0m</code></pre>
+<pre><code>## [94m[SINGLE] Workflow iteration completed. Returning results.[0m</code></pre>
 <pre><code>## [94m[MASTER] Proceeding to reporting and publishing...[0m</code></pre>
 <pre><code>## [94m[CONTINUE] Aggregating workflow results...[0m</code></pre>
 <pre><code>## [94m[CONTINUE] Generating reportelements...[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;gender_box_raw&#39;...[0m</code></pre>
-<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;genderMale&#39; and source = &#39;train&#39;.[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;gender.Male&#39; and source = &#39;train&#39;.[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;gender_box_adjusted&#39;...[0m</code></pre>
-<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;genderMale&#39; and source = &#39;train&#39;.[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;gender.Male&#39; and source = &#39;train&#39;.[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_boxplot_predictions&#39; for alias &#39;age_box&#39;...[0m</code></pre>
 <pre><code>## [94m[REPORTELEMENT] Boxplot created using group_var = &#39;age_group.50+&#39; and source = &#39;train&#39;.[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_table_splitmetrics&#39; for alias &#39;metrics_table&#39;...[0m</code></pre>
-<pre><code>## [94m[REPORTELEMENT] Table generated with 7 rows and 22 columns.[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] Table generated with 10 rows and 19 columns.[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running reportelement engine &#39;reportelement_text_msesummary&#39; for alias &#39;text_mse_summary&#39;...[0m</code></pre>
-<pre><code>## [94m[REPORTELEMENT] MSE summary generated: Der durchschnittliche MSE ueber alle Splits betraegt 0.1013.[0m</code></pre>
+<pre><code>## [94m[REPORTELEMENT] MSE summary generated: Der durchschnittliche MSE ueber alle Splits betraegt 0.0361.[0m</code></pre>
 <pre><code>## [94m[CONTINUE] Generating full reports...[0m</code></pre>
 <pre><code>## [90m[CONTINUE] Running report engine &#39;report_modelsummary&#39; for alias &#39;modelsummary&#39;...[0m</code></pre>
 <pre><code>## [94m[REPORT] Generating model summary report for alias &#39;modelsummary&#39;...[0m</code></pre>
@@ -656,259 +726,249 @@ fairness method, and reporting/publishing components.</p>
 </div>
 <div id="step-4-inspect-results" class="section level2">
 <h2>Step 4: Inspect results</h2>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" tabindex="-1"></a><span class="co"># Aggregated metrics across all splits</span></span>
-<span id="cb171-2"><a href="#cb171-2" tabindex="-1"></a>result<span class="sc">$</span>aggregated_results</span></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" tabindex="-1"></a><span class="co"># Aggregated metrics across all splits</span></span>
+<span id="cb227-2"><a href="#cb227-2" tabindex="-1"></a>result<span class="sc">$</span>aggregated_results</span></code></pre></div>
 <pre><code>## $mse
 ## $mse$mean
-## [1] 0.1012864
+## [1] 0.03609865
 ## 
 ## $mse$sd
-## [1] 0.009736867
+## [1] 0.004461227
 ## 
 ## $mse$min
-## [1] 0.0843231
+## [1] 0.02909002
 ## 
 ## $mse$max
-## [1] 0.1136203
+## [1] 0.04110548
 ## 
 ## 
 ## $summary_stats
 ## $summary_stats$mean
 ## $summary_stats$mean$mean
-## [1] 0.1128571
+## [1] 0.04825
 ## 
 ## $summary_stats$mean$sd
-## [1] 0.01286375
+## [1] 0.00500694
 ## 
 ## 
 ## $summary_stats$median
 ## $summary_stats$median$mean
-## [1] 0.1140003
+## [1] 0.02369127
 ## 
 ## $summary_stats$median$sd
-## [1] 0.01357497
+## [1] 0.006691132
 ## 
 ## 
 ## $summary_stats$sd
 ## $summary_stats$sd$mean
-## [1] 0.03206645
+## [1] 0.1001993
 ## 
 ## $summary_stats$sd$sd
-## [1] 0.006890034
+## [1] 0.007558515
 ## 
 ## 
 ## $summary_stats$var
 ## $summary_stats$var$mean
-## [1] 0.001068948
+## [1] 0.01009132
 ## 
 ## $summary_stats$var$sd
-## [1] 0.0004159606
+## [1] 0.001488026
 ## 
 ## 
 ## $summary_stats$min
 ## $summary_stats$min$mean
-## [1] 0.02062472
+## [1] -0.1369924
 ## 
 ## $summary_stats$min$sd
-## [1] 0.02526891
+## [1] 0.02043408
 ## 
 ## 
 ## $summary_stats$max
 ## $summary_stats$max$mean
-## [1] 0.1985774
+## [1] 0.8246969
 ## 
 ## $summary_stats$max$sd
-## [1] 0.02400438
+## [1] 0.1441331
 ## 
 ## 
 ## $summary_stats$`quantile_25.25%`
 ## $summary_stats$`quantile_25.25%`$mean
-## [1] 0.08994455
+## [1] -0.0002122076
 ## 
 ## $summary_stats$`quantile_25.25%`$sd
-## [1] 0.01535497
+## [1] 0.008832594
 ## 
 ## 
 ## $summary_stats$`quantile_75.75%`
 ## $summary_stats$`quantile_75.75%`$mean
-## [1] 0.1350589
+## [1] 0.0533956
 ## 
 ## $summary_stats$`quantile_75.75%`$sd
-## [1] 0.0132565
+## [1] 0.005263142
 ## 
 ## 
 ## $summary_stats$iqr
 ## $summary_stats$iqr$mean
-## [1] 0.04511436
+## [1] 0.05360781
 ## 
 ## $summary_stats$iqr$sd
-## [1] 0.01118795
+## [1] 0.007008521
 ## 
 ## 
 ## $summary_stats$skewness
 ## $summary_stats$skewness$mean
-## [1] -0.03413554
+## [1] 3.059748
 ## 
 ## $summary_stats$skewness$sd
-## [1] 0.1851195
+## [1] 0.2676124
 ## 
 ## 
 ## $summary_stats$kurtosis
 ## $summary_stats$kurtosis$mean
-## [1] 2.749781
+## [1] 16.11804
 ## 
 ## $summary_stats$kurtosis$sd
-## [1] 0.2729235
+## [1] 2.933474
 ## 
 ## 
 ## $summary_stats$range
 ## $summary_stats$range$mean
-## [1] 0.1779526
+## [1] 0.9616893
 ## 
 ## $summary_stats$range$sd
-## [1] 0.03818754
+## [1] 0.1520736
 ## 
 ## 
 ## 
 ## $spd
-## $spd$genderFemale
-## $spd$genderFemale$mean
-## [1] 0.01079425
+## $spd$gender.Male
+## $spd$gender.Male$mean
+## [1] 0.01064799
 ## 
-## $spd$genderFemale$sd
-## [1] 0.008776777
+## $spd$gender.Male$sd
+## [1] 0.004363197
 ## 
 ## 
-## $spd$genderMale
-## $spd$genderMale$mean
-## [1] 0.01079425
+## $spd$gender.Female
+## $spd$gender.Female$mean
+## [1] 0.01064799
 ## 
-## $spd$genderMale$sd
-## [1] 0.008776777
+## $spd$gender.Female$sd
+## [1] 0.004363197
 ## 
 ## 
 ## $spd$`age_group.&lt;30`
 ## $spd$`age_group.&lt;30`$mean
-## [1] 0.0158254
+## [1] 0.01394139
 ## 
 ## $spd$`age_group.&lt;30`$sd
-## [1] 0.01141088
+## [1] 0.00615294
 ## 
 ## 
 ## $spd$`age_group.30-50`
 ## $spd$`age_group.30-50`$mean
-## [1] 0.006621018
+## [1] 0.004230936
 ## 
 ## $spd$`age_group.30-50`$sd
-## [1] 0.005322103
+## [1] 0.002662598
 ## 
 ## 
 ## $spd$`age_group.50+`
 ## $spd$`age_group.50+`$mean
-## [1] 0.01714948
+## [1] 0.01296604
 ## 
 ## $spd$`age_group.50+`$sd
-## [1] 0.009639486
-## 
-## 
-## $spd$marital_statusDivorced
-## $spd$marital_statusDivorced$mean
-## [1] 0.01353271
-## 
-## $spd$marital_statusDivorced$sd
-## [1] 0.01669385
-## 
-## 
-## $spd$marital_statusMarried
-## $spd$marital_statusMarried$mean
-## [1] 0.02348943
-## 
-## $spd$marital_statusMarried$sd
-## [1] 0.01701639
-## 
-## 
-## $spd$marital_statusSingle
-## $spd$marital_statusSingle$mean
-## [1] 0.01233649
-## 
-## $spd$marital_statusSingle$sd
-## [1] 0.01209841</code></pre>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="#cb173-1" tabindex="-1"></a><span class="co"># Reportelement outputs</span></span>
-<span id="cb173-2"><a href="#cb173-2" tabindex="-1"></a>result<span class="sc">$</span>reportelements<span class="sc">$</span>metrics_table</span></code></pre></div>
+## [1] 0.00670166</code></pre>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="#cb229-1" tabindex="-1"></a><span class="co"># Reportelement outputs</span></span>
+<span id="cb229-2"><a href="#cb229-2" tabindex="-1"></a>result<span class="sc">$</span>reportelements<span class="sc">$</span>metrics_table</span></code></pre></div>
 <pre><code>## $type
 ## [1] &quot;table&quot;
 ## 
 ## $content
-##    split    mse_mse statisticalparity_genderFemale statisticalparity_genderMale
-## 1 split1 0.10272019                    0.018066504                  0.018066504
-## 2 split2 0.08432310                    0.009372929                  0.009372929
-## 3 split3 0.11362033                    0.002575941                  0.002575941
-## 4 split4 0.10788020                    0.005278672                  0.005278672
-## 5 split5 0.10581175                    0.007707337                  0.007707337
-## 6 split6 0.10129683                    0.005333285                  0.005333285
-## 7 split7 0.09335247                    0.027225066                  0.027225066
-##   statisticalparity_age_group..30 statisticalparity_age_group.30.50
-## 1                     0.024256065                       0.001779861
-## 2                     0.017950095                       0.010376259
-## 3                     0.023194899                       0.016945504
-## 4                     0.002062142                       0.004725861
-## 5                     0.009854350                       0.005384936
-## 6                     0.002159066                       0.004578749
-## 7                     0.031301179                       0.002555960
-##   statisticalparity_age_group.50. statisticalparity_marital_statusDivorced
-## 1                     0.019443193                              0.001501953
-## 2                     0.022603526                              0.050876149
-## 3                     0.030993001                              0.008446429
-## 4                     0.005709225                              0.009148478
-## 5                     0.012196436                              0.006608252
-## 6                     0.005552002                              0.009203658
-## 7                     0.023548994                              0.008944030
-##   statisticalparity_marital_statusMarried
-## 1                             0.025674342
-## 2                             0.048831403
-## 3                             0.041024423
-## 4                             0.002582905
-## 5                             0.010803008
-## 6                             0.025471290
-## 7                             0.010038618
-##   statisticalparity_marital_statusSingle summarystats_mean summarystats_median
-## 1                           0.0235813608            0.1150          0.11701134
-## 2                           0.0036797818            0.0900          0.08996893
-## 3                           0.0335484332            0.1275          0.12750030
-## 4                           0.0075037108            0.1225          0.12463423
-## 5                           0.0042753337            0.1200          0.12177798
-## 6                           0.0131717762            0.1125          0.11576455
-## 7                           0.0005950538            0.1025          0.10134448
-##   summarystats_sd summarystats_var summarystats_min summarystats_max
-## 1      0.03331519     0.0011099018       0.01167685        0.2176667
-## 2      0.03441766     0.0011845756       0.00447937        0.1776686
-## 3      0.04122958     0.0016998787       0.02117260        0.2397811
-## 4      0.02660430     0.0007077887       0.04529079        0.1962854
-## 5      0.01979315     0.0003917689       0.06188608        0.1696309
-## 6      0.03524317     0.0012420809      -0.01277292        0.1881168
-## 7      0.03386209     0.0011466412       0.01264026        0.2008920
-##   summarystats_quantile_25.25. summarystats_quantile_75.75. summarystats_iqr
-## 1                   0.09232846                    0.1367439       0.04441540
-## 2                   0.06358617                    0.1165209       0.05293474
-## 3                   0.09727602                    0.1572202       0.05994421
-## 4                   0.10490466                    0.1407836       0.03587892
-## 5                   0.10676880                    0.1334901       0.02672125
-## 6                   0.08678764                    0.1385964       0.05180876
-## 7                   0.07796012                    0.1220573       0.04409722
-##   summarystats_skewness summarystats_kurtosis summarystats_range
-## 1            0.04616137              3.206831          0.2059898
-## 2            0.02004858              2.424961          0.1731892
-## 3            0.04849271              2.500900          0.2186085
-## 4           -0.18517959              2.864474          0.1509947
-## 5           -0.18490221              2.558871          0.1077448
-## 6           -0.25661730              2.811722          0.2008897
-## 7            0.27304765              2.880704          0.1882518
+##      split    mse_mse statisticalparity_gender.Male
+## 1   split1 0.04041943                   0.003140791
+## 2   split2 0.02909002                   0.014873957
+## 3   split3 0.03534021                   0.017398988
+## 4   split4 0.03954703                   0.011691637
+## 5   split5 0.04110548                   0.013826088
+## 6   split6 0.03295890                   0.011445522
+## 7   split7 0.04077954                   0.008994075
+## 8   split8 0.03168727                   0.010615400
+## 9   split9 0.03184480                   0.009877803
+## 10 split10 0.03821378                   0.004615630
+##    statisticalparity_gender.Female statisticalparity_age_group..30
+## 1                      0.003140791                     0.018681510
+## 2                      0.014873957                     0.006562233
+## 3                      0.017398988                     0.006048977
+## 4                      0.011691637                     0.016486475
+## 5                      0.013826088                     0.008359216
+## 6                      0.011445522                     0.015398684
+## 7                      0.008994075                     0.021619918
+## 8                      0.010615400                     0.023294124
+## 9                      0.009877803                     0.012750014
+## 10                     0.004615630                     0.010212779
+##    statisticalparity_age_group.30.50 statisticalparity_age_group.50.
+## 1                        0.002496378                     0.017345159
+## 2                        0.001731513                     0.008023220
+## 3                        0.002705816                     0.008524083
+## 4                        0.006585424                     0.023061992
+## 5                        0.007135481                     0.015777086
+## 6                        0.003376801                     0.008161810
+## 7                        0.002606167                     0.012356436
+## 8                        0.003971804                     0.023022043
+## 9                        0.009694715                     0.002966316
+## 10                       0.002005263                     0.010422223
+##    summarystats_mean summarystats_median summarystats_sd summarystats_var
+## 1            0.05625          0.03503351      0.08821231      0.007781412
+## 2            0.04000          0.01462250      0.10578746      0.011190987
+## 3            0.05000          0.02040852      0.10446297      0.010912512
+## 4            0.04875          0.02520154      0.10150780      0.010303834
+## 5            0.05250          0.03043412      0.08961709      0.008031222
+## 6            0.04375          0.01556246      0.10857581      0.011788706
+## 7            0.05250          0.02770578      0.10299477      0.010607923
+## 8            0.04375          0.01704326      0.10870529      0.011816840
+## 9            0.04500          0.02613938      0.09268320      0.008590176
+## 10           0.05000          0.02476158      0.09944659      0.009889625
+##    summarystats_min summarystats_max summarystats_quantile_25.25.
+## 1        -0.1167383        0.6107739                 0.0145699531
+## 2        -0.1322604        0.8693598                -0.0158037685
+## 3        -0.1056472        0.8575994                 0.0006886927
+## 4        -0.1575315        0.7940767                 0.0030918371
+## 5        -0.1221017        0.6052437                 0.0081415738
+## 6        -0.1508864        0.7505873                -0.0077961422
+## 7        -0.1414420        0.9812373                 0.0042433796
+## 8        -0.1217507        0.9702355                -0.0081632902
+## 9        -0.1529685        0.7914605                -0.0035635221
+## 10       -0.1685970        1.0163950                 0.0024692107
+##    summarystats_quantile_75.75. summarystats_iqr summarystats_skewness
+## 1                    0.05817587       0.04360591              2.871109
+## 2                    0.04880726       0.06461102              3.041032
+## 3                    0.04554419       0.04485550              3.012889
+## 4                    0.05455891       0.05146707              3.028060
+## 5                    0.06048088       0.05233931              2.569095
+## 6                    0.04836320       0.05615934              2.925750
+## 7                    0.05347658       0.04923320              3.458488
+## 8                    0.04905529       0.05721858              3.264995
+## 9                    0.06000139       0.06356491              2.990986
+## 10                   0.05549242       0.05302321              3.435073
+##    summarystats_kurtosis summarystats_range
+## 1               13.34554          0.7275122
+## 2               15.62465          1.0016202
+## 3               14.34887          0.9632466
+## 4               16.04317          0.9516082
+## 5               11.96496          0.7273454
+## 6               14.33505          0.9014737
+## 7               19.87871          1.1226793
+## 8               17.96198          1.0919862
+## 9               16.23034          0.9444291
+## 10              21.44713          1.1849920
 ## 
 ## $compatible_formats
 ## [1] &quot;pdf&quot;  &quot;html&quot; &quot;xlsx&quot; &quot;json&quot;
 ## 
 ## $input_data
-## [1] &quot;split1&quot; &quot;split2&quot; &quot;split3&quot; &quot;split4&quot; &quot;split5&quot; &quot;split6&quot; &quot;split7&quot;
+##  [1] &quot;split1&quot;  &quot;split2&quot;  &quot;split3&quot;  &quot;split4&quot;  &quot;split5&quot;  &quot;split6&quot;  &quot;split7&quot; 
+##  [8] &quot;split8&quot;  &quot;split9&quot;  &quot;split10&quot;
 ## 
 ## $params
 ## $params$metrics
@@ -917,17 +977,17 @@ fairness method, and reporting/publishing components.</p>
 ## 
 ## $specific_output
 ## $specific_output$n_splits
-## [1] 7
+## [1] 10
 ## 
 ## $specific_output$alias
 ## [1] &quot;metrics_table&quot;</code></pre>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" tabindex="-1"></a><span class="co"># Published report file info</span></span>
-<span id="cb175-2"><a href="#cb175-2" tabindex="-1"></a>result<span class="sc">$</span>publishing</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="#cb231-1" tabindex="-1"></a><span class="co"># Published report file info</span></span>
+<span id="cb231-2"><a href="#cb231-2" tabindex="-1"></a>result<span class="sc">$</span>publishing</span></code></pre></div>
 <pre><code>## $pdf_basis_test_report
 ## $pdf_basis_test_report$alias
 ## function (object, ...) 
 ## UseMethod(&quot;alias&quot;)
-## &lt;bytecode: 0x1413c8808&gt;
+## &lt;bytecode: 0x12d779608&gt;
 ## &lt;environment: namespace:stats&gt;
 ## 
 ## $pdf_basis_test_report$type
@@ -960,7 +1020,7 @@ fairness method, and reporting/publishing components.</p>
 ## $pdf_basis_test_singleelement$alias
 ## function (object, ...) 
 ## UseMethod(&quot;alias&quot;)
-## &lt;bytecode: 0x1413c8808&gt;
+## &lt;bytecode: 0x12d779608&gt;
 ## &lt;environment: namespace:stats&gt;
 ## 
 ## $pdf_basis_test_singleelement$type

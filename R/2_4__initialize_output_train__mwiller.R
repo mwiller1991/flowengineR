@@ -12,8 +12,8 @@
 #' - Enforces a consistent interface between training engines and the workflow.
 #'
 #' **Standardized Output:**
-#' - `model`: The trained model object (e.g., a `randomForest`, `lm`, or caret model).
-#' - `model_type`: A string identifying the model type (e.g., `"randomForest"`).
+#' - `model`: The trained model object (e.g., a `gbm`, `lm`, or caret model).
+#' - `model_type`: A string identifying the model type (e.g., `"gbm"`).
 #' - `formula`: The formula used for training (e.g., `target ~ .`).
 #' - `predictions`: filled externally by the workflow after prediction.
 #' - `hyperparameters`: Optional list of hyperparameters used during training.
@@ -21,11 +21,11 @@
 #'
 #' **Usage Example (inside an engine):**
 #' ```r
-#' model <- randomForest::randomForest(formula = control$params$train$formula, data = control$params$train$data)
-#' hyperparams <- merge_with_defaults(control$params$train$params, default_params_train_rf())
+#' model <- gbm:gbm(formula = control$params$train$formula, data = control$params$train$data)
+#' hyperparams <- merge_with_defaults(control$params$train$params, default_params_train_gbm())
 #' initialize_output_train(
 #'   model = model,
-#'   model_type = "randomForest",
+#'   model_type = "gbm",
 #'   formula = control$params$train$formula,
 #'   hyperparameters = hyperparams,
 #'   specific_output = list(feature_importance = model$importance)
@@ -33,7 +33,7 @@
 #' ```
 #'
 #' @param model Trained model object returned by the engine.
-#' @param model_type Character string describing the model type (e.g., `"lm"`, `"randomForest"`).
+#' @param model_type Character string describing the model type (e.g., `"lm"`, `"gbm"`).
 #' @param formula Formula used for training (e.g., `target ~ .`).
 #' @param predictions (Optional) Numeric vector of predictions. Should be filled **after** training in the workflow.
 #' @param hyperparameters (Optional) Named list of hyperparameters used for training.

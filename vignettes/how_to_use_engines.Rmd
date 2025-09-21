@@ -46,7 +46,7 @@ Here is an overview of all supported engine types in `flowengineR`:
 | Splitter            | Splits full data into train/test sets              | `split_random_stratified`           | [Details](detail_engines_split.html) |
 | Execution           | Executes models across multiple splits             | `execution_basic_sequential`        | [Details](detail_engines_execution.html) |
 | Preprocessing       | Modifies training data before model training       | `preprocessing_fairness_resampling` | [Details](detail_engines_preprocessing.html) |
-| Training            | Trains a prediction model                          | `train_lm`, `train_rf`              | [Details](detail_engines_train.html) |
+| Training            | Trains a prediction model                          | `train_lm`, `train_gbm`              | [Details](detail_engines_train.html) |
 | Inprocessing        | Fairness adjustment during model training          | `inprocessing_fairness_adversarialdebiasing` | [Details](detail_engines_inprocessing.html) |
 | Postprocessing      | Adjusts model predictions                          | `postprocessing_fairness_genresidual` | [Details](detail_engines_postprocessing.html) |
 | Evaluation          | Computes performance and other metrics             | `eval_mse`, `eval_statisticalparity` | [Details](detail_engines_evaluation.html) |

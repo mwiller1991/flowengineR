@@ -11,7 +11,7 @@ validate_engine_train(wrapper_function, default_params_function, engine_name)
 
 \item{default_params_function}{Function. Supplies default hyperparameters for the engine.}
 
-\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"train_rf"}).}
+\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"train_gbm"}).}
 }
 \value{
 TRUE if the engine passes validation; otherwise, an error is raised.
@@ -40,7 +40,7 @@ wrapper structure, expected output format, and functional behavior using dummy d
 \strong{Required Output Fields:}
 \itemize{
 \item \code{model}: Trained model object.
-\item \code{model_type}: String identifier for the model type (e.g., \code{"randomForest"}, \code{"lm"}).
+\item \code{model_type}: String identifier for the model type (e.g., \code{"gbm"}, \code{"lm"}).
 \item \code{formula}: Formula used during training.
 }
 

@@ -32,7 +32,7 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 - [In Detail: Splitter Engines](detail_engines_split.html): Engines responsible for splitting the dataset into train/test partitions, e.g., random, stratified, or cross-validation splits.
 - [In Detail: Execution Engines](detail_engines_execution.html): Define how the workflow is executed across splits – sequentially, in parallel, or adaptively based on evaluation results.
 - [In Detail: Preprocessing Engines](detail_engines_preprocessing.html): Apply transformations or fairness adjustments to the training data before model fitting.
-- [In Detail: Training Engines](detail_engines_train.html): Fit predictive models using various algorithms like linear regression, random forest, or GBM.
+- [In Detail: Training Engines](detail_engines_train.html): Fit predictive models using various algorithms like linear regression or GBM.
 - [In Detail: Inprocessing Engines](detail_engines_inprocessing.html): Modify the model training process to embed fairness directly into model learning (e.g., via adversarial training).
 - [In Detail: Postprocessing Engines](detail_engines_postprocessing.html): Adjust model predictions after training to improve fairness or fulfill external constraints.
 - [In Detail: Evaluation Engines](detail_engines_evaluation.html): Calculate performance or fairness metrics for model predictions, such as MSE or statistical parity difference.
@@ -67,7 +67,7 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 #### Training Engines
 - [In Detail: Training Engine – Linear Model (LM)](detail_engine_train_lm.html): Fits a simple linear regression model using `stats::lm()`. Useful for interpretable baseline models.
 - [In Detail: Training Engine – Generalized Linear Model (GLM)](detail_engine_train_glm.html): Trains a GLM via the `caret` framework. Supports a range of link functions and model families.
-- [In Detail: Training Engine – Random Forrest (RF)](detail_engine_train_rf.html): Trains a Random Forest model using the `randomForest` package. Supports classification and regression with optional sample weighting and tunable tree parameters.
+- [In Detail: Training Engine – Gradient boosting models (GBM)](detail_engine_train_gbm.html): Trains a GBM using the `gbm` package. Supports classification and regression with optional sample weighting and tunable parameters.
 
 #### Inprocessing Engines
 - [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversialdebiasing.html): Uses adversarial learning to reduce bias during model training.

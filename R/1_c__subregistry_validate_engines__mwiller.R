@@ -278,7 +278,7 @@ validate_engine_preprocessing <- function(wrapper_function, default_params_funct
 #'
 #' **Required Output Fields:**
 #' - `model`: Trained model object.
-#' - `model_type`: String identifier for the model type (e.g., `"randomForest"`, `"lm"`).
+#' - `model_type`: String identifier for the model type (e.g., `"gbm"`, `"lm"`).
 #' - `formula`: Formula used during training.
 #'
 #' **Usage Notes:**
@@ -288,7 +288,7 @@ validate_engine_preprocessing <- function(wrapper_function, default_params_funct
 #'
 #' @param wrapper_function Function. The wrapper function for the training engine.
 #' @param default_params_function Function. Supplies default hyperparameters for the engine.
-#' @param engine_name Character. Name of the engine being validated (e.g., `"train_rf"`).
+#' @param engine_name Character. Name of the engine being validated (e.g., `"train_gbm"`).
 #'
 #' @return TRUE if the engine passes validation; otherwise, an error is raised.
 #' @keywords internal

@@ -16,7 +16,7 @@ initialize_output_train(
 \arguments{
 \item{model}{Trained model object returned by the engine.}
 
-\item{model_type}{Character string describing the model type (e.g., \code{"lm"}, \code{"randomForest"}).}
+\item{model_type}{Character string describing the model type (e.g., \code{"lm"}, \code{"gbm"}).}
 
 \item{formula}{Formula used for training (e.g., \code{target ~ .}).}
 
@@ -43,8 +43,8 @@ independently of the specific model used.
 
 \strong{Standardized Output:}
 \itemize{
-\item \code{model}: The trained model object (e.g., a \code{randomForest}, \code{lm}, or caret model).
-\item \code{model_type}: A string identifying the model type (e.g., \code{"randomForest"}).
+\item \code{model}: The trained model object (e.g., a \code{gbm}, \code{lm}, or caret model).
+\item \code{model_type}: A string identifying the model type (e.g., \code{"gbm"}).
 \item \code{formula}: The formula used for training (e.g., \code{target ~ .}).
 \item \code{predictions}: filled externally by the workflow after prediction.
 \item \code{hyperparameters}: Optional list of hyperparameters used during training.
@@ -53,11 +53,11 @@ independently of the specific model used.
 
 \strong{Usage Example (inside an engine):}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{model <- randomForest::randomForest(formula = control$params$train$formula, data = control$params$train$data)
-hyperparams <- merge_with_defaults(control$params$train$params, default_params_train_rf())
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{model <- gbm:gbm(formula = control$params$train$formula, data = control$params$train$data)
+hyperparams <- merge_with_defaults(control$params$train$params, default_params_train_gbm())
 initialize_output_train(
   model = model,
-  model_type = "randomForest",
+  model_type = "gbm",
   formula = control$params$train$formula,
   hyperparameters = hyperparams,
   specific_output = list(feature_importance = model$importance)

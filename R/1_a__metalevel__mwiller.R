@@ -379,6 +379,12 @@ run_workflow_singlesplitloop <- function(control) {
   } else {
     stop("Invalid output_type specified in control.")
   }
+  
+  if (control$settings$prediction_clamping == TRUE) {
+    predictions <- pmin(pmax(predictions, 0), 1)
+    log_msg("[WARNING] Prediction Clamping is used, watch out.", level = "warn", control = control)
+  }
+  
   output_train$predictions <- predictions
   results$output_train <- output_train
 

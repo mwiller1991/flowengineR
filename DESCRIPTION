@@ -52,13 +52,13 @@ Imports:
     rmarkdown,
     openxlsx,
     batchtools,
-    randomForest,
     grDevices,
     parallel,
     cli,
     glue,
     utils,
-    stats
+    stats,
+    gbm
 Suggests:
     testthat (>= 3.0.0),
     knitr

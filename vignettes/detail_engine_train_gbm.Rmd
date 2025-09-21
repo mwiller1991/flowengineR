@@ -1,0 +1,90 @@
+---
+title: "In Detail: Train Engine - GBM"
+subtitle: "Training gradient boosting models within flowengineR"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{In Detail: Train Engine - GBM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette documents the **GBM training engine**.  
+> It shows how gradient boosting models are fitted, including parameter control, wrapper integration, target handling for Bernoulli, and how model objects and metadata are returned in a standardized format.
+
+---
+
+## Engine: Gradient Boosting Machine (`engine_train_gbm`)
+
+### Purpose and Function
+This engine fits a gradient boosting model using the `gbm::gbm()` function. It is part of the training component in the `flowengineR` framework and supports both regression and binary classification (Bernoulli).
+
+### Input Structure (via Wrapper)
+Inputs are provided through the wrapper function `wrapper_train_gbm()` and standardized by the control object.
+
+**Standardized Inputs:**
+- `formula`: A formula defining the model structure (e.g., `target ~ .`).
+- `data`: A data frame with either original or normalized training data.
+- `norm_data`: Logical; whether to use normalized data.
+- `params`: A list of engine-specific parameters.
+
+### Engine-specific Parameters
+
+| Parameter            | Type      | Default       | Description                                                                 |
+|---------------------|-----------|---------------|-----------------------------------------------------------------------------|
+| `distribution`       | character | `NULL`        | Loss; if `NULL`, inferred from target (`"bernoulli"` for binary, else `"gaussian"`). |
+| `n.trees`            | integer   | 1000          | Number of boosting iterations (trees).                                      |
+| `interaction.depth`  | integer   | 3             | Tree depth (max splits).                                                    |
+| `shrinkage`          | numeric   | 0.05          | Learning rate.                                                              |
+| `n.minobsinnode`     | integer   | 10            | Minimum observations per terminal node.                                     |
+| `bag.fraction`       | numeric   | 0.5           | Subsampling fraction for stochastic gradient boosting.                      |
+| `train.fraction`     | numeric   | 1.0           | Fraction of rows used for fitting inside `gbm`.                             |
+| `sample_weight`      | numeric[] | Equal weights | Observation weights used as `weights` in `gbm()`.                           |
+
+These parameters can be supplied through `control$params$train$params`.
+
+> **Note (Bernoulli targets)**  
+> For `distribution = "bernoulli"`, the wrapper converts the response to numeric 0/1 (second level → 1) and stores the level→{0,1} mapping in `specific_output$class_mapping`.
+
+### Output Structure
+
+The engine returns a structured list created by `initialize_output_train()` containing:
+
+- `model`: A fitted GBM object (`class = "gbm"`).
+- `model_type`: Identifier string `"gbm"`.
+- `formula`: The formula used for training.
+- `hyperparameters`: Merged parameter list (defaults + user-defined).
+- `specific_output`: Training duration and optional metadata (e.g., `class_mapping`).
+
+### Workflow Integration
+
+- **Controller Function:** `controller_training()`
+- **Engine Wrapper:** `wrapper_train_gbm()`
+- **Execution Position:** Training phase of the main workflow.
+- **Downstream Compatibility:** Outputs are compatible with preprocessing, in-processing, postprocessing, evaluation, and reporting steps.
+
+### Template Reference
+
+This engine's control template is located at:
+`inst/templates_control/4_c_template_train_gbm.R`
+
+### Example Configuration
+```r
+control$engine_select$train <- "train_gbm"
+control$params$train <- controller_training(
+  formula = target ~ .,
+  norm_data = TRUE,
+  params = list(
+    # Classification (auto-infer or set explicitly):
+    # distribution = "bernoulli",
+    n.trees = 1200,
+    interaction.depth = 3,
+    shrinkage = 0.05,
+    bag.fraction = 0.6
+    # sample_weight = rep(1, nrow(train_data))  # optional
+  )
+)
