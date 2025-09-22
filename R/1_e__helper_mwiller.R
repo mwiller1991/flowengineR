@@ -112,8 +112,7 @@ complete_control_with_defaults <- function(control) {
   if (is.null(control$settings$log$log_level)) control$settings$log$log_level <- "info"
   if (is.null(control$settings$global_seed)) control$settings$global_seed <- 1
   if (is.null(control$settings$output_type)) control$settings$output_type <- "response"
-  if (is.null(control$settings$prediction_clamping)) control$settings$prediction_clamping <- FALSE
-  
+
   # Ensure data list exists
   if (is.null(control$data)) control$data <- list()
   

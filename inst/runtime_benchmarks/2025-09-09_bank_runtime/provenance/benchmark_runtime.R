@@ -45,8 +45,8 @@ CV_FOLDS <- list(
 # define all test cases
 RUNTIME_CASES <- list(
   lm_base          = list(train_type="train_lm"),
-  glm_base         = list(train_type="train_glm") #,
-  #gbm_base          = list(train_type="train_gbm"),
+  glm_base         = list(train_type="train_glm"),
+  gbm_base          = list(train_type="train_gbm") #,
   #lm_pre           = list(train_type="train_lm", preprocessing=TRUE),
   #lm_post          = list(train_type="train_lm", postprocessing=TRUE),
   #glm_pre          = list(train_type="train_glm", preprocessing=TRUE),
