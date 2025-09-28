@@ -21,7 +21,8 @@
 #' @keywords internal
 engine_postprocessing_fairness_genresidual <- function(predictions, actuals) {
   residuals <- actuals - predictions
-  predictions + mean(residuals)
+  adjusted <- predictions + mean(residuals)
+  pmax(adjusted, 0) #Floored at 0)
 }
 #--------------------------------------------------------------------
 
