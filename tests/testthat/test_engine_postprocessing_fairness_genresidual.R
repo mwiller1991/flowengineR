@@ -33,5 +33,5 @@ test_that("wrapper_postprocessing_fairness_genresidual returns correctly adjuste
   # Check mean adjustment effect
   residuals <- actuals - predictions
   expected_adjustment <- mean(residuals)
-  expect_equal(output$adjusted_predictions, predictions + expected_adjustment, tolerance = 1e-6)
+  expect_equal(output$adjusted_predictions, pmax(predictions + expected_adjustment ,0), tolerance = 1e-6)
 })
