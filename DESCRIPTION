@@ -3,14 +3,15 @@ Type: Package
 Title: Modular and extensible framework for designing and executing algorithmic workflows in R
 Version: 1.0.0
 Authors@R: 
-    c(person("Maximilian", "Willer", 
+    c(person("Maximilian", "Willer",
+            role=c("aut", "cre"),
             email = "willer.maximilian@googlemail.com", 
-            role = c("aut", "cre")
+            comment = c(ORCID = "0009-0003-7054-1937"))
             ),
       person("Peter", "Ruckdeschel", 
-            email = "peter.ruckdeschel@uni-oldenburg.de",
-            role = c("ctb")
-            )
+            role=c("ctb"),
+            email="peter.ruckdeschel@uni-oldenburg.de",
+            comment = c(ORCID = "0000-0001-7815-4809"))
       )
 Description: 
     flowengineR is a modular and extensible framework for designing and executing 

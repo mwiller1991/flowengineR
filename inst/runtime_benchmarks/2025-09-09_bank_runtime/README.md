@@ -16,9 +16,9 @@ The benchmark evaluates **end-to-end workflow runtime** under different dataset 
 
 ## Benchmark Design
 - **Dataset:** generated with `create_dataset_bank(onehot = TRUE, pos_rate = 0.05)`  
-- **Sizes:** `S = 1e4L`, `M = 1e5`, `Ln = 5e5L` (configurable in the script)  
-- **Cross-validation:** stratified, `S = 5`, `M = 10`, `L = 20` 
-- **Controls (example set):** `lm_base`, `glm_base`, `rf_base`, *multiple fairness variants*  
+- **Sizes:** `XS = 1e3L`, `S = 5e3L`, `M = 1e4L`, `L = 2e4L`, `XL = 5e4L`, `XXL = 1e5L` (configurable in the script)  
+- **Cross-validation:** stratified, `S = 6`, `M = 12`, `L = 20` 
+- **Controls (example set):** `lm_base`, `glm_base`, `gbm_base`, *multiple fairness variants*  
 - **Execution:**  
   - `execution_basic_sequential`  
   - `execution_basic_batchtools_multicore`  
@@ -40,10 +40,10 @@ read.csv("inst/runtime_benchmarks/2025-09-09_bank_runtime/outputs/runtime_summar
 - `runtime_results.rds` → full `bench` objects for each case (optional deep analysis)
 
 ## Provenance
-- `benchmark_runtime.R` → full benchmark script  
+- `benchmark_runtime.R` → full benchmark script
+- `operational_runs.R` → operational test script
 - `control_factories.R` → control factory definitions for workflow setup  
 - `sessionInfo.txt` → R session info (packages, versions, platform)  
-- `console_build.txt` → console log of benchmark run
 
 ## Hardware & Environment
 - Example run: **MacBook Air M3 2024**, 16 GB Memory, 8‑Core CPU, 10‑Core GPU, 512 GB SSD, macOS 15.6.1  
