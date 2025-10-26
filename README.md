@@ -1,4 +1,3 @@
-
 # flowengineR
 
 [![R-CMD-check](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml)
@@ -27,6 +26,33 @@ post-processing options.
 install.packages("devtools")
 devtools::install_github("mwiller1991/flowengineR", build_vignettes = TRUE)
 library(flowengineR)
+```
+
+------------------------------------------------------------------------
+
+## 🎮 Interactive Start Menu
+
+To make the first steps with `flowengineR` easier, the package provides an **interactive start menu**.  
+This menu helps you explore the most important entry points, including running the example workflow, browsing vignettes, or inspecting the structure of control objects.
+
+```r
+# Launch the start menu
+flowengineR_start()
+```
+
+When you run the function, you will see a menu in your console:
+
+```
+Where would you like to start?
+1: ▶ Run example workflow
+2: ☰ Open 'Index' vignette for overview of all vignettes
+3: ℹ Open 'Getting Started' vignette
+4: ⏺ List available engines
+5: ❓ Help for run_workflow()
+6: ★ Show structure of control-object
+7: ℹ Open 'How to build custom Engines' vignette
+8: ℹ Open 'How to use LLM-Engine-Builder' vignette
+9: ✖ Exit
 ```
 
 ------------------------------------------------------------------------
@@ -73,3 +99,6 @@ vignette("example_workflow_credit", package = "flowengineR")
 MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com) and Peter Ruckdeschel
 
 For full license terms, see the LICENSE file in this repository.
+
+
+

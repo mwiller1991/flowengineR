@@ -6,13 +6,12 @@ Authors@R:
     c(person("Maximilian", "Willer",
             role=c("aut", "cre"),
             email = "willer.maximilian@googlemail.com", 
-            comment = c(ORCID = "0009-0003-7054-1937"))
-            ),
+            comment = c(ORCID = "0009-0003-7054-1937")),
       person("Peter", "Ruckdeschel", 
             role=c("ctb"),
             email="peter.ruckdeschel@uni-oldenburg.de",
             comment = c(ORCID = "0000-0001-7815-4809"))
-      )
+            )
 Description: 
     flowengineR is a modular and extensible framework for designing and executing 
     algorithmic workflows in R. It provides a standardized infrastructure to combine
