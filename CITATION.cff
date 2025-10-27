@@ -1,0 +1,14 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+title: "flowengineR: A Modular and Extensible Framework for Fair and Reproducible Workflow Design in R"
+type: article
+authors:
+  - family-names: "Willer"
+    given-names: "Maximilian"
+    email: "willer.maximilian@googlemail.com"
+repository-code: "https://github.com/mwiller1991/flowengineR"
+license: "MIT-0"
+date-released: "2025-10-28"
+identifiers:
+  - type: doi
+    value: "10.XXXXX/arXiv.XXXX.XXXXX"
