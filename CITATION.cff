@@ -1,4 +1,4 @@
-cff-version: 1.0.0
+cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "flowengineR: A Modular and Extensible Framework for Fair and Reproducible Workflow Design in R"
 type: article
