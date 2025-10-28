@@ -7,3 +7,5 @@
 ^pkgdown$
 ^\\.github$
 ^README\\.Rmd$
+^inst/example_enginebuild_LLM$
+^inst/runtime_benchmarks$

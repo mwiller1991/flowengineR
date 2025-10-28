@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Willer"
+    given-names: "Maximilian"
+    affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg; While writing employed at HASPA Finanzholding"
+    email: "maximilian.willer@uol.de"
+    orcid: "https://orcid.org/0009-0003-7054-1937"
+  - family-names: "Ruckdeschel"
+    given-names: "Peter"
+    affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg"
+    email: "peter.ruckdeschel@uol.de"
+    orcid: "https://orcid.org/0000-0001-7815-4809"
+title: "flowengineR"
+version: 1.0.0
+year: 2025
+url: "https://github.com/mwiller1991/flowengineR"
+license: "MIT-0"
+date-released: "2025-10-28"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Willer"
+    given-names: "Maximilian"
+    affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg; While writing employed at HASPA Finanzholding"
+    email: "maximilian.willer@uol.de"
+    orcid: "https://orcid.org/0009-0003-7054-1937"
+  - family-names: "Ruckdeschel"
+    given-names: "Peter"
+    affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg"
+    email: "peter.ruckdeschel@uol.de"
+    orcid: "https://orcid.org/0000-0001-7815-4809"
+  doi: 10.XXXXX/arXiv.XXXX.XXXXX
+  journal: "Preprint"
+  title: "flowengineR: A Modular and Extensible Framework for Fair and Reproducible Workflow Design in R"
+  year: 2025

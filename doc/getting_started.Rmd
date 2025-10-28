@@ -138,7 +138,7 @@ control <- list(
 )
 ```
 
-A detailed introduction to the control object can be found [here](how_to_build_controlobjekt.html).
+A detailed introduction to the control object can be found [here](how_to_build_controlobject.html).
 
 ---
 

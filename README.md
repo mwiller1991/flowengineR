@@ -94,6 +94,16 @@ vignette("example_workflow_credit", package = "flowengineR")
 
 ------------------------------------------------------------------------
 
+## 📚 Citation
+
+For citation please use:
+
+```r
+citation("flowengineR")
+```
+
+------------------------------------------------------------------------
+
 ## 📄 License
 
 MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com) and Peter Ruckdeschel
