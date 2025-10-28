@@ -7,5 +7,4 @@
 ^pkgdown$
 ^\\.github$
 ^README\\.Rmd$
-^inst/llm_demonstrations$
 ^inst/runtime_benchmarks$
