@@ -12,6 +12,6 @@ bibentry(
   journal  = "Preprint",
   year     = "2025",
   note     = "Institute for Mathematics, Carl von Ossietzky University Oldenburg",
-  doi      = "10.XXXXX/arXiv.XXXX.XXXXX""
+  doi      = "10.XXXXX/arXiv.XXXX.XXXXX"
   url      = "https://github.com/mwiller1991/flowengineR"
 )
