@@ -9,8 +9,8 @@ This folder archives the full runtime benchmarking of `flowengineR` using the re
 The benchmark evaluates **end-to-end workflow runtime** under different dataset sizes, cross-validation folds, and execution modes.
 
 ## Contents
-- `provenance/` → benchmark script (`benchmark_runtime.R`), control factories, console log, session info  
-- `outputs/` → benchmark results (`runtime_summary.csv`, `runtime_results.rds`), batchtools registries  
+- `provenance/` → benchmark script (`benchmark_runtime.R`), control factories, operational_runs, session info  
+- `outputs/` → benchmark results (`runtime_summary.csv`, `runtime_results.rds`) 
 - `manifest.json` → metadata (dataset, sizes, CV folds, controls, execution types, hardware, seeds)  
 - `README.md` → this documentation file
 
