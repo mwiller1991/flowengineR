@@ -1,0 +1,13 @@
+# CODEOWNERS for flowengineR
+
+# Default owner for all files
+*       @maximilianwiller
+
+# Owners for R source files
+R/*     @maximilianwiller @peterruckdeschel
+
+# Owners for CI/CD workflows
+.github/workflows/*  @maximilianwiller
+
+# Owners for documentation
+vignettes/*  @maximilianwiller
