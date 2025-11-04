@@ -30,7 +30,7 @@ preferred-citation:
     affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg"
     email: "peter.ruckdeschel@uol.de"
     orcid: "https://orcid.org/0000-0001-7815-4809"
-  doi: 10.XXXXX/arXiv.XXXX.XXXXX
+  doi: 10.48550/arXiv.2511.00079
   journal: "Preprint"
   title: "flowengineR: A Modular and Extensible Framework for Fair and Reproducible Workflow Design in R"
   year: 2025
