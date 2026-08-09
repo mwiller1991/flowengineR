@@ -131,12 +131,17 @@ build_engine_with_llm_zip <- function(engine_type,
   on.exit(setwd(old_wd), add = TRUE)
   utils::zip(zipfile = zip_path, files = list.files(tmp_dir))
   
-  message("LLM zip package created at: ", zip_path)
+  td  <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
+  zp  <- normalizePath(zip_path,  winslash = "/", mustWork = FALSE)
+  loc <- if (startsWith(zp, td)) file.path("<tempdir>", basename(zp)) else zp
+  
+  message("LLM zip package created at: ", loc)
   message("\nTo use this ZIP with an LLM (e.g., ChatGPT), follow these instructions:")
   message("\n1. Upload the ZIP file in your chat.")
   message("2. Paste the following instruction afterwards:")
   message("\n--- COPY INTO CHAT ---")
-  message("I have uploaded a ZIP containing a prompt, a working example engine, and a vignette.")
+  message("I have uploaded a ZIP containing a prompt, a working example")
+  message("engine, and a vignette.")  
   message("Please read the prompt first (llm_prompt_", engine_type, ".R). Then carefully review:")
   message("- ", basename(default_example), " as a concrete reference implementation")
   message("- ", basename(default_vignette), " as documentation of required structure")

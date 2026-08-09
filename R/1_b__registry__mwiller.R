@@ -89,7 +89,7 @@ register_engine <- function(engine_name, file_path) {
     # Register the engine
     flowengineR_env$engines[[engine_name]] <- wrapper_function
     message(paste("[SUCCESS] Engine registered successfully:", engine_name, "as type:", full_engine_type))
-    message("---------------------------------------------------------------------------------------------")
+    message(strrep("-", 73))
     
   }, error = function(e) {
     warning(paste("[WARNING] Failed to register engine from file:", file_path, "->", e$message))
