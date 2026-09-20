@@ -25,7 +25,7 @@ post-processing options.
 # Install from GitHub
 install.packages("devtools")
 devtools::install_github("mwiller1991/flowengineR", build_vignettes = TRUE)
-library(flowengineR)
+library("flowengineR")
 ```
 
 ------------------------------------------------------------------------
