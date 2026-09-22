@@ -1,3 +1,16 @@
+# flowengineR 1.0.1
+
+## 🔧 Fixes
+
+- `build_engine_with_llm_zip()` now reports the archive location relative to
+  `tempdir()` instead of the absolute path, making console output identical
+  across machines.
+- Shortened console messages in `build_engine_with_llm_zip()` and
+  `register_engine()` so that output fits the text width of the accompanying
+  manuscript.
+  
+  
+
 # flowengineR 1.0.0
 
 ## 🚀 Initial release

@@ -12,11 +12,11 @@ authors:
     email: "peter.ruckdeschel@uol.de"
     orcid: "https://orcid.org/0000-0001-7815-4809"
 title: "flowengineR"
-version: 1.0.0
+version: 1.0.1
 year: 2025
 url: "https://github.com/mwiller1991/flowengineR"
-license: "MIT-0"
-date-released: "2025-10-28"
+license: "MIT"
+date-released: "2026-09-20"
 preferred-citation:
   type: article
   authors:
