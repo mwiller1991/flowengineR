@@ -1,3 +1,23 @@
+# flowengineR 1.0.2
+
+## 🔧 Fixes
+
+- Declared `jsonlite` in `Suggests`; it is used by the vignette
+  "LLM Demonstration: Eval Median". The vignette now also builds
+  without `jsonlite` and then shows the manifest as plain text.
+- The "Workflow Results" section of that vignette was empty because
+  the archived results file was not found. The file is renamed to
+  `provenance/workflow_results.rds` (contents and checksum unchanged),
+  which also keeps all file paths within the 100-byte limit for
+  portable tarballs.
+- `.Rbuildignore`: fixed two patterns that did not match, and excluded
+  `tools/` and `CITATION.cff` from the package build.
+- `na.omit()` and `uniroot()` from stats are now called with an explicit
+  namespace.
+- `LICENSE` now uses the standard two-line R format for MIT; the full
+  licence text moved to `LICENSE.md`.
+  
+
 # flowengineR 1.0.1
 
 ## 🔧 Fixes

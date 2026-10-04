@@ -10,7 +10,6 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(comment = "#>")
 library(flowengineR)
-library(jsonlite)
 
 demo_dir <- system.file("llm_demonstrations", "2025-08-29_eval_median", package = "flowengineR")
 ```
@@ -77,6 +76,11 @@ if (file.exists(res_file)) {
 Manifest with MD5 checksums:
 
 ```{r}
-manifest <- fromJSON(file.path(demo_dir, "manifest.json"))
-manifest$files
+manifest_file <- file.path(demo_dir, "manifest.json")
+if (requireNamespace("jsonlite", quietly = TRUE)) {
+  manifest <- jsonlite::fromJSON(manifest_file)
+  manifest$files
+} else {
+  cat(readLines(manifest_file), sep = "\n")
+}
 ```

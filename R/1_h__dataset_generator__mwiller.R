@@ -104,7 +104,7 @@ set.seed(seed)
   pos_rate <- max(eps, min(1 - eps, pos_rate))       # protect target
 
   cal_fun <- function(d) mean(stats::plogis(linpred + d)) - pos_rate
-  delta   <- uniroot(cal_fun, lower = -60, upper = 60)$root
+  delta   <- stats::uniroot(cal_fun, lower = -60, upper = 60)$root
   
   p     <- stats::plogis(linpred + delta)
   
