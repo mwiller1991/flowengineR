@@ -16,7 +16,7 @@ version: 1.0.2
 year: 2025
 url: "https://github.com/mwiller1991/flowengineR"
 license: "MIT"
-date-released: "2026-10-04"
+date-released: "2026-10-05"
 preferred-citation:
   type: article
   authors:
