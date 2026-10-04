@@ -30,8 +30,8 @@
       "path": "provenance/console_build.txt",
       "md5": "f72fefd0f4cf583a2604af6b9a60e964"
     },
-    "provenance/results_object_from_example.rds": {
-      "path": "provenance/results_object_from_example.rds",
+    "provenance/workflow_results.rds": {
+      "path": "provenance/workflow_results.rds",
       "md5": "2e873e80e57fcec995ecf6cdcfb97429"
     },
     "provenance/sessionInfo.txt": {

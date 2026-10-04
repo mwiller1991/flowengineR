@@ -39,6 +39,7 @@ jobs:
           Rscript tools/dev/copy_engine_build_materials.R
           
       - name: Commit and push engine files
+        if: github.event_name == 'push'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"

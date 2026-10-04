@@ -1,7 +1,7 @@
 Package: flowengineR
 Type: Package
 Title: Modular and extensible framework for designing and executing algorithmic workflows in R
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     c(person("Maximilian", "Willer",
             role=c("aut", "cre"),
@@ -61,6 +61,7 @@ Imports:
     gbm
 Suggests:
     testthat (>= 3.0.0),
-    knitr
+    knitr,
+    jsonlite
 VignetteBuilder: knitr
 Config/testthat/edition: 3

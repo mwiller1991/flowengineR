@@ -160,7 +160,7 @@ wrapper_train_gbm <- function(control) {
     if (is.logical(y)) return("bernoulli")
     if (is.numeric(y)) {
       # 0/1 → bernoulli
-      uy <- unique(na.omit(y))
+      uy <- unique(stats::na.omit(y))
       if (length(uy) <= 3 && all(uy %in% c(0,1))) return("bernoulli")
     }
     "gaussian"
@@ -189,7 +189,7 @@ wrapper_train_gbm <- function(control) {
         mapping = setNames(c(0, 1), c("FALSE", "TRUE"))  # names must be strings
       )
     } else if (is.numeric(y)) {
-      uy <- unique(na.omit(y))
+      uy <- unique(stats::na.omit(y))
       if (!all(uy %in% c(0,1))) {
         stop("wrapper_train_gbm: For bernoulli, numeric target must be coded as 0/1.")
       }
