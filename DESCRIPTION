@@ -40,7 +40,6 @@ Imports:
     openxlsx,
     batchtools,
     grDevices,
-    parallel,
     cli,
     glue,
     utils,

@@ -64,7 +64,6 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
       ),
       execution = controller_execution(
         params = list(
-          registry_folder = tempdir()
         )
       ),
       preprocessing = controller_preprocessing(

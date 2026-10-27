@@ -100,7 +100,7 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
   
   # Create or clear registry
   reg_dir <- params$registry_folder
-  unlink(reg_dir, recursive = TRUE)
+  prepare_registry_folder(reg_dir)
   
   log_msg(sprintf("[EXECUTION] Creating SLURM batchtools registry at '%s'...", reg_dir), level = "info", control = control)
   

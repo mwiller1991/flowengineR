@@ -535,11 +535,13 @@ controller_report <- function(params = list()) {
 #' ```
 #'
 #' @param output_folder Character string. Global directory path to store all exports.
+#'   Defaults to the session's temporary directory ([tempdir()]), which is deleted
+#'   when the R session ends. Set a permanent folder to keep the exported files.
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$engine_select$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
 #'
 #' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{flowengineR} modules.
 #' @export
-controller_publish <- function(output_folder = "~/publish_exports", 
+controller_publish <- function(output_folder = tempdir(),
                                params = list()) {
   list(
     output_folder = output_folder,

@@ -46,7 +46,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
 #' - `control$params$execution$params`: Optional engine-specific parameters (see below).
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
-#' - `registry_folder` *(character, default = `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"`)*: Folder for the batchtools registry.
+#' - `registry_folder` *(character, default = `file.path(tempdir(), "bt_registry_basic")`)*: Folder for the batchtools registry.
 #' - `seed` *(integer, default = 123)*: Seed for the registry.
 #' - `required_packages` *(character vector)*: Packages to be loaded inside each job.
 #' - `resources` *(list)*: Batchtools resource constraints per job:
@@ -63,7 +63,7 @@ engine_execution_basic_batchtools_local <- function(control, split) {
 #' control$engine_select$execution <- "execution_basic_batchtools_local"
 #' control$params$execution <- controller_execution(
 #'   params = list(
-#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
+#'     registry_folder = file.path(tempdir(), "bt_registry_basic"),
 #'     seed = 42,
 #'     resources = list(ncpus = 2, memory = 4096, walltime = 600)
 #'   )
@@ -101,7 +101,7 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
   
   # Create or clear registry
   reg_dir <- params$registry_folder
-  unlink(reg_dir, recursive = TRUE)  # Clean existing if necessary
+  prepare_registry_folder(reg_dir)  # Clean existing if necessary
   
   log_msg(sprintf("[EXECUTION] Creating batchtools registry at '%s'...", reg_dir), level = "info", control = control)
   
@@ -158,7 +158,7 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
 #' - Used by the wrapper to configure the batchtools registry and job resources.
 #'
 #' **Default Parameters:**
-#' - `registry_folder`: Folder where the batchtools registry will be stored (default: `"bt_registry"`).
+#' - `registry_folder`: Folder where the batchtools registry will be stored (default: a subfolder of `tempdir()`).
 #' - `seed`: Seed value used for the batchtools registry (default: `123`).
 #' - `required_packages`: Character vector of R package names to be loaded in each job (default: empty).
 #' - `resources`: Named list of resource constraints for each job, passed to `submitJobs()`:
@@ -172,7 +172,7 @@ wrapper_execution_basic_batchtools_local <- function(control, split_output) {
 #' @keywords internal
 default_params_execution_basic_batchtools_local <- function() {
   list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic", # later just: bt_registry
+    registry_folder = file.path(tempdir(), "bt_registry_basic"),
     seed = 123,
     required_packages = character(0),
     resources = list(ncpus = 1, memory = 2048, walltime = 3600)

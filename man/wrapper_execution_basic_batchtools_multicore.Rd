@@ -33,10 +33,10 @@ Not supported on Windows. Use \code{"execution_basic_batchtools_local"} instead.
 \strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
 \item \code{registry_folder} \emph{(character)}: Folder where the batchtools registry will be stored.
-\emph{Default:} \code{"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore"}
+\emph{Default:} \code{file.path(tempdir(), "bt_registry_basic_multicore")}
 \item \code{seed} \emph{(integer)}: Seed for registry initialization. \emph{Default:} \code{123}
 \item \code{required_packages} \emph{(character vector)}: R packages to load within each batchtools job. \emph{Default:} \code{character(0)}
-\item \code{ncpus} \emph{(integer)}: Number of parallel cores to use. \emph{Default:} \code{parallel::detectCores()}
+\item \code{ncpus} \emph{(integer)}: Number of parallel cores to use. \emph{Default:} \code{getOption("mc.cores", 2L)}
 }
 
 \strong{Example Control Snippet:}
@@ -44,7 +44,7 @@ Not supported on Windows. Use \code{"execution_basic_batchtools_local"} instead.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_batchtools_multicore"
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_basic_multicore"),
     seed = 42,
     ncpus = 4
   )

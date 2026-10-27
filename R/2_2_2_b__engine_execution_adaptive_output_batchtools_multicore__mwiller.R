@@ -82,7 +82,7 @@ engine_execution_adaptive_output_batchtools_multicore <- function(control) {
 #'     max_splits = 50,
 #'     seed_base = 2000,
 #'     n_splits_per_iteration = 3,
-#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+#'     registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
 #'     seed = 123,
 #'     required_packages = c("caret", "dplyr"),
 #'     ncpus = 4
@@ -162,7 +162,7 @@ wrapper_execution_adaptive_output_batchtools_multicore <- function(control, spli
     
     # Create a new registry per iteration
     reg_dir <- file.path(params$registry_folder, paste0("iter_", i))
-    unlink(reg_dir, recursive = TRUE)
+    prepare_registry_folder(reg_dir)
     reg <- batchtools::makeRegistry(
       file.dir = reg_dir,
       make.default = FALSE,
@@ -291,10 +291,10 @@ default_params_execution_adaptive_output_batchtools_multicore <- function() {
     custom_stability_function = NULL,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
     seed = 123,
     required_packages = character(0),
-    ncpus = parallel::detectCores()
+    ncpus = getOption("mc.cores", 2L)
   )
 }
 #--------------------------------------------------------------------

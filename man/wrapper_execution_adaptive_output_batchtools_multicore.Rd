@@ -72,7 +72,7 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
     seed = 123,
     required_packages = c("caret", "dplyr"),
     ncpus = 4

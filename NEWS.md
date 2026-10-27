@@ -16,6 +16,17 @@ First release on CRAN.
   and the function returns immediately in non-interactive sessions.
 - `%||%` is now defined internally, so the package works on R 4.1 to
   4.3 as stated in `Depends`.
+- Default output locations no longer point to the home or working
+  directory: `controller_publish()` now uses `tempdir()`, and the local
+  and multicore batchtools engines create their registry in a subfolder
+  of `tempdir()`. Set `output_folder` or `registry_folder` explicitly to
+  keep the files.
+- An existing registry folder is now only replaced if it is empty or
+  holds a previous batchtools registry; any other folder is left
+  untouched and an error is raised.
+- The multicore engines now use `getOption("mc.cores", 2L)` cores by
+  default instead of all available cores; `parallel` is no longer a
+  dependency.
   
 
 

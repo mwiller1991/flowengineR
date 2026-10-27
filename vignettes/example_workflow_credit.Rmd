@@ -141,7 +141,7 @@ control <- list(
       ))
     ),
     publish = controller_publish(
-      output_folder = "~/publish_exports",
+      output_folder = tempdir(),  # use a permanent folder to keep the files
       params = list(
         pdf_basis_test_singleelement = list(obj_name = "text_mse_summary", obj_type = "reportelement"),
         pdf_basis_test_report = list(obj_name = "modelsummary", obj_type = "report"),

@@ -159,7 +159,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
     }
     
     reg_dir <- file.path(params$registry_folder, paste0("iter_", i))
-    unlink(reg_dir, recursive = TRUE)
+    prepare_registry_folder(reg_dir)
     reg <- batchtools::makeRegistry(
       file.dir = reg_dir,
       make.default = FALSE,
