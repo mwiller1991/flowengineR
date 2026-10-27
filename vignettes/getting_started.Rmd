@@ -57,8 +57,8 @@ To make the first steps with `flowengineR` easier, the package provides an **int
 This menu helps you explore the most important entry points, including running the example workflow, browsing vignettes, or inspecting the structure of control objects.
 
 ```r
-# Launch the start menu
-flowengineR_start()
+# Launch the start menu and keep the objects it creates
+start <- flowengineR_start()
 ```
 
 When you run the function, you will see a menu in your console:
@@ -78,9 +78,9 @@ Where would you like to start?
 
 Choose an option by typing its number. For example:
 
-- **1** runs the example workflow and assigns the results to `results_example`.  
-- **4** lists all registered engines and assigns them to `engine_list`.  
-- **6** shows the structure of the control object (`control_example`).  
+- **1** runs the example workflow; the results are returned as `start$results_example`.  
+- **4** lists all registered engines; the list is returned as `start$engine_list`.  
+- **6** shows the structure of the control object, returned as `start$control_example`.
 
 This interactive helper is a great way to explore `flowengineR` without memorizing function names from the start.
 

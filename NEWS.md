@@ -9,6 +9,13 @@ First release on CRAN.
   copyright holders, `URL` and `BugReports` added.
 - Documentation: replaced the character `≥` with `>=`, so that the
   PDF reference manual builds.
+- `flowengineR_start()` no longer writes objects into the global
+  environment. The objects created in the menu are now returned
+  invisibly as a list (e.g. `start <- flowengineR_start()`). Entering
+  0 now leaves the menu, vignettes are opened from this package only,
+  and the function returns immediately in non-interactive sessions.
+- `%||%` is now defined internally, so the package works on R 4.1 to
+  4.3 as stated in `Depends`.
   
 
 

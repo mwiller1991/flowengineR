@@ -1,4 +1,19 @@
 #--------------------------------------------------------------------
+### Helper: Null-default operator ###
+#--------------------------------------------------------------------
+#' Null-default operator
+#'
+#' Returns `y` if `x` is `NULL`, otherwise `x`. Defined internally because
+#' the base R version is only available from R 4.4.0, while the package
+#' supports R >= 4.1.0.
+#'
+#' @param x,y Any R objects.
+#' @return `x` if it is not `NULL`, otherwise `y`.
+#' @noRd
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+
+#--------------------------------------------------------------------
 ### Helper: Internal Logging Function with Colors (Extended with 'error') ###
 #--------------------------------------------------------------------
 #' Helper: Internal Logging Function with Colors
