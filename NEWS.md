@@ -1,3 +1,15 @@
+# flowengineR 1.1.0
+
+First release on CRAN.
+
+## 📦 CRAN preparation
+
+- `DESCRIPTION`: title in title case, rewritten description with a
+  reference to the accompanying paper, both authors listed as
+  copyright holders, `URL` and `BugReports` added.
+
+
+
 # flowengineR 1.0.2
 
 ## 🔧 Fixes
