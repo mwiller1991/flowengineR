@@ -7,7 +7,9 @@ First release on CRAN.
 - `DESCRIPTION`: title in title case, rewritten description with a
   reference to the accompanying paper, both authors listed as
   copyright holders, `URL` and `BugReports` added.
-
+- Documentation: replaced the character `≥` with `>=`, so that the
+  PDF reference manual builds.
+  
 
 
 # flowengineR 1.0.2

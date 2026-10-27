@@ -42,12 +42,12 @@ Allowed values:
 \code{"sd_relative"}, \code{"sd_absolute"}, \code{"mad_relative"}, \code{"mad_absolute"},
 \code{"cv_relative"}, \code{"cv_absolute"}, \code{"cohen_absolute"}
 \item \code{threshold} \emph{(numeric)}: Threshold value for the chosen strategy.
-\item \code{window} \emph{(integer ≥ 2)}: Number of trailing values to consider for stability.
-\item \code{min_splits} \emph{(integer ≥ 1)}: Minimum number of splits before stability can be evaluated.
-\item \code{max_splits} \emph{(integer ≥ min_splits)}: Maximum allowed number of splits.
+\item \code{window} \emph{(integer >= 2)}: Number of trailing values to consider for stability.
+\item \code{min_splits} \emph{(integer >= 1)}: Minimum number of splits before stability can be evaluated.
+\item \code{max_splits} \emph{(integer >= min_splits)}: Maximum allowed number of splits.
 \item \code{custom_stability_function} \emph{(function or NULL)}: Optional custom stability checker.
 \item \code{seed_base} \emph{(integer)}: Base seed; actual seeds are \code{seed_base + i}.
-\item \code{n_splits_per_iteration} \emph{(integer ≥ 1)}: Number of splits per iteration (= number of parallel jobs).
+\item \code{n_splits_per_iteration} \emph{(integer >= 1)}: Number of splits per iteration (= number of parallel jobs).
 \item \code{registry_folder} \emph{(character)}: Directory path to store batchtools registry (must be writeable).
 \item \code{slurm_template} \emph{(character)}: Path to the SLURM template file.
 \item \code{seed} \emph{(integer)}: Seed for batchtools registry initialization.

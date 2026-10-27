@@ -53,12 +53,12 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #'   `"sd_relative"`, `"sd_absolute"`, `"mad_relative"`, `"mad_absolute"`,  
 #'   `"cv_relative"`, `"cv_absolute"`, `"cohen_absolute"`
 #' - `threshold` *(numeric)*: Threshold value for the chosen strategy.
-#' - `window` *(integer ≥ 2)*: Number of trailing values to consider for stability.
-#' - `min_splits` *(integer ≥ 1)*: Minimum number of splits before stability can be evaluated.
-#' - `max_splits` *(integer ≥ min_splits)*: Maximum allowed number of splits.
+#' - `window` *(integer >= 2)*: Number of trailing values to consider for stability.
+#' - `min_splits` *(integer >= 1)*: Minimum number of splits before stability can be evaluated.
+#' - `max_splits` *(integer >= min_splits)*: Maximum allowed number of splits.
 #' - `custom_stability_function` *(function or NULL)*: Optional custom stability checker.
 #' - `seed_base` *(integer)*: Base seed; actual seeds are `seed_base + i`.
-#' - `n_splits_per_iteration` *(integer ≥ 1)*: Number of splits per iteration (= number of parallel jobs).
+#' - `n_splits_per_iteration` *(integer >= 1)*: Number of splits per iteration (= number of parallel jobs).
 #' - `registry_folder` *(character)*: Directory path to store batchtools registry (must be writeable).
 #' - `slurm_template` *(character)*: Path to the SLURM template file.
 #' - `seed` *(integer)*: Seed for batchtools registry initialization.

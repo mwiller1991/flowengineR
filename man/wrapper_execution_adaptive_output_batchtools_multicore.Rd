@@ -46,16 +46,16 @@ Allowed values:
 \code{"cv_relative"}, \code{"cv_absolute"},
 \code{"cohen_absolute"}
 \item \code{threshold} \emph{(numeric)}: Stability threshold.
-\item \code{window} \emph{(integer ≥ 2)}: Number of trailing values for comparison.
-\item \code{min_splits} \emph{(integer ≥ 1)}: Minimum iterations before checking for stability.
-\item \code{max_splits} \emph{(integer ≥ min_splits)}: Maximum iterations allowed.
+\item \code{window} \emph{(integer >= 2)}: Number of trailing values for comparison.
+\item \code{min_splits} \emph{(integer >= 1)}: Minimum iterations before checking for stability.
+\item \code{max_splits} \emph{(integer >= min_splits)}: Maximum iterations allowed.
 \item \code{custom_stability_function} \emph{(function or NULL)}: Optional custom convergence function.
 \item \code{seed_base} \emph{(integer)}: Base seed; seed for split \code{i} is \code{seed_base + i}.
-\item \code{n_splits_per_iteration} \emph{(integer ≥ 1)}: Number of splits executed per batch (parallel jobs).
+\item \code{n_splits_per_iteration} \emph{(integer >= 1)}: Number of splits executed per batch (parallel jobs).
 \item \code{registry_folder} \emph{(character)}: Path to writeable batchtools registry folder.
 \item \code{seed} \emph{(integer)}: Seed for initializing batchtools registry.
 \item \code{required_packages} \emph{(character vector)}: Required packages on each job node.
-\item \code{ncpus} \emph{(integer ≥ 1)}: Number of CPUs used per job.
+\item \code{ncpus} \emph{(integer >= 1)}: Number of CPUs used per job.
 }
 
 \strong{Example Control Snippet:}
