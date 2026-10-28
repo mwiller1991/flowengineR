@@ -32,8 +32,8 @@ Provides default parameters for the \code{execution_adaptive_output_batchtools_s
 \item \code{custom_stability_function}: Optional user-defined function to override built-in criteria.
 \item \code{seed_base}: Base seed value. Seeds are incremented per batch (e.g., \code{seed_base + i}).
 \item \code{n_splits_per_iteration}: Number of splits per iteration (parallelized).
-\item \code{registry_folder}: Path to the batchtools registry.
-\item \code{slurm_template}: Path to a valid SLURM job template.
+\item \code{registry_folder}: Path to the batchtools registry (\code{NULL}; must be set by the user).
+\item \code{slurm_template}: Path to a valid SLURM job template (\code{NULL}; must be set by the user).
 \item \code{seed}: Seed used by batchtools registry.
 \item \code{required_packages}: Character vector of packages needed on each worker.
 \item \code{resources}: List passed to \code{submitJobs()} (e.g. \code{ncpus}, \code{memory}, \code{walltime}).

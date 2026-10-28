@@ -13,7 +13,7 @@ control$params$execution <- controller_execution(
 )
 
 # --- Available Parameters for execution_basic_slurm_array ---
-# output_folder: character, default = "slurm_inputs"
+# output_folder: character, required (no default); a folder on a file system shared with the cluster nodes
 #   → path to directory where control and split files are stored
 #
 # Notes:

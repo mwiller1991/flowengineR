@@ -27,6 +27,10 @@ First release on CRAN.
 - The multicore engines now use `getOption("mc.cores", 2L)` cores by
   default instead of all available cores; `parallel` is no longer a
   dependency.
+- The SLURM engines no longer default to local development folders:
+  `registry_folder` and `slurm_template` (batchtools SLURM engines) and
+  `output_folder` (`execution_basic_slurm_array`) must now be set
+  explicitly; otherwise a clear error is raised before any work starts.
   
 
 

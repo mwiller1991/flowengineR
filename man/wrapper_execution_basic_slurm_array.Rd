@@ -29,7 +29,7 @@ and split definitions to disk. This wrapper does not execute any models directly
 
 \strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
-\item \code{output_folder} \emph{(character, default = "slurm_inputs")}: Directory to store the control and split files.
+\item \code{output_folder} \emph{(character, required)}: Directory to store the control and split files, on a file system shared with the cluster nodes.
 }
 
 \strong{Notes:}

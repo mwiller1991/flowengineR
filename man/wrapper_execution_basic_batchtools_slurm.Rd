@@ -30,8 +30,8 @@ Registers jobs and submits them to a SLURM cluster using a job template.
 
 \strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
-\item \code{registry_folder} \emph{(character)}: Where to store the batchtools registry (default: \code{"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"}).
-\item \code{slurm_template} \emph{(character)}: Path to SLURM job template (must exist).
+\item \code{registry_folder} \emph{(character)}: Where to store the batchtools registry (required, no default; must be on a file system shared with the cluster nodes).
+\item \code{slurm_template} \emph{(character)}: Path to SLURM job template (required, no default).
 \item \code{seed} \emph{(integer)}: RNG seed (default: 123).
 \item \code{required_packages} \emph{(character vector)}: R packages to load in job.
 \item \code{resources} \emph{(list)}: Resource specs passed to \code{submitJobs()} (e.g., \code{ncpus}, \code{memory}, \code{walltime}).

@@ -17,8 +17,8 @@ Includes registry folder, SLURM template path, job resources, and required packa
 \details{
 \strong{Default Parameters:}
 \itemize{
-\item \code{registry_folder}: Registry location.
-\item \code{slurm_template}: Path to SLURM job template (must exist).
+\item \code{registry_folder}: Registry location (\code{NULL}; must be set by the user).
+\item \code{slurm_template}: Path to SLURM job template (\code{NULL}; must be set by the user).
 \item \code{seed}: Random seed for reproducibility.
 \item \code{required_packages}: Packages to load in each job.
 \item \code{resources}: SLURM resource specs (e.g., walltime, mem).

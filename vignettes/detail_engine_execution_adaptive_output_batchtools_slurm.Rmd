@@ -44,8 +44,8 @@ This engine conducts adaptive stability monitoring via SLURM-based batchtools ex
 | `custom_stability_function` | function | `NULL`                                                    | Optional custom function for stability                       |
 | `seed_base`               | integer    | `2000`                                                    | Base seed for split generation                               |
 | `n_splits_per_iteration`  | integer    | `3`                                                       | Number of splits per SLURM job batch                         |
-| `registry_folder`         | character  | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM"` | Registry path |
-| `slurm_template`          | character  | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl"` | Path to SLURM job template |
+| `registry_folder`         | character  | none (required) | Registry path |
+| `slurm_template`          | character  | none (required) | Path to SLURM job template |
 | `seed`                    | integer    | `123`                                                     | Seed for registry creation                                   |
 | `required_packages`       | character[]| `character(0)`                                            | Packages loaded in each SLURM job                            |
 | `resources`               | list       | `{ncpus=1, memory=2048, walltime=3600}`                   | SLURM job specifications                                     |
@@ -89,8 +89,8 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+    registry_folder = "/path/to/shared/bt_registry_slurm",
+    slurm_template = "/path/to/slurm.tmpl",
     seed = 123,
     required_packages = c("caret", "dplyr"),
     resources = list(ncpus = 2, memory = 4096, walltime = 3600)

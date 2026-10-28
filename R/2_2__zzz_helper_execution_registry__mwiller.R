@@ -46,3 +46,30 @@ prepare_registry_folder <- function(path) {
   
   invisible(path)
 }
+
+
+#--------------------------------------------------------------------
+### Helper: Check required SLURM parameters ###
+#--------------------------------------------------------------------
+#' Helper: Check Required Parameters of the SLURM Engines
+#'
+#' The batchtools SLURM engines have no defaults for `registry_folder` and
+#' `slurm_template`, because both depend on the cluster: the registry must
+#' be on a file system shared with the compute nodes. This helper stops
+#' with a clear message if one of them is missing.
+#'
+#' @param params Named list. Merged execution parameters.
+#'
+#' @return `TRUE`, invisibly. Called for its side effect.
+#' @noRd
+check_slurm_params <- function(params) {
+  required <- c("registry_folder", "slurm_template")
+  missing <- required[vapply(required, function(x) is.null(params[[x]]), logical(1))]
+  if (length(missing) > 0L) {
+    stop(sprintf(paste0(
+      "[EXECUTION] SLURM execution requires %s in control$params$execution$params. ",
+      "The registry folder must be on a file system shared with the cluster nodes."),
+      paste0("'", missing, "'", collapse = " and ")), call. = FALSE)
+  }
+  invisible(TRUE)
+}
