@@ -31,6 +31,9 @@ First release on CRAN.
   `registry_folder` and `slurm_template` (batchtools SLURM engines) and
   `output_folder` (`execution_basic_slurm_array`) must now be set
   explicitly; otherwise a clear error is raised before any work starts.
+- Tests: the multicore workflow tests are skipped on Windows, PDF export
+  is only checked where pandoc and LaTeX are available, and no test uses
+  more than two cores.
   
 
 
