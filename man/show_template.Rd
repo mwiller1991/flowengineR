@@ -38,9 +38,13 @@ Loads and optionally prints or opens a prewritten control template file from the
 }
 }
 \examples{
-\dontrun{
-show_template("split_random")           # Prints to console
-show_template("split_random", open=TRUE)  # Opens in RStudio
-text <- show_template("split_random", return_content = TRUE)  # Returns character vector
-}
+# Print a control template to the console
+show_template("split_random")
+
+# Return it as a character vector
+txt <- show_template("split_random", return_content = TRUE)
+head(txt)
+
+# Open it in the RStudio editor (interactive sessions only)
+if (interactive()) show_template("split_random", open = TRUE)
 }

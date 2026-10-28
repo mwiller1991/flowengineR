@@ -53,3 +53,8 @@ framework and allows plug-and-play extension with new preprocessing methods.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+data <- data.frame(x = 1:4, group = c(0, 0, 1, 1))
+out <- initialize_output_preprocessing(preprocessed_data = data, method = "identity")
+names(out)
+}

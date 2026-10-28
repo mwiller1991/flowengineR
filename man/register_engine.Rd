@@ -67,3 +67,12 @@ Wrappers can opt out of validation (e.g., during prototyping) by returning
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+# Register the evaluation engine generated in the LLM demonstration
+engine_file <- system.file(
+  "llm_demonstrations", "2025-08-29_eval_median", "outputs",
+  "engine_eval_median.R", package = "flowengineR"
+)
+register_engine("eval_median", engine_file)
+is.element("eval_median", names(list_registered_engines(type = "eval")))
+}

@@ -41,3 +41,10 @@ Creates a zip file containing:
 \item A vignette (.Rmd) as reference
 }
 }
+\examples{
+# Writes a ZIP archive with prompt, reference engine and vignette to tempdir()
+if (nzchar(Sys.which(Sys.getenv("R_ZIPCMD", "zip")))) {
+  zip_file <- build_engine_with_llm_zip("eval", "The median of all predictions.")
+  file.exists(zip_file)
+}
+}

@@ -55,3 +55,11 @@ control$params$publish <- controller_publish(
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_publish(
+  output_folder = tempdir(),
+  params = list(
+    metrics_excel = list(obj_type = "reportelement", obj_name = "metrics_table")
+  )
+)
+}

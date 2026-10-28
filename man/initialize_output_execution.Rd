@@ -61,3 +61,11 @@ This is required for proper mapping and evaluation within \code{resume_workflow(
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+out <- initialize_output_execution(
+  execution_type = "custom_sequential",
+  workflow_results = list(holdout = list()),
+  specific_output = list(n_splits = 1)
+)
+str(out, max.level = 1)
+}

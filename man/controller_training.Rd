@@ -52,3 +52,9 @@ with all built-in and user-defined training engines and allows flexible extensio
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_training(
+  formula = default ~ income + loan_amount + credit_score,
+  norm_data = TRUE
+)
+}

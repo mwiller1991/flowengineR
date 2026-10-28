@@ -34,3 +34,10 @@ list_registered_engines()
 list_registered_engines(type = "execution")
 }\if{html}{\out{</div>}}
 }
+\examples{
+# Engine types
+names(list_registered_engines())
+
+# Engines of one type
+names(list_registered_engines(type = "train"))
+}

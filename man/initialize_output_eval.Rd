@@ -62,3 +62,12 @@ Ensures compatibility with result aggregation, reporting, and publishing mechani
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+input <- data.frame(predictions = c(0.2, 0.6, 0.9), actuals = c(0, 1, 1))
+out <- initialize_output_eval(
+  metrics = list(mae = mean(abs(input$predictions - input$actuals))),
+  eval_type = "eval_mae",
+  input_data = input
+)
+out$metrics
+}

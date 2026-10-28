@@ -24,6 +24,12 @@
 #' @param zip_path Optional output path for the final zip file.
 #'
 #' @return Path to the created zip file.
+#' @examples
+#' # Writes a ZIP archive with prompt, reference engine and vignette to tempdir()
+#' if (nzchar(Sys.which(Sys.getenv("R_ZIPCMD", "zip")))) {
+#'   zip_file <- build_engine_with_llm_zip("eval", "The median of all predictions.")
+#'   file.exists(zip_file)
+#' }
 #' @export
 build_engine_with_llm_zip <- function(engine_type,
                                       task_description,
@@ -129,7 +135,7 @@ build_engine_with_llm_zip <- function(engine_type,
   }
   old_wd <- setwd(tmp_dir)
   on.exit(setwd(old_wd), add = TRUE)
-  utils::zip(zipfile = zip_path, files = list.files(tmp_dir))
+  utils::zip(zipfile = zip_path, files = list.files(tmp_dir), flags = "-r9Xq")
   
   td  <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
   zp  <- normalizePath(zip_path,  winslash = "/", mustWork = FALSE)

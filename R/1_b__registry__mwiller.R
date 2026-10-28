@@ -52,6 +52,14 @@
 #'
 #' @return `NULL`, invisibly. Called for its side effect of registering the
 #'   engine in `flowengineR_env$engines[[engine_name]]` if it is valid.
+#' @examples
+#' # Register the evaluation engine generated in the LLM demonstration
+#' engine_file <- system.file(
+#'   "llm_demonstrations", "2025-08-29_eval_median", "outputs",
+#'   "engine_eval_median.R", package = "flowengineR"
+#' )
+#' register_engine("eval_median", engine_file)
+#' is.element("eval_median", names(list_registered_engines(type = "eval")))
 #' @export
 register_engine <- function(engine_name, file_path) {
   tryCatch({

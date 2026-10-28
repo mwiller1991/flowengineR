@@ -63,3 +63,11 @@ for downstream reporting or publishing steps.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+out <- initialize_output_reportelement(
+  type = "table",
+  content = data.frame(metric = "mse", mean = 0.12),
+  compatible_formats = c("pdf", "html", "xlsx")
+)
+names(out)
+}

@@ -13,7 +13,7 @@ log_msg(msg, level = "info", control = NULL, abort = FALSE)
 
 \item{control}{The control object containing \code{settings$log$log_show} and \code{settings$log$log_level}.}
 
-\item{abort}{Logical. If \code{TRUE} and level is \code{"error"}, the function will stop execution.}
+\item{abort}{Logical. If \code{TRUE} and level is \code{"error"}, the function will stop execution, even if logging is switched off.}
 }
 \value{
 Invisibly returns \code{NULL}. Used for side-effect printing only.
@@ -33,9 +33,24 @@ for better visibility during execution.
 \item \code{"error"}: critical errors (red, optionally triggers stop()).
 }
 
+Messages below the chosen \code{log_level} are not shown: \code{"info"} shows
+\code{info}, \code{warn} and \code{error}, but not \code{debug}; \code{"none"} shows nothing.
+
 \strong{Usage Example:}
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{log_msg("[INFO] Workflow started", level = "info", control = control)
 log_msg("[ERROR] Missing predictions", level = "error", control = control, abort = TRUE)
 }\if{html}{\out{</div>}}
+}
+\examples{
+control <- list(settings = list(log = list(log_show = TRUE, log_level = "info")))
+log_msg("[INFO] Workflow started", level = "info", control = control)
+log_msg("[WARNING] Few observations in one group", level = "warn", control = control)
+
+# Not shown: 'debug' is below the chosen log level 'info'
+log_msg("[DEBUG] Details", level = "debug", control = control)
+
+# Errors can stop the workflow
+try(log_msg("[ERROR] Missing predictions", level = "error",
+            control = control, abort = TRUE))
 }

@@ -38,6 +38,14 @@ First release on CRAN.
   instead of the global environment, so the user's workspace is no
   longer modified. Registered engines see the same package functions as
   the built-in engines.
+- All exported functions now have runnable examples; the example of
+  `show_template()` no longer uses `\dontrun{}`.
+- `log_msg()`: the log level now works as a threshold. With the default
+  `"info"`, warnings and errors are shown and debug messages are hidden
+  (previously the reverse); `"none"` hides all messages, and
+  `abort = TRUE` now stops even when logging is switched off.
+- `build_engine_with_llm_zip()` no longer prints the file list of the
+  `zip` program.
   
 
 
