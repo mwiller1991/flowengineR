@@ -586,16 +586,17 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
   engine_function_name <- paste0("engine_", engine_name)
   default_params_function_name <- paste0("default_params_", engine_name)
   
-  # Check existence of required functions
-  if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
-    stop(paste("[WARNING] Engine function", engine_function_name, "not found in global environment."))
+  # Check existence of required functions (defined next to the wrapper)
+  engine_env <- environment(wrapper_function)
+  if (!exists(engine_function_name, mode = "function", envir = engine_env)) {
+    stop(paste("[WARNING] Engine function", engine_function_name, "not found in the engine file."))
   }
-  if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
-    stop(paste("[WARNING] Default params function", default_params_function_name, "not found in global environment."))
+  if (!exists(default_params_function_name, mode = "function", envir = engine_env)) {
+    stop(paste("[WARNING] Default params function", default_params_function_name, "not found in the engine file."))
   }
   if (!is.function(wrapper_function)) stop("[WARNING] Wrapper is not a function.")
-  if (!is.function(get(engine_function_name))) stop("[WARNING] Engine is not a function.")
-  if (!is.function(get(default_params_function_name))) stop("[WARNING] Default params is not a function.")
+  if (!is.function(get(engine_function_name, envir = engine_env))) stop("[WARNING] Engine is not a function.")
+  if (!is.function(get(default_params_function_name, envir = engine_env))) stop("[WARNING] Default params is not a function.")
   
   # Check wrapper function arguments
   actual_args <- names(formals(wrapper_function))

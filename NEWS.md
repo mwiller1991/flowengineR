@@ -34,6 +34,10 @@ First release on CRAN.
 - Tests: the multicore workflow tests are skipped on Windows, PDF export
   is only checked where pandoc and LaTeX are available, and no test uses
   more than two cores.
+- `register_engine()` now loads engine files into their own environment
+  instead of the global environment, so the user's workspace is no
+  longer modified. Registered engines see the same package functions as
+  the built-in engines.
   
 
 

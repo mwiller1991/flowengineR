@@ -12,7 +12,8 @@ register_engine(engine_name, file_path)
 \item{file_path}{Character. Path to the R script that defines the engine components.}
 }
 \value{
-Invisibly registers the engine into \code{flowengineR_env$engines[[engine_name]]} if valid.
+\code{NULL}, invisibly. Called for its side effect of registering the
+engine in \code{flowengineR_env$engines[[engine_name]]} if it is valid.
 }
 \description{
 Dynamically loads, validates, and registers a new engine into the global \code{engines} registry.
@@ -23,7 +24,8 @@ reporting, publishing, and execution.
 \details{
 \strong{Workflow:}
 \enumerate{
-\item Loads the engine file using \code{source()}.
+\item Loads the engine file into its own environment (a child of the
+package namespace), so the user's workspace is not modified.
 \item Expects the file to contain:
 \itemize{
 \item \verb{wrapper_<engine_name>}: Standardized interface
