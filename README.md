@@ -2,9 +2,9 @@
 
 [![R-CMD-check](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwiller1991/flowengineR/actions/workflows/R-CMD-check.yaml)
 
-`flowengineR` is an R package for defining and running modular
-workflows, including fairness-aware preprocessing, in-processing, and
-post-processing options.
+`flowengineR` is an R package for designing and running modular,
+reproducible workflows from interchangeable engines, including
+fairness-aware preprocessing, in-processing, and post-processing.
 
 ------------------------------------------------------------------------
 
@@ -22,9 +22,13 @@ post-processing options.
 ## 🚀 Installation
 
 ``` r
-# Install from GitHub
-install.packages("devtools")
-devtools::install_github("mwiller1991/flowengineR", build_vignettes = TRUE)
+# Release version from CRAN
+install.packages("flowengineR")
+
+# Development version from GitHub
+# install.packages("remotes")
+remotes::install_github("mwiller1991/flowengineR", build_vignettes = TRUE)
+
 library("flowengineR")
 ```
 
@@ -36,8 +40,8 @@ To make the first steps with `flowengineR` easier, the package provides an **int
 This menu helps you explore the most important entry points, including running the example workflow, browsing vignettes, or inspecting the structure of control objects.
 
 ```r
-# Launch the start menu
-flowengineR_start()
+# Launch the start menu and keep the objects it creates
+start <- flowengineR_start()
 ```
 
 When you run the function, you will see a menu in your console:
@@ -55,14 +59,19 @@ Where would you like to start?
 9: ✖ Exit
 ```
 
+Objects created in the menu are returned as a list, e.g. the results of
+the example workflow as `start$results_example`.
+
 ------------------------------------------------------------------------
 
 ## 🧪 Example
 
 ``` r
-control <- list()
+library("flowengineR")
 
-results <- run_workflow(control)
+# Run the built-in example workflow (credit data, logistic regression)
+results <- run_workflow()
+results$aggregated_results$mse
 ```
 
 ------------------------------------------------------------------------
@@ -108,7 +117,4 @@ citation("flowengineR")
 
 MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com) and Peter Ruckdeschel
 
-For full license terms, see the LICENSE file in this repository.
-
-
-
+For full license terms, see the [LICENSE](https://github.com/mwiller1991/flowengineR/blob/main/LICENSE.md) file.
