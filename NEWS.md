@@ -40,12 +40,20 @@ First release on CRAN.
   the built-in engines.
 - All exported functions now have runnable examples; the example of
   `show_template()` no longer uses `\dontrun{}`.
+- `create_dataset_bank()` and `run_workflow()` no longer change the
+  random number generator state of the R session; results stay
+  reproducible through the `seed` arguments. `withr` is now imported.
+
+## 🔧 Fixes
+
 - `log_msg()`: the log level now works as a threshold. With the default
   `"info"`, warnings and errors are shown and debug messages are hidden
   (previously the reverse); `"none"` hides all messages, and
   `abort = TRUE` now stops even when logging is switched off.
 - `build_engine_with_llm_zip()` no longer prints the file list of the
   `zip` program.
+- `show_template()`: corrected the file paths named in the split
+  templates; the printed template now ends with a line break.
   
 
 

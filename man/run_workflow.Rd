@@ -51,6 +51,12 @@ or directly continue with downstream processing via \code{continue_workflow()}.
 \item This is the main entry point into the framework.
 \item It is intended to be called by users who wish to run training, (optional) pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
 }
+
+\strong{Random Numbers:}
+\itemize{
+\item Results are reproducible through the seeds of the engines, e.g. \code{controller_split(seed = ...)}.
+\item The random number generator state of the R session is restored when \code{run_workflow()} returns.
+}
 }
 \examples{
 data <- create_dataset_bank(n = 500, seed = 1)

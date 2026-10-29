@@ -44,7 +44,8 @@ Imports:
     glue,
     utils,
     stats,
-    gbm
+    gbm,
+    withr (>= 2.4.0)
 Suggests:
     testthat (>= 3.0.0),
     knitr,

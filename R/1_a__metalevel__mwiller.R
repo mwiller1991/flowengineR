@@ -28,6 +28,10 @@
 #' - This is the main entry point into the framework.
 #' - It is intended to be called by users who wish to run training, (optional) pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
 #'
+#' **Random Numbers:**
+#' - Results are reproducible through the seeds of the engines, e.g. `controller_split(seed = ...)`.
+#' - The random number generator state of the R session is restored when `run_workflow()` returns.
+#'
 #' @param control A standardized list structure containing all workflow instructions and parameters. Created manually or via controller functions.
 #'
 #' @return A structured list containing at least `split_output` and `execution_output`. Additional elements may be included depending on the workflow stage.
@@ -56,6 +60,10 @@
 run_workflow <- function(control = list()) {
   log_msg("[MASTER] Initializing control object with defaults...", level = "info", control = control)
   control <- complete_control_with_defaults(control)
+  
+  # Engines set their own seeds (e.g. the splitter); restore the caller's
+  # random number generator state when the workflow ends
+  withr::local_preserve_seed()
   
   # 1. Call splitter engine
   log_msg(paste0("[MASTER] Using split engine: ", control$engine_select$split), level = "info", control = control)

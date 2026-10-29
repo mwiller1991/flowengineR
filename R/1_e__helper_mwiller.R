@@ -657,17 +657,17 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #--------------------------------------------------------------------
 ### Helper: Display Template for Control Snippets ###
 #--------------------------------------------------------------------
-#' Internal Helper: Show Control Template for an Engine
+#' Show Control Template for an Engine
 #'
 #' Loads and optionally prints or opens a prewritten control template file from the
-#' `R/` directory of the `flowengineR` package using the naming convention
+#' `templates_control` folder of the installed `flowengineR` package using the naming convention
 #' `*_template_<engine>.R`.
 #'
 #' **Purpose:**
 #' - Provides users and developers with ready-to-use example code snippets for control object configuration.
 #'
 #' **Naming Convention:**
-#' - Template filenames must contain `_template_<engine>.R` and be placed in the `R/` folder of the package.
+#' - Template filenames must contain `_template_<engine>.R` and be placed in `inst/templates_control` of the package source.
 #'
 #' **Usage Context:**
 #' - Intended for use during development or interactive prototyping.
@@ -690,7 +690,7 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #' # Open it in the RStudio editor (interactive sessions only)
 #' if (interactive()) show_template("split_random", open = TRUE)
 show_template <- function(name, open = FALSE, return_content = FALSE) {
-  # Locate R/ directory inside installed package
+  # Locate the template folder inside the installed package
   template_path <- system.file("templates_control", package = "flowengineR")
   if (template_path == "") stop("Could not locate package installation path.")
   
@@ -699,7 +699,7 @@ show_template <- function(name, open = FALSE, return_content = FALSE) {
   candidates <- list.files(template_path, full.names = TRUE, pattern = pattern)
   
   if (length(candidates) == 0) {
-    stop(sprintf("No template found for engine '%s'. Expected *_template_%s.R in R/ directory.", name, name))
+    stop(sprintf("No template found for engine '%s'. Expected *_template_%s.R in the package's templates_control folder.", name, name))
   }
   if (length(candidates) > 1) {
     warning(sprintf("Multiple templates found for '%s'. Using: %s", name, basename(candidates[[1]])))
@@ -718,7 +718,7 @@ show_template <- function(name, open = FALSE, return_content = FALSE) {
   if (return_content) {
     return(content)
   } else {
-    cat(paste(content, collapse = "\n"))
+    writeLines(content)
     return(invisible(TRUE))
   }
 }

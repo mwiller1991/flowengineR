@@ -2,7 +2,7 @@
 % Please edit documentation in R/1_e__helper_mwiller.R
 \name{show_template}
 \alias{show_template}
-\title{Internal Helper: Show Control Template for an Engine}
+\title{Show Control Template for an Engine}
 \usage{
 show_template(name, open = FALSE, return_content = FALSE)
 }
@@ -18,7 +18,7 @@ Invisibly returns \code{TRUE} or, if \code{return_content = TRUE}, returns chara
 }
 \description{
 Loads and optionally prints or opens a prewritten control template file from the
-\verb{R/} directory of the \code{flowengineR} package using the naming convention
+\code{templates_control} folder of the installed \code{flowengineR} package using the naming convention
 \verb{*_template_<engine>.R}.
 }
 \details{
@@ -29,7 +29,7 @@ Loads and optionally prints or opens a prewritten control template file from the
 
 \strong{Naming Convention:}
 \itemize{
-\item Template filenames must contain \verb{_template_<engine>.R} and be placed in the \verb{R/} folder of the package.
+\item Template filenames must contain \verb{_template_<engine>.R} and be placed in \code{inst/templates_control} of the package source.
 }
 
 \strong{Usage Context:}
