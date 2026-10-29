@@ -58,7 +58,7 @@ settings = list(
 
 ## 🧮 2. `data`
 
-Contains dataset paths and a variable definition created via [`controller_vars()`](reference/controller_vars.html).
+Contains dataset paths and a variable definition created via `controller_vars()`.
 
 ```r
 data = list(
@@ -102,16 +102,16 @@ Each entry refers to a registered engine name. Components can be set to `NULL` i
 
 Each engine used in `engine_select` should have a corresponding parameter entry using a controller function. Each controller defines the structure for a specific engine type:
 
-- [`controller_split()`](reference/controller_split.html)
-- [`controller_execution()`](reference/controller_execution.html)
-- [`controller_training()`](reference/controller_training.html)
-- [`controller_preprocessing()`](reference/controller_preprocessing.html)
-- [`controller_inprocessing()`](reference/controller_inprocessing.html)
-- [`controller_postprocessing()`](reference/controller_postprocessing.html)
-- [`controller_evaluation()`](reference/controller_evaluation.html)
-- [`controller_reportelement()`](reference/controller_reportelement.html)
-- [`controller_report()`](reference/controller_report.html)
-- [`controller_publish()`](reference/controller_publish.html)
+- `controller_split()`
+- `controller_execution()`
+- `controller_training()`
+- `controller_preprocessing()`
+- `controller_inprocessing()`
+- `controller_postprocessing()`
+- `controller_evaluation()`
+- `controller_reportelement()`
+- `controller_report()`
+- `controller_publish()`
 
 Each controller accepts parameters specific to the engine being used.
 The controller has to be used to ensure the input-format is fitting for the following workflow.

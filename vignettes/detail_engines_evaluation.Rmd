@@ -69,9 +69,9 @@ Returned via `initialize_output_eval()`:
 
 | Engine Name              | Function Name                           | Description                                    | Template Path                                                                  | Detail Page |
 |--------------------------|------------------------------------------|------------------------------------------------|----------------------------------------------------------------------------------|--------------|
-| `evaluate_mse`           | `engine_evaluation_mse()`               | Mean squared error evaluation                  | `inst/templates_control/7_2_a_template_control_evaluation_mse.R`                 | [📄](detail_engine_evaluation_mse.html) |
-| `evaluation_statisticalparity`       | `engine_evaluation_statisticalparity()` | Statistical parity difference (SPD)            | `inst/templates_control/7_3_a_template_control_evaluation_statisticalparity.R`   | [📄](detail_engine_evaluation_statisticalparity.html) |
-| `evaluate_summarystats`  | `engine_evaluation_summarystats()`      | Summary statistics (mean, sd, etc.)            | `inst/templates_control/7_1_a_template_control_evaluation_summarystats.R`        | [📄](detail_engine_evaluation_summarystats.html) |
+| `evaluate_mse`           | `engine_evaluation_mse()`               | Mean squared error evaluation                  | `inst/templates_control/7_2_a_template_control_evaluation_mse.R`                 | [📄](detail_engine_eval_mse.html) |
+| `evaluation_statisticalparity`       | `engine_evaluation_statisticalparity()` | Statistical parity difference (SPD)            | `inst/templates_control/7_3_a_template_control_evaluation_statisticalparity.R`   | [📄](detail_engine_eval_statisticalparity.html) |
+| `evaluate_summarystats`  | `engine_evaluation_summarystats()`      | Summary statistics (mean, sd, etc.)            | `inst/templates_control/7_1_a_template_control_evaluation_summarystats.R`        | [📄](detail_engine_eval_summarystats.html) |
 
 Use `list_registered_engines("evaluation")` to view all currently loaded evaluation engines.
 

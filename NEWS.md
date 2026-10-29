@@ -54,6 +54,8 @@ First release on CRAN.
   `zip` program.
 - `show_template()`: corrected the file paths named in the split
   templates; the printed template now ends with a line break.
+- Vignettes: fixed links to other vignettes and removed links to help
+  pages that only exist on a pkgdown website.
   
 
 

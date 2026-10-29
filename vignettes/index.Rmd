@@ -96,9 +96,9 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 
 ## 🛠️ Key Functions
 
-- [`run_workflow()`](reference/run_workflow.html): Execute a complete workflow.
-- [`controller_train()`](reference/controller_train.html): Set up model training behavior.
-- [`list_registered_engines()`](reference/list_registered_engines.html): Inspect the currently registered engines.
+- `run_workflow()`: Execute a complete workflow.
+- `controller_training()`: Set up model training behavior.
+- `list_registered_engines()`: Inspect the currently registered engines.
 
 ---
 
