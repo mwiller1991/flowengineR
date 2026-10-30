@@ -8,7 +8,7 @@ CRAN. A preprint is available at <doi:10.48550/arXiv.2511.00079>.
 
 ## Test environments
 
-* local: macOS 26.6 (aarch64-apple-darwin20), R 4.5.0
+* local: macOS 26.6 (aarch64-apple-darwin20), R 4.6.2
 * GitHub Actions: ubuntu-latest (R release and R devel),
   windows-latest (R release), macos-latest (R release)
 * win-builder: R-devel and R-release (R 4.6.2)
