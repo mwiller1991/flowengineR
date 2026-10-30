@@ -11,13 +11,15 @@ CRAN. A preprint is available at <doi:10.48550/arXiv.2511.00079>.
 * local: macOS 26.6 (aarch64-apple-darwin20), R 4.5.0
 * GitHub Actions: ubuntu-latest (R release and R devel),
   windows-latest (R release), macos-latest (R release)
-* win-builder: R-devel and R-release
+* win-builder: R-devel and R-release (R 4.6.2)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 * New submission.
+* Possibly misspelled words in DESCRIPTION: "Willer" and "Ruckdeschel"
+  are the authors' surnames in the reference to the accompanying paper.
 
 ## Additional comments
 
