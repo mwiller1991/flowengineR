@@ -56,6 +56,27 @@ First release on CRAN.
   templates; the printed template now ends with a line break.
 - Vignettes: fixed links to other vignettes and removed links to help
   pages that only exist on a pkgdown website.
+- `build_engine_with_llm_zip()` now works for all ten engine types.
+  Previously `inprocessing`, `postprocessing`, `reportelement`, `report`
+  and `publish` failed: the prompt template for in-processing engines
+  was missing, two reference file names were wrong, three prompt
+  templates contained `[[...]]`, which `glue` read as placeholders, and
+  the publishing type was registered as `"publishing"` instead of
+  `"publish"`. `"evaluation"` and `"publishing"` are now accepted as
+  aliases, and the prompt file is always written in UTF-8.
+- LLM prompt templates: the headings of five templates showed escape
+  codes such as `\U0001F527` instead of symbols, and the evaluation
+  template now names the input columns `predictions` and `actuals` as
+  used by the framework.
+- The materials of the engine builder (`inst/example_enginebuild_LLM/`)
+  now include the report and publish vignettes, and the copies of the
+  other vignettes are up to date.
+- `publish_pdf_basis`: the `alias` element of the output now holds the
+  publish alias; previously it held an unrelated function.
+- `execution_adaptive_output_sequential`: an incomplete result of a
+  custom stability function now raises the intended error message
+  instead of failing while the message is created.
+- Tests: a new test builds the LLM package for every engine type.
   
 
 

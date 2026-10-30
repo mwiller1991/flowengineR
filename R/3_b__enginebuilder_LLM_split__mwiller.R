@@ -22,15 +22,15 @@ All code must follow these conventions:
 
 ---
 
-### \\U0001F527 ENGINE TYPE
+### \U0001F527 ENGINE TYPE
 `split`
 
-### \\U0001F4C4 FUNCTIONAL DESCRIPTION
+### \U0001F4C4 FUNCTIONAL DESCRIPTION
 [[task_description]]
 
 ---
 
-### \\U0001F4A1 EXAMPLE FOR ORIENTATION
+### \U0001F4A1 EXAMPLE FOR ORIENTATION
 For reference, see the included example file `engine_split_random.R`. It implements a simple random holdout split.
 The core logic there is to randomly assign rows to training and test sets based on a given proportion.
 
@@ -46,7 +46,7 @@ consult the included vignette file `detail_engines_split.Rmd`.
 
 ---
 
-### \\U0001F4DD STANDARDIZED INPUT (via wrapper)
+### \U0001F4DD STANDARDIZED INPUT (via wrapper)
 All inputs must be accessed via the standardized control object structure. The engine receives inputs from the wrapper; the wrapper is called by the framework with a `control` object:
 
 - `control$data$full`: **data.frame**; full dataset to be split (**required**)
@@ -60,7 +60,7 @@ The wrapper must merge user parameters with defaults via:
 
 ---
 
-### \\U0001F4C8 REQUIRED OUTPUT STRUCTURE
+### \U0001F4C8 REQUIRED OUTPUT STRUCTURE
 The wrapper must return the result using the function `initialize_output_split()`, with the following structure:
 
 - `split_type`: character string describing the split method, e.g., \"random\"
@@ -74,13 +74,13 @@ The wrapper must return the result using the function `initialize_output_split()
 
 ---
 
-### \\U0001F3F7 NAMING CONVENTION
+### \U0001F3F7 NAMING CONVENTION
 The engine name (used in the function names) should reflect the method being implemented.
 Use a clear and specific name in place of 'custom', such as 'random'.
 
 ---
 
-### \\U0001F4E6 REQUIRED FILE STRUCTURE
+### \U0001F4E6 REQUIRED FILE STRUCTURE
 The final output must be a single R **file** containing exactly these three functions:
 - `engine_split_<method>()`
 - `wrapper_split_<method>()`

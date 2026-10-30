@@ -156,7 +156,7 @@ You may implement engines that:
 
 ## 🔍 Further Reading
 
-- [`run_workflow_singlesplitloop()`](reference/run_workflow_singlesplitloop.html): internal function used to process individual splits.
-- [`prepare_resume_from_slurm_array()`](reference/prepare_resume_from_slurm_array.html): utility to continue SLURM-based execution.
-- [`initialize_output_execution()`](reference/initialize_output_execution.html): creates standardized wrapper output.
+- `run_workflow_singlesplitloop()`: internal function used to process individual splits.
+- `prepare_resume_from_slurm_array()`: utility to continue SLURM-based execution.
+- `initialize_output_execution()`: creates standardized wrapper output.
 - Templates and defaults in `inst/templates_control/2_1_*/`

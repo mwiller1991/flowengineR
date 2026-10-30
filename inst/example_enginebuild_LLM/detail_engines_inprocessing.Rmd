@@ -69,7 +69,7 @@ Returned via `initialize_output_fairness_in()`:
 
 | Engine Name                      | Function Name                                  | Description                          | Template Path                                                                 | Detail Page |
 |----------------------------------|-----------------------------------------------|--------------------------------------|--------------------------------------------------------------------------------|-------------|
-| `inprocessing_fairness_adversialdebiasing` | `engine_inprocessing_fairness_adversialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_control_inprocessing_fairness_adversialdebiasing.R` | [📄](detail_inprocessing_fairness_adversialdebiasing.html) |
+| `inprocessing_fairness_adversialdebiasing` | `engine_inprocessing_fairness_adversialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_control_inprocessing_fairness_adversialdebiasing.R` | [📄](detail_engine_inprocessing_fairness_adversialdebiasing.html) |
 
 Use `list_registered_engines("inprocessing")` to inspect all currently loaded inprocessing engines.
 

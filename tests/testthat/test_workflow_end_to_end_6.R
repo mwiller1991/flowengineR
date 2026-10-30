@@ -151,6 +151,7 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
     expect_true(result$publishing$pdf_basis_test_report$success)
     expect_true(file.exists(result$publishing$pdf_basis_test_singleelement$path))
     expect_true(file.exists(result$publishing$pdf_basis_test_report$path))
+    expect_identical(result$publishing$pdf_basis_test_report$alias, "pdf_basis_test_report")
   }
   
   # Cleanup exported file

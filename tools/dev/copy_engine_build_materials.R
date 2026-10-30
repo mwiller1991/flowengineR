@@ -154,8 +154,8 @@ fs::file_copy(
 )
 
 fs::file_copy(
-  "vignettes/detail_engines_evaluation.Rmd",
-  "inst/example_enginebuild_LLM/detail_engines_evaluation.Rmd",
+  "vignettes/detail_engines_report.Rmd",
+  "inst/example_enginebuild_LLM/detail_engines_report.Rmd",
   overwrite = TRUE
 )
 
@@ -171,7 +171,7 @@ fs::file_copy(
 )
 
 fs::file_copy(
-  "vignettes/detail_engines_evaluation.Rmd",
-  "inst/example_enginebuild_LLM/detail_engines_evaluation.Rmd",
+  "vignettes/detail_engines_publish.Rmd",
+  "inst/example_enginebuild_LLM/detail_engines_publish.Rmd",
   overwrite = TRUE
 )
