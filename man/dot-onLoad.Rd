@@ -11,6 +11,9 @@
 
 \item{pkgname}{The name of the package being loaded.}
 }
+\value{
+No return value, called for its side effect.
+}
 \description{
 This function is automatically called when the \code{flowengineR} package is loaded (not just attached).
 It initializes the internal environment and registers all built-in engine wrappers.

@@ -5,7 +5,7 @@
 \alias{flowengineR_env}
 \title{Internal Environment for flowengineR}
 \format{
-An object of class \code{environment} of length 1.
+An environment, created with \code{new.env(parent = emptyenv())}.
 }
 \usage{
 flowengineR_env

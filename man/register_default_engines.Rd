@@ -6,6 +6,10 @@
 \usage{
 register_default_engines()
 }
+\value{
+No return value, called for its side effect of filling
+\code{flowengineR_env$engines}.
+}
 \description{
 This function populates the internal environment \code{flowengineR_env} with all built-in
 engine wrappers used by the flowengineR framework. It is intended for internal use
