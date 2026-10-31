@@ -57,8 +57,8 @@ To make the first steps with `flowengineR` easier, the package provides an **int
 This menu helps you explore the most important entry points, including running the example workflow, browsing vignettes, or inspecting the structure of control objects.
 
 ```r
-# Launch the start menu
-flowengineR_start()
+# Launch the start menu and keep the objects it creates
+start <- flowengineR_start()
 ```
 
 When you run the function, you will see a menu in your console:
@@ -78,9 +78,9 @@ Where would you like to start?
 
 Choose an option by typing its number. For example:
 
-- **1** runs the example workflow and assigns the results to `results_example`.  
-- **4** lists all registered engines and assigns them to `engine_list`.  
-- **6** shows the structure of the control object (`control_example`).  
+- **1** runs the example workflow; the results are returned as `start$results_example`.  
+- **4** lists all registered engines; the list is returned as `start$engine_list`.  
+- **6** shows the structure of the control object, returned as `start$control_example`.
 
 This interactive helper is a great way to explore `flowengineR` without memorizing function names from the start.
 
@@ -209,10 +209,10 @@ One of the core principles of **flowengineR** is modularity through interchangea
 | [`execution_*`](detail_engines_execution.html)     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
 | [`preprocessing_*`](detail_engines_preprocessing.html) | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `preprocessing_fairness_resampling`  |
 | [`train_*`](detail_engines_train.html)         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_gbm`              |
-| [`inprocessing_*`](detail_engines_inprocessing.html)  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `inpro(..)_adversialdebiasing`       |
+| [`inprocessing_*`](detail_engines_inprocessing.html)  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `inpro(..)_adversarialdebiasing`       |
 | [`postprocessing_*`](detail_engines_postprocessing.html)| Post-Processing    | Modifies predictions after model execution                                  | `predictions`, `params`, `protected_attributes`            | `adjusted_predictions`, `method`           | `postprocessing_fairness_genresidual`|
 | [`eval_*`](detail_engines_evaluation.html)          | Evaluation         | Calculates performance or bias metrics                                      | `predictions`, `actuals`, `params`, `protected_attributes` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
-| [`reportelement_*`](detail_engines_reportelements.html) | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
+| [`reportelement_*`](detail_engines_reportelement.html) | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
 | [`report_*`](detail_engines_report.html)        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_modelsummary`                |
 | [`publish_*`](detail_engines_publish.html)       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_excel_basis`                |
 

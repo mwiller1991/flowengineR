@@ -57,16 +57,16 @@ engine_execution_adaptive_output_batchtools_multicore <- function(control) {
 #'     `"cv_relative"`, `"cv_absolute"`,  
 #'     `"cohen_absolute"`
 #' - `threshold` *(numeric)*: Stability threshold.
-#' - `window` *(integer ≥ 2)*: Number of trailing values for comparison.
-#' - `min_splits` *(integer ≥ 1)*: Minimum iterations before checking for stability.
-#' - `max_splits` *(integer ≥ min_splits)*: Maximum iterations allowed.
+#' - `window` *(integer >= 2)*: Number of trailing values for comparison.
+#' - `min_splits` *(integer >= 1)*: Minimum iterations before checking for stability.
+#' - `max_splits` *(integer >= min_splits)*: Maximum iterations allowed.
 #' - `custom_stability_function` *(function or NULL)*: Optional custom convergence function.
 #' - `seed_base` *(integer)*: Base seed; seed for split `i` is `seed_base + i`.
-#' - `n_splits_per_iteration` *(integer ≥ 1)*: Number of splits executed per batch (parallel jobs).
+#' - `n_splits_per_iteration` *(integer >= 1)*: Number of splits executed per batch (parallel jobs).
 #' - `registry_folder` *(character)*: Path to writeable batchtools registry folder.
 #' - `seed` *(integer)*: Seed for initializing batchtools registry.
 #' - `required_packages` *(character vector)*: Required packages on each job node.
-#' - `ncpus` *(integer ≥ 1)*: Number of CPUs used per job.
+#' - `ncpus` *(integer >= 1)*: Number of CPUs used per job.
 #'
 #' **Example Control Snippet:**
 #' ```
@@ -82,7 +82,7 @@ engine_execution_adaptive_output_batchtools_multicore <- function(control) {
 #'     max_splits = 50,
 #'     seed_base = 2000,
 #'     n_splits_per_iteration = 3,
-#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+#'     registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
 #'     seed = 123,
 #'     required_packages = c("caret", "dplyr"),
 #'     ncpus = 4
@@ -162,7 +162,7 @@ wrapper_execution_adaptive_output_batchtools_multicore <- function(control, spli
     
     # Create a new registry per iteration
     reg_dir <- file.path(params$registry_folder, paste0("iter_", i))
-    unlink(reg_dir, recursive = TRUE)
+    prepare_registry_folder(reg_dir)
     reg <- batchtools::makeRegistry(
       file.dir = reg_dir,
       make.default = FALSE,
@@ -291,10 +291,10 @@ default_params_execution_adaptive_output_batchtools_multicore <- function() {
     custom_stability_function = NULL,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
     seed = 123,
     required_packages = character(0),
-    ncpus = parallel::detectCores()
+    ncpus = getOption("mc.cores", 2L)
   )
 }
 #--------------------------------------------------------------------

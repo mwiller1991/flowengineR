@@ -37,6 +37,14 @@
 #' @param protected_vars_binary Character vector. Protected variables prepared for fairness evaluation (e.g., binary dummies).
 #'
 #' @return Named list. To be stored in \code{control$data$vars} and passed to all engines that require variable references. Compatible with all \code{flowengineR} modules.
+#' @examples
+#' vars <- controller_vars(
+#'   feature_vars = c("income", "loan_amount", "credit_score"),
+#'   protected_vars = "gender.Female",
+#'   target_var = "default",
+#'   protected_vars_binary = "gender.Female"
+#' )
+#' str(vars)
 #' @export
 #--------------------------------------------------------------------
 controller_vars <- function(feature_vars, protected_vars, target_var, protected_vars_binary) {
@@ -90,6 +98,8 @@ controller_vars <- function(feature_vars, protected_vars, target_var, protected_
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$split} and passed to the splitter engine. Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_split(seed = 42, params = list(split_ratio = 0.7))
 #' @export
 #--------------------------------------------------------------------
 
@@ -138,6 +148,12 @@ controller_split <- function(seed = 123, target_var = "default", params = list()
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$execution} and passed to the execution engine. Compatible with all \code{flowengineR} modules.
+#' @examples
+#' # Sequential execution needs no parameters
+#' controller_execution()
+#'
+#' # Parameters for the batchtools multicore engine
+#' controller_execution(params = list(ncpus = 2))
 #' @export
 controller_execution <- function(params = list()) {
   list(
@@ -181,6 +197,8 @@ controller_execution <- function(params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$preprocessing} and passed to a preprocessing engine.
+#' @examples
+#' controller_preprocessing(params = list(method = "oversampling"))
 #' @export
 controller_preprocessing <- function(params = list()) {
   list(
@@ -226,6 +244,11 @@ controller_preprocessing <- function(params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$train} and passed to the training engine. Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_training(
+#'   formula = default ~ income + loan_amount + credit_score,
+#'   norm_data = TRUE
+#' )
 #' @export
 controller_training <- function(formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
                                 norm_data = TRUE,
@@ -277,6 +300,11 @@ controller_training <- function(formula = as.formula(paste(vars$target_var, "~",
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$inprocessing} and passed to an in-processing engine.
+#' @examples
+#' controller_inprocessing(
+#'   norm_data = TRUE,
+#'   params = list(learning_rate = 0.01, num_epochs = 10)
+#' )
 #' @export
 controller_inprocessing <- function(norm_data = TRUE, params = list()) {
   list(
@@ -333,6 +361,9 @@ controller_inprocessing <- function(norm_data = TRUE, params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
 #' @return Named list. To be stored in \code{control$params$postprocessing} and passed to the post-processing engine.
+#' @examples
+#' # The generalized residual engine needs no extra parameters
+#' controller_postprocessing()
 #' @export
 controller_postprocessing <- function(params = list()) {
   list(
@@ -385,6 +416,10 @@ controller_postprocessing <- function(params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to an evaluation engine; each value is a list of engine-specific parameters.
 #'
 #' @return Named list. To be stored in \code{control$params$evaluation} and passed to the evaluation engine(s). Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_evaluation(
+#'   params = list(eval_mse = list(), eval_statisticalparity = list())
+#' )
 #' @export
 controller_evaluation <- function(params = list()) {
   list(
@@ -435,6 +470,13 @@ controller_evaluation <- function(params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a reportelement alias, and each value is a list of engine-specific parameters.
 #'
 #' @return Named list. To be stored in \code{control$params$reportelement} and passed to the reportelement engine(s). Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_reportelement(
+#'   params = list(
+#'     gender_box = list(group_var = "gender.Female", source = "train"),
+#'     metrics_table = list(metrics = c("mse", "statisticalparity"))
+#'   )
+#' )
 #' @export
 controller_reportelement <- function(params = list()) {
   list(
@@ -486,6 +528,12 @@ controller_reportelement <- function(params = list()) {
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name corresponds to a report alias, and each value is a list of engine-specific parameters.
 #'
 #' @return Named list. To be stored in \code{control$params$report} and passed to the report engine(s). Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_report(
+#'   params = list(
+#'     modelsummary = list(gender_box = "gender_box", metrics_table = "metrics_table")
+#'   )
+#' )
 #' @export
 controller_report <- function(params = list()) {
   list(
@@ -535,11 +583,20 @@ controller_report <- function(params = list()) {
 #' ```
 #'
 #' @param output_folder Character string. Global directory path to store all exports.
+#'   Defaults to the session's temporary directory ([tempdir()]), which is deleted
+#'   when the R session ends. Set a permanent folder to keep the exported files.
 #' @param params Named list. Engine-specific configuration. Default is empty list. Each name should match a `control$engine_select$publish` alias, and contain a list of export parameters (`obj_type`, `obj_name`, etc.).
 #'
 #' @return Named list. To be stored in \code{control$params$publish} and passed to the publishing engine(s). Compatible with all \code{flowengineR} modules.
+#' @examples
+#' controller_publish(
+#'   output_folder = tempdir(),
+#'   params = list(
+#'     metrics_excel = list(obj_type = "reportelement", obj_name = "metrics_table")
+#'   )
+#' )
 #' @export
-controller_publish <- function(output_folder = "~/publish_exports", 
+controller_publish <- function(output_folder = tempdir(),
                                params = list()) {
   list(
     output_folder = output_folder,
@@ -588,6 +645,28 @@ controller_publish <- function(output_folder = "~/publish_exports",
 #' @param metadata Optional. A named list of metadata to be stored in `specific_output` of the execution engine (e.g., runtime info, job ID).
 #'
 #' @return Named list. To be passed to \code{resume_workflow()} as input after external execution. Compatible with all \code{flowengineR} modules.
+#' @examples
+#' data <- create_dataset_bank(n = 500, seed = 1)
+#' vars <- controller_vars(
+#'   feature_vars = c("income", "loan_amount", "credit_score"),
+#'   protected_vars = "gender.Female",
+#'   target_var = "default",
+#'   protected_vars_binary = "gender.Female"
+#' )
+#' control <- list(
+#'   settings = list(log = list(log_show = FALSE)),
+#'   data = list(full = data, vars = vars)
+#' )
+#' result <- run_workflow(control)
+#'
+#' # Build a resume object from results that were computed elsewhere
+#' resume_object <- controller_resume_execution(
+#'   control = control,
+#'   split_output = result$split_output,
+#'   workflow_results = result$execution_output$workflow_results,
+#'   metadata = list(source = "example")
+#' )
+#' names(resume_object)
 #' @export
 controller_resume_execution <- function(control, split_output, workflow_results, metadata = NULL) {
   list(

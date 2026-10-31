@@ -9,7 +9,9 @@ create_dataset_bank(n = 10000, seed = 123, onehot = TRUE, pos_rate = 0.05)
 \arguments{
 \item{n}{Integer. Number of customers (rows).}
 
-\item{seed}{Integer. RNG seed for reproducibility.}
+\item{seed}{Integer. RNG seed for reproducibility. It is used only inside
+this function; the random number generator state of the session is
+restored afterwards.}
 
 \item{onehot}{Logical. If TRUE, returns one-hot encoded data via caret::dummyVars().}
 

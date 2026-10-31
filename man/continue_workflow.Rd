@@ -51,3 +51,21 @@ This function completes a modular workflow by performing post-execution steps:
 \item May also be called manually (e.g., from \code{resume_workflow()}) to finalize an externally executed pipeline.
 }
 }
+\examples{
+data <- create_dataset_bank(n = 500, seed = 1)
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score"),
+  protected_vars = "gender.Female",
+  target_var = "default",
+  protected_vars_binary = "gender.Female"
+)
+control <- list(
+  settings = list(log = list(log_show = FALSE)),
+  data = list(full = data, vars = vars)
+)
+result <- run_workflow(control)
+
+# Repeat the steps after execution (aggregation, reporting, publishing)
+again <- continue_workflow(control, result$split_output, result$execution_output)
+names(again$aggregated_results)
+}

@@ -70,7 +70,7 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 - [In Detail: Training Engine – Gradient boosting models (GBM)](detail_engine_train_gbm.html): Trains a GBM using the `gbm` package. Supports classification and regression with optional sample weighting and tunable parameters.
 
 #### Inprocessing Engines
-- [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversialdebiasing.html): Uses adversarial learning to reduce bias during model training.
+- [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversarialdebiasing.html): Uses adversarial learning to reduce bias during model training.
 
 #### Postprocessing Engines
 - [In Detail: Postprocessing Engine – General Residual Adjustment](detail_engine_postprocessing_fairness_genresidual.html): Adjusts predictions post-hoc using group-specific mean residuals.
@@ -96,9 +96,9 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 
 ## 🛠️ Key Functions
 
-- [`run_workflow()`](reference/run_workflow.html): Execute a complete workflow.
-- [`controller_train()`](reference/controller_train.html): Set up model training behavior.
-- [`list_registered_engines()`](reference/list_registered_engines.html): Inspect the currently registered engines.
+- `run_workflow()`: Execute a complete workflow.
+- `controller_training()`: Set up model training behavior.
+- `list_registered_engines()`: Inspect the currently registered engines.
 
 ---
 

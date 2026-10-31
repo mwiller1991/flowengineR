@@ -51,4 +51,32 @@ or directly continue with downstream processing via \code{continue_workflow()}.
 \item This is the main entry point into the framework.
 \item It is intended to be called by users who wish to run training, (optional) pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
 }
+
+\strong{Random Numbers:}
+\itemize{
+\item Results are reproducible through the seeds of the engines, e.g. \code{controller_split(seed = ...)}.
+\item The random number generator state of the R session is restored when \code{run_workflow()} returns.
+}
+}
+\examples{
+data <- create_dataset_bank(n = 500, seed = 1)
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score"),
+  protected_vars = "gender.Female",
+  target_var = "default",
+  protected_vars_binary = "gender.Female"
+)
+control <- list(
+  settings = list(log = list(log_show = FALSE)),
+  data = list(full = data, vars = vars)
+)
+
+# Three-fold cross-validation instead of the default single split
+control$engine_select <- list(split = "split_cv")
+control$params <- list(split = controller_split(seed = 1, params = list(cv_folds = 3)))
+result <- run_workflow(control)
+names(result)
+
+# MSE aggregated over the three folds
+result$aggregated_results$mse
 }

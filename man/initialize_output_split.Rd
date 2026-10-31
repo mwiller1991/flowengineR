@@ -62,3 +62,13 @@ initialize_output_split(
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+data <- create_dataset_bank(n = 200, seed = 1)
+train_rows <- seq_len(150)
+out <- initialize_output_split(
+  split_type = "custom_holdout",
+  splits = list(holdout = list(train = data[train_rows, ], test = data[-train_rows, ])),
+  seed = 1
+)
+names(out)
+}

@@ -1,4 +1,19 @@
 #--------------------------------------------------------------------
+### Helper: Null-default operator ###
+#--------------------------------------------------------------------
+#' Null-default operator
+#'
+#' Returns `y` if `x` is `NULL`, otherwise `x`. Defined internally because
+#' the base R version is only available from R 4.4.0, while the package
+#' supports R >= 4.1.0.
+#'
+#' @param x,y Any R objects.
+#' @return `x` if it is not `NULL`, otherwise `y`.
+#' @noRd
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+
+#--------------------------------------------------------------------
 ### Helper: Internal Logging Function with Colors (Extended with 'error') ###
 #--------------------------------------------------------------------
 #' Helper: Internal Logging Function with Colors
@@ -14,6 +29,9 @@
 #' - `"warn"`: warnings and recoverable issues (yellow).
 #' - `"error"`: critical errors (red, optionally triggers stop()).
 #'
+#' Messages below the chosen `log_level` are not shown: `"info"` shows
+#' `info`, `warn` and `error`, but not `debug`; `"none"` shows nothing.
+#'
 #' **Usage Example:**
 #' ```r
 #' log_msg("[INFO] Workflow started", level = "info", control = control)
@@ -23,35 +41,50 @@
 #' @param msg A character string. The message to display.
 #' @param level A character string. One of `"none"`, `"debug"`, `"info"`, `"warn"`, `"error"`.
 #' @param control The control object containing `settings$log$log_show` and `settings$log$log_level`.
-#' @param abort Logical. If `TRUE` and level is `"error"`, the function will stop execution.
+#' @param abort Logical. If `TRUE` and level is `"error"`, the function will stop execution, even if logging is switched off.
 #'
 #' @return Invisibly returns `NULL`. Used for side-effect printing only.
+#' @examples
+#' control <- list(settings = list(log = list(log_show = TRUE, log_level = "info")))
+#' log_msg("[INFO] Workflow started", level = "info", control = control)
+#' log_msg("[WARNING] Few observations in one group", level = "warn", control = control)
+#'
+#' # Not shown: 'debug' is below the chosen log level 'info'
+#' log_msg("[DEBUG] Details", level = "debug", control = control)
+#'
+#' # Errors can stop the workflow
+#' try(log_msg("[ERROR] Missing predictions", level = "error",
+#'             control = control, abort = TRUE))
 #' @export
 log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
-  if (is.null(control) || !isTRUE(control$settings$log$log_show)) return(invisible(NULL))
-  
   levels <- c("none" = 0, "debug" = 1, "info" = 2, "warn" = 3, "error" = 4)
-  user_level <- control$settings$log$log_level %||% "info"
-  if (!(user_level %in% names(levels))) user_level <- "info"
   if (!(level %in% names(levels))) level <- "info"
-  
-  if (levels[[user_level]] < levels[[level]]) return(invisible(NULL))
-  
-  ansi_colored <- function(text, level) {
-    switch(level,
-           "debug" = paste0("\033[90m", text, "\033[0m"),  # grey
-           "info"  = paste0("\033[94m", text, "\033[0m"),  # blue
-           "warn"  = paste0("\033[93m", text, "\033[0m"),  # yellow
-           "error" = paste0("\033[91m", text, "\033[0m"),  # red
-           text)
+
+  # Show the message only if logging is on and its level reaches the threshold
+  show <- !is.null(control) && isTRUE(control$settings$log$log_show)
+  if (show) {
+    user_level <- control$settings$log$log_level %||% "info"
+    if (!(user_level %in% names(levels))) user_level <- "info"
+    show <- user_level != "none" && levels[[level]] >= levels[[user_level]]
   }
-  
-  message(ansi_colored(msg, level))
-  
+
+  if (show) {
+    ansi_colored <- function(text, level) {
+      switch(level,
+             "debug" = paste0("\033[90m", text, "\033[0m"),  # grey
+             "info"  = paste0("\033[94m", text, "\033[0m"),  # blue
+             "warn"  = paste0("\033[93m", text, "\033[0m"),  # yellow
+             "error" = paste0("\033[91m", text, "\033[0m"),  # red
+             text)
+    }
+    message(ansi_colored(msg, level))
+  }
+
+  # Aborting is control flow, not output: it happens even if logging is off
   if (level == "error" && isTRUE(abort)) {
     stop(msg, call. = FALSE)
   }
-  
+
   invisible(NULL)
 }
 #--------------------------------------------------------------------
@@ -213,7 +246,45 @@ complete_control_with_defaults <- function(control) {
     control$params$publish <- controller_publish()
   }
   
+  # Renamed engines: the old names keep working
+  control$engine_select$inprocessing <- resolve_engine_name(control$engine_select$inprocessing)
+  
   return(control)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Helper: Renamed Engines ###
+#--------------------------------------------------------------------
+# Engines that were renamed: old name = current name.
+renamed_engines <- c(
+  inprocessing_fairness_adversialdebiasing = "inprocessing_fairness_adversarialdebiasing"
+)
+
+#' Helper: Resolve Renamed Engine Names
+#'
+#' Replaces the name of a renamed engine by its current name, so that
+#' control objects with the old name keep working. Informs once per session.
+#'
+#' @param engine_name Character string with an engine name, or `NULL`.
+#'
+#' @return The current engine name (or `NULL`).
+#' @noRd
+resolve_engine_name <- function(engine_name) {
+  if (!is.character(engine_name) || length(engine_name) != 1L ||
+      !engine_name %in% names(renamed_engines)) {
+    return(engine_name)
+  }
+  current <- unname(renamed_engines[engine_name])
+  if (!engine_name %in% flowengineR_env$renamed_notified) {
+    message(sprintf(paste0("Engine '%s' was renamed to '%s' in flowengineR 1.1.0. ",
+                           "The old name still works; please update your control object."),
+                    engine_name, current))
+    flowengineR_env$renamed_notified <- c(flowengineR_env$renamed_notified, engine_name)
+  }
+  current
 }
 #--------------------------------------------------------------------
 
@@ -245,6 +316,12 @@ complete_control_with_defaults <- function(control) {
 #'             If `NULL` (default), all registered engines are returned, grouped by type.
 #'
 #' @return Either a filtered named list (if `type` is provided), or a named list of engine groups.
+#' @examples
+#' # Engine types
+#' names(list_registered_engines())
+#'
+#' # Engines of one type
+#' names(list_registered_engines(type = "train"))
 #' @export
 list_registered_engines <- function(type = NULL) {
   all_engines <- flowengineR_env$engines
@@ -295,6 +372,9 @@ list_registered_engines <- function(type = NULL) {
 #' @param default_hyperparameters A named list of default values defined by the engine.
 #'
 #' @return A named list containing the merged parameter set.
+#' @examples
+#' defaults <- list(split_ratio = 0.7, seed = 123)
+#' merge_with_defaults(list(split_ratio = 0.8), defaults)
 #' @export
 merge_with_defaults <- function(user_hyperparameters, default_hyperparameters) {
   if (is.null(user_hyperparameters)) {
@@ -416,6 +496,13 @@ apply_minmax_params <- function(data, params) {
 #' @param data A list with `original` and `normalized` elements.
 #'
 #' @return A data frame used for model training.
+#' @examples
+#' data <- list(
+#'   original = data.frame(income = c(20000, 50000)),
+#'   normalized = data.frame(income = c(0, 1))
+#' )
+#' select_training_data(norm_data = TRUE, data = data)
+#' select_training_data(norm_data = FALSE, data = data)
 #' @export
 select_training_data <- function(norm_data, data) {
   if (isTRUE(norm_data)) {
@@ -571,16 +658,17 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
   engine_function_name <- paste0("engine_", engine_name)
   default_params_function_name <- paste0("default_params_", engine_name)
   
-  # Check existence of required functions
-  if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
-    stop(paste("[WARNING] Engine function", engine_function_name, "not found in global environment."))
+  # Check existence of required functions (defined next to the wrapper)
+  engine_env <- environment(wrapper_function)
+  if (!exists(engine_function_name, mode = "function", envir = engine_env)) {
+    stop(paste("[WARNING] Engine function", engine_function_name, "not found in the engine file."))
   }
-  if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
-    stop(paste("[WARNING] Default params function", default_params_function_name, "not found in global environment."))
+  if (!exists(default_params_function_name, mode = "function", envir = engine_env)) {
+    stop(paste("[WARNING] Default params function", default_params_function_name, "not found in the engine file."))
   }
   if (!is.function(wrapper_function)) stop("[WARNING] Wrapper is not a function.")
-  if (!is.function(get(engine_function_name))) stop("[WARNING] Engine is not a function.")
-  if (!is.function(get(default_params_function_name))) stop("[WARNING] Default params is not a function.")
+  if (!is.function(get(engine_function_name, envir = engine_env))) stop("[WARNING] Engine is not a function.")
+  if (!is.function(get(default_params_function_name, envir = engine_env))) stop("[WARNING] Default params is not a function.")
   
   # Check wrapper function arguments
   actual_args <- names(formals(wrapper_function))
@@ -607,17 +695,17 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #--------------------------------------------------------------------
 ### Helper: Display Template for Control Snippets ###
 #--------------------------------------------------------------------
-#' Internal Helper: Show Control Template for an Engine
+#' Show Control Template for an Engine
 #'
 #' Loads and optionally prints or opens a prewritten control template file from the
-#' `R/` directory of the `flowengineR` package using the naming convention
+#' `templates_control` folder of the installed `flowengineR` package using the naming convention
 #' `*_template_<engine>.R`.
 #'
 #' **Purpose:**
 #' - Provides users and developers with ready-to-use example code snippets for control object configuration.
 #'
 #' **Naming Convention:**
-#' - Template filenames must contain `_template_<engine>.R` and be placed in the `R/` folder of the package.
+#' - Template filenames must contain `_template_<engine>.R` and be placed in `inst/templates_control` of the package source.
 #'
 #' **Usage Context:**
 #' - Intended for use during development or interactive prototyping.
@@ -630,13 +718,17 @@ validate_engine_structure <- function(wrapper_function, engine_name, expected_ar
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' show_template("split_random")           # Prints to console
-#' show_template("split_random", open=TRUE)  # Opens in RStudio
-#' text <- show_template("split_random", return_content = TRUE)  # Returns character vector
-#' }
+#' # Print a control template to the console
+#' show_template("split_random")
+#'
+#' # Return it as a character vector
+#' txt <- show_template("split_random", return_content = TRUE)
+#' head(txt)
+#'
+#' # Open it in the RStudio editor (interactive sessions only)
+#' if (interactive()) show_template("split_random", open = TRUE)
 show_template <- function(name, open = FALSE, return_content = FALSE) {
-  # Locate R/ directory inside installed package
+  # Locate the template folder inside the installed package
   template_path <- system.file("templates_control", package = "flowengineR")
   if (template_path == "") stop("Could not locate package installation path.")
   
@@ -645,7 +737,7 @@ show_template <- function(name, open = FALSE, return_content = FALSE) {
   candidates <- list.files(template_path, full.names = TRUE, pattern = pattern)
   
   if (length(candidates) == 0) {
-    stop(sprintf("No template found for engine '%s'. Expected *_template_%s.R in R/ directory.", name, name))
+    stop(sprintf("No template found for engine '%s'. Expected *_template_%s.R in the package's templates_control folder.", name, name))
   }
   if (length(candidates) > 1) {
     warning(sprintf("Multiple templates found for '%s'. Using: %s", name, basename(candidates[[1]])))
@@ -664,7 +756,7 @@ show_template <- function(name, open = FALSE, return_content = FALSE) {
   if (return_content) {
     return(content)
   } else {
-    cat(paste(content, collapse = "\n"))
+    writeLines(content)
     return(invisible(TRUE))
   }
 }

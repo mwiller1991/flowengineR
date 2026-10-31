@@ -39,6 +39,13 @@
 #' @param continue_workflow Logical. Whether the workflow should proceed after execution.
 #'
 #' @return A standardized list returned from all execution engines.
+#' @examples
+#' out <- initialize_output_execution(
+#'   execution_type = "custom_sequential",
+#'   workflow_results = list(holdout = list()),
+#'   specific_output = list(n_splits = 1)
+#' )
+#' str(out, max.level = 1)
 #' @export
 initialize_output_execution <- function(execution_type, workflow_results, params = NULL, specific_output = NULL, continue_workflow = TRUE) {
   output <- list(

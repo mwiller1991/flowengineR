@@ -9,7 +9,8 @@
 #' reporting, publishing, and execution.
 #'
 #' **Workflow:**
-#' 1. Loads the engine file using `source()`.
+#' 1. Loads the engine file into its own environment (a child of the
+#'    package namespace), so the user's workspace is not modified.
 #' 2. Expects the file to contain:
 #'    - `wrapper_<engine_name>`: Standardized interface
 #'    - `engine_<engine_name>`: Core logic function
@@ -49,14 +50,26 @@
 #' @param engine_name Character. Name of the engine, e.g., `"train_lm"`.
 #' @param file_path Character. Path to the R script that defines the engine components.
 #'
-#' @return Invisibly registers the engine into `flowengineR_env$engines[[engine_name]]` if valid.
+#' @return `NULL`, invisibly. Called for its side effect of registering the
+#'   engine in `flowengineR_env$engines[[engine_name]]` if it is valid.
+#' @examples
+#' # Register the evaluation engine generated in the LLM demonstration
+#' engine_file <- system.file(
+#'   "llm_demonstrations", "2025-08-29_eval_median", "outputs",
+#'   "engine_eval_median.R", package = "flowengineR"
+#' )
+#' register_engine("eval_median", engine_file)
+#' is.element("eval_median", names(list_registered_engines(type = "eval")))
 #' @export
 register_engine <- function(engine_name, file_path) {
   tryCatch({
     full_engine_type <- strsplit(engine_name, "_")[[1]][1]
     
-    # Source the engine file
-    source(file_path, local = FALSE)
+    # Load the engine file into its own environment instead of the user's
+    # workspace; its parent is the package namespace, so the engine sees the
+    # same functions as the built-in engines
+    engine_env <- new.env(parent = asNamespace("flowengineR"))
+    source(file_path, local = engine_env)
     
     # Dynamically construct function names
     wrapper_function_name <- paste0("wrapper_", engine_name)
@@ -65,13 +78,13 @@ register_engine <- function(engine_name, file_path) {
     validate_function_name <- paste0("validate_engine_", full_engine_type)
     
     # Check if all required functions exist
-    if (!exists(engine_function_name, mode = "function", envir = .GlobalEnv)) {
+    if (!exists(engine_function_name, mode = "function", envir = engine_env)) {
       stop(paste("Engine function", engine_function_name, "not found in file:", file_path))
     }
-    if (!exists(wrapper_function_name, mode = "function", envir = .GlobalEnv)) {
+    if (!exists(wrapper_function_name, mode = "function", envir = engine_env)) {
       stop(paste("Wrapper function", wrapper_function_name, "not found in file:", file_path))
     }
-    if (!exists(default_params_function_name, mode = "function", envir = .GlobalEnv)) {
+    if (!exists(default_params_function_name, mode = "function", envir = engine_env)) {
       stop(paste("Default params function", default_params_function_name, "not found in file:", file_path))
     }
     if (!exists(validate_function_name, mode = "function", envir = asNamespace("flowengineR"))) {
@@ -79,8 +92,8 @@ register_engine <- function(engine_name, file_path) {
     }
     
     # Get the functions
-    wrapper_function <- get(wrapper_function_name, envir = .GlobalEnv)
-    default_params_function <- get(default_params_function_name, envir = .GlobalEnv)
+    wrapper_function <- get(wrapper_function_name, envir = engine_env)
+    default_params_function <- get(default_params_function_name, envir = engine_env)
     validate_function <- get(validate_function_name, mode = "function", envir = parent.env(environment()))
     
     # Validate the engine

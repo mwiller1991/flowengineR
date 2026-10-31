@@ -31,35 +31,34 @@ Inprocessing Engines in `flowengineR` are used to modify or extend the behavior 
 
 ## 📥 Standardized Inputs (via Wrapper)
 
-These inputs are passed to the engine wrapper and are provided directly by the workflow:
+The wrapper of an inprocessing engine has the signature `wrapper_inprocessing_<method>(control, driver_train)`. The framework calls it after the base model has been trained:
 
-| Input                       | Type             | Description                                                        |
-| --------------------------- | ---------------- | ------------------------------------------------------------------ |
-| `driver_train`              | list             | Output from the main training engine (⚠️ provided by the framework from train output)                               |
-| `data`                      | data.frame       | Original training data (⚠️ provided by the framework)                                             |
-| `protected_attribute_names` | character vector | Protected group variables (e.g., "gender", "race") (⚠️ provided by the framework)                 |
-| `params`                    | list             | Additional parameters for fairness inprocessing                    |
-| `control_for_training`      | list             | Training-specific control settings (e.g., hyperparams, model type) (⚠️ provided by the framework)  |
+| Input          | Type     | Description |
+| -------------- | -------- | ----------- |
+| `control`      | list     | Control object of the workflow (provided by the framework) |
+| `driver_train` | function | Wrapper of the selected training engine; `driver_train(control)` retrains the base model (provided by the framework) |
 
-Framework resolution:
+Relevant fields of `control`:
 
-- `driver_train`: provided by the workflow (output from training engine)
-- `data`: provided by the workflow (preprocessed or raw training dataset)
-- `protected_attribute_names`: resolved via `control$data$vars$protected`
-- `params`: passed via `control$params$inprocessing$params`
-- `control_for_training`: provided by the workflow (includes training-related configuration)
+- `control$params$train$data`: training data as `original` and `normalized` data frames; `select_training_data(control$params$train$norm_data, control$params$train$data)` returns the one in use
+- `control$params$train$formula` and `control$params$train$params`: formula and hyperparameters of the base model
+- `control$params$inprocessing$protected_attributes`: names of the protected attributes (filled in by the framework from `control$data$vars$protected_vars`)
+- `control$params$inprocessing$target_var`: name of the target variable (filled in by the framework from `control$data$vars$target_var`)
+- `control$params$inprocessing$params`: engine-specific parameters, set via `controller_inprocessing()`
+
+To retrain the model with observation weights, an engine sets `control$params$train$params$sample_weight` on a local copy of `control` before calling `driver_train()`. The included `train_glm` and `train_gbm` engines use these weights; `train_lm` ignores them.
 
 ---
 
 ## 📤 Standardized Output (via Wrapper)
 
-Returned via `initialize_output_fairness_in()`:
+Returned via `initialize_output_inprocessing()`:
 
 | Output            | Type         | Description                                           |
 | ----------------- | ------------ | ----------------------------------------------------- |
 | `adjusted_model`  | model object | Modified model object after fairness-aware adjustment |
 | `model_type`      | character    | Identifier of the adjusted model type                 |
-| `predictions`     | vector       | Optional: Predictions or adjusted outputs             |
+| `predictions`     | vector       | Leave `NULL`: computed by the framework from `adjusted_model` |
 | `params`          | list         | Parameters used                                       |
 | `specific_output` | list / NULL  | Engine-specific metadata                              |
 
@@ -69,7 +68,7 @@ Returned via `initialize_output_fairness_in()`:
 
 | Engine Name                      | Function Name                                  | Description                          | Template Path                                                                 | Detail Page |
 |----------------------------------|-----------------------------------------------|--------------------------------------|--------------------------------------------------------------------------------|-------------|
-| `inprocessing_fairness_adversialdebiasing` | `engine_inprocessing_fairness_adversialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_control_inprocessing_fairness_adversialdebiasing.R` | [📄](detail_inprocessing_fairness_adversialdebiasing.html) |
+| `inprocessing_fairness_adversarialdebiasing` | `engine_inprocessing_fairness_adversarialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R` | [📄](detail_engine_inprocessing_fairness_adversarialdebiasing.html) |
 
 Use `list_registered_engines("inprocessing")` to inspect all currently loaded inprocessing engines.
 
@@ -80,13 +79,13 @@ Use `list_registered_engines("inprocessing")` to inspect all currently loaded in
 To activate an inprocessing engine:
 
 ```r
-control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$engine_select$inprocessing <- "inprocessing_fairness_adversarialdebiasing"
 control$params$inprocessing <- controller_inprocessing(
-  params = list(adversary_epochs = 10, lambda = 1.0)
+  params = list(learning_rate = 0.01, num_epochs = 10, num_adversary_steps = 3)
 )
 ```
 
-The engine is called *after* the main model is trained and can access both raw data and model output.
+The engine is called *after* the base model has been trained. It can retrain the model through `driver_train()`; the test predictions are then computed from the adjusted model.
 
 ---
 
@@ -108,7 +107,7 @@ To implement a custom inprocessing engine:
 
 For examples, see:
 
-- `wrapper_inprocessing_fairness_adversialdebiasing()`
+- `wrapper_inprocessing_fairness_adversarialdebiasing()`
 
 ---
 
@@ -121,9 +120,9 @@ This technique can be applied to neural networks and other flexible learners, en
 Example:
 
 ```r
-control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+control$engine_select$inprocessing <- "inprocessing_fairness_adversarialdebiasing"
 control$params$inprocessing <- controller_inprocessing(
-  params = list(adversary_epochs = 10, lambda = 1.0)
+  params = list(learning_rate = 0.01, num_epochs = 10, num_adversary_steps = 3)
 )
 ```
 

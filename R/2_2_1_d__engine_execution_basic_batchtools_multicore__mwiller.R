@@ -52,17 +52,17 @@ engine_execution_basic_batchtools_multicore <- function(control, split) {
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
 #' - `registry_folder` *(character)*: Folder where the batchtools registry will be stored.  
-#'   *Default:* `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore"`
+#'   *Default:* `file.path(tempdir(), "bt_registry_basic_multicore")`
 #' - `seed` *(integer)*: Seed for registry initialization. *Default:* `123`
 #' - `required_packages` *(character vector)*: R packages to load within each batchtools job. *Default:* `character(0)`
-#' - `ncpus` *(integer)*: Number of parallel cores to use. *Default:* `parallel::detectCores()`
+#' - `ncpus` *(integer)*: Number of parallel cores to use. *Default:* `getOption("mc.cores", 2L)`
 #'
 #' **Example Control Snippet:**
 #' ```
 #' control$engine_select$execution <- "execution_basic_batchtools_multicore"
 #' control$params$execution <- controller_execution(
 #'   params = list(
-#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
+#'     registry_folder = file.path(tempdir(), "bt_registry_basic_multicore"),
 #'     seed = 42,
 #'     ncpus = 4
 #'   )
@@ -105,7 +105,7 @@ wrapper_execution_basic_batchtools_multicore <- function(control, split_output) 
   
   # Create or clear registry
   reg_dir <- params$registry_folder
-  unlink(reg_dir, recursive = TRUE)
+  prepare_registry_folder(reg_dir)
   
   log_msg(sprintf("[EXECUTION] Creating multicore batchtools registry at '%s'...", reg_dir), level = "info", control = control)
   
@@ -178,10 +178,10 @@ wrapper_execution_basic_batchtools_multicore <- function(control, split_output) 
 #' @keywords internal
 default_params_execution_basic_batchtools_multicore <- function() {
   list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_basic_multicore"),
     seed = 123,
     required_packages = character(0),
-    ncpus = parallel::detectCores()
+    ncpus = getOption("mc.cores", 2L)
   )
 }
 #--------------------------------------------------------------------

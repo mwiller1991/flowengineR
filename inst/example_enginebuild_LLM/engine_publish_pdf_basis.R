@@ -150,7 +150,7 @@ wrapper_publish_pdf_basis <- function(control, object, file_path, alias_publish 
     })
     
     initialize_output_publish(
-      alias = alias,
+      alias = alias_publish,
       type = publish_params$obj_type,
       engine = "publish_pdf_basis",
       path = paste0(result$path, ".pdf"),

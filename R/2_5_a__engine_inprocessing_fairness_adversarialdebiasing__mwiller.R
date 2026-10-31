@@ -20,7 +20,7 @@
 #'   - `adversary_model`: Internally fitted adversary.
 #'   - `adversary_loss`: Per-epoch tracking of adversarial loss.
 #'
-#' @seealso [wrapper_inprocessing_fairness_adversialdebiasing()]
+#' @seealso [wrapper_inprocessing_fairness_adversarialdebiasing()]
 #'
 #' @param driver_train The training engine function for the main model.
 #' @param data The training dataset.
@@ -32,7 +32,7 @@
 #'
 #' @return A list containing the adjusted model and metadata.
 #' @keywords internal
-engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, protected_attribute_names, learning_rate, num_epochs, num_adversary_steps, control_for_training) {
+engine_inprocessing_fairness_adversarialdebiasing <- function(driver_train, data, protected_attribute_names, learning_rate, num_epochs, num_adversary_steps, control_for_training) {
   # Initialize adversary
   adversary_model <- list(
     adversarial_weights = setNames(runif(length(protected_attribute_names)), protected_attribute_names),  # Example: Random initialization
@@ -40,7 +40,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
   )
   
   # Define helper functions within the engine to limit scope
-    # helper-function 1: Training the adversial model
+    # helper-function 1: Training the adversarial model
     train_adversary_model <- function(adversary_model, main_model_predictions, protected_attributes, learning_rate){
       # Compute adversarial model predictions
       adversary_predictions <- sapply(colnames(protected_attributes), function(attr) {
@@ -155,11 +155,17 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
     # -----
   
   
+  # Weighted binomial GLMs warn about non-integer successes; this is expected here.
+  non_integer_warning <- gettext("non-integer #successes in a binomial glm!", domain = "R-stats")
+
   # Training loop
   for (epoch in seq_len(num_epochs)) {
     # Step 1: Train the main model using the driver_train function
-    trained_main_model <- driver_train(
-      control = control_for_training
+    trained_main_model <- withCallingHandlers(
+      driver_train(control = control_for_training),
+      warning = function(w) {
+        if (identical(conditionMessage(w), non_integer_warning)) invokeRestart("muffleWarning")
+      }
     )
     
     # Step 2: Train the adversary model
@@ -187,12 +193,10 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
       learning_rate = learning_rate
     )
     
-    # Step 5: Update training data and weights in control (normalized or original)
-    # Adjusting weights in the hyperparameters to not risk falling back to default in training
-    control_for_training$params$train$params$weights <- data$weights
-    
-    # Adjusting both datasets
-    control_for_training$data$train$original <- control_for_training$data$train$normalized <- data
+    # Step 5: Pass the updated weights to the next training run. The training
+    # wrappers read observation weights from control$params$train$params$sample_weight
+    # (used by train_glm and train_gbm; train_lm ignores them).
+    control_for_training$params$train$params$sample_weight <- data$weights
   }
   
   # Return standardized output
@@ -218,7 +222,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #' - `control$params$train$data`: Training dataset (original or normalized).
 #' - `control$params$train$norm_data`: Logical flag indicating whether normalized data should be used. Must be same as for base trainer for model consistency.
 #' - `control$params$inprocessing$protected_attributes`: Character vector of protected attributes.  
-#'   → Auto-filled from `control$data$vars$protected_vars` via `autofill_controllers_from_vars()`.
+#'   Filled in by the workflow from `control$data$vars$protected_vars`.
 #' - `control$params$inprocessing$params`: Named list of engine-specific parameters.
 #' - `driver_train`: Training engine function for the main model (provided by the workflow).
 #'
@@ -228,12 +232,12 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #' - `num_adversary_steps` *(integer)*: Number of adversarial update steps per epoch (default: 3).
 #'
 #' **Variable Handling:**
-#' - The wrapper assumes that `protected_attributes` and `target_var` are injected via `autofill_controllers_from_vars()`.
+#' - `protected_attributes` and `target_var` are filled in by the workflow from `control$data$vars`.
 #' - These fields are **required** by the engine but should **not be set manually**.
 #'
 #' **Example Control Snippet:**
 #' ```r
-#' control$engine_select$inprocessing <- "inprocessing_fairness_adversialdebiasing"
+#' control$engine_select$inprocessing <- "inprocessing_fairness_adversarialdebiasing"
 #' control$params$inprocessing <- controller_inprocessing(
 #'   norm_data = TRUE,
 #'   params = list(
@@ -245,7 +249,7 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/5_a_template_inprocessing_fairness_adversialdebiasing.R`
+#' See full template in `inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_inprocessing()`:
@@ -258,18 +262,18 @@ engine_inprocessing_fairness_adversialdebiasing <- function(driver_train, data, 
 #'     - `adversary_loss`: Per-epoch loss history.
 #'
 #' @seealso 
-#'   [engine_inprocessing_fairness_adversialdebiasing()],  
-#'   [default_params_inprocessing_fairness_adversialdebiasing()],  
+#'   [engine_inprocessing_fairness_adversarialdebiasing()],  
+#'   [default_params_inprocessing_fairness_adversarialdebiasing()],  
 #'   [initialize_output_inprocessing()],  
 #'   [controller_inprocessing()],  
-#'   Template: `inst/templates_control/5_a_template_inprocessing_fairness_adversialdebiasing.R`
+#'   Template: `inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R`
 #'
 #' @param control A standardized control object. Must include `control$data$vars` and a valid `control$params$inprocessing`.
 #' @param driver_train A training engine function used to train the main model.
 #' 
 #' @return A standardized fairness in-processing output.
 #' @keywords internal
-wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_train) {
+wrapper_inprocessing_fairness_adversarialdebiasing <- function(control, driver_train) {
   in_params <- control$params$inprocessing  # Access in-processing parameters
   train_params <- control$params$train  # Accessing the training parameters
   
@@ -281,7 +285,14 @@ wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_tra
   train_data <- select_training_data(train_params$norm_data, train_params$data)
   
   # Merge optional parameters with defaults
-  params <- merge_with_defaults(in_params$params, default_params_inprocessing_fairness_adversialdebiasing())
+  params <- merge_with_defaults(in_params$params, default_params_inprocessing_fairness_adversarialdebiasing())
+
+  # train_lm does not use observation weights, so the model would stay unchanged
+  if (identical(control$engine_select$train, "train_lm")) {
+    warning("inprocessing_fairness_adversarialdebiasing: the training engine 'train_lm' ",
+            "does not use observation weights, so the model is not changed. ",
+            "Use 'train_glm' or 'train_gbm'.", call. = FALSE)
+  }
   
   # Logging start
   log_msg(sprintf(
@@ -297,7 +308,7 @@ wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_tra
   start_time <- Sys.time()
   
   # Call the specific in-processing engine
-  engine_output <- engine_inprocessing_fairness_adversialdebiasing(
+  engine_output <- engine_inprocessing_fairness_adversarialdebiasing(
     driver_train = driver_train,
     data = train_data,
     protected_attribute_names = in_params$protected_attributes,
@@ -344,17 +355,16 @@ wrapper_inprocessing_fairness_adversialdebiasing <- function(control, driver_tra
 #'   - `protected_attributes`: Names of the protected attributes.
 #'   - `target_var`: The target variable.
 #' - **Additional Parameters:**
-#'   - `main_model_params`: Parameters for the main model.
-#'   - `adversary_params`: Parameters for the adversarial model.
 #'   - `learning_rate`: Learning rate for adversarial optimization (default: 0.01).
 #'   - `num_epochs`: Number of training epochs (default: 10).
+#'   - `num_adversary_steps`: Number of adversarial update steps per epoch (default: 3).
 #' - Ensures default parameters are used when none are provided in the `control` object.
 #'
-#' @seealso [wrapper_inprocessing_fairness_adversialdebiasing()]
+#' @seealso [wrapper_inprocessing_fairness_adversarialdebiasing()]
 #'
 #' @return A list of default parameters for adversarial debiasing engines.
 #' @keywords internal
-default_params_inprocessing_fairness_adversialdebiasing <- function() {
+default_params_inprocessing_fairness_adversarialdebiasing <- function() {
   list(
     learning_rate = 0.01,
     num_epochs = 10,

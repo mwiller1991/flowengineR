@@ -50,7 +50,7 @@ Here is an overview of all supported engine types in `flowengineR`:
 | Inprocessing        | Fairness adjustment during model training          | `inprocessing_fairness_adversarialdebiasing` | [Details](detail_engines_inprocessing.html) |
 | Postprocessing      | Adjusts model predictions                          | `postprocessing_fairness_genresidual` | [Details](detail_engines_postprocessing.html) |
 | Evaluation          | Computes performance and other metrics             | `eval_mse`, `eval_statisticalparity` | [Details](detail_engines_evaluation.html) |
-| Reportelement       | Generates graphical or tabular output objects      | `reportelement_boxplot_predictions` | [Details](detail_engines_reportelements.html) |
+| Reportelement       | Generates graphical or tabular output objects      | `reportelement_boxplot_predictions` | [Details](detail_engines_reportelement.html) |
 | Report              | Assembles a complete report from report elements   | `report_modelsummary`               | [Details](detail_engines_report.html) |
 | Publish             | Exports reports or elements to file formats        | `publish_pdf_basis`, `publish_excel_basis` | [Details](detail_engines_publish.html) |
 

@@ -41,6 +41,15 @@
 #' @param specific_output Optional list. Additional engine-specific information or metadata.
 #'
 #' @return A named list containing standardized publishing metadata.
+#' @examples
+#' out <- initialize_output_publish(
+#'   alias = "summary_pdf",
+#'   type = "report",
+#'   engine = "publish_pdf_basis",
+#'   path = file.path(tempdir(), "summary_pdf.pdf"),
+#'   success = TRUE
+#' )
+#' str(out)
 #' @export
 initialize_output_publish <- function(alias, type, engine, path, success = NA, params = NULL, specific_output = NULL) {
   list(

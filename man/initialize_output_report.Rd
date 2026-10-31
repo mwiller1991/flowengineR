@@ -68,3 +68,17 @@ programmatically assembled from reportelements.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+element <- initialize_output_reportelement(
+  type = "text",
+  content = "The MSE is stable across splits.",
+  compatible_formats = c("pdf", "html")
+)
+out <- initialize_output_report(
+  report_title = "Model summary",
+  report_type = "custom_summary",
+  compatible_formats = c("pdf", "html"),
+  sections = list(list(heading = "Overview", content = list(element)))
+)
+names(out)
+}

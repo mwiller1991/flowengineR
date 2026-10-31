@@ -12,7 +12,8 @@ register_engine(engine_name, file_path)
 \item{file_path}{Character. Path to the R script that defines the engine components.}
 }
 \value{
-Invisibly registers the engine into \code{flowengineR_env$engines[[engine_name]]} if valid.
+\code{NULL}, invisibly. Called for its side effect of registering the
+engine in \code{flowengineR_env$engines[[engine_name]]} if it is valid.
 }
 \description{
 Dynamically loads, validates, and registers a new engine into the global \code{engines} registry.
@@ -23,7 +24,8 @@ reporting, publishing, and execution.
 \details{
 \strong{Workflow:}
 \enumerate{
-\item Loads the engine file using \code{source()}.
+\item Loads the engine file into its own environment (a child of the
+package namespace), so the user's workspace is not modified.
 \item Expects the file to contain:
 \itemize{
 \item \verb{wrapper_<engine_name>}: Standardized interface
@@ -64,4 +66,13 @@ Wrappers can opt out of validation (e.g., during prototyping) by returning
   file_path = "engines/train/train_customtree.R"
 )
 }\if{html}{\out{</div>}}
+}
+\examples{
+# Register the evaluation engine generated in the LLM demonstration
+engine_file <- system.file(
+  "llm_demonstrations", "2025-08-29_eval_median", "outputs",
+  "engine_eval_median.R", package = "flowengineR"
+)
+register_engine("eval_median", engine_file)
+is.element("eval_median", names(list_registered_engines(type = "eval")))
 }

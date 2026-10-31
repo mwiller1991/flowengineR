@@ -34,7 +34,7 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
       execution = "execution_basic_sequential",
       preprocessing = "preprocessing_fairness_resampling",
       train = "train_glm",
-      inprocessing = "inprocessing_fairness_adversialdebiasing",
+      inprocessing = "inprocessing_fairness_adversarialdebiasing",
       postprocessing = "postprocessing_fairness_genresidual",
       evaluation = list(
         "eval_mse", 
@@ -158,12 +158,15 @@ test_that("run_workflow executes a full end-to-end workflow without error", {
   expect_true("pdf_basis_test_singleelement" %in% names(result$publishing))
   expect_true("pdf_basis_test_report" %in% names(result$publishing))
   expect_true("excel_basis_test_singleelement" %in% names(result$publishing))
-  expect_true(result$publishing$pdf_basis_test_singleelement$success)
-  expect_true(result$publishing$pdf_basis_test_report$success)
   expect_true(result$publishing$excel_basis_test_singleelement$success)
-  expect_true(file.exists(result$publishing$pdf_basis_test_singleelement$path))
-  expect_true(file.exists(result$publishing$pdf_basis_test_report$path))
   expect_true(file.exists(result$publishing$excel_basis_test_singleelement$path))
+  # PDF export needs pandoc and LaTeX (see helper-pdf.R)
+  if (can_render_pdf()) {
+    expect_true(result$publishing$pdf_basis_test_singleelement$success)
+    expect_true(result$publishing$pdf_basis_test_report$success)
+    expect_true(file.exists(result$publishing$pdf_basis_test_singleelement$path))
+    expect_true(file.exists(result$publishing$pdf_basis_test_report$path))
+  }
   
   # Cleanup exported file
   unlink(result$publishing$pdf_basis_test_singleelement$path)

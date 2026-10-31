@@ -22,15 +22,15 @@ All code must follow these conventions:
 
 ---
 
-### \\U0001F527 ENGINE TYPE
+### \U0001F527 ENGINE TYPE
 `report`
 
-### \\U0001F4C4 FUNCTIONAL DESCRIPTION
+### \U0001F4C4 FUNCTIONAL DESCRIPTION
 [[task_description]]
 
 ---
 
-### \\U0001F4A1 EXAMPLE FOR ORIENTATION
+### \U0001F4A1 EXAMPLE FOR ORIENTATION
 For reference, see the included example file `engine_report_modelsummary.R`.
 It combines selected reportelements into a structured multi-section model summary.
 
@@ -44,19 +44,19 @@ consult the included vignette file `detail_engines_report.Rmd`.
 
 ---
 
-### \\U0001F4DD STANDARDIZED INPUT (via wrapper)
+### \U0001F4DD STANDARDIZED INPUT (via wrapper)
 All inputs must be accessed via the standardized control object structure. The engine receives inputs from the wrapper; the wrapper is called by the framework with:
 
-- `control$params$report$params[[alias_report]]`: **list** mapping reportelement aliases to sections
+- `control$params$report$params[[[[alias_report]]]]`: **list** mapping reportelement aliases to sections
 - `reportelements`: **named list** of reportelement outputs available in the workflow
 - `alias_report`: **character**; unique identifier for the report instance
 
 Parameter merging in the wrapper must use:
-`params <- merge_with_defaults(control$params$report$params[[alias_report]], default_params_report_custom())`
+`params <- merge_with_defaults(control$params$report$params[[[[alias_report]]]], default_params_report_custom())`
 
 ---
 
-### \\U0001F4C8 REQUIRED OUTPUT STRUCTURE
+### \U0001F4C8 REQUIRED OUTPUT STRUCTURE
 The wrapper must return the result using `initialize_output_report()` with the following structure:
 
 - `report_title`: **character**; display title of the report
@@ -75,7 +75,7 @@ The wrapper must return the result using `initialize_output_report()` with the f
 
 ---
 
-### \\U0001F3F7 NAMING CONVENTION
+### \U0001F3F7 NAMING CONVENTION
 Choose a clear, specific name in place of 'custom', e.g., `modelsummary`, `diagnostics`, etc.
 Required function names inside the single file:
 - `engine_report_<method>()`
@@ -84,7 +84,7 @@ Required function names inside the single file:
 
 ---
 
-### \\U0001F4E6 REQUIRED FILE STRUCTURE
+### \U0001F4E6 REQUIRED FILE STRUCTURE
 Return a single R **file** containing exactly these three functions.
 Do not return code snippets or Markdown blocks. Return the full code as a plain R script file content.
 

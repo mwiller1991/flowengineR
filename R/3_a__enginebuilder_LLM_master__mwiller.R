@@ -12,24 +12,41 @@
 #' - "eval"
 #' - "reportelement"
 #' - "report"
-#' - "publishing"
+#' - "publish"
+#'
+#' "evaluation" and "publishing" are accepted as aliases for "eval" and
+#' "publish".
 #'
 #' Creates a zip file containing:
 #' - A structured prompt text for the LLM
 #' - A reference example R file for this engine type
 #' - A vignette (.Rmd) as reference
 #'
-#' @param engine_type Character. The engine type (e.g., "evaluation").
+#' @param engine_type Character. One of the supported engine types listed
+#'   above (e.g., "eval").
 #' @param task_description Character. The plain-language goal the engine should achieve.
 #' @param zip_path Optional output path for the final zip file.
 #'
 #' @return Path to the created zip file.
+#' @examples
+#' # Writes a ZIP archive with prompt, reference engine and vignette to tempdir()
+#' if (nzchar(Sys.which(Sys.getenv("R_ZIPCMD", "zip")))) {
+#'   zip_file <- build_engine_with_llm_zip("eval", "The median of all predictions.")
+#'   file.exists(zip_file)
+#' }
 #' @export
 build_engine_with_llm_zip <- function(engine_type,
                                       task_description,
                                       zip_path = NULL) {
   
+  if (!is.character(engine_type) || length(engine_type) != 1L) {
+    stop("engine_type must be a single character string.", call. = FALSE)
+  }
   engine_type <- tolower(engine_type)
+  engine_aliases <- c(evaluation = "eval", publishing = "publish")
+  if (engine_type %in% names(engine_aliases)) {
+    engine_type <- unname(engine_aliases[engine_type])
+  }
   
   # --- Engine registry -------------------------------------------------------
   # Central place to define example and vignette references per engine type.
@@ -51,11 +68,11 @@ build_engine_with_llm_zip <- function(engine_type,
       vignette  = c("example_enginebuild_LLM", "detail_engines_preprocessing.Rmd")
     ),
     inprocessing = list(
-      example   = c("example_enginebuild_LLM", "engine_inprocessing_adversarial.R"),
+      example   = c("example_enginebuild_LLM", "engine_inprocessing_fairness_adversarialdebiasing.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_inprocessing.Rmd")
     ),
     postprocessing = list(
-      example   = c("example_enginebuild_LLM", "engine_postprocessing_residual.R"),
+      example   = c("example_enginebuild_LLM", "engine_postprocessing_fairness_genresidual.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_postprocessing.Rmd")
     ),
     eval = list(
@@ -70,7 +87,7 @@ build_engine_with_llm_zip <- function(engine_type,
       example   = c("example_enginebuild_LLM", "engine_report_modelsummary.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_report.Rmd")
     ),
-    publishing = list(
+    publish = list(
       example   = c("example_enginebuild_LLM", "engine_publish_pdf_basis.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_publish.Rmd")
     )
@@ -115,7 +132,7 @@ build_engine_with_llm_zip <- function(engine_type,
   
   # 1) Write prompt as plain .R (so users can open/read directly)
   prompt_file <- file.path(tmp_dir, paste0("llm_prompt_", engine_type, ".R"))
-  writeLines(prompt_text, prompt_file)
+  writeLines(enc2utf8(as.character(prompt_text)), prompt_file, useBytes = TRUE)
   
   # 2) Copy example R
   file.copy(default_example, file.path(tmp_dir, basename(default_example)), overwrite = TRUE)
@@ -129,7 +146,7 @@ build_engine_with_llm_zip <- function(engine_type,
   }
   old_wd <- setwd(tmp_dir)
   on.exit(setwd(old_wd), add = TRUE)
-  utils::zip(zipfile = zip_path, files = list.files(tmp_dir))
+  utils::zip(zipfile = zip_path, files = list.files(tmp_dir), flags = "-r9Xq")
   
   td  <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
   zp  <- normalizePath(zip_path,  winslash = "/", mustWork = FALSE)

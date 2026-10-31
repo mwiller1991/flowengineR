@@ -1,48 +1,34 @@
 Package: flowengineR
 Type: Package
-Title: Modular and extensible framework for designing and executing algorithmic workflows in R
-Version: 1.0.2
-Authors@R: 
-    c(person("Maximilian", "Willer",
-            role=c("aut", "cre"),
-            email = "willer.maximilian@googlemail.com", 
-            comment = c(ORCID = "0009-0003-7054-1937")),
-      person("Peter", "Ruckdeschel", 
-            role=c("ctb"),
-            email="peter.ruckdeschel@uni-oldenburg.de",
-            comment = c(ORCID = "0000-0001-7815-4809"))
-            )
-Description: 
-    flowengineR is a modular and extensible framework for designing and executing 
-    algorithmic workflows in R. It provides a standardized infrastructure to combine
-    data-splitting, execution, preprocessing, core algorithms, in-processing, 
-    post-processing, evaluation, reporting, and publishing using interchangeable 
-    engine components.
-    While applicable to a wide range of computational methods — including but not 
-    limited to machine learning — the framework emphasizes transparency, reproducibility, 
-    and user control across all stages of algorithm development.
-    One core application domain is fairness-aware modeling: flowengineR includes 
-    ready-to-use engines for implementing fairness interventions at various workflow stages.
-    These can be freely combined with other engines or extended to support goals like 
-    robustness, explainability, or domain-specific compliance.
-    The framework defines a fixed set of typed engine categories (e.g., preprocessing, 
-    training, postprocessing, evaluation, reporting), each governed by standardized 
-    input/output interfaces and supported by controller functions that validate inputs 
-    and manage execution logic. This structured design facilitates systematic reuse, 
-    benchmarking, and the orchestration of complex multi-step workflows.
-    Unlike GUI-oriented workflow tools such as KNIME or task schedulers like Airflow, 
-    flowengineR is entirely script-based and designed for programmatic flexibility 
-    and reproducibility. It enables logic-driven execution and transparent handling of 
-    modular components in a fully R-native environment.
-    Its architecture supports custom engine development and encourages modular reuse 
-    for research, prototyping, and production-grade analysis workflows. It also 
-    enables adaptive or parallel execution strategies (e.g., via SLURM or batchtools), 
-    and can resume interrupted workflows through checkpoint-compatible components.
+Title: Modular Framework for Fair and Reproducible Workflow Design
+Version: 1.1.0
+Authors@R: c(
+    person("Maximilian", "Willer", email = "willer.maximilian@googlemail.com",
+           role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0009-0003-7054-1937")),
+    person("Peter", "Ruckdeschel", email = "peter.ruckdeschel@uni-oldenburg.de",
+           role = c("ctb", "cph"),
+           comment = c(ORCID = "0000-0001-7815-4809")))
+Description: Provides a modular and extensible framework for designing and
+    executing algorithmic workflows from interchangeable engine components
+    for data splitting, execution, preprocessing, training, in-processing,
+    post-processing, evaluation, reporting and publishing. Each engine
+    category has a standardized input and output interface, and controller
+    functions validate inputs and manage execution, which supports
+    systematic reuse, benchmarking and transparent, reproducible analyses.
+    A core application is fairness-aware modeling, with ready-to-use
+    engines for fairness interventions before, during and after model
+    training. Workflows run sequentially or in parallel via 'batchtools'
+    (locally or on 'SLURM' clusters), can stop adaptively once results are
+    stable, and can be resumed after interruption. The framework is
+    described in Willer and Ruckdeschel (2025)
+    <doi:10.48550/arXiv.2511.00079>.
 License: MIT + file LICENSE
+URL: https://github.com/mwiller1991/flowengineR
+BugReports: https://github.com/mwiller1991/flowengineR/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Depends: R (>= 4.1.0)
 Imports:
     rstudioapi,
@@ -53,15 +39,16 @@ Imports:
     openxlsx,
     batchtools,
     grDevices,
-    parallel,
     cli,
     glue,
     utils,
     stats,
-    gbm
+    gbm,
+    withr (>= 2.4.0)
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     jsonlite
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

@@ -50,7 +50,7 @@ engine_execution_adaptive_input_scalar_sequential <- function(control) {
 #' - `metric_name` *(character)*: Metric to monitor.
 #' - `metric_source` *(character)*: ID of the evaluation engine returning the metric.
 #' - `min_improvement` *(numeric)*: Minimum required improvement to continue.
-#' - `max_iterations` *(integer ≥ 1)*: Maximum number of optimization steps.
+#' - `max_iterations` *(integer >= 1)*: Maximum number of optimization steps.
 #'
 #' **Example Control Snippet:**
 #' ```

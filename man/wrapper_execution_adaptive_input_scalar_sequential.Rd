@@ -37,7 +37,7 @@ The process stops when the performance metric no longer improves sufficiently, o
 \item \code{metric_name} \emph{(character)}: Metric to monitor.
 \item \code{metric_source} \emph{(character)}: ID of the evaluation engine returning the metric.
 \item \code{min_improvement} \emph{(numeric)}: Minimum required improvement to continue.
-\item \code{max_iterations} \emph{(integer ≥ 1)}: Maximum number of optimization steps.
+\item \code{max_iterations} \emph{(integer >= 1)}: Maximum number of optimization steps.
 }
 
 \strong{Example Control Snippet:}

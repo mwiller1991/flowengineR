@@ -51,3 +51,10 @@ control$params$report <- controller_report(
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_report(
+  params = list(
+    modelsummary = list(gender_box = "gender_box", metrics_table = "metrics_table")
+  )
+)
+}
