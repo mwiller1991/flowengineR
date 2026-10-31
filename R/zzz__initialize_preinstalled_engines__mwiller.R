@@ -80,7 +80,7 @@ register_default_engines <- function() {
     train_gbm = wrapper_train_gbm,
     
     # Inprocessing
-    inprocessing_fairness_adversialdebiasing = wrapper_inprocessing_fairness_adversialdebiasing,
+    inprocessing_fairness_adversarialdebiasing = wrapper_inprocessing_fairness_adversarialdebiasing,
     
     # Postprocessing
     postprocessing_fairness_genresidual = wrapper_postprocessing_fairness_genresidual,

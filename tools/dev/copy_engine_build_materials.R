@@ -80,8 +80,8 @@ fs::file_copy(
 #---
 
 fs::file_copy(
-  "R/2_5_a__engine_inprocessing_fairness_adversialdebiasing__mwiller.R",
-  "inst/example_enginebuild_LLM/engine_inprocessing_fairness_adversialdebiasing.R",
+  "R/2_5_a__engine_inprocessing_fairness_adversarialdebiasing__mwiller.R",
+  "inst/example_enginebuild_LLM/engine_inprocessing_fairness_adversarialdebiasing.R",
   overwrite = TRUE
 )
 

@@ -475,7 +475,7 @@ run_workflow_singlesplitloop <- function(control) {
     log_msg(paste0("[SINGLE] Running in-processing engine: ", control$engine_select$inprocessing), level = "info", control = control)
     control$params$inprocessing$protected_attributes <- control$data$vars$protected_vars
     control$params$inprocessing$target_var <- control$data$vars$target_var
-    driver_in <- flowengineR_env$engines[[control$engine_select$inprocessing]]
+    driver_in <- flowengineR_env$engines[[resolve_engine_name(control$engine_select$inprocessing)]]
     output_in <- driver_in(control, driver_train)
     
     if (control$settings$output_type == "prob") {

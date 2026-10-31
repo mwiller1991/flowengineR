@@ -246,7 +246,45 @@ complete_control_with_defaults <- function(control) {
     control$params$publish <- controller_publish()
   }
   
+  # Renamed engines: the old names keep working
+  control$engine_select$inprocessing <- resolve_engine_name(control$engine_select$inprocessing)
+  
   return(control)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Helper: Renamed Engines ###
+#--------------------------------------------------------------------
+# Engines that were renamed: old name = current name.
+renamed_engines <- c(
+  inprocessing_fairness_adversialdebiasing = "inprocessing_fairness_adversarialdebiasing"
+)
+
+#' Helper: Resolve Renamed Engine Names
+#'
+#' Replaces the name of a renamed engine by its current name, so that
+#' control objects with the old name keep working. Informs once per session.
+#'
+#' @param engine_name Character string with an engine name, or `NULL`.
+#'
+#' @return The current engine name (or `NULL`).
+#' @noRd
+resolve_engine_name <- function(engine_name) {
+  if (!is.character(engine_name) || length(engine_name) != 1L ||
+      !engine_name %in% names(renamed_engines)) {
+    return(engine_name)
+  }
+  current <- unname(renamed_engines[engine_name])
+  if (!engine_name %in% flowengineR_env$renamed_notified) {
+    message(sprintf(paste0("Engine '%s' was renamed to '%s' in flowengineR 1.1.0. ",
+                           "The old name still works; please update your control object."),
+                    engine_name, current))
+    flowengineR_env$renamed_notified <- c(flowengineR_env$renamed_notified, engine_name)
+  }
+  current
 }
 #--------------------------------------------------------------------
 

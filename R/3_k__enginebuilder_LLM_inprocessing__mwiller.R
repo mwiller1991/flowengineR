@@ -31,14 +31,14 @@ All code must follow these conventions:
 ---
 
 ### \U0001F4A1 EXAMPLE FOR ORIENTATION
-For reference, see the included example file `engine_inprocessing_fairness_adversialdebiasing.R`.
+For reference, see the included example file `engine_inprocessing_fairness_adversarialdebiasing.R`.
 It retrains the base model over several epochs and adjusts the observation weights based on an adversary
 that tries to predict the protected attributes from the model predictions.
 
 Function names follow the convention:
-- `engine_inprocessing_fairness_adversialdebiasing()`
-- `wrapper_inprocessing_fairness_adversialdebiasing()`
-- `default_params_inprocessing_fairness_adversialdebiasing()`
+- `engine_inprocessing_fairness_adversarialdebiasing()`
+- `wrapper_inprocessing_fairness_adversarialdebiasing()`
+- `default_params_inprocessing_fairness_adversarialdebiasing()`
 
 Use this example as structural guidance for implementing your own method.
 
@@ -87,7 +87,7 @@ The wrapper must return the result using the function `initialize_output_inproce
 ---
 
 ### \U0001F3F7 NAMING CONVENTION
-Choose a clear, specific name in place of 'custom', e.g., `fairness_adversialdebiasing`, `fairness_reweighting`, etc.
+Choose a clear, specific name in place of 'custom', e.g., `fairness_adversarialdebiasing`, `fairness_reweighting`, etc.
 Required function names inside the single file:
 - `engine_inprocessing_<method>()`
 - `wrapper_inprocessing_<method>(control, driver_train)`

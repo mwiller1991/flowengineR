@@ -68,7 +68,7 @@ build_engine_with_llm_zip <- function(engine_type,
       vignette  = c("example_enginebuild_LLM", "detail_engines_preprocessing.Rmd")
     ),
     inprocessing = list(
-      example   = c("example_enginebuild_LLM", "engine_inprocessing_fairness_adversialdebiasing.R"),
+      example   = c("example_enginebuild_LLM", "engine_inprocessing_fairness_adversarialdebiasing.R"),
       vignette  = c("example_enginebuild_LLM", "detail_engines_inprocessing.Rmd")
     ),
     postprocessing = list(

@@ -77,6 +77,22 @@ First release on CRAN.
   custom stability function now raises the intended error message
   instead of failing while the message is created.
 - Tests: a new test builds the LLM package for every engine type.
+- In-processing engine adversarial debiasing: the adjusted model was
+  identical to the base model, because the updated observation weights
+  were stored where the training engines do not read them. The weights
+  are now passed on as `sample_weight`, so the model is retrained with
+  them (`train_glm`, `train_gbm`). The expected warning about non-integer
+  successes of weighted binomial GLMs is suppressed, and the engine warns
+  when it is combined with `train_lm`, which does not use weights.
+- Renamed the engine `inprocessing_fairness_adversialdebiasing` to
+  `inprocessing_fairness_adversarialdebiasing` (spelling), together with
+  its functions, control template and vignette. The old engine name
+  still works and shows a message once per session.
+- In-processing documentation: the inputs of the wrapper (`control`,
+  `driver_train`), the output initializer `initialize_output_inprocessing()`,
+  the engine parameters in the examples and the control template (which
+  passed arguments that `controller_inprocessing()` does not have) are
+  now correct.
   
 
 
