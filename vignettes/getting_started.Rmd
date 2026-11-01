@@ -122,11 +122,15 @@ control <- list(
       log_level = "info"
     )
   ),
+  data = list(
+    vars = vars,
+    full = flowengineR::test_data_2_base_credit_example
+  ),
   engine_select = list(
     train = "train_lm",
     postprocessing = "postprocessing_fairness_genresidual",
-    eval = c("eval_statisticalparity", "eval_mse")
-    ),
+    evaluation = c("eval_statisticalparity", "eval_mse")
+  ),
   params = list(
     train = controller_training(
       formula = default ~ income + loan_amount,
@@ -149,17 +153,21 @@ results <- run_workflow(control)
 ```
 
 This returns a list of standardized results:
-- model and predictions
-- adjusted predictions (if fairness post-processing is used)
-- evaluation metrics
+- `split_output`: the data splits
+- `execution_output`: the results per split (model, predictions, adjusted predictions, evaluation)
+- `aggregated_results`: the evaluation metrics aggregated over all splits
+- `reportelements`, `reports`, `publishing`: reporting outputs, if configured
 
 ---
 
 ## 📊 Step 4: Inspect Results
 
 ```{r}
-results$metrics  # all computed metrics
-results$model    # trained model object
+results$aggregated_results$mse   # MSE aggregated over all splits
+results$aggregated_results$spd   # statistical parity difference per group
+
+first_split <- results$execution_output$workflow_results[[1]]
+first_split$output_train$model   # trained model of the first split
 ```
 
 ---
@@ -172,8 +180,10 @@ Logging is **enabled and configured via the `settings` section** of the `control
 
 ```{r}
 settings = list(
-  log = TRUE,
-  log_level = "debug"
+  log = list(
+    log_show = TRUE,
+    log_level = "debug"
+  )
 )
 ```
 
@@ -205,15 +215,15 @@ One of the core principles of **flowengineR** is modularity through interchangea
 
 | Engine Type       | Workflow Position  | Description                                                                 | Input (via Wrapper)                                        | Output (via Initializer)                   | Example Engines                      |
 | ----------------- | ------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------ |
-| [`split_*`](detail_engines_split.html)         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_stratified`   |
-| [`execution_*`](detail_engines_execution.html)     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_sequential`               |
+| [`split_*`](detail_engines_split.html)         | Dataset Splitting  | Splits the full dataset into training and test subsets                      | `data`, `target_var`, `seed`, `params`                     | `splits`, `split_type`, `seed`             | `split_random`, `split_random_stratified`   |
+| [`execution_*`](detail_engines_execution.html)     | Execution Strategy | Executes the workflow logic across all splits (sequentially or in parallel) | `control`, `split_output`, `params`                        | `workflow_results`, `execution_type`       | `execution_basic_sequential`         |
 | [`preprocessing_*`](detail_engines_preprocessing.html) | Pre-Processing     | Modifies input data before algorithm execution                              | `data`, `params`, `protected_attributes`, `target_var`     | `preprocessed_data`, `method`              | `preprocessing_fairness_resampling`  |
 | [`train_*`](detail_engines_train.html)         | Core Algorithm     | Fits a model or runs an algorithm on training data                          | `formula`, `data`, `norm_data`, `params`                   | `model`, `model_type`, `predictions`       | `train_lm`, `train_gbm`              |
-| [`inprocessing_*`](detail_engines_inprocessing.html)  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `driver_train`, `data`, `params`, `protected_attributes`   | `adjusted_model`, `predictions`            | `inpro(..)_adversarialdebiasing`       |
+| [`inprocessing_*`](detail_engines_inprocessing.html)  | In-Processing      | Alters internal training logic (e.g., constraints, weighting)               | `control`, `driver_train`                                  | `adjusted_model`, `predictions`            | `inpro(..)_adversarialdebiasing`       |
 | [`postprocessing_*`](detail_engines_postprocessing.html)| Post-Processing    | Modifies predictions after model execution                                  | `predictions`, `params`, `protected_attributes`            | `adjusted_predictions`, `method`           | `postprocessing_fairness_genresidual`|
 | [`eval_*`](detail_engines_evaluation.html)          | Evaluation         | Calculates performance or bias metrics                                      | `predictions`, `actuals`, `params`, `protected_attributes` | `metrics`, `eval_type`                     | `eval_statisticalparity`, `eval_mse` |
-| [`reportelement_*`](detail_engines_reportelement.html) | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `report_object`, `report_type`             | `reportelement_table_splitmetrics`   |
-| [`report_*`](detail_engines_report.html)        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report`, `sections`, `compatible_formats` | `report_modelsummary`                |
+| [`reportelement_*`](detail_engines_reportelement.html) | Reporting Element  | Creates tables or plots from results                                        | `workflow_results`, `split_output`, `alias`, `params`      | `type`, `content`, `compatible_formats`    | `reportelement_table_splitmetrics`   |
+| [`report_*`](detail_engines_report.html)        | Report Composition | Assembles report elements into a structured document                        | `reportelements`, `alias_report`, `params`                 | `report_title`, `sections`, `compatible_formats` | `report_modelsummary`                |
 | [`publish_*`](detail_engines_publish.html)       | Output Publishing  | Exports objects or results to external targets                              | `object`, `file_path`, `alias_publish`, `params`           | `path`, `success`, `type`                  | `publish_excel_basis`                |
 
 

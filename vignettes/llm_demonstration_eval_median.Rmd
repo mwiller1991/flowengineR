@@ -20,6 +20,14 @@ This vignette documents a complete LLM-assisted engine build in *flowengineR*.
 The example shows how the evaluation engine `eval_median` was generated, registered, and executed.  
 All inputs, transcripts, outputs, and provenance are archived under:
 
+> **Version note:** The demonstration was created on 2025-08-29 with
+> flowengineR 1.0.0 (see the session information below) and is archived
+> unchanged. Since version 1.1.0, the prompt created by
+> `build_engine_with_llm_zip("eval", ...)` names the input columns
+> `predictions` and `actuals`, as used by the framework. The generated
+> engine `eval_median` already uses these columns and works unchanged with
+> the current version.
+
 ```{r}
 demo_dir
 list.files(demo_dir, recursive = TRUE)

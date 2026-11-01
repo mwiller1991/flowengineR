@@ -45,7 +45,7 @@ Framework resolution:
 - `workflow_results`: provided by the framework 
 - `split_output`: provided by the framework
 - `alias`: defined by user in `control$engine_select$reportelement`
-- `params`: from `control$params$reportelement$params[[alias_report]]`
+- `params`: from `control$params$reportelement$params[[alias]]`
 
 ---
 
@@ -54,8 +54,9 @@ Returned via `initialize_output_reportelement()`:
 
 | Output              | Type         | Description                                                              |
 |---------------------|--------------|--------------------------------------------------------------------------|
-| `report_object`     | object       | Output element (e.g., ggplot, data.frame)                                |
-| `report_type`       | character    | Type of report element (e.g., "plot", "table")                          |
+| `type`              | character    | Type of the element (e.g., "plot", "table", "text")                      |
+| `content`           | object       | The element itself (e.g., ggplot, data.frame, character)                 |
+| `compatible_formats`| character    | Export formats the element supports (e.g., "pdf", "xlsx")                |
 | `input_data`        | list         | Any relevant inputs passed through the workflow                          |
 | `params`            | list         | Parameters applied                                                       |
 | `specific_output`   | list / NULL  | Engine-specific additional values                                        |
@@ -78,9 +79,9 @@ You can use reportelements directly—for instance, to generate and compare plot
 
 | Engine Name                           | Function Name                                      | Description                              | Template Path                                                                             | Detail Page |
 |----------------------------------------|----------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------|-------------|
-| `reportelement_text_msesummary`       | `engine_reportelement_text_msesummary()`          | Textual summary of MSE values           | `inst/templates_control/8_a_engine_reportelement_text_msesummary.R`                     | [📄](detail_engine_reportelement_text_msesummary.html) |
-| `reportelement_table_splitmetrics`    | `engine_reportelement_table_splitmetrics()`       | Table summarizing metrics per split     | `inst/templates_control/8_b_engine_reportelement_table_splitmetrics.R`                  | [📄](detail_engine_reportelement_table_splitmetrics.html) |
-| `reportelement_boxplot_predictions`   | `engine_reportelement_boxplot_predictions()`      | Boxplot of predicted values by group    | `inst/templates_control/8_c_engine_reportelement_boxplot_predictions.R`                 | [📄](detail_engine_reportelement_boxplot_predictions.html) |
+| `reportelement_text_msesummary`       | `engine_reportelement_text_msesummary()`          | Textual summary of MSE values           | `inst/templates_control/8_a_template_reportelement_text_msesummary.R`                     | [📄](detail_engine_reportelement_text_msesummary.html) |
+| `reportelement_table_splitmetrics`    | `engine_reportelement_table_splitmetrics()`       | Table summarizing metrics per split     | `inst/templates_control/8_b_template_reportelement_table_splitmetrics.R`                  | [📄](detail_engine_reportelement_table_splitmetrics.html) |
+| `reportelement_boxplot_predictions`   | `engine_reportelement_boxplot_predictions()`      | Boxplot of predicted values by group    | `inst/templates_control/8_c_template_reportelement_boxplot_predictions.R`                 | [📄](detail_engine_reportelement_boxplot_predictions.html) |
 
 Use `list_registered_engines("reportelement")` to view all currently loaded engines.
 

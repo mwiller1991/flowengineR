@@ -46,7 +46,7 @@ Framework resolution:
 ---
 
 ## 📤 Standardized Output (via Wrapper)
-Returned via `initialize_output_fairness_post()`:
+Returned via `initialize_output_postprocessing()`:
 
 | Output                | Type         | Description                                                        |
 |-----------------------|--------------|--------------------------------------------------------------------|
@@ -63,7 +63,7 @@ Returned via `initialize_output_fairness_post()`:
 
 | Engine Name                      | Function Name                                       | Description                             | Template Path                                                                    | Detail Page |
 |----------------------------------|----------------------------------------------------|-----------------------------------------|----------------------------------------------------------------------------------|--------------|
-| `postprocessing_fairness_genresidual` | `engine_postprocessing_fairness_genresidual()` | Group-aware residual shifting           | `inst/templates_control/6_a_template_control_postprocessing_fairness_genresidual.R` | [📄](detail_engine_postprocessing_fairness_genresidual.html) |
+| `postprocessing_fairness_genresidual` | `engine_postprocessing_fairness_genresidual()` | Group-aware residual shifting           | `inst/templates_control/6_a_template_postprocessing_fairness_genresidual.R` | [📄](detail_engine_postprocessing_fairness_genresidual.html) |
 
 Use `list_registered_engines("postprocessing")` to view available engines.
 
@@ -90,10 +90,10 @@ To create a custom postprocessing engine:
 
 1. Implement `engine_*()` to manipulate predictions.
 2. Wrap it with a `wrapper_*()` function for validation and formatting.
-3. Return output via `initialize_output_fairness_post()`.
+3. Return output via `initialize_output_postprocessing()`.
 
 For examples, see:
-- `wrapper_postprocessing_residual_shift()`
+- `wrapper_postprocessing_fairness_genresidual()`
 
 ---
 

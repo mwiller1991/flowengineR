@@ -51,7 +51,7 @@ engine_train_lm <- function(formula, data) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/3_a_template_train_lm.R`
+#' See full template in `inst/templates_control/4_a_template_train_lm.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' - A structured list created by `initialize_output_train()`:
@@ -66,7 +66,7 @@ engine_train_lm <- function(formula, data) {
 #'   [default_params_train_lm()],  
 #'   [initialize_output_train()],  
 #'   [controller_training()],  
-#'   Template: `inst/templates_control/3_a_template_train_lm.R`
+#'   Template: `inst/templates_control/4_a_template_train_lm.R`
 #'
 #' @param control A standardized control object (see `controller_training()`).
 #' @return A standardized output list structured via `initialize_output_train()`.

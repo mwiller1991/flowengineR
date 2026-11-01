@@ -24,7 +24,7 @@ Returns a standardized output using \code{initialize_output_postprocessing()}.
 \item \code{control$params$postprocessing$postprocessing_data$predictions}: Numeric vector of model predictions (injected by workflow).
 \item \code{control$params$postprocessing$postprocessing_data$actuals}: Numeric vector of true observed values (injected by workflow).
 \item \code{control$params$postprocessing$protected_name}: Character vector of protected attribute names (binary).
-Auto-filled from \code{control$data$vars$protected_vars_binary} via \code{autofill_controllers_from_vars()}.
+Filled in by the workflow from \code{control$data$vars$protected_vars_binary}.
 \item \code{control$params$postprocessing$params}: Optional engine-specific parameters (not used here).
 }
 

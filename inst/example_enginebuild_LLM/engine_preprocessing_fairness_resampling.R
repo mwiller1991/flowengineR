@@ -76,7 +76,7 @@ engine_preprocessing_fairness_resampling <- function(data, target_var, params) {
 #' **Standardized Inputs:**
 #' - `control$params$preprocessing$data`: Input data to be resampled, taken from `control$data$train`.
 #' - `control$params$preprocessing$target_var`: Name of the target variable.  
-#'   → Auto-filled from `control$data$vars$target_var` via `autofill_controllers_from_vars()`.
+#'   Filled in by the workflow from `control$data$vars$target_var`.
 #' - `control$params$preprocessing$protected_attributes`: Not used in this engine but passed through for consistency.
 #' - `control$params$preprocessing$params`: Optional engine-specific parameters.
 #'
@@ -99,7 +99,7 @@ engine_preprocessing_fairness_resampling <- function(data, target_var, params) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/4_a_template_preprocessing_fairness_resampling.R`
+#' See full template in `inst/templates_control/3_a_template_preprocessing_fairness_resampling.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_preprocessing()`:
@@ -113,7 +113,7 @@ engine_preprocessing_fairness_resampling <- function(data, target_var, params) {
 #'   [default_params_preprocessing_fairness_resampling()],  
 #'   [initialize_output_preprocessing()],  
 #'   [controller_preprocessing()],  
-#'   Template: `inst/templates_control/4_a_template_preprocessing_fairness_resampling.R`
+#'   Template: `inst/templates_control/3_a_template_preprocessing_fairness_resampling.R`
 #'
 #' @param control A standardized control object (see `controller_preprocessing()`). Must include `control$data$vars`.
 #' @return A standardized fairness pre-processing output.

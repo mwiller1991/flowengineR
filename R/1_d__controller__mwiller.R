@@ -510,17 +510,15 @@ controller_reportelement <- function(params = list()) {
 #'
 #' **Usage Example:**
 #' ```r
-#' # Alias definitions (e.g. assigned engines)
+#' # Alias definition (assigned report engine)
 #' control$engine_select$report <- list(
-#'   alias1 = "report_markdown",
-#'   alias2 = "report_json_summary"
+#'   modelsummary = "report_modelsummary"
 #' )
 #'
-#' # Corresponding alias-specific parameter setup
+#' # Corresponding alias-specific parameter setup (section name = reportelement alias)
 #' control$params$report <- controller_report(
 #'   params = list(
-#'     alias1 = list(title = "Model Summary", author = "Max"),
-#'     alias2 = list(indent = 2)
+#'     modelsummary = list(mse_text = "mse_text", metrics_table = "split_table")
 #'   )
 #' )
 #' ```
@@ -568,16 +566,16 @@ controller_report <- function(params = list()) {
 #' ```r
 #' # Alias definitions (mapped to export engines)
 #' control$engine_select$publish <- list(
-#'   html_summary = "publish_html",
-#'   full_json = "publish_json"
+#'   summary_pdf = "publish_pdf_basis",
+#'   metrics_excel = "publish_excel_basis"
 #' )
 #'
 #' # Corresponding publishing configuration
 #' control$params$publish <- controller_publish(
-#'   output_folder = "results/exports/",
+#'   output_folder = tempdir(),
 #'   params = list(
-#'     html_summary = list(obj_type = "report", obj_name = "alias1"),
-#'     full_json = list(obj_type = "reportelement", obj_name = "alias2")
+#'     summary_pdf = list(obj_type = "report", obj_name = "modelsummary"),
+#'     metrics_excel = list(obj_type = "reportelement", obj_name = "split_table")
 #'   )
 #' )
 #' ```

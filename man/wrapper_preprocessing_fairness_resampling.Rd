@@ -23,7 +23,7 @@ of the flowengineR and produces standardized output via \code{initialize_output_
 \itemize{
 \item \code{control$params$preprocessing$data}: Input data to be resampled, taken from \code{control$data$train}.
 \item \code{control$params$preprocessing$target_var}: Name of the target variable.
-→ Auto-filled from \code{control$data$vars$target_var} via \code{autofill_controllers_from_vars()}.
+Filled in by the workflow from \code{control$data$vars$target_var}.
 \item \code{control$params$preprocessing$protected_attributes}: Not used in this engine but passed through for consistency.
 \item \code{control$params$preprocessing$params}: Optional engine-specific parameters.
 }
@@ -53,7 +53,7 @@ control$params$preprocessing <- controller_preprocessing(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \verb{inst/templates_control/4_a_template_preprocessing_fairness_resampling.R}
+See full template in \verb{inst/templates_control/3_a_template_preprocessing_fairness_resampling.R}
 
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_preprocessing()}:
@@ -69,6 +69,6 @@ A list structured via \code{initialize_output_preprocessing()}:
 \code{\link[=default_params_preprocessing_fairness_resampling]{default_params_preprocessing_fairness_resampling()}},
 \code{\link[=initialize_output_preprocessing]{initialize_output_preprocessing()}},
 \code{\link[=controller_preprocessing]{controller_preprocessing()}},
-Template: \verb{inst/templates_control/4_a_template_preprocessing_fairness_resampling.R}
+Template: \verb{inst/templates_control/3_a_template_preprocessing_fairness_resampling.R}
 }
 \keyword{internal}

@@ -41,16 +41,16 @@ report formats (e.g., HTML, PDF, JSON) or custom targets (e.g., web endpoints, f
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (mapped to export engines)
 control$engine_select$publish <- list(
-  html_summary = "publish_html",
-  full_json = "publish_json"
+  summary_pdf = "publish_pdf_basis",
+  metrics_excel = "publish_excel_basis"
 )
 
 # Corresponding publishing configuration
 control$params$publish <- controller_publish(
-  output_folder = "results/exports/",
+  output_folder = tempdir(),
   params = list(
-    html_summary = list(obj_type = "report", obj_name = "alias1"),
-    full_json = list(obj_type = "reportelement", obj_name = "alias2")
+    summary_pdf = list(obj_type = "report", obj_name = "modelsummary"),
+    metrics_excel = list(obj_type = "reportelement", obj_name = "split_table")
   )
 )
 }\if{html}{\out{</div>}}

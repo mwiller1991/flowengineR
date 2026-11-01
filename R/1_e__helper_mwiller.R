@@ -634,7 +634,7 @@ aggregate_results <- function(workflow_results) {
 #' correct argument signatures, and the use of standardized output initializers.
 #'
 #' **Purpose:**
-#' - Used exclusively in internal validation routines (e.g., `subregistry_validate()`).
+#' - Used exclusively in internal validation routines (the `validate_engine_*()` functions).
 #' - Ensures that engine wrappers follow a consistent structure and initialization protocol.
 #'
 #' **Checks Performed:**

@@ -11,7 +11,7 @@ validate_engine_publish(wrapper_function, default_params_function, engine_name)
 
 \item{default_params_function}{Function. The default parameter function for the engine.}
 
-\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"publish_pdf"}).}
+\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"publish_pdf_basis"}).}
 }
 \value{
 TRUE if the engine passes structural validation; otherwise an error is raised.

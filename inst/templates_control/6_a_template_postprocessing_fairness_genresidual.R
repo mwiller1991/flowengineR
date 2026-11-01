@@ -7,15 +7,14 @@ control$engine_select$postprocessing <- "postprocessing_fairness_genresidual"
 
 # 2. Post-Processing Parameters
 control$params$postprocessing <- controller_postprocessing(
-  protected_name = c("gender")   # Names of protected variables (for tracking only)
-  # params = list()              # Not required; this engine has no tunable parameters
+  params = list()                # Not required; this engine has no tunable parameters
 )
 
 # --- Available Parameters for postprocessing_fairness_genresidual ---
-# protected_name: Character vector of protected attributes
-# params: Optional list (unused by this engine)
+# None.
 
 # Notes:
-# - predictions and actuals are provided automatically by the workflow
+# - predictions, actuals and the binary protected attributes are provided
+#   automatically by the workflow (control$data$vars$protected_vars_binary)
 # - the engine applies the mean residual (actual - predicted) to all predictions
 # - output remains within [0, 1] if output_type == "prob"

@@ -74,8 +74,8 @@ This function prepares inputs for the engine, validates user control, and constr
 * Return standardized output via `initialize_output_<type>()`
 
 ```r
-if (isTRUE(control\$internal\_skip\_validation)) {
-return(list(skip\_validation = TRUE))
+if (isTRUE(control$internal_skip_validation)) {
+  return(list(skip_validation = TRUE))
 }
 ```
 

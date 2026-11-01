@@ -12,7 +12,7 @@
 #' - `control`: A standardized control object. This must contain all relevant components for the workflow:
 #'   - `flowengineR_env$engines`: A list with the used engines.
 #'      - `split`: Name of a registered splitter engine (e.g. "split_random_stratified")
-#'      - `execution`: Name of a registered execution engine (optional; defaults to "execution_sequential")
+#'      - `execution`: Name of a registered execution engine (optional; defaults to "execution_basic_sequential")
 #'   - `params`: Parameter structure used by downstream engines (e.g., split ratio, seeds, evaluation metrics)
 #'
 #' **Output:**

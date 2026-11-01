@@ -84,7 +84,7 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/1_a_template_control_split_cv.R`
+#' See full template in `inst/templates_control/1_a_template_split_cv.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_split()` with:
@@ -99,7 +99,7 @@ engine_split_cv <- function(data, target_var, cv_folds, seed) {
 #'   [default_params_split_cv()],  
 #'   [initialize_output_split()],  
 #'   [controller_split()],  
-#'   Template: `inst/templates_control/1_a_template_control_split_cv.R`  
+#'   Template: `inst/templates_control/1_a_template_split_cv.R`  
 #'   Helper: [show_template()]
 #'
 #' @param control A standardized control object (see `controller_split()`).

@@ -26,7 +26,7 @@ or directly continue with downstream processing via \code{continue_workflow()}.
 \item \code{flowengineR_env$engines}: A list with the used engines.
 \itemize{
 \item \code{split}: Name of a registered splitter engine (e.g. "split_random_stratified")
-\item \code{execution}: Name of a registered execution engine (optional; defaults to "execution_sequential")
+\item \code{execution}: Name of a registered execution engine (optional; defaults to "execution_basic_sequential")
 }
 \item \code{params}: Parameter structure used by downstream engines (e.g., split ratio, seeds, evaluation metrics)
 }

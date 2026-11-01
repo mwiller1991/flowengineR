@@ -45,7 +45,11 @@ engine_reportelement_boxplot_predictions <- function(workflow_results, split_out
     )
   }))
   
-  if (nrow(combined) == 0) stop("No data available to create boxplot.")
+  if (is.null(combined) || nrow(combined) == 0) {
+    stop("No data available to create boxplot: check that '", group_var,
+         "' is a column of the test data and that predictions exist for source '",
+         source, "'.", call. = FALSE)
+  }
   
   ggplot2::ggplot(combined, ggplot2::aes(x = group, y = prediction)) +
     ggplot2::geom_boxplot(outlier.alpha = 0.2) +

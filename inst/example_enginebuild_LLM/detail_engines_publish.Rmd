@@ -82,8 +82,8 @@ The field `compatible_formats`, which is part of the **report output**, determin
 
 | Engine Name         | Function Name                     | Description                           | Template Path                                                      | Detail Page |
 |---------------------|------------------------------------|---------------------------------------|---------------------------------------------------------------------|-------------|
-| `publish_pdf_basis` | `engine_publish_pdf_basis()`      | Basic PDF exporter for full reports   | `inst/templates_control/10_a_engine_publish_pdf_basis.R`         | [📄](detail_engine_publish_pdf_basis.html) |
-| `publish_excel_basis` | `engine_publish_excel_basis()`   | Exports reportelements to Excel files | `inst/templates_control/10_b_engine_publish_excel_basis.R`       | [📄](detail_engine_publish_excel_basis.html) |
+| `publish_pdf_basis` | `engine_publish_pdf_basis()`      | Basic PDF exporter for full reports   | `inst/templates_control/10_a_template_publish_pdf.R`         | [📄](detail_engine_publish_pdf_basis.html) |
+| `publish_excel_basis` | `engine_publish_excel_basis()`   | Exports reportelements to Excel files | `inst/templates_control/10_b_template_publish_excel.R`       | [📄](detail_engine_publish_excel_basis.html) |
 
 Use `list_registered_engines("publish")` to view available publishing engines.
 

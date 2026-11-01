@@ -67,7 +67,7 @@ engine_split_userdefined <- function(train, test) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/1_d_template_control_split_userdefined.R`
+#' See full template in `inst/templates_control/1_d_template_split_userdefined.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_split()` with:
@@ -82,7 +82,7 @@ engine_split_userdefined <- function(train, test) {
 #'   [default_params_split_userdefined()],  
 #'   [initialize_output_split()],  
 #'   [controller_split()],  
-#'   Template: `inst/templates_control/1_d_template_control_split_userdefined.R`  
+#'   Template: `inst/templates_control/1_d_template_split_userdefined.R`  
 #'   Helper: [show_template()]
 #'
 #' @param control A standardized control object with externally assigned train/test data.

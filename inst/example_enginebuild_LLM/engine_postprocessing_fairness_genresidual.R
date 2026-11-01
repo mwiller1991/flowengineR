@@ -41,7 +41,7 @@ engine_postprocessing_fairness_genresidual <- function(predictions, actuals) {
 #' - `control$params$postprocessing$postprocessing_data$predictions`: Numeric vector of model predictions (injected by workflow).
 #' - `control$params$postprocessing$postprocessing_data$actuals`: Numeric vector of true observed values (injected by workflow).
 #' - `control$params$postprocessing$protected_name`: Character vector of protected attribute names (binary).  
-#'   Auto-filled from `control$data$vars$protected_vars_binary` via `autofill_controllers_from_vars()`.
+#'   Filled in by the workflow from `control$data$vars$protected_vars_binary`.
 #' - `control$params$postprocessing$params`: Optional engine-specific parameters (not used here).
 #'
 #' **Binary Attribute Requirement:**

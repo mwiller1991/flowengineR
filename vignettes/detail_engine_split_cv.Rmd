@@ -58,7 +58,7 @@ The wrapper returns a list via `initialize_output_split()` with the following co
 ### Template Reference
 
 This engine's control template is located at:
-`inst/templates_control/1_a_template_control_split_cv.R`
+`inst/templates_control/1_a_template_split_cv.R`
 
 ### Example Configuration
 ```r

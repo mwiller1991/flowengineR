@@ -65,9 +65,9 @@ Returned via `initialize_output_train()`:
 
 | Engine Name  | Function Name                 | Description                      | Template Path                                                 | Detail Page |
 |--------------|-------------------------------|----------------------------------|----------------------------------------------------------------|--------------|
-| `lm`         | `engine_train_lm()`           | Ordinary least squares regression | `inst/templates_control/4_a_template_control_train_lm.R`       | [📄](detail_engine_train_lm.html) |
-| `glm`         | `engine_train_glm()`           | Generalized linear models.       | `inst/templates_control/4_b_template_control_train_glm.R`     | [📄](detail_engine_train_glm.html) |
-| `gbm`        | `engine_train_gbm()`          | Gradient boosting models         | `inst/templates_control/4_c_template_control_train_gbm.R`      | [📄](detail_engine_train_gbm.html) |
+| `lm`         | `engine_train_lm()`           | Ordinary least squares regression | `inst/templates_control/4_a_template_train_lm.R`       | [📄](detail_engine_train_lm.html) |
+| `glm`         | `engine_train_glm()`           | Generalized linear models.       | `inst/templates_control/4_b_template_train_glm.R`     | [📄](detail_engine_train_glm.html) |
+| `gbm`        | `engine_train_gbm()`          | Gradient boosting models         | `inst/templates_control/4_c_template_train_gbm.R`      | [📄](detail_engine_train_gbm.html) |
 
 Use `list_registered_engines("train")` to inspect all currently loaded training engines.
 

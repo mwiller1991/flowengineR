@@ -58,9 +58,9 @@ Each engine has a corresponding control template to guide setup and customizatio
 
 | Engine Name               | Function Name                       | Description                                              | Template Path                                               | Detail Page |
 |---------------------------|-------------------------------------|----------------------------------------------------------|-------------------------------------------------------------|-------------|
-| `split_random`            | `engine_split_random()`             | Random split of data without stratification              | `inst/templates_control/1_c_template_control_split_random.R`             | [📄](detail_engine_split_random.html) |
-| `split_random_stratified` | `engine_split_random_stratified()` | Stratified random split based on the target variable     | `inst/templates_control/1_b_template_control_split_random_stratified.R`  | [📄](detail_engine_split_random_stratified.html) |
-| `split_cv`                | `engine_split_cv()`                 | Cross-validation folds using stratified sampling         | `inst/templates_control/1_a_template_control_split_cv.R`                | [📄](detail_engine_split_cv.html) |
+| `split_random`            | `engine_split_random()`             | Random split of data without stratification              | `inst/templates_control/1_c_template_split_random.R`             | [📄](detail_engine_split_random.html) |
+| `split_random_stratified` | `engine_split_random_stratified()` | Stratified random split based on the target variable     | `inst/templates_control/1_b_template_split_random_stratified.R`  | [📄](detail_engine_split_random_stratified.html) |
+| `split_cv`                | `engine_split_cv()`                 | Cross-validation folds using stratified sampling         | `inst/templates_control/1_a_template_split_cv.R`                | [📄](detail_engine_split_cv.html) |
 
 
 Use `list_registered_engines("split")` to inspect all currently loaded splitter engines.

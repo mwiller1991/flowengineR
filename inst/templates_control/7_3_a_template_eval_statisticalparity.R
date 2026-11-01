@@ -7,14 +7,12 @@ control$engine_select$evaluation <- "eval_statisticalparity"
 
 # 2. Evaluation Parameters
 control$params$evaluation <- controller_evaluation(
-  protected_name = c("gender", "race")   # Binary protected attributes only
-  # params = list()                      # Not required
+  params = list()                # Not required
 )
 
 # --- Available Parameters for eval_statisticalparity ---
-# protected_name: Character vector of protected attribute names
-# eval_data: Automatically provided by workflow (must include predictions and protected attributes)
-# params: Not used
+# None. Predictions and the binary protected attributes are provided
+# automatically by the workflow (control$data$vars$protected_vars_binary).
 
 # Notes:
 # - Only binary protected attributes are supported

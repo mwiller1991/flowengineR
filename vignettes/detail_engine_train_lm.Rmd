@@ -49,7 +49,7 @@ Returned via `initialize_output_train()`:
 
 ### Workflow Integration
 
-- **Controller Function:** `controller_train()`
+- **Controller Function:** `controller_training()`
 - **Wrapper Function:** `wrapper_train_lm()`
 - **Engine Function:** `engine_train_lm()`
 - **Position in Flow:** Training phase

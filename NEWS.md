@@ -93,6 +93,26 @@ First release on CRAN.
   the engine parameters in the examples and the control template (which
   passed arguments that `controller_inprocessing()` does not have) are
   now correct.
+- Documentation: corrected the file names of control templates named in
+  vignettes and help pages (many pointed to files that do not exist),
+  names of functions and engines in several vignettes and help pages
+  (e.g. `initialize_output_postprocessing()`, `controller_training()`,
+  `eval_mse`), and the outputs listed for reportelement engines.
+- Control templates: the templates for `preprocessing_fairness_resampling`,
+  `train_gbm`, `postprocessing_fairness_genresidual` and the three
+  evaluation engines could not be run (unknown arguments or a trailing
+  comma), the publishing templates lacked the required `obj_name`, and
+  the boxplot template used a grouping variable that the example data
+  does not contain and aliases that the report template does not use.
+  New tests run all templates and a reporting workflow built from them.
+- `reportelement_boxplot_predictions`: a missing grouping variable now
+  gives a clear error message instead of "argument is of length zero".
+- "Getting Started" vignette: the example now selects the evaluation
+  engines via `evaluation` (previously `eval`, which was ignored), shows
+  how to access the aggregated metrics and the model, and uses the
+  correct structure for the log settings.
+- The LLM demonstration vignette states with which version the archived
+  demonstration was created.
   
 
 

@@ -31,7 +31,7 @@ correct argument signatures, and the use of standardized output initializers.
 \details{
 \strong{Purpose:}
 \itemize{
-\item Used exclusively in internal validation routines (e.g., \code{subregistry_validate()}).
+\item Used exclusively in internal validation routines (the \verb{validate_engine_*()} functions).
 \item Ensures that engine wrappers follow a consistent structure and initialization protocol.
 }
 
