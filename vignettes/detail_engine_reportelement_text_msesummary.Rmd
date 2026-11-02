@@ -43,7 +43,7 @@ This reportelement engine computes the average Mean Squared Error (MSE) across a
 Returned via `initialize_output_reportelement()`:
 
 - `type`: `"text"`
-- `content`: A German summary string reporting the average MSE
+- `content`: A summary string reporting the average MSE (e.g., "The average MSE across all splits is 0.0306.")
 - `compatible_formats`: `c("pdf", "html", "json", "markdown")`
 - `input_data`: Names of all splits that contributed to the result
 - `params`: Empty list

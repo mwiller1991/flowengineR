@@ -125,6 +125,9 @@ First release on CRAN.
   still restored afterwards.
 - `flowengineR_start()`: menu item 4 now lists the engines of each type
   (previously only the engine types).
+- Report texts are now in English: `reportelement_text_msesummary` writes
+  "The average MSE across all splits is ...", and the title of
+  `report_modelsummary` is "Model Summary" (previously German).
   
 
 

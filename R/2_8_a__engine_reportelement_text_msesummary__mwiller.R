@@ -22,7 +22,7 @@ engine_reportelement_text_msesummary <- function(workflow_results) {
     result$output_eval$eval_mse$metrics$mse
   })
   mean_mse <- mean(all_mse, na.rm = TRUE)
-  sprintf("Der durchschnittliche MSE ueber alle Splits betraegt %.4f.", mean_mse)
+  sprintf("The average MSE across all splits is %.4f.", mean_mse)
 }
 #--------------------------------------------------------------------
 

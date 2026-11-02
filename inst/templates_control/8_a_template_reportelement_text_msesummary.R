@@ -20,5 +20,5 @@ control$params$reportelement <- controller_reportelement(
 
 # Notes:
 # - Requires that eval_mse was run and its output is present under each split
-# - Output is a character summary like: "Der durchschnittliche MSE über alle Splits beträgt 0.0385."
+# - Output is a character summary like: "The average MSE across all splits is 0.0385."
 # - Compatible with: pdf, html, json, markdown

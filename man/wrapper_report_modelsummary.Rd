@@ -55,7 +55,7 @@ See full template in \verb{inst/templates_control/9_a_template_report_modelsumma
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_report()}:
 \itemize{
-\item \code{report_title}: \code{"Modellzusammenfassung"}
+\item \code{report_title}: \code{"Model Summary"}
 \item \code{report_type}: \code{"modelsummary"}
 \item \code{compatible_formats}: \code{c("pdf", "html", "json")}
 \item \code{sections}: List of sections, each with \code{heading} and \code{content}
