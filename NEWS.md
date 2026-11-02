@@ -117,6 +117,12 @@ First release on CRAN.
   `formula` is given, `run_workflow()` builds `target ~ features +
   protected attributes` from `control$data$vars` when the workflow
   starts. An explicitly given formula is used unchanged.
+- `settings$global_seed` was documented but had no effect. `run_workflow()`
+  now sets this seed (default `1`) at the start, so that steps without a
+  seed of their own are reproducible as well (e.g. a user-defined split
+  followed by `train_gbm`). Results of workflows whose splitter sets a
+  seed are unchanged, and the random number state of the session is
+  still restored afterwards.
   
 
 

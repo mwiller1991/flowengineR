@@ -51,7 +51,8 @@ settings = list(
 ```
 
 - `log_show`: Show log output during execution
-- `log_level`: Level of verbosity (`"info"`, `"warn"`, `"error"`)
+- `log_level`: Lowest level that is shown (`"debug"`, `"info"`, `"warn"`, `"error"`; `"none"` hides all messages)
+- `global_seed`: Seed set at the start of `run_workflow()` (default `1`), so that steps without a seed of their own are reproducible; the random number state of the R session is restored afterwards
 - `output_type`: Choose between predicted class label (`"response"`) or probability (`"prob"`) if the model supports it
 
 ---

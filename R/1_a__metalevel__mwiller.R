@@ -29,7 +29,9 @@
 #' - It is intended to be called by users who wish to run training, (optional) pre-/in-/post-processing, evaluation, reporting, and publishing in a single pipeline.
 #'
 #' **Random Numbers:**
-#' - Results are reproducible through the seeds of the engines, e.g. `controller_split(seed = ...)`.
+#' - `run_workflow()` first sets the seed `control$settings$global_seed` (default `1`), so that
+#'   steps without a seed of their own are reproducible as well.
+#' - Engines with their own seed, e.g. `controller_split(seed = ...)`, still set it themselves.
 #' - The random number generator state of the R session is restored when `run_workflow()` returns.
 #'
 #' @param control A standardized list structure containing all workflow instructions and parameters. Created manually or via controller functions.
@@ -61,9 +63,13 @@ run_workflow <- function(control = list()) {
   log_msg("[MASTER] Initializing control object with defaults...", level = "info", control = control)
   control <- complete_control_with_defaults(control)
   
-  # Engines set their own seeds (e.g. the splitter); restore the caller's
-  # random number generator state when the workflow ends
+  # Restore the caller's random number generator state when the workflow ends
   withr::local_preserve_seed()
+
+  # Global seed: makes steps reproducible that do not set a seed of their own
+  # (e.g. a user-defined split followed by train_gbm). Engines with their own
+  # seed, such as the splitters, still set it themselves.
+  if (!is.null(control$settings$global_seed)) set.seed(control$settings$global_seed)
   
   # 1. Call splitter engine
   log_msg(paste0("[MASTER] Using split engine: ", control$engine_select$split), level = "info", control = control)

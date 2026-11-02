@@ -54,7 +54,9 @@ or directly continue with downstream processing via \code{continue_workflow()}.
 
 \strong{Random Numbers:}
 \itemize{
-\item Results are reproducible through the seeds of the engines, e.g. \code{controller_split(seed = ...)}.
+\item \code{run_workflow()} first sets the seed \code{control$settings$global_seed} (default \code{1}), so that
+steps without a seed of their own are reproducible as well.
+\item Engines with their own seed, e.g. \code{controller_split(seed = ...)}, still set it themselves.
 \item The random number generator state of the R session is restored when \code{run_workflow()} returns.
 }
 }
