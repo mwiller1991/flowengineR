@@ -70,7 +70,7 @@ flowengineR_start <- function() {
            {
              message("\nAvailable engines (returned as 'engine_list'):\n")
              out$engine_list <- list_registered_engines()
-             print(names(out$engine_list))
+             message(paste(format_engine_overview(out$engine_list), collapse = "\n"))
            },
            {
              message("\nOpening help for run_workflow()...\n")
@@ -93,4 +93,18 @@ flowengineR_start <- function() {
   }
   
   invisible(out)
+}
+
+
+#' Format the Engine List for the Start Menu
+#'
+#' @param engine_list Engines grouped by type, as returned by `list_registered_engines()`.
+#'
+#' @return Character vector with one or more lines per engine type.
+#' @noRd
+format_engine_overview <- function(engine_list) {
+  unlist(lapply(names(engine_list), function(type) {
+    strwrap(paste(names(engine_list[[type]]), collapse = ", "), width = 80,
+            initial = sprintf("%-16s", paste0(type, ":")), prefix = strrep(" ", 16))
+  }))
 }

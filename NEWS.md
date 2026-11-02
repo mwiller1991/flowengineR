@@ -123,6 +123,8 @@ First release on CRAN.
   followed by `train_gbm`). Results of workflows whose splitter sets a
   seed are unchanged, and the random number state of the session is
   still restored afterwards.
+- `flowengineR_start()`: menu item 4 now lists the engines of each type
+  (previously only the engine types).
   
 
 
