@@ -63,7 +63,7 @@ This engine's control template is located at:
 ### Example Configuration
 ```r
 control$engine_select$train <- "train_lm"
-control$params$train <- controller_train(
+control$params$train <- controller_training(
   formula = target ~ .,
   norm_data = TRUE
 )

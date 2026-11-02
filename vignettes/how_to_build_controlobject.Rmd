@@ -117,6 +117,18 @@ Each engine used in `engine_select` should have a corresponding parameter entry 
 Each controller accepts parameters specific to the engine being used.
 The controller has to be used to ensure the input-format is fitting for the following workflow.
 
+**Training formula:** `controller_training()` can be called without a `formula`.
+The workflow then uses `target ~ features + protected attributes`, built from
+`data$vars` when `run_workflow()` starts. The variables therefore only have to be
+defined once, in `data$vars`. Give a formula explicitly to use a different model,
+e.g. one without the protected attributes:
+
+```r
+params = list(
+  train = controller_training(norm_data = TRUE)   # formula from data$vars
+)
+```
+
 ---
 
 ## 🧪 Example
@@ -177,7 +189,7 @@ control <- list(
 This control object can now be passed into the main workflow function:
 
 ```r
-results <- run_workflow_variants(control = control)
+results <- run_workflow(control = control)
 ```
 
 ---

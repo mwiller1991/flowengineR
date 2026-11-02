@@ -128,6 +128,10 @@ First release on CRAN.
 - Report texts are now in English: `reportelement_text_msesummary` writes
   "The average MSE across all splits is ...", and the title of
   `report_modelsummary` is "Model Summary" (previously German).
+- Documentation: explained that the training formula can be left out,
+  and corrected code examples that used functions or engines that do not
+  exist (`controller_eval()`, `controller_train()`,
+  `run_workflow_variants()`, the engines `rf`, `gbm` and `evaluate_mse`).
   
 
 

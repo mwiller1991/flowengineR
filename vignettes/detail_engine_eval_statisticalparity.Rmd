@@ -72,7 +72,7 @@ This engine’s control template is located at:
 ### Example Configuration
 ```r
 control$engine_select$evaluation <- "eval_statisticalparity"
-control$params$evaluation <- controller_eval(
+control$params$evaluation <- controller_evaluation(
   params = list()
 )
 ```

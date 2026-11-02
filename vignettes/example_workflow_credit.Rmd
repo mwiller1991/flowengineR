@@ -111,10 +111,9 @@ control <- list(
       )
     ),
     train = controller_training(
-      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      norm_data = TRUE
+      norm_data = TRUE   # formula: target ~ features + protected attributes (from data$vars)
     ),
-    inprocessing = controller_preprocessing(
+    inprocessing = controller_inprocessing(
       params = list(learning_rate = 0.1, num_epochs = 1000, num_adversary_steps = 10)
     ),
     evaluation = controller_evaluation(

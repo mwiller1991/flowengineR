@@ -80,7 +80,7 @@ Use `list_registered_engines("eval")` to view all currently loaded evaluation en
 ## 🧩 Engine Usage in Workflow
 
 ```r
-control$engine_select$evaluation <- "evaluate_mse"
+control$engine_select$evaluation <- "eval_mse"
 control$params$evaluation <- controller_evaluation(
   params = list()
 )
