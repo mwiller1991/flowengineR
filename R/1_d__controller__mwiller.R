@@ -227,6 +227,7 @@ controller_preprocessing <- function(params = list()) {
 #'
 #' **Standardized Structure:**
 #' - `formula`: A formula describing the model structure (e.g., `y ~ x1 + x2`).
+#'   If `NULL`, the formula is built when the workflow starts (see `formula`).
 #' - `norm_data`: Logical. Whether the input data should be normalized before training.
 #' - `params`: A named list of hyperparameters passed to the training engine.
 #'
@@ -240,6 +241,9 @@ controller_preprocessing <- function(params = list()) {
 #' ```
 #'
 #' @param formula A model formula used to define the structure of the predictive model.
+#'   If `NULL` (default), `run_workflow()` builds `target ~ features + protected
+#'   attributes` from `control$data$vars` when the workflow starts, so the
+#'   variables need not exist when the control object is created.
 #' @param norm_data Logical. Whether to normalize the input data (default: `TRUE`).
 #' @param params Named list. Engine-specific configuration. Default is empty list.
 #'
@@ -250,7 +254,7 @@ controller_preprocessing <- function(params = list()) {
 #'   norm_data = TRUE
 #' )
 #' @export
-controller_training <- function(formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
+controller_training <- function(formula = NULL,
                                 norm_data = TRUE,
                                 params = list()) {
   list(

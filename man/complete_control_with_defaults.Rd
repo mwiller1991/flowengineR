@@ -34,7 +34,8 @@ selected by the user.
 \item Sets \code{split = "split_random_stratified"} and calls \code{controller_split()} if missing.
 \item Sets \code{execution = "execution_basic_sequential"} and calls \code{controller_execution()} if missing.
 \item Sets \code{train = "train_glm"} and \code{output_type = "response"} if missing.
-\item Calls \code{controller_training()} if \code{params$train} is missing.
+\item Calls \code{controller_training()} if \code{params$train} is missing, and builds the
+formula from \code{control$data$vars} if none is given.
 \item Adds default evaluation methods if not specified: \code{"eval_mse"}, \code{"eval_summarystats"}, \code{"eval_statisticalparity"}.
 \item Calls \code{controller_evaluation()} if \code{params$evaluation} is missing.
 \item For optional modules (\code{preprocessing}, \code{inprocessing}, \code{postprocessing}, \code{reportelement}, \code{report}, \code{publish}),

@@ -113,7 +113,8 @@ log_msg <- function(msg, level = "info", control = NULL, abort = FALSE) {
 #' - Sets `split = "split_random_stratified"` and calls `controller_split()` if missing.
 #' - Sets `execution = "execution_basic_sequential"` and calls `controller_execution()` if missing.
 #' - Sets `train = "train_glm"` and `output_type = "response"` if missing.
-#' - Calls `controller_training()` if `params$train` is missing.
+#' - Calls `controller_training()` if `params$train` is missing, and builds the
+#'   formula from `control$data$vars` if none is given.
 #' - Adds default evaluation methods if not specified: `"eval_mse"`, `"eval_summarystats"`, `"eval_statisticalparity"`.
 #' - Calls `controller_evaluation()` if `params$evaluation` is missing.
 #' - For optional modules (`preprocessing`, `inprocessing`, `postprocessing`, `reportelement`, `report`, `publish`),
@@ -211,11 +212,11 @@ complete_control_with_defaults <- function(control) {
   # Training setup
   if (is.null(control$engine_select$train)) control$engine_select$train <- "train_glm"
   if (is.null(control$params$train)) {
-    control$params$train <- controller_training(
-      formula = as.formula(paste(
-      vars$target_var, "~",
-      paste(c(vars$feature_vars, vars$protected_vars), collapse = "+")))
-    )
+    control$params$train <- controller_training()
+  }
+  # Default formula: target ~ features + protected attributes from control$data$vars
+  if (is.null(control$params$train$formula)) {
+    control$params$train$formula <- default_training_formula(vars)
   }
   
   # Evaluation setup
@@ -250,6 +251,27 @@ complete_control_with_defaults <- function(control) {
   control$engine_select$inprocessing <- resolve_engine_name(control$engine_select$inprocessing)
   
   return(control)
+}
+#--------------------------------------------------------------------
+
+
+
+#--------------------------------------------------------------------
+### Helper: Default Training Formula ###
+#--------------------------------------------------------------------
+#' Helper: Default Training Formula
+#'
+#' Builds `target ~ features + protected attributes` from a `controller_vars()` object.
+#'
+#' @param vars A list created by `controller_vars()`.
+#'
+#' @return A formula.
+#' @noRd
+default_training_formula <- function(vars) {
+  stats::as.formula(
+    paste(vars$target_var, "~", paste(c(vars$feature_vars, vars$protected_vars), collapse = " + ")),
+    env = globalenv()
+  )
 }
 #--------------------------------------------------------------------
 

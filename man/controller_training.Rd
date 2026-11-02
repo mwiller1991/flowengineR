@@ -4,15 +4,12 @@
 \alias{controller_training}
 \title{Controller: Training Engine Specification}
 \usage{
-controller_training(
-  formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse =
-    "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-  norm_data = TRUE,
-  params = list()
-)
+controller_training(formula = NULL, norm_data = TRUE, params = list())
 }
 \arguments{
-\item{formula}{A model formula used to define the structure of the predictive model.}
+\item{formula}{A model formula used to define the structure of the predictive model.
+If \code{NULL} (default), \code{run_workflow()} builds \verb{target ~ features + protected attributes} from \code{control$data$vars} when the workflow starts, so the
+variables need not exist when the control object is created.}
 
 \item{norm_data}{Logical. Whether to normalize the input data (default: \code{TRUE}).}
 
@@ -39,6 +36,7 @@ with all built-in and user-defined training engines and allows flexible extensio
 \strong{Standardized Structure:}
 \itemize{
 \item \code{formula}: A formula describing the model structure (e.g., \code{y ~ x1 + x2}).
+If \code{NULL}, the formula is built when the workflow starts (see \code{formula}).
 \item \code{norm_data}: Logical. Whether the input data should be normalized before training.
 \item \code{params}: A named list of hyperparameters passed to the training engine.
 }

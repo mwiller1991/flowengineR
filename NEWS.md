@@ -113,6 +113,10 @@ First release on CRAN.
   correct structure for the log settings.
 - The LLM demonstration vignette states with which version the archived
   demonstration was created.
+- `controller_training()` no longer needs a global object `vars`: if no
+  `formula` is given, `run_workflow()` builds `target ~ features +
+  protected attributes` from `control$data$vars` when the workflow
+  starts. An explicitly given formula is used unchanged.
   
 
 
