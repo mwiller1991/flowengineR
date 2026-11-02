@@ -132,6 +132,9 @@ First release on CRAN.
   and corrected code examples that used functions or engines that do not
   exist (`controller_eval()`, `controller_train()`,
   `run_workflow_variants()`, the engines `rf`, `gbm` and `evaluate_mse`).
+- `register_engine()` no longer changes the random number state of the R
+  session. The validation runs the engine on random dummy data, and the
+  validation of splitter engines set a fixed seed.
   
 
 

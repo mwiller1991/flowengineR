@@ -18,6 +18,9 @@
 #' 3. Calls a type-specific validation function, e.g., `validate_engine_train()`
 #' 4. If validation passes, the wrapper function is registered under `flowengineR_env$engines`
 #'
+#' The random number generator state of the R session is the same before and
+#' after the call, although the validation uses random dummy data.
+#'
 #' **Supported Engine Types:**
 #' - `split_*`: Data splitting engines
 #' - `execution_*`: Workflow execution strategies (e.g., sequential, parallel)
@@ -62,6 +65,10 @@
 #' is.element("eval_median", names(list_registered_engines(type = "eval")))
 #' @export
 register_engine <- function(engine_name, file_path) {
+  # The validation runs the engine on random dummy data, and splitter engines
+  # set a seed; restore the caller's random number generator state afterwards
+  withr::local_preserve_seed()
+
   tryCatch({
     full_engine_type <- strsplit(engine_name, "_")[[1]][1]
     

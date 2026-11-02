@@ -36,6 +36,9 @@ package namespace), so the user's workspace is not modified.
 \item If validation passes, the wrapper function is registered under \code{flowengineR_env$engines}
 }
 
+The random number generator state of the R session is the same before and
+after the call, although the validation uses random dummy data.
+
 \strong{Supported Engine Types:}
 \itemize{
 \item \verb{split_*}: Data splitting engines
