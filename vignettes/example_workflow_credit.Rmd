@@ -25,7 +25,7 @@ library(flowengineR)
 
 ## Objective
 
-This vignette demonstrates a complete `flowengineR` workflow using a credit risk dataset, a GLM model, an in-processing fairness method, and reporting/publishing components.
+This vignette demonstrates a complete `flowengineR` workflow using a credit risk dataset, a GLM model, a postprocessing engine, and reporting/publishing components.
 
 ---
 
@@ -178,4 +178,4 @@ result$publishing
 
 ## Summary
 
-This full workflow demonstrates how `flowengineR` can be used to perform a modular algorithmic analysis, including fairness optimization and publishing support.
+This full workflow demonstrates how `flowengineR` can be used to perform a modular algorithmic analysis, including a postprocessing step, fairness evaluation and publishing support.

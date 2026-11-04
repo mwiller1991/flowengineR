@@ -68,7 +68,7 @@ Returned via `initialize_output_inprocessing()`:
 
 | Engine Name                      | Function Name                                  | Description                          | Template Path                                                                 | Detail Page |
 |----------------------------------|-----------------------------------------------|--------------------------------------|--------------------------------------------------------------------------------|-------------|
-| `inprocessing_fairness_adversarialdebiasing` | `engine_inprocessing_fairness_adversarialdebiasing()` | Adversarial debiasing during training | `inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R` | [📄](detail_engine_inprocessing_fairness_adversarialdebiasing.html) |
+| `inprocessing_fairness_adversarialdebiasing` | `engine_inprocessing_fairness_adversarialdebiasing()` | Adversarial reweighting during training (demonstration) | `inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R` | [📄](detail_engine_inprocessing_fairness_adversarialdebiasing.html) |
 
 Use `list_registered_engines("inprocessing")` to inspect all currently loaded inprocessing engines.
 
@@ -115,7 +115,9 @@ For examples, see:
 
 Inprocessing is ideal when model training must be adapted to meet fairness constraints directly. A prominent example is **adversarial debiasing**, where a secondary model (the adversary) learns to predict group membership from intermediate representations of the main model. The training then minimizes the adversary’s success while retaining predictive accuracy.
 
-This technique can be applied to neural networks and other flexible learners, enforcing fairness without compromising overall model structure.
+This technique can be applied to neural networks and other flexible learners.
+
+The included engine `inprocessing_fairness_adversarialdebiasing` is a simplified demonstration of this idea: it reweights the training observations based on the error of a linear adversary and refits the model (see its detail page). It is not a validated fairness method.
 
 Example:
 
@@ -126,4 +128,4 @@ control$params$inprocessing <- controller_inprocessing(
 )
 ```
 
-This method integrates fairness into the optimization loop and is especially useful when working with complex model representations or high-capacity learners.
+Full adversarial debiasing integrates fairness into the optimization loop and is especially useful for complex model representations or high-capacity learners.

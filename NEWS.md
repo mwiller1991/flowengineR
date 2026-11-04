@@ -137,6 +137,15 @@ First release on CRAN.
 - `register_engine()` no longer changes the random number state of the R
   session. The validation runs the engine on random dummy data, and the
   validation of splitter engines set a fixed seed.
+- Documentation of the fairness engines `preprocessing_fairness_resampling`,
+  `inprocessing_fairness_adversarialdebiasing` and
+  `postprocessing_fairness_genresidual`: several pages described
+  group-specific adjustments that the engines do not perform. The
+  documentation now states what each engine does, and that the three
+  engines demonstrate the engine interfaces and are not validated
+  fairness methods. The engines themselves are unchanged.
+- Vignettes: removed a stray character in the vignette index, and the
+  credit workflow example now names its post-processing engine correctly.
   
 
 

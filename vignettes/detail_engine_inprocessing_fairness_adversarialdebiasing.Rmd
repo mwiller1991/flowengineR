@@ -1,6 +1,6 @@
 ---
 title: "In Detail: Inprocessing Engine - Fairness Adversarial Debiasing"
-subtitle: "Mitigating bias during training using adversarial techniques"
+subtitle: "Reweighting training data with a simple adversary"
 author: "mwiller"
 output:
   rmarkdown::html_vignette:
@@ -14,7 +14,7 @@ vignette: >
 
 > **Summary**  
 > This vignette introduces the **adversarial debiasing inprocessing engine**.  
-> It explains how fairness constraints are incorporated directly into model training using adversarial methods, balancing predictive performance and fairness objectives within the standardized engine structure of `flowengineR`.
+> It describes a simplified adversarial reweighting scheme that runs during model training within the standardized engine structure of `flowengineR`. The engine demonstrates the inprocessing interface and is not a validated fairness method.
 
 ---
 
@@ -22,9 +22,9 @@ vignette: >
 
 ### Purpose and Function
 
-This engine implements *Adversarial Debiasing* as an in-processing method to mitigate bias during model training. It trains a main predictive model together with an adversarial model that attempts to infer protected attributes from the main model’s predictions. The main model is iteratively adjusted to reduce this leakage of protected information.
+This engine implements a simplified adversarial reweighting scheme as an in-processing step. It trains a main predictive model together with a linear adversary that predicts the protected attributes from the main model's predictions. After each epoch, the training observations are reweighted based on the adversary's error, and the main model is refitted with these weights.
 
-Inspired by Zhang et al. (2018), this method formulates the fairness constraint as a minimax optimization: the main model tries to minimize prediction loss while maximizing the adversary's error.
+The idea is inspired by adversarial debiasing (Zhang, Lemoine and Mitchell 2018), which formulates fairness as a minimax optimization problem. The engine does not solve this optimization problem; it demonstrates the in-processing interface and is not a validated fairness method.
 
 Compatibility: The engine passes the instance weights to the training engine via `sample_weight`. It therefore works with the included `train_glm` and `train_gbm` engines. `train_lm` does not use instance weights, so the model would stay unchanged; the engine warns in this case. Other training engines can be combined with it if they use `control$params$train$params$sample_weight` and support `predict()` on the training data.
 
@@ -42,7 +42,7 @@ Adjust Instance Weights
 Next Epoch
 ```
 
-Weights are updated so that instances highly indicative of protected attributes receive lower importance.
+Each observation receives the weight `1 - learning_rate * error`, where `error` is the adversary's absolute error (numeric attributes) or cross-entropy (categorical attributes) for this observation, averaged over the protected attributes; the weights are floored at 0.001. Observations for which the adversary's error is larger therefore receive lower weights.
 
 ### Input Structure (via Wrapper)
 

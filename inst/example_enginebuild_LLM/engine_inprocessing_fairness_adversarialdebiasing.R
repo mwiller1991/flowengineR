@@ -3,7 +3,13 @@
 #--------------------------------------------------------------------
 #' Fairness In-Processing Engine: Adversarial Debiasing
 #'
-#' Trains a main prediction model alongside an adversarial model to reduce bias with respect to protected attributes.
+#' A simplified adversarial reweighting scheme. In each epoch, the main model is trained,
+#' a linear adversary predicts the protected attributes from the main model's predictions,
+#' and each observation receives the weight `1 - learning_rate * error`, where `error` is
+#' the adversary's absolute error (numeric attributes) or cross-entropy (categorical
+#' attributes) for this observation, averaged over the attributes. The weights are floored
+#' at 0.001, and the main model is refitted with them. The engine demonstrates the
+#' in-processing interface and is not a validated fairness method.
 #'
 #' **Inputs (passed to engine via wrapper):**
 #' - `driver_train`: The training engine function for the main model.

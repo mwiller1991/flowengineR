@@ -19,6 +19,8 @@ A list containing the resampled data and optional statistics.
 }
 \description{
 Applies resampling (oversampling or undersampling) to balance class distribution in the target variable.
+The protected attributes are not used. The engine demonstrates the pre-processing
+interface and is not a validated fairness method.
 }
 \details{
 \strong{Inputs (passed to engine via wrapper):}

@@ -4,6 +4,8 @@
 #' Fairness Pre-Processing Engine: Resampling
 #'
 #' Applies resampling (oversampling or undersampling) to balance class distribution in the target variable.
+#' The protected attributes are not used. The engine demonstrates the pre-processing
+#' interface and is not a validated fairness method.
 #'
 #' **Inputs (passed to engine via wrapper):**
 #' - `data`: The input data frame to be resampled.

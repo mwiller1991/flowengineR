@@ -63,7 +63,7 @@ Returned via `initialize_output_postprocessing()`:
 
 | Engine Name                      | Function Name                                       | Description                             | Template Path                                                                    | Detail Page |
 |----------------------------------|----------------------------------------------------|-----------------------------------------|----------------------------------------------------------------------------------|--------------|
-| `postprocessing_fairness_genresidual` | `engine_postprocessing_fairness_genresidual()` | Group-aware residual shifting           | `inst/templates_control/6_a_template_postprocessing_fairness_genresidual.R` | [📄](detail_engine_postprocessing_fairness_genresidual.html) |
+| `postprocessing_fairness_genresidual` | `engine_postprocessing_fairness_genresidual()` | Global residual shift (demonstration)   | `inst/templates_control/6_a_template_postprocessing_fairness_genresidual.R` | [📄](detail_engine_postprocessing_fairness_genresidual.html) |
 
 Use `list_registered_engines("postprocessing")` to view available engines.
 
@@ -101,7 +101,7 @@ For examples, see:
 
 Postprocessing is particularly suited for correcting systematic errors in prediction outcomes. One use case is adjusting predictions by shifting residuals in favor of disadvantaged groups based on prior fairness evaluation.
 
-This method is implemented in the engine `postprocessing_fairness_genresidual`, which analyzes prediction residuals across protected groups and applies correction factors to reduce group-level disparities.
+The included engine `postprocessing_fairness_genresidual` is a simplified demonstration of the postprocessing interface: it shifts all predictions by their mean residual and does not use group membership. Group-specific corrections can be added as custom engines.
 
 Example:
 
@@ -112,4 +112,4 @@ control$params$postprocessing <- controller_postprocessing(
 )
 ```
 
-This approach is minimally invasive to the original model and allows for fairness gains without retraining.
+Postprocessing approaches of this kind are minimally invasive to the original model and do not require retraining.

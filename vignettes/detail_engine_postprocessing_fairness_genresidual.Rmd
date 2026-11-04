@@ -1,6 +1,6 @@
 ---
 title: "In Detail: Postprocessing Engine - Fairness Generalized Residual"
-subtitle: "Adjusting residuals to improve group fairness after training"
+subtitle: "Shifting predictions by their mean residual after training"
 author: "mwiller"
 output:
   rmarkdown::html_vignette:
@@ -14,16 +14,16 @@ vignette: >
 
 > **Summary**  
 > This vignette documents the **generalized residual postprocessing engine**.  
-> It outlines how prediction residuals are modified after model training to reduce group-level bias, thereby improving fairness while keeping predictive accuracy intact.
+> It describes how the engine shifts all predictions by their mean residual after model training. The engine demonstrates the postprocessing interface and is not a validated fairness method.
 
 ---
 
 ## Engine: General Residual Adjustment (`engine_postprocessing_fairness_genresidual`)
 
 ### Purpose and Function
-This post-processing engine adjusts predicted values by applying the **mean residual** to each prediction. It is designed to mitigate group-level bias in a simple, global manner without requiring protected group labels during adjustment.
+This post-processing engine adds the **mean residual** (observed minus predicted value) to each prediction and floors the result at zero. It does not use the protected attributes.
 
-The method operates by computing the average residual across the entire dataset and shifting predictions accordingly. This can help reduce systematic under- or overestimation, especially in imbalanced settings.
+The mean residual is computed from the observed outcomes of the data whose predictions are adjusted; in a workflow, these are the test data of each split. The evaluation engines use the same outcomes afterwards, so metrics such as the MSE are optimistic. The engine is a simple demonstration of the postprocessing interface, not a validated fairness method.
 
 > ⚠️ This engine applies a **global correction** and does not differentiate between subgroups.
 

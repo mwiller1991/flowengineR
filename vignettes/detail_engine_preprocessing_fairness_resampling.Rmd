@@ -1,6 +1,6 @@
 ---
 title: "In Detail: Preprocessing Engine - Fairness Resampling"
-subtitle: "Balancing training data to reduce bias before model fitting"
+subtitle: "Balancing the target classes of the training data before model fitting"
 author: "mwiller"
 output:
   rmarkdown::html_vignette:
@@ -14,7 +14,7 @@ vignette: >
 
 > **Summary**  
 > This vignette presents the **fairness resampling preprocessing engine**.  
-> It shows how training data is resampled to balance distributions across protected groups, reducing bias before any model fitting is performed in the workflow.
+> It shows how the training data is resampled to balance the classes of the target variable before model fitting. The protected attributes are not used; the engine demonstrates the preprocessing interface and is not a validated fairness method.
 
 ---
 

@@ -34,7 +34,13 @@ engine_inprocessing_fairness_adversarialdebiasing(
 A list containing the adjusted model and metadata.
 }
 \description{
-Trains a main prediction model alongside an adversarial model to reduce bias with respect to protected attributes.
+A simplified adversarial reweighting scheme. In each epoch, the main model is trained,
+a linear adversary predicts the protected attributes from the main model's predictions,
+and each observation receives the weight \code{1 - learning_rate * error}, where \code{error} is
+the adversary's absolute error (numeric attributes) or cross-entropy (categorical
+attributes) for this observation, averaged over the attributes. The weights are floored
+at 0.001, and the main model is refitted with them. The engine demonstrates the
+in-processing interface and is not a validated fairness method.
 }
 \details{
 \strong{Inputs (passed to engine via wrapper):}
