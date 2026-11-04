@@ -115,6 +115,6 @@ citation("flowengineR")
 
 ## 📄 License
 
-MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com) and Peter Ruckdeschel
+MIT © [Maximilian Willer](mailto:willer.maximilian@googlemail.com)
 
 For full license terms, see the [LICENSE](https://github.com/mwiller1991/flowengineR/blob/main/LICENSE.md) file.

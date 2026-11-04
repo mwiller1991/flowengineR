@@ -5,8 +5,10 @@ First release on CRAN.
 ## 📦 CRAN preparation
 
 - `DESCRIPTION`: title in title case, rewritten description with a
-  reference to the accompanying paper, both authors listed as
-  copyright holders, `URL` and `BugReports` added.
+  reference to the accompanying paper, `URL` and `BugReports` added.
+  Maximilian Willer is the copyright holder (also in `LICENSE`, which
+  previously named both authors); Peter Ruckdeschel is listed as
+  contributor and thesis advisor (`ths`).
 - Documentation: replaced the character `≥` with `>=`, so that the
   PDF reference manual builds.
 - `flowengineR_start()` no longer writes objects into the global

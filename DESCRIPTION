@@ -7,7 +7,7 @@ Authors@R: c(
            role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0003-7054-1937")),
     person("Peter", "Ruckdeschel", email = "peter.ruckdeschel@uni-oldenburg.de",
-           role = c("ctb", "cph"),
+           role = c("ctb", "ths"),
            comment = c(ORCID = "0000-0001-7815-4809")))
 Description: Provides a modular and extensible framework for designing and
     executing algorithmic workflows from interchangeable engine components
