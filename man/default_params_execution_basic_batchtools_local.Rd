@@ -24,7 +24,7 @@ of the batchtools backend.
 
 \strong{Default Parameters:}
 \itemize{
-\item \code{registry_folder}: Folder where the batchtools registry will be stored (default: \code{"bt_registry"}).
+\item \code{registry_folder}: Folder where the batchtools registry will be stored (default: a subfolder of \code{tempdir()}).
 \item \code{seed}: Seed value used for the batchtools registry (default: \code{123}).
 \item \code{required_packages}: Character vector of R package names to be loaded in each job (default: empty).
 \item \code{resources}: Named list of resource constraints for each job, passed to \code{submitJobs()}:

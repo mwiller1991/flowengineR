@@ -60,7 +60,7 @@ The output is a standardized list created via `initialize_output_split()`:
 ### Template Reference
 
 This engine's control template is located at:
-`inst/templates_control/1_b_template_control_split_random_stratified.R`
+`inst/templates_control/1_b_template_split_random_stratified.R`
 
 ### Example Configuration
 ```r

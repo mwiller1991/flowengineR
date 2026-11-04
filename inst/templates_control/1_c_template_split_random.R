@@ -21,4 +21,4 @@ control$params$split <- controller_split(
 # Notes:
 # - target_var is required for framework compatibility, but not used by this engine.
 # - No stratification is applied. For stratified splitting, use "split_random_stratified".
-# - This template can be found at: inst/templates/template_control_split_random.R
+# - This template can be found at: inst/templates_control/1_c_template_split_random.R

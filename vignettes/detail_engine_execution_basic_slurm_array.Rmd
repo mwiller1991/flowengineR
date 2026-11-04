@@ -34,7 +34,7 @@ This engine prepares the required inputs to distribute split execution via SLURM
 
 | Parameter        | Type      | Default         | Description                                      |
 |------------------|-----------|------------------|--------------------------------------------------|
-| `output_folder`  | character | `"slurm_inputs"` | Path to store serialized inputs for SLURM batch. |
+| `output_folder`  | character | none (required) | Path to store serialized inputs for SLURM batch. |
 
 ### Output Structure
 

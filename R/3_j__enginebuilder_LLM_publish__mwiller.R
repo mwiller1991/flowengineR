@@ -4,7 +4,7 @@
 #'
 #' @param task_description Character. The user-facing description of the publishing logic.
 #' @return A character string representing the LLM-ready prompt.
-build_llm_template_publishing <- function(task_description) {
+build_llm_template_publish <- function(task_description) {
   glue::glue(
     .open = '[[', .close = ']]',
     "You are assisting in the development of an R package called 'flowengineR'.
@@ -22,15 +22,15 @@ All code must follow these conventions:
 
 ---
 
-### \\U0001F527 ENGINE TYPE
-`publishing`
+### \U0001F527 ENGINE TYPE
+`publish`
 
-### \\U0001F4C4 FUNCTIONAL DESCRIPTION
+### \U0001F4C4 FUNCTIONAL DESCRIPTION
 [[task_description]]
 
 ---
 
-### \\U0001F4A1 EXAMPLE FOR ORIENTATION
+### \U0001F4A1 EXAMPLE FOR ORIENTATION
 For reference, see the included example file `engine_publish_pdf_basis.R`.
 It renders a structured report object to a PDF using R Markdown.
 
@@ -44,20 +44,20 @@ consult the included vignette file `detail_engines_publish.Rmd`.
 
 ---
 
-### \\U0001F4DD STANDARDIZED INPUT (via wrapper)
+### \U0001F4DD STANDARDIZED INPUT (via wrapper)
 All inputs must be accessed via the standardized control object structure. The engine receives inputs from the wrapper; the wrapper is called by the framework with:
 
-- `control$params$publish$params[[alias_publish]]`: **list** of engine-specific parameters (optional)
-- `object`: a structured **report** or **reportelement** object
-- `file_path`: **character**; target path for the exported file (wrapper may add extension)
+- `control$params$publish$params[[[[alias_publish]]]]`: **list** with the publishing configuration of this alias: `obj_type` (`\"report\"` or `\"reportelement\"`), `obj_name` (alias of the exported object) and optional engine-specific parameters in `params`
+- `object`: a structured **report** object; a reportelement is wrapped by the framework into a single-section report before it is passed on
+- `file_path`: **character**; target path for the exported file without extension (the wrapper adds the extension)
 - `alias_publish`: **character**; unique identifier for the publishing instance
 
 Parameter merging in the wrapper must use:
-`params <- merge_with_defaults(control$params$publish$params[[alias_publish]], default_params_publish_custom())`
+`params <- merge_with_defaults(control$params$publish$params[[[[alias_publish]]]]$params, default_params_publish_custom())`
 
 ---
 
-### \\U0001F4C8 REQUIRED OUTPUT STRUCTURE
+### \U0001F4C8 REQUIRED OUTPUT STRUCTURE
 The wrapper must return the result using `initialize_output_publish()` with the following structure:
 
 - `alias`: **character**; the publish alias
@@ -74,7 +74,7 @@ The wrapper must return the result using `initialize_output_publish()` with the 
 
 ---
 
-### \\U0001F3F7 NAMING CONVENTION
+### \U0001F3F7 NAMING CONVENTION
 Choose a clear, specific name in place of 'custom', e.g., `pdf_basis`, `html_quarto`, etc.
 Required function names inside the single file:
 - `engine_publish_<method>()`
@@ -83,7 +83,7 @@ Required function names inside the single file:
 
 ---
 
-### \\U0001F4E6 REQUIRED FILE STRUCTURE
+### \U0001F4E6 REQUIRED FILE STRUCTURE
 Return a single R **file** containing exactly these three functions.
 Do not return code snippets or Markdown blocks. Return the full code as a plain R script file content.
 

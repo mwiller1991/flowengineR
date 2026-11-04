@@ -58,3 +58,13 @@ across different training implementations.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+data <- data.frame(y = c(1, 3, 2, 5), x = 1:4)
+fit <- stats::lm(y ~ x, data = data)
+out <- initialize_output_inprocessing(
+  adjusted_model = fit,
+  model_type = "lm",
+  predictions = stats::fitted(fit)
+)
+names(out)
+}

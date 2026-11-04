@@ -44,10 +44,10 @@ This engine performs adaptive stability analysis using batches of parallel execu
 | `custom_stability_function` | function | `NULL`                                                    | Optional custom function for stability checking              |
 | `seed_base`               | integer    | `2000`                                                    | Base seed; individual seeds increment from this value        |
 | `n_splits_per_iteration`  | integer    | `3`                                                       | Number of parallel jobs in each iteration                    |
-| `registry_folder`         | character  | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore"` | Path to registry |
+| `registry_folder`         | character  | `file.path(tempdir(), "bt_registry_adaptive_output_multicore")` | Path to registry |
 | `seed`                    | integer    | `123`                                                     | Seed for batchtools registry                                 |
 | `required_packages`       | character[]| `character(0)`                                            | Packages loaded inside jobs                                  |
-| `ncpus`                   | integer    | `parallel::detectCores()`                                 | CPUs per job                                                 |
+| `ncpus`                   | integer    | `getOption("mc.cores", 2L)`                                 | CPUs per job                                                 |
 
 ### Output Structure
 
@@ -89,7 +89,7 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_adaptive_output_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_adaptive_output_multicore"),
     seed = 123,
     required_packages = c("caret", "dplyr"),
     ncpus = 4

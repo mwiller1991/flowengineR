@@ -16,7 +16,11 @@ engine_postprocessing_fairness_genresidual(predictions, actuals)
 A numeric vector of adjusted predictions.
 }
 \description{
-Adjusts predictions by applying the mean residual to improve group-level fairness.
+Shifts all predictions by their mean residual (observed minus predicted value) and
+floors the result at zero. The residual is computed from the observed outcomes of the
+data whose predictions are adjusted (in a workflow, the test data of each split). The
+protected attributes are not used. The engine demonstrates the post-processing
+interface and is not a validated fairness method.
 }
 \details{
 \strong{Inputs (passed to engine via wrapper):}

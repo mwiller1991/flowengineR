@@ -29,7 +29,7 @@ and collects results into a standardized format.
 
 \strong{Engine-Specific Parameters (\code{control$params$execution$params}):}
 \itemize{
-\item \code{registry_folder} \emph{(character, default = \code{"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"})}: Folder for the batchtools registry.
+\item \code{registry_folder} \emph{(character, default = \code{file.path(tempdir(), "bt_registry_basic")})}: Folder for the batchtools registry.
 \item \code{seed} \emph{(integer, default = 123)}: Seed for the registry.
 \item \code{required_packages} \emph{(character vector)}: Packages to be loaded inside each job.
 \item \code{resources} \emph{(list)}: Batchtools resource constraints per job:
@@ -51,7 +51,7 @@ and collects results into a standardized format.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{control$engine_select$execution <- "execution_basic_batchtools_local"
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
+    registry_folder = file.path(tempdir(), "bt_registry_basic"),
     seed = 42,
     resources = list(ncpus = 2, memory = 4096, walltime = 600)
   )

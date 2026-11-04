@@ -53,7 +53,7 @@ The engine returns a structured list created by `initialize_output_train()` cont
 
 ### Workflow Integration
 
-- **Controller Function:** `controller_train()`
+- **Controller Function:** `controller_training()`
 - **Engine Wrapper:** `wrapper_train_glm()`
 - **Execution Position:** Appears in the training phase of the main workflow.
 - **Downstream Compatibility:** Outputs are compatible with fairness in-processing, postprocessing, evaluation, and reporting steps.
@@ -61,12 +61,12 @@ The engine returns a structured list created by `initialize_output_train()` cont
 ### Template Reference
 
 This engine's control template is located at:
-`inst/templates_control/4_b_template_control_train_glm.R`
+`inst/templates_control/4_b_template_train_glm.R`
 
 ### Example Configuration
 ```r
 control$engine_select$train <- "train_glm"
-control$params$train <- controller_train(
+control$params$train <- controller_training(
   formula = target ~ .,
   norm_data = TRUE,
   params = list(

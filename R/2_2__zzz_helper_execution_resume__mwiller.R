@@ -37,6 +37,49 @@
 #' @param metadata Optional named list of metadata to include in the resume object (e.g., `engine`, `timestamp`).
 #'
 #' @return A validated resume object compatible with `resume_workflow()`.
+#' @examples
+#' data <- create_dataset_bank(n = 500, seed = 1)
+#' vars <- controller_vars(
+#'   feature_vars = c("income", "loan_amount", "credit_score"),
+#'   protected_vars = "gender.Female",
+#'   target_var = "default",
+#'   protected_vars_binary = "gender.Female"
+#' )
+#' control <- list(
+#'   settings = list(log = list(log_show = FALSE)),
+#'   data = list(full = data, vars = vars)
+#' )
+#' dir <- file.path(tempdir(), "slurm_array_example")
+#' control$engine_select <- list(execution = "execution_basic_slurm_array")
+#' control$params <- list(execution = controller_execution(
+#'   params = list(output_folder = file.path(dir, "inputs"))
+#' ))
+#'
+#' # 1. Write the input files and stop before execution
+#' prepared <- run_workflow(control)
+#' prepared$execution_output$continue_workflow
+#' list.files(file.path(dir, "inputs"))
+#'
+#' # 2. Usually one SLURM array task per split; here a simple loop
+#' ctrl <- readRDS(file.path(dir, "inputs", "control_base.rds"))
+#' splits <- readRDS(file.path(dir, "inputs", "split_output.rds"))$splits
+#' dir.create(file.path(dir, "outputs"), showWarnings = FALSE)
+#' for (id in names(splits)) {
+#'   ctrl$data$train <- splits[[id]]$train
+#'   ctrl$data$test <- splits[[id]]$test
+#'   saveRDS(run_workflow_singlesplitloop(ctrl),
+#'           file.path(dir, "outputs", paste0("result_split_", id, ".rds")))
+#' }
+#'
+#' # 3. Collect the results and finish the workflow
+#' resume_object <- prepare_resume_from_slurm_array(
+#'   control_path = file.path(dir, "inputs", "control_base.rds"),
+#'   split_output_path = file.path(dir, "inputs", "split_output.rds"),
+#'   result_dir = file.path(dir, "outputs")
+#' )
+#' final <- resume_workflow(resume_object)
+#' names(final$aggregated_results)
+#' unlink(dir, recursive = TRUE)
 #' @export
 prepare_resume_from_slurm_array <- function(
     control_path = "slurm_inputs/control_base.rds",

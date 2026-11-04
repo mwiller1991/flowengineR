@@ -40,6 +40,15 @@
 #' @param specific_output Optional. Additional engine-specific metadata or diagnostic information.
 #'
 #' @return A named list containing standardized split output.
+#' @examples
+#' data <- create_dataset_bank(n = 200, seed = 1)
+#' train_rows <- seq_len(150)
+#' out <- initialize_output_split(
+#'   split_type = "custom_holdout",
+#'   splits = list(holdout = list(train = data[train_rows, ], test = data[-train_rows, ])),
+#'   seed = 1
+#' )
+#' names(out)
 #' @export
 initialize_output_split <- function(split_type, splits, seed, params = NULL, specific_output = NULL) {
   output <- list(

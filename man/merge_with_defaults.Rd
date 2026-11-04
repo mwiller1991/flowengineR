@@ -41,3 +41,7 @@ merged <- merge_with_defaults(user_params, default_params)
 # Result: list(split_ratio = 0.8, seed = 123)
 }\if{html}{\out{</div>}}
 }
+\examples{
+defaults <- list(split_ratio = 0.7, seed = 123)
+merge_with_defaults(list(split_ratio = 0.8), defaults)
+}

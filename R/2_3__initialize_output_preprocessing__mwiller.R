@@ -33,6 +33,10 @@
 #' @param specific_output Optional. Additional outputs or metadata for diagnostics.
 #'
 #' @return A standardized list to be returned by preprocessing engines.
+#' @examples
+#' data <- data.frame(x = 1:4, group = c(0, 0, 1, 1))
+#' out <- initialize_output_preprocessing(preprocessed_data = data, method = "identity")
+#' names(out)
 #' @export
 initialize_output_preprocessing <- function(preprocessed_data, method, params = NULL, specific_output = NULL) {
   # Base fields: Required for all engines

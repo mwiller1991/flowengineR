@@ -42,7 +42,7 @@ engine_execution_basic_slurm_array <- function(control, split_output) {
 #' - `control$params$execution$params`: Engine-specific parameters (see below).
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
-#' - `output_folder` *(character, default = "slurm_inputs")*: Directory to store the control and split files.
+#' - `output_folder` *(character, required)*: Directory to store the control and split files, on a file system shared with the cluster nodes.
 #'
 #' **Notes:**
 #' - This wrapper **only prepares input files** for SLURM execution. The actual model training must be performed externally.
@@ -97,6 +97,11 @@ engine_execution_basic_slurm_array <- function(control, split_output) {
 wrapper_execution_basic_slurm_array <- function(control, split_output) {
   # Merge optional parameters
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_basic_slurm_array())
+  if (is.null(params$output_folder)) {
+    stop("[EXECUTION] SLURM array preparation requires 'output_folder' in ",
+         "control$params$execution$params (a folder on a file system shared ",
+         "with the cluster nodes).", call. = FALSE)
+  }
   
   log_msg(sprintf("[EXECUTION] Preparing SLURM input files in folder: '%s'", params$output_folder), level = "info", control = control)
   
@@ -142,7 +147,7 @@ wrapper_execution_basic_slurm_array <- function(control, split_output) {
 #' - Used by the wrapper to write all required files to disk.
 #'
 #' **Default Parameters:**
-#' - `output_folder`: Directory where the control and split files are stored (default: `"slurm_inputs"`).
+#' - `output_folder`: Directory where the control and split files are stored (`NULL`; must be set by the user).
 #'
 #' @seealso [wrapper_execution_basic_slurm_array()]
 #'
@@ -150,7 +155,7 @@ wrapper_execution_basic_slurm_array <- function(control, split_output) {
 #' @keywords internal
 default_params_execution_basic_slurm_array <- function() {
   list(
-    output_folder = "slurm_inputs"
+    output_folder = NULL  # required
   )
 }
 #--------------------------------------------------------------------

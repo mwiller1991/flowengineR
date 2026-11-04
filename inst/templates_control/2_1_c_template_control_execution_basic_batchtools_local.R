@@ -8,7 +8,7 @@ control$engine_select$execution <- "execution_basic_batchtools_local"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
+    registry_folder = file.path(tempdir(), "bt_registry_basic"),
     seed = 123,
     required_packages = c("flowengineR"),
     resources = list(

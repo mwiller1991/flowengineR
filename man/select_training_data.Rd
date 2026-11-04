@@ -39,3 +39,11 @@ is mandatory for all training engines within the flowengineR-framework.
 model <- train(formula = control$params$train$formula, data = training_data, ...)
 }\if{html}{\out{</div>}}
 }
+\examples{
+data <- list(
+  original = data.frame(income = c(20000, 50000)),
+  normalized = data.frame(income = c(0, 1))
+)
+select_training_data(norm_data = TRUE, data = data)
+select_training_data(norm_data = FALSE, data = data)
+}

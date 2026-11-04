@@ -34,10 +34,10 @@ This engine executes one job per data split using `batchtools` with the `multico
 
 | Parameter         | Type            | Default                                                   | Description                                |
 |------------------|------------------|-----------------------------------------------------------|--------------------------------------------|
-| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore"` | Registry path for job tracking         |
+| `registry_folder`| character        | `file.path(tempdir(), "bt_registry_basic_multicore")` | Registry path for job tracking         |
 | `seed`           | integer          | `123`                                                     | Seed for reproducibility                   |
 | `required_packages` | character[]   | `character(0)`                                            | R packages to load inside each job         |
-| `ncpus`          | integer          | `parallel::detectCores()`                                 | Number of parallel jobs                    |
+| `ncpus`          | integer          | `getOption("mc.cores", 2L)`                                 | Number of parallel jobs                    |
 
 ### Output Structure
 
@@ -68,7 +68,7 @@ This engine's control template is located at:
 control$engine_select$execution <- "execution_basic_batchtools_multicore"
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic_multicore",
+    registry_folder = file.path(tempdir(), "bt_registry_basic_multicore"),
     seed = 42,
     ncpus = 4
   )

@@ -39,6 +39,13 @@
 #' @param specific_output Optional. Additional diagnostics or engine-specific metadata.
 #'
 #' @return A standardized list representing a single reportelement object.
+#' @examples
+#' out <- initialize_output_reportelement(
+#'   type = "table",
+#'   content = data.frame(metric = "mse", mean = 0.12),
+#'   compatible_formats = c("pdf", "html", "xlsx")
+#' )
+#' names(out)
 #' @export
 initialize_output_reportelement <- function(type, content, compatible_formats, input_data = NULL, params = NULL, specific_output = NULL) {
   # Base fields: Required for all reporting engines

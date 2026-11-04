@@ -153,7 +153,7 @@ wrapper_execution_adaptive_output_sequential <- function(control, split_output) 
       required_fields <- c("is_stable", "stability_value", "threshold_value", "strategy")
       if (!all(required_fields %in% names(stability_result))) {
         stop(sprintf("Stability function '%s' must return a list with elements: %s",
-                     strategy_id, paste(required_fields, collapse = ", ")))
+                     params$stability_strategy, paste(required_fields, collapse = ", ")))
       }
         
         if (isTRUE(stability_result$is_stable)) {

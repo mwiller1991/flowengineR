@@ -34,7 +34,7 @@ This engine runs one workflow split per job using the `batchtools` framework. Ea
 
 | Parameter         | Type            | Default                                             | Description                                 |
 |------------------|------------------|-----------------------------------------------------|---------------------------------------------|
-| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_registry_basic"`| Folder to store the registry                |
+| `registry_folder`| character        | `file.path(tempdir(), "bt_registry_basic")`| Folder to store the registry                |
 | `seed`           | integer          | `123`                                               | Seed for reproducibility                    |
 | `required_packages` | character[]   | `character(0)`                                      | Packages to load inside each job            |
 | `resources`      | list             | `{ncpus=1, memory=2048, walltime=3600}`             | Resource constraints per job                |
@@ -68,7 +68,7 @@ This engine's control template is located at:
 control$engine_select$execution <- "execution_basic_batchtools_local"
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_registry_basic",
+    registry_folder = file.path(tempdir(), "bt_registry_basic"),
     seed = 42,
     resources = list(ncpus = 2, memory = 4096, walltime = 600)
   )

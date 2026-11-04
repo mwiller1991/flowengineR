@@ -39,6 +39,19 @@
 #' @param specific_output Optional. Engine-specific diagnostics or additional metadata.
 #'
 #' @return A standardized list to be returned by post-processing engines.
+#' @examples
+#' input <- data.frame(
+#'   predictions = c(0.2, 0.6),
+#'   actuals = c(0, 1),
+#'   gender.Female = c(1, 0)
+#' )
+#' out <- initialize_output_postprocessing(
+#'   adjusted_predictions = c(0.25, 0.55),
+#'   method = "custom_shift",
+#'   input_data = input,
+#'   protected_attributes = "gender.Female"
+#' )
+#' names(out)
 #' @export
 initialize_output_postprocessing <- function(adjusted_predictions, method, input_data, protected_attributes, params = NULL, specific_output = NULL) {
   output <- list(

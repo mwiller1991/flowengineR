@@ -56,3 +56,8 @@ attributes from metric-specific configuration, enabling flexible extensions.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_evaluation(
+  params = list(eval_mse = list(), eval_statisticalparity = list())
+)
+}

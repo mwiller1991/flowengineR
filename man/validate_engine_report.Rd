@@ -11,7 +11,7 @@ validate_engine_report(wrapper_function, default_params_function, engine_name)
 
 \item{default_params_function}{Function. Provides default parameters for the engine.}
 
-\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"report_modelcomparison"}).}
+\item{engine_name}{Character. Name of the engine being validated (e.g., \code{"report_modelsummary"}).}
 }
 \value{
 TRUE if the engine passes structural validation; otherwise an error is raised.

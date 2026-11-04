@@ -15,7 +15,7 @@ validate_engine_preprocessing(
 
 \item{default_params_function}{Function. The engine’s default parameter provider.}
 
-\item{engine_name}{Character. Name of the engine (e.g., \code{"preprocessing_resampling"}).}
+\item{engine_name}{Character. Name of the engine (e.g., \code{"preprocessing_fairness_resampling"}).}
 }
 \value{
 TRUE if validation is successful, otherwise an error is raised.

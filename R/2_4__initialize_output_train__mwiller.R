@@ -40,6 +40,11 @@
 #' @param specific_output (Optional) List of engine-specific additional outputs.
 #'
 #' @return A named list with standardized training results for the workflow.
+#' @examples
+#' data <- data.frame(y = c(1, 3, 2, 5), x = 1:4)
+#' fit <- stats::lm(y ~ x, data = data)
+#' out <- initialize_output_train(model = fit, model_type = "lm", formula = y ~ x)
+#' names(out)
 #' @export
 initialize_output_train <- function(model, model_type, formula, predictions = NULL, hyperparameters = NULL, specific_output = NULL) {
   # Base fields: Required for all engines

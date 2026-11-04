@@ -36,7 +36,7 @@ control$params$train <- controller_training(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \verb{inst/templates_control/3_a_template_train_lm.R}
+See full template in \verb{inst/templates_control/4_a_template_train_lm.R}
 
 \strong{Standardized Output (returned to framework):}
 \itemize{
@@ -55,6 +55,6 @@ See full template in \verb{inst/templates_control/3_a_template_train_lm.R}
 \code{\link[=default_params_train_lm]{default_params_train_lm()}},
 \code{\link[=initialize_output_train]{initialize_output_train()}},
 \code{\link[=controller_training]{controller_training()}},
-Template: \verb{inst/templates_control/3_a_template_train_lm.R}
+Template: \verb{inst/templates_control/4_a_template_train_lm.R}
 }
 \keyword{internal}

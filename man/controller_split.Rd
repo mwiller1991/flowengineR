@@ -54,3 +54,6 @@ Designed for use in the \code{control} object. This controller separates general
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_split(seed = 42, params = list(split_ratio = 0.7))
+}

@@ -6,11 +6,6 @@ authors:
     affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg; While writing employed at HASPA Finanzholding"
     email: "maximilian.willer@uol.de"
     orcid: "https://orcid.org/0009-0003-7054-1937"
-  - family-names: "Ruckdeschel"
-    given-names: "Peter"
-    affiliation: "Institute for Mathematics, Carl von Ossietzky University Oldenburg"
-    email: "peter.ruckdeschel@uol.de"
-    orcid: "https://orcid.org/0000-0001-7815-4809"
 title: "flowengineR"
 version: 1.0.2
 year: 2025

@@ -44,6 +44,19 @@
 #' @param specific_output Optional list. Additional metadata for reporting engines.
 #'
 #' @return A structured list representing a complete report.
+#' @examples
+#' element <- initialize_output_reportelement(
+#'   type = "text",
+#'   content = "The MSE is stable across splits.",
+#'   compatible_formats = c("pdf", "html")
+#' )
+#' out <- initialize_output_report(
+#'   report_title = "Model summary",
+#'   report_type = "custom_summary",
+#'   compatible_formats = c("pdf", "html"),
+#'   sections = list(list(heading = "Overview", content = list(element)))
+#' )
+#' names(out)
 #' @export
 initialize_output_report <- function(report_title, report_type, compatible_formats, sections, params = NULL, specific_output = NULL) {
   # Base fields: Required for all reporting engines 

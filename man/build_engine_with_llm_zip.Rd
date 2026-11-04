@@ -7,7 +7,8 @@
 build_engine_with_llm_zip(engine_type, task_description, zip_path = NULL)
 }
 \arguments{
-\item{engine_type}{Character. The engine type (e.g., "evaluation").}
+\item{engine_type}{Character. One of the supported engine types listed
+above (e.g., "eval").}
 
 \item{task_description}{Character. The plain-language goal the engine should achieve.}
 
@@ -31,13 +32,23 @@ Supported engine types:
 \item "eval"
 \item "reportelement"
 \item "report"
-\item "publishing"
+\item "publish"
 }
+
+"evaluation" and "publishing" are accepted as aliases for "eval" and
+"publish".
 
 Creates a zip file containing:
 \itemize{
 \item A structured prompt text for the LLM
 \item A reference example R file for this engine type
 \item A vignette (.Rmd) as reference
+}
+}
+\examples{
+# Writes a ZIP archive with prompt, reference engine and vignette to tempdir()
+if (nzchar(Sys.which(Sys.getenv("R_ZIPCMD", "zip")))) {
+  zip_file <- build_engine_with_llm_zip("eval", "The median of all predictions.")
+  file.exists(zip_file)
 }
 }

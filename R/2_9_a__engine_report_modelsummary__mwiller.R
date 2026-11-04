@@ -84,7 +84,7 @@ engine_report_modelsummary <- function(reportelements, params) {
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_report()`:
-#' - `report_title`: `"Modellzusammenfassung"`
+#' - `report_title`: `"Model Summary"`
 #' - `report_type`: `"modelsummary"`
 #' - `compatible_formats`: `c("pdf", "html", "json")`
 #' - `sections`: List of sections, each with `heading` and `content`
@@ -118,7 +118,7 @@ wrapper_report_modelsummary <- function(control, reportelements, alias_report = 
   log_msg(sprintf("[REPORT] Model summary report generated with %d sections.", length(sections)), level = "info", control = control)
   
   initialize_output_report(
-    report_title = "Modellzusammenfassung",
+    report_title = "Model Summary",
     report_type = "modelsummary",
     compatible_formats = c("pdf", "html", "json"),
     sections = sections,

@@ -55,7 +55,7 @@ control$params$split <- controller_split(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \verb{inst/templates_control/1_a_template_control_split_cv.R}
+See full template in \verb{inst/templates_control/1_a_template_split_cv.R}
 
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_split()} with:
@@ -72,7 +72,7 @@ A list structured via \code{initialize_output_split()} with:
 \code{\link[=default_params_split_cv]{default_params_split_cv()}},
 \code{\link[=initialize_output_split]{initialize_output_split()}},
 \code{\link[=controller_split]{controller_split()}},
-Template: \verb{inst/templates_control/1_a_template_control_split_cv.R}
+Template: \verb{inst/templates_control/1_a_template_split_cv.R}
 Helper: \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

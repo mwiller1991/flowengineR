@@ -44,3 +44,10 @@ with all built-in and user-defined execution engines and ensures extensibility.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+# Sequential execution needs no parameters
+controller_execution()
+
+# Parameters for the batchtools multicore engine
+controller_execution(params = list(ncpus = 2))
+}

@@ -76,7 +76,7 @@ engine_split_random <- function(data, split_ratio, seed) {
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates/1_c_template_control_split_random.R`
+#' See full template in `inst/templates_control/1_c_template_split_random.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_split()` with:
@@ -91,7 +91,7 @@ engine_split_random <- function(data, split_ratio, seed) {
 #'   [default_params_split_random()],  
 #'   [initialize_output_split()],  
 #'   [controller_split()],  
-#'   Template: `inst/templates/1_c_template_control_split_random.R`  
+#'   Template: `inst/templates_control/1_c_template_split_random.R`  
 #'   Helper: [show_template()]
 #'
 #' @param control A standardized control object (see `controller_split()`).

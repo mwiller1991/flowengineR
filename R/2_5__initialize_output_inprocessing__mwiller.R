@@ -36,6 +36,15 @@
 #' @param specific_output Optional. Engine-specific diagnostics or metadata.
 #'
 #' @return A standardized list to be returned by in-processing engines.
+#' @examples
+#' data <- data.frame(y = c(1, 3, 2, 5), x = 1:4)
+#' fit <- stats::lm(y ~ x, data = data)
+#' out <- initialize_output_inprocessing(
+#'   adjusted_model = fit,
+#'   model_type = "lm",
+#'   predictions = stats::fitted(fit)
+#' )
+#' names(out)
 #' @export
 initialize_output_inprocessing <- function(adjusted_model, model_type, predictions = NULL, params = NULL, specific_output = NULL) {
   # Base fields: Required for all engines

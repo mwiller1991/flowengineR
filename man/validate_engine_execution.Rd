@@ -15,7 +15,7 @@ validate_engine_execution(
 
 \item{default_params_function}{Function. Provides default parameters for the engine.}
 
-\item{engine_name}{Character. Name of the engine (e.g., \code{"execution_slurm_array"}).}
+\item{engine_name}{Character. Name of the engine (e.g., \code{"execution_basic_slurm_array"}).}
 }
 \value{
 TRUE if the structure is valid. Otherwise, an error is raised.

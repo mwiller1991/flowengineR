@@ -64,3 +64,17 @@ predictions and relevant metadata are consistently handled.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+input <- data.frame(
+  predictions = c(0.2, 0.6),
+  actuals = c(0, 1),
+  gender.Female = c(1, 0)
+)
+out <- initialize_output_postprocessing(
+  adjusted_predictions = c(0.25, 0.55),
+  method = "custom_shift",
+  input_data = input,
+  protected_attributes = "gender.Female"
+)
+names(out)
+}

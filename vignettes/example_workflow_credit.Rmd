@@ -25,7 +25,7 @@ library(flowengineR)
 
 ## Objective
 
-This vignette demonstrates a complete `flowengineR` workflow using a credit risk dataset, a GLM model, an in-processing fairness method, and reporting/publishing components.
+This vignette demonstrates a complete `flowengineR` workflow using a credit risk dataset, a GLM model, a postprocessing engine, and reporting/publishing components.
 
 ---
 
@@ -111,10 +111,9 @@ control <- list(
       )
     ),
     train = controller_training(
-      formula = as.formula(paste(vars$target_var, "~", paste(vars$feature_vars, collapse = "+"), "+", paste(vars$protected_vars, collapse = "+"))),
-      norm_data = TRUE
+      norm_data = TRUE   # formula: target ~ features + protected attributes (from data$vars)
     ),
-    inprocessing = controller_preprocessing(
+    inprocessing = controller_inprocessing(
       params = list(learning_rate = 0.1, num_epochs = 1000, num_adversary_steps = 10)
     ),
     evaluation = controller_evaluation(
@@ -141,7 +140,7 @@ control <- list(
       ))
     ),
     publish = controller_publish(
-      output_folder = "~/publish_exports",
+      output_folder = tempdir(),  # use a permanent folder to keep the files
       params = list(
         pdf_basis_test_singleelement = list(obj_name = "text_mse_summary", obj_type = "reportelement"),
         pdf_basis_test_report = list(obj_name = "modelsummary", obj_type = "report"),
@@ -179,4 +178,4 @@ result$publishing
 
 ## Summary
 
-This full workflow demonstrates how `flowengineR` can be used to perform a modular algorithmic analysis, including fairness optimization and publishing support.
+This full workflow demonstrates how `flowengineR` can be used to perform a modular algorithmic analysis, including a postprocessing step, fairness evaluation and publishing support.

@@ -61,7 +61,7 @@ Internally, this wrapper sets `internal_skip_validation = TRUE` to bypass automa
 ### Template Reference
 
 This engine's control template is located at:  
-`inst/templates_control/1_d_template_control_split_userdefined.R`
+`inst/templates_control/1_d_template_split_userdefined.R`
 
 ### Example Configuration
 ```r

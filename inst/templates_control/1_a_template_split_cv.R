@@ -21,4 +21,4 @@ control$params$split <- controller_split(
 # Notes:
 # - target_var is required and used for stratified fold creation.
 # - At least 2 folds must be specified.
-# - This template can be found at: inst/templates_control/template_control_split_cv.R
+# - This template can be found at: inst/templates_control/1_a_template_split_cv.R

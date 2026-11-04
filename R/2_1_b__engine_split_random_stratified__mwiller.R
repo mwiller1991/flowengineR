@@ -79,7 +79,7 @@ engine_split_random_stratified <- function(data, target_var, split_ratio, seed) 
 #' ```
 #'
 #' **Template Reference:**
-#' See full template in `inst/templates_control/1_b_template_control_split_random_stratified.R`
+#' See full template in `inst/templates_control/1_b_template_split_random_stratified.R`
 #'
 #' **Standardized Output (returned to framework):**
 #' A list structured via `initialize_output_split()` with:
@@ -94,7 +94,7 @@ engine_split_random_stratified <- function(data, target_var, split_ratio, seed) 
 #'   [default_params_split_random_stratified()],  
 #'   [initialize_output_split()],  
 #'   [controller_split()],  
-#'   Template: `inst/templates_control/1_b_template_control_split_random_stratified.R`  
+#'   Template: `inst/templates_control/1_b_template_split_random_stratified.R`  
 #'   Helper: [show_template()]
 #'
 #' @param control A standardized control object (see `controller_split()`).

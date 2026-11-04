@@ -56,7 +56,7 @@ control$params$split <- controller_split(
 }\if{html}{\out{</div>}}
 
 \strong{Template Reference:}
-See full template in \verb{inst/templates_control/1_b_template_control_split_random_stratified.R}
+See full template in \verb{inst/templates_control/1_b_template_split_random_stratified.R}
 
 \strong{Standardized Output (returned to framework):}
 A list structured via \code{initialize_output_split()} with:
@@ -73,7 +73,7 @@ A list structured via \code{initialize_output_split()} with:
 \code{\link[=default_params_split_random_stratified]{default_params_split_random_stratified()}},
 \code{\link[=initialize_output_split]{initialize_output_split()}},
 \code{\link[=controller_split]{controller_split()}},
-Template: \verb{inst/templates_control/1_b_template_control_split_random_stratified.R}
+Template: \verb{inst/templates_control/1_b_template_split_random_stratified.R}
 Helper: \code{\link[=show_template]{show_template()}}
 }
 \keyword{internal}

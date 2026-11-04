@@ -59,10 +59,10 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 - [In Detail: Execution Engine – Adaptive Output Stability Check (Sequential)](detail_engine_execution_adaptive_output_sequential.html): Repeats single-split workflows until a monitored metric stabilizes across runs.
 - [In Detail: Execution Engine – Adaptive Output via Batchtools (Multicore)](detail_engine_execution_adaptive_output_batchtools_multicore.html): Executes stability-based workflows using batchtools with local multicore support.
 - [In Detail: Execution Engine – Adaptive Output via Batchtools (SLURM)](detail_engine_execution_adaptive_output_batchtools_slurm.html): Same as above, but for distributed systems using SLURM as backend.
-- [In Detail: Execution Engine – Adaptive Input Scalar Optimization (Sequential)](detail_engine_execution_adaptive_input_scalar_sequential.html): Optimizes a single scalar hyperparameter step by step until performance stabilizes.¢
+- [In Detail: Execution Engine – Adaptive Input Scalar Optimization (Sequential)](detail_engine_execution_adaptive_input_scalar_sequential.html): Optimizes a single scalar hyperparameter step by step until performance stabilizes.
 
 #### Preprocessing Engines
-- [In Detail: Preprocessing Engine – Fairness Resampling](detail_engine_preprocessing_fairness_resampling.html): Balances protected groups in the training data via duplication or undersampling.
+- [In Detail: Preprocessing Engine – Fairness Resampling](detail_engine_preprocessing_fairness_resampling.html): Balances the classes of the target variable in the training data via duplication or undersampling (demonstration engine).
 
 #### Training Engines
 - [In Detail: Training Engine – Linear Model (LM)](detail_engine_train_lm.html): Fits a simple linear regression model using `stats::lm()`. Useful for interpretable baseline models.
@@ -70,10 +70,10 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 - [In Detail: Training Engine – Gradient boosting models (GBM)](detail_engine_train_gbm.html): Trains a GBM using the `gbm` package. Supports classification and regression with optional sample weighting and tunable parameters.
 
 #### Inprocessing Engines
-- [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversialdebiasing.html): Uses adversarial learning to reduce bias during model training.
+- [In Detail: Inprocessing Engine – Adversarial Debiasing](detail_engine_inprocessing_fairness_adversarialdebiasing.html): Reweights the training data based on the error of a simple adversary that predicts the protected attributes (demonstration engine).
 
 #### Postprocessing Engines
-- [In Detail: Postprocessing Engine – General Residual Adjustment](detail_engine_postprocessing_fairness_genresidual.html): Adjusts predictions post-hoc using group-specific mean residuals.
+- [In Detail: Postprocessing Engine – General Residual Adjustment](detail_engine_postprocessing_fairness_genresidual.html): Shifts all predictions by their mean residual after training (demonstration engine).
 
 #### Evaluation Engines
 - [In Detail: Evaluation Engine – MSE](detail_engine_eval_mse.html): Calculates the Mean Squared Error between predicted and actual values.
@@ -96,9 +96,9 @@ It is designed to support advanced scenarios such as fairness-aware modeling, ba
 
 ## 🛠️ Key Functions
 
-- [`run_workflow()`](reference/run_workflow.html): Execute a complete workflow.
-- [`controller_train()`](reference/controller_train.html): Set up model training behavior.
-- [`list_registered_engines()`](reference/list_registered_engines.html): Inspect the currently registered engines.
+- `run_workflow()`: Execute a complete workflow.
+- `controller_training()`: Set up model training behavior.
+- `list_registered_engines()`: Inspect the currently registered engines.
 
 ---
 

@@ -136,7 +136,7 @@ validate_engine_split <- function(wrapper_function, default_params_function, eng
 #'
 #' @param wrapper_function Function. The wrapper function for the execution engine.
 #' @param default_params_function Function. Provides default parameters for the engine.
-#' @param engine_name Character. Name of the engine (e.g., `"execution_slurm_array"`).
+#' @param engine_name Character. Name of the engine (e.g., `"execution_basic_slurm_array"`).
 #'
 #' @return TRUE if the structure is valid. Otherwise, an error is raised.
 #' @keywords internal
@@ -185,7 +185,7 @@ validate_engine_execution <- function(wrapper_function, default_params_function,
 #'
 #' @param wrapper_function Function. The wrapper function for the engine.
 #' @param default_params_function Function. The engine’s default parameter provider.
-#' @param engine_name Character. Name of the engine (e.g., `"preprocessing_resampling"`).
+#' @param engine_name Character. Name of the engine (e.g., `"preprocessing_fairness_resampling"`).
 #'
 #' @return TRUE if validation is successful, otherwise an error is raised.
 #' @keywords internal
@@ -551,8 +551,8 @@ validate_engine_eval <- function(wrapper_function, default_params_function, engi
   dummy_predictions <- rnorm(100, mean = 0.5, sd = 0.1)
   dummy_actuals <- rbinom(100, size = 1, prob = 0.5)
   dummy_protected_attributes <- data.frame(
-    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),  # Binär
-    A2 = sample(c("A2_1", "A2_2"), 100, replace = TRUE)   # Binär
+    A1 = sample(c("A1_1", "A1_2"), 100, replace = TRUE),  # Binary
+    A2 = sample(c("A2_1", "A2_2"), 100, replace = TRUE)   # Binary
   )
   
   # Create a dummy control object using the controller function
@@ -687,7 +687,7 @@ validate_engine_reportelement <- function(wrapper_function, default_params_funct
 #'
 #' @param wrapper_function Function. The wrapper function for the report engine.
 #' @param default_params_function Function. Provides default parameters for the engine.
-#' @param engine_name Character. Name of the engine being validated (e.g., `"report_modelcomparison"`).
+#' @param engine_name Character. Name of the engine being validated (e.g., `"report_modelsummary"`).
 #'
 #' @return TRUE if the engine passes structural validation; otherwise an error is raised.
 #' @keywords internal
@@ -735,7 +735,7 @@ validate_engine_report <- function(wrapper_function, default_params_function, en
 #'
 #' @param wrapper_function Function. The wrapper function for the publish engine.
 #' @param default_params_function Function. The default parameter function for the engine.
-#' @param engine_name Character. Name of the engine being validated (e.g., `"publish_pdf"`).
+#' @param engine_name Character. Name of the engine being validated (e.g., `"publish_pdf_basis"`).
 #'
 #' @return TRUE if the engine passes structural validation; otherwise an error is raised.
 #' @keywords internal

@@ -6,8 +6,8 @@
 ^docs$
 ^pkgdown$
 ^\.github$
-^README\.Rmd$
 ^inst/runtime_benchmarks$
 ^tools$
 ^CITATION\.cff$
 ^LICENSE\.md$
+^cran-comments\.md$

@@ -45,7 +45,7 @@ The report elements are referenced by their alias names defined in the control o
 
 Returned via `initialize_output_report()`:
 
-- `report_title`: `"Modellzusammenfassung"`
+- `report_title`: `"Model Summary"`
 - `report_type`: `"modelsummary"`
 - `compatible_formats`: `c("pdf", "html", "json")`
 - `sections`: List of sections, each with a `heading` and `content` (reportelements)

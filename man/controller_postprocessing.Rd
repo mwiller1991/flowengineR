@@ -59,3 +59,7 @@ Before executing the engine, the workflow injects the following data frame:
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+# The generalized residual engine needs no extra parameters
+controller_postprocessing()
+}

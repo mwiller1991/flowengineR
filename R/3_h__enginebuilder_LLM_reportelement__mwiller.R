@@ -22,15 +22,15 @@ All code must follow these conventions:
 
 ---
 
-### \\U0001F527 ENGINE TYPE
+### \U0001F527 ENGINE TYPE
 `reportelement`
 
-### \\U0001F4C4 FUNCTIONAL DESCRIPTION
+### \U0001F4C4 FUNCTIONAL DESCRIPTION
 [[task_description]]
 
 ---
 
-### \\U0001F4A1 EXAMPLE FOR ORIENTATION
+### \U0001F4A1 EXAMPLE FOR ORIENTATION
 For reference, see the included example file `engine_reportelement_table_splitmetrics.R`.
 It aggregates selected evaluation metrics per split into a data.frame.
 
@@ -44,20 +44,20 @@ consult the included vignette file `detail_engines_reportelement.Rmd`.
 
 ---
 
-### \\U0001F4DD STANDARDIZED INPUT (via wrapper)
+### \U0001F4DD STANDARDIZED INPUT (via wrapper)
 All inputs must be accessed via the standardized control object structure. The engine receives inputs from the wrapper; the wrapper is called by the framework with:
 
-- `control$params$reportelement$params[[alias]]`: **list** of engine-specific parameters for this element
+- `control$params$reportelement$params[[[[alias]]]]`: **list** of engine-specific parameters for this element
 - `workflow_results`: **named list** of workflow results per split (provided by the workflow)
 - `split_output`: splitter output (may be unused depending on the element)
 - `alias`: **character**; unique identifier for the reportelement instance
 
 Parameter merging in the wrapper must use:
-`params <- merge_with_defaults(control$params$reportelement$params[[alias]], default_params_reportelement_custom())`
+`params <- merge_with_defaults(control$params$reportelement$params[[[[alias]]]], default_params_reportelement_custom())`
 
 ---
 
-### \\U0001F4C8 REQUIRED OUTPUT STRUCTURE
+### \U0001F4C8 REQUIRED OUTPUT STRUCTURE
 The wrapper must return the result using `initialize_output_reportelement()` with the following structure:
 
 - `type`: **character**; content type such as `\"table\"`, `\"plot\"`, or `\"text\"`
@@ -73,7 +73,7 @@ The wrapper must return the result using `initialize_output_reportelement()` wit
 
 ---
 
-### \\U0001F3F7 NAMING CONVENTION
+### \U0001F3F7 NAMING CONVENTION
 Choose a clear, specific name in place of 'custom', e.g., `table_splitmetrics`, `plot_fairness_distribution`, etc.
 Required function names inside the single file:
 - `engine_reportelement_<method>()`
@@ -82,7 +82,7 @@ Required function names inside the single file:
 
 ---
 
-### \\U0001F4E6 REQUIRED FILE STRUCTURE
+### \U0001F4E6 REQUIRED FILE STRUCTURE
 Return a single R **file** containing exactly these three functions.
 Do not return code snippets or Markdown blocks. Return the full code as a plain R script file content.
 

@@ -67,3 +67,13 @@ allowing for reliable logging, debugging, and downstream tracking.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+out <- initialize_output_publish(
+  alias = "summary_pdf",
+  type = "report",
+  engine = "publish_pdf_basis",
+  path = file.path(tempdir(), "summary_pdf.pdf"),
+  success = TRUE
+)
+str(out)
+}

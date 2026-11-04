@@ -8,8 +8,8 @@ control$engine_select$execution <- "execution_basic_batchtools_slurm"
 # 2. Execution Parameters
 control$params$execution <- controller_execution(
   params = list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",  # Path to batchtools registry
-    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",         # SLURM job template
+    registry_folder = "/path/to/shared/bt_registry_slurm",  # Path to batchtools registry
+    slurm_template = "/path/to/slurm.tmpl",         # SLURM job template
     seed = 42,                        # Seed for reproducibility
     required_packages = character(0),# Required packages for each job
     resources = list(

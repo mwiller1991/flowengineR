@@ -50,3 +50,9 @@ if not manually specified.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_inprocessing(
+  norm_data = TRUE,
+  params = list(learning_rate = 0.01, num_epochs = 10)
+)
+}

@@ -36,18 +36,23 @@ of results.
 
 \strong{Usage Example:}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (e.g. assigned engines)
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definition (assigned report engine)
 control$engine_select$report <- list(
-  alias1 = "report_markdown",
-  alias2 = "report_json_summary"
+  modelsummary = "report_modelsummary"
 )
 
-# Corresponding alias-specific parameter setup
+# Corresponding alias-specific parameter setup (section name = reportelement alias)
 control$params$report <- controller_report(
   params = list(
-    alias1 = list(title = "Model Summary", author = "Max"),
-    alias2 = list(indent = 2)
+    modelsummary = list(mse_text = "mse_text", metrics_table = "split_table")
   )
 )
 }\if{html}{\out{</div>}}
+}
+\examples{
+controller_report(
+  params = list(
+    modelsummary = list(gender_box = "gender_box", metrics_table = "metrics_table")
+  )
+)
 }

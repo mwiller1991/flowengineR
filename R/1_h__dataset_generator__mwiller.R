@@ -7,7 +7,9 @@
 #' loan-to-income, credit_score, employment/housing stability, marital_status, etc.
 #'
 #' @param n Integer. Number of customers (rows).
-#' @param seed Integer. RNG seed for reproducibility.
+#' @param seed Integer. RNG seed for reproducibility. It is used only inside
+#'   this function; the random number generator state of the session is
+#'   restored afterwards.
 #' @param onehot Logical. If TRUE, returns one-hot encoded data via caret::dummyVars().
 #' @param pos_rate Numeric in (0,1). Target base default rate (approximate).
 #' @return data.frame with features, derived variables, and binary target `default` (0/1).
@@ -15,7 +17,8 @@
 #' @importFrom stats rnorm rbinom runif plogis
 #' @export
 create_dataset_bank <- function(n = 10000, seed = 123, onehot = TRUE, pos_rate = 0.05){ 
-set.seed(seed)
+  # Use the seed only inside this function and restore the session's RNG state on exit
+  withr::local_seed(seed)
   
   # --- Categorical drivers (base distributions) ---
   profession <- sample(c("Employee", "Selfemployed", "Unemployed"), n, TRUE,

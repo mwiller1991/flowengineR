@@ -57,3 +57,12 @@ training, fairness adjustments, and evaluation.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score"),
+  protected_vars = "gender.Female",
+  target_var = "default",
+  protected_vars_binary = "gender.Female"
+)
+str(vars)
+}

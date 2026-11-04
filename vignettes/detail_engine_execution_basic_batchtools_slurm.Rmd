@@ -34,8 +34,8 @@ This engine executes workflow splits on an HPC cluster via SLURM using `batchtoo
 
 | Parameter         | Type            | Default                                                   | Description                                  |
 |------------------|------------------|-----------------------------------------------------------|----------------------------------------------|
-| `registry_folder`| character        | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"` | Folder for batchtools registry        |
-| `slurm_template` | character        | `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl"`     | Path to SLURM job template (required) |
+| `registry_folder`| character        | none (required) | Folder for batchtools registry        |
+| `slurm_template` | character        | none (required)     | Path to SLURM job template (required) |
 | `seed`           | integer          | `123`                                                     | Seed for reproducibility                     |
 | `required_packages` | character[]   | `character(0)`                                            | R packages to load in each job               |
 | `resources`      | list             | `{ncpus=1, memory=2048, walltime=3600}`                   | SLURM job resource specs                     |

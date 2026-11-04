@@ -48,7 +48,7 @@ test_that("wrapper_report_modelsummary assembles a structured multi-section repo
   # Structure checks
   expect_type(output, "list")
   expect_named(output, c("report_title", "report_type", "compatible_formats", "sections", "params"))
-  expect_equal(output$report_title, "Modellzusammenfassung")
+  expect_equal(output$report_title, "Model Summary")
   expect_equal(output$report_type, "modelsummary")
   expect_type(output$sections, "list")
   expect_length(output$sections, 3)

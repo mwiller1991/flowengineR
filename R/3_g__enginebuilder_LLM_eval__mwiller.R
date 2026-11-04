@@ -59,11 +59,12 @@ consult the included vignette file `detail_engines_evaluation.Rmd`.
 All inputs must be accessed via the standardized control object structure. See the example engine for how predictions and actuals are passed via control.
 The engine will receive inputs from the wrapper function, which are passed automatically by the framework through the control-object:
 
-- `eval_data`: a `data.frame` with at least the columns:
-  - `prediction`: numeric vector of predicted values
-  - `actual`: numeric vector of actual (true) values
-- `params`: a named list of engine-specific parameters (may be empty)
-- `protected_attributes`: optional `data.frame` with additional columns (not required for this engine)
+- `control$params$evaluation$eval_data`: a `data.frame` with the columns:
+  - `predictions`: numeric vector of predicted values
+  - `actuals`: numeric vector of actual (true) values
+  - one column per binary protected attribute
+- `control$params$evaluation$protected_name`: character vector with the names of the binary protected attributes in `eval_data` (not required for this engine)
+- `control$params$evaluation$params`: a named list of engine-specific parameters (may be empty)
 
 ---
 

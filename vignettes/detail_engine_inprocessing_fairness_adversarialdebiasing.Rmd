@@ -1,0 +1,101 @@
+---
+title: "In Detail: Inprocessing Engine - Fairness Adversarial Debiasing"
+subtitle: "Reweighting training data with a simple adversary"
+author: "mwiller"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{In Detail: Inprocessing Engine - Fairness Adversarial Debiasing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+> **Summary**  
+> This vignette introduces the **adversarial debiasing inprocessing engine**.  
+> It describes a simplified adversarial reweighting scheme that runs during model training within the standardized engine structure of `flowengineR`. The engine demonstrates the inprocessing interface and is not a validated fairness method.
+
+---
+
+## Engine: Adversarial Debiasing (`inprocessing_fairness_adversarialdebiasing`)
+
+### Purpose and Function
+
+This engine implements a simplified adversarial reweighting scheme as an in-processing step. It trains a main predictive model together with a linear adversary that predicts the protected attributes from the main model's predictions. After each epoch, the training observations are reweighted based on the adversary's error, and the main model is refitted with these weights.
+
+The idea is inspired by adversarial debiasing (Zhang, Lemoine and Mitchell 2018), which formulates fairness as a minimax optimization problem. The engine does not solve this optimization problem; it demonstrates the in-processing interface and is not a validated fairness method.
+
+Compatibility: The engine passes the instance weights to the training engine via `sample_weight`. It therefore works with the included `train_glm` and `train_gbm` engines. `train_lm` does not use instance weights, so the model would stay unchanged; the engine warns in this case. Other training engines can be combined with it if they use `control$params$train$params$sample_weight` and support `predict()` on the training data.
+
+```text
+Training Data
+   ↓
+Train Main Model → Predictions
+   ↓                      ↓
+Train Adversary ← Protected Attributes
+   ↓
+Compute Adversary Loss
+   ↓
+Adjust Instance Weights
+   ↓
+Next Epoch
+```
+
+Each observation receives the weight `1 - learning_rate * error`, where `error` is the adversary's absolute error (numeric attributes) or cross-entropy (categorical attributes) for this observation, averaged over the protected attributes; the weights are floored at 0.001. Observations for which the adversary's error is larger therefore receive lower weights.
+
+### Input Structure (via Wrapper)
+
+The wrapper `wrapper_inprocessing_fairness_adversarialdebiasing(control, driver_train)` receives the control object and the training wrapper `driver_train` from the workflow and passes the following arguments to the engine:
+
+**Engine Arguments:**
+- `driver_train`: Training engine for the main model (⚠️ provided directly by the workflow).
+- `data`: Training data in use, normalized or original (⚠️ provided directly by the workflow).
+- `protected_attribute_names`: Character vector from `control$data$vars$protected_vars` (e.g., `c("gender.Female", "age")`) (⚠️ provided directly by the workflow).
+- `learning_rate`: Numeric value (e.g., `0.01`).
+- `num_epochs`: Integer (e.g., `10`).
+- `num_adversary_steps`: Integer (e.g., `3`).
+- `control_for_training`: Control object passed to `driver_train()` (⚠️ provided directly by the workflow).
+
+### Engine-specific Parameters
+
+| Parameter            | Type     | Default | Description |
+|---------------------|----------|---------|-------------|
+| `learning_rate`      | numeric  | `0.01`  | Learning rate for adversarial updates |
+| `num_epochs`         | integer  | `10`    | Number of main training iterations    |
+| `num_adversary_steps`| integer  | `3`     | Adversary training steps per epoch    |
+
+### Output Structure
+
+Returned via `initialize_output_inprocessing()`:
+
+- `adjusted_model`: The trained model after adjustment.
+- `model_type`: `"Adversarial Debiasing"`.
+- `predictions`: Not set by the engine; the workflow computes the test predictions from `adjusted_model`.
+- `params`: Engine-specific parameters used during training.
+- `specific_output`: `training_time`, `adversary_model` and `adversary_loss` (loss per epoch).
+
+## Workflow Integration
+
+- Called via `wrapper_inprocessing_fairness_adversarialdebiasing()`
+- Configured via `controller_inprocessing()`
+- Uses `driver_train` for compatibility with arbitrary main models
+- Runs after the base model has been trained; the test predictions are then computed from the adjusted model
+
+## Example Control Setup
+
+```r
+control$engine_select$inprocessing <- "inprocessing_fairness_adversarialdebiasing"
+control$params$inprocessing <- controller_inprocessing(
+  norm_data = TRUE,
+  params = list(
+    learning_rate = 0.01,
+    num_epochs = 10,
+    num_adversary_steps = 3
+  )
+)
+```
+
+## Template Reference
+
+`inst/templates_control/5_a_template_inprocessing_fairness_adversarialdebiasing.R`

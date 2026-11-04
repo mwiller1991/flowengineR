@@ -17,7 +17,7 @@ control$params$train <- controller_training(
     shrinkage         = 0.05,   # Learning rate
     n.minobsinnode    = 10,     # Min. obs. in terminal node
     bag.fraction      = 0.5,    # Subsample fraction per tree
-    train.fraction    = 1.0,    # Fraction of rows used for training within gbm (rest for internal eval)
+    train.fraction    = 1.0     # Fraction of rows used for training within gbm (rest for internal eval)
     
     # ---- Optional: observation weights ----
     # sample_weight = rep(1, N)  # If NULL, wrapper uses equal weights

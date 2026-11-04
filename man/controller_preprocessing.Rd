@@ -45,3 +45,6 @@ with all built-in and user-defined preprocessing engines.
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_preprocessing(params = list(method = "oversampling"))
+}

@@ -38,6 +38,14 @@
 #' @param specific_output Optional. Additional diagnostic or metadata output.
 #'
 #' @return A standardized list containing evaluation results.
+#' @examples
+#' input <- data.frame(predictions = c(0.2, 0.6, 0.9), actuals = c(0, 1, 1))
+#' out <- initialize_output_eval(
+#'   metrics = list(mae = mean(abs(input$predictions - input$actuals))),
+#'   eval_type = "eval_mae",
+#'   input_data = input
+#' )
+#' out$metrics
 #' @export
 initialize_output_eval <- function(metrics, eval_type, input_data, protected_attributes = NULL, params  = NULL, specific_output = NULL) {
   # Base fields: Required for all engines

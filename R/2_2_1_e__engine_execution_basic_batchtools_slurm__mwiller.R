@@ -44,8 +44,8 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
 #' - `split_output`: The result from the splitter engine.
 #'
 #' **Engine-Specific Parameters (`control$params$execution$params`):**
-#' - `registry_folder` *(character)*: Where to store the batchtools registry (default: `"~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM"`).
-#' - `slurm_template` *(character)*: Path to SLURM job template (must exist).
+#' - `registry_folder` *(character)*: Where to store the batchtools registry (required, no default; must be on a file system shared with the cluster nodes).
+#' - `slurm_template` *(character)*: Path to SLURM job template (required, no default).
 #' - `seed` *(integer)*: RNG seed (default: 123).
 #' - `required_packages` *(character vector)*: R packages to load in job.
 #' - `resources` *(list)*: Resource specs passed to `submitJobs()` (e.g., `ncpus`, `memory`, `walltime`).
@@ -94,13 +94,11 @@ engine_execution_basic_batchtools_slurm <- function(control, split) {
 wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_basic_batchtools_slurm())
   
-  if (is.null(params$slurm_template)) {
-    stop("Missing 'slurm_template' path in execution parameters.")
-  }
+  check_slurm_params(params)
   
   # Create or clear registry
   reg_dir <- params$registry_folder
-  unlink(reg_dir, recursive = TRUE)
+  prepare_registry_folder(reg_dir)
   
   log_msg(sprintf("[EXECUTION] Creating SLURM batchtools registry at '%s'...", reg_dir), level = "info", control = control)
   
@@ -156,8 +154,8 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
 #' Includes registry folder, SLURM template path, job resources, and required packages.
 #'
 #' **Default Parameters:**
-#' - `registry_folder`: Registry location.
-#' - `slurm_template`: Path to SLURM job template (must exist).
+#' - `registry_folder`: Registry location (`NULL`; must be set by the user).
+#' - `slurm_template`: Path to SLURM job template (`NULL`; must be set by the user).
 #' - `seed`: Random seed for reproducibility.
 #' - `required_packages`: Packages to load in each job.
 #' - `resources`: SLURM resource specs (e.g., walltime, mem).
@@ -168,8 +166,8 @@ wrapper_execution_basic_batchtools_slurm <- function(control, split_output) {
 #' @keywords internal
 default_params_execution_basic_batchtools_slurm <- function() {
   list(
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/bt_registry_SLURM",
-    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_basic/default.tmpl",
+    registry_folder = NULL,  # required
+    slurm_template = NULL,   # required
     seed = 123,
     required_packages = character(0),
     resources = list(

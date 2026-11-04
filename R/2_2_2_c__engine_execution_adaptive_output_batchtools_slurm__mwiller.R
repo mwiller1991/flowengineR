@@ -53,14 +53,14 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #'   `"sd_relative"`, `"sd_absolute"`, `"mad_relative"`, `"mad_absolute"`,  
 #'   `"cv_relative"`, `"cv_absolute"`, `"cohen_absolute"`
 #' - `threshold` *(numeric)*: Threshold value for the chosen strategy.
-#' - `window` *(integer ≥ 2)*: Number of trailing values to consider for stability.
-#' - `min_splits` *(integer ≥ 1)*: Minimum number of splits before stability can be evaluated.
-#' - `max_splits` *(integer ≥ min_splits)*: Maximum allowed number of splits.
+#' - `window` *(integer >= 2)*: Number of trailing values to consider for stability.
+#' - `min_splits` *(integer >= 1)*: Minimum number of splits before stability can be evaluated.
+#' - `max_splits` *(integer >= min_splits)*: Maximum allowed number of splits.
 #' - `custom_stability_function` *(function or NULL)*: Optional custom stability checker.
 #' - `seed_base` *(integer)*: Base seed; actual seeds are `seed_base + i`.
-#' - `n_splits_per_iteration` *(integer ≥ 1)*: Number of splits per iteration (= number of parallel jobs).
-#' - `registry_folder` *(character)*: Directory path to store batchtools registry (must be writeable).
-#' - `slurm_template` *(character)*: Path to the SLURM template file.
+#' - `n_splits_per_iteration` *(integer >= 1)*: Number of splits per iteration (= number of parallel jobs).
+#' - `registry_folder` *(character)*: Directory path to store batchtools registry (required, no default; must be writeable and on a file system shared with the cluster nodes).
+#' - `slurm_template` *(character)*: Path to the SLURM template file (required, no default).
 #' - `seed` *(integer)*: Seed for batchtools registry initialization.
 #' - `required_packages` *(character vector)*: R packages to be loaded in each job.
 #' - `resources` *(list)*: SLURM-specific job settings (e.g., `ncpus`, `memory`, `walltime`).
@@ -79,8 +79,8 @@ engine_execution_adaptive_output_batchtools_slurm <- function(control) {
 #'     max_splits = 50,
 #'     seed_base = 2000,
 #'     n_splits_per_iteration = 3,
-#'     registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-#'     slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+#'     registry_folder = "/path/to/shared/bt_registry_slurm",
+#'     slurm_template = "/path/to/slurm.tmpl",
 #'     seed = 123,
 #'     required_packages = c("caret", "dplyr"),
 #'     resources = list(ncpus = 2, memory = 4096, walltime = 3600)
@@ -127,6 +127,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
   }
   
   params <- merge_with_defaults(control$params$execution$params, default_params_execution_adaptive_output_batchtools_slurm())
+  check_slurm_params(params)
   
   strategy_fun <- get(paste0("check_stability_", params$stability_strategy), mode = "function", inherits = TRUE)
   
@@ -159,7 +160,7 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
     }
     
     reg_dir <- file.path(params$registry_folder, paste0("iter_", i))
-    unlink(reg_dir, recursive = TRUE)
+    prepare_registry_folder(reg_dir)
     reg <- batchtools::makeRegistry(
       file.dir = reg_dir,
       make.default = FALSE,
@@ -265,8 +266,8 @@ wrapper_execution_adaptive_output_batchtools_slurm <- function(control, split_ou
 #' - `custom_stability_function`: Optional user-defined function to override built-in criteria.
 #' - `seed_base`: Base seed value. Seeds are incremented per batch (e.g., `seed_base + i`).
 #' - `n_splits_per_iteration`: Number of splits per iteration (parallelized).
-#' - `registry_folder`: Path to the batchtools registry.
-#' - `slurm_template`: Path to a valid SLURM job template.
+#' - `registry_folder`: Path to the batchtools registry (`NULL`; must be set by the user).
+#' - `slurm_template`: Path to a valid SLURM job template (`NULL`; must be set by the user).
 #' - `seed`: Seed used by batchtools registry.
 #' - `required_packages`: Character vector of packages needed on each worker.
 #' - `resources`: List passed to `submitJobs()` (e.g. `ncpus`, `memory`, `walltime`).
@@ -287,8 +288,8 @@ default_params_execution_adaptive_output_batchtools_slurm <- function() {
     custom_stability_function = NULL,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+    registry_folder = NULL,  # required
+    slurm_template = NULL,   # required
     seed = 123,
     required_packages = character(0),
     resources = list(ncpus = 1, memory = 2048, walltime = 3600)

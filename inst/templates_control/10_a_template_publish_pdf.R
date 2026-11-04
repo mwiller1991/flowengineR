@@ -11,13 +11,16 @@ control$engine_select$publish <- list(
 control$params$publish <- controller_publish(
   params = list(
     main_pdf = list(
-      obj_type = "report"  # or "reportelement"
+      obj_type = "report",       # or "reportelement"
+      obj_name = "main_report"   # alias of the exported report (see 9_a template)
     )
   )
 )
 
 # Available Parameters:
 # - obj_type (required): Must be one of "report" or "reportelement"
+# - obj_name (required): Alias of the object to export, as used in
+#   control$engine_select$report or control$engine_select$reportelement
 
 # Notes:
 # - file_path will be passed by the workflow controller at runtime

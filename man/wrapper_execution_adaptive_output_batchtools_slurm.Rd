@@ -42,14 +42,14 @@ Allowed values:
 \code{"sd_relative"}, \code{"sd_absolute"}, \code{"mad_relative"}, \code{"mad_absolute"},
 \code{"cv_relative"}, \code{"cv_absolute"}, \code{"cohen_absolute"}
 \item \code{threshold} \emph{(numeric)}: Threshold value for the chosen strategy.
-\item \code{window} \emph{(integer ≥ 2)}: Number of trailing values to consider for stability.
-\item \code{min_splits} \emph{(integer ≥ 1)}: Minimum number of splits before stability can be evaluated.
-\item \code{max_splits} \emph{(integer ≥ min_splits)}: Maximum allowed number of splits.
+\item \code{window} \emph{(integer >= 2)}: Number of trailing values to consider for stability.
+\item \code{min_splits} \emph{(integer >= 1)}: Minimum number of splits before stability can be evaluated.
+\item \code{max_splits} \emph{(integer >= min_splits)}: Maximum allowed number of splits.
 \item \code{custom_stability_function} \emph{(function or NULL)}: Optional custom stability checker.
 \item \code{seed_base} \emph{(integer)}: Base seed; actual seeds are \code{seed_base + i}.
-\item \code{n_splits_per_iteration} \emph{(integer ≥ 1)}: Number of splits per iteration (= number of parallel jobs).
-\item \code{registry_folder} \emph{(character)}: Directory path to store batchtools registry (must be writeable).
-\item \code{slurm_template} \emph{(character)}: Path to the SLURM template file.
+\item \code{n_splits_per_iteration} \emph{(integer >= 1)}: Number of splits per iteration (= number of parallel jobs).
+\item \code{registry_folder} \emph{(character)}: Directory path to store batchtools registry (required, no default; must be writeable and on a file system shared with the cluster nodes).
+\item \code{slurm_template} \emph{(character)}: Path to the SLURM template file (required, no default).
 \item \code{seed} \emph{(integer)}: Seed for batchtools registry initialization.
 \item \code{required_packages} \emph{(character vector)}: R packages to be loaded in each job.
 \item \code{resources} \emph{(list)}: SLURM-specific job settings (e.g., \code{ncpus}, \code{memory}, \code{walltime}).
@@ -69,8 +69,8 @@ control$params$execution <- controller_execution(
     max_splits = 50,
     seed_base = 2000,
     n_splits_per_iteration = 3,
-    registry_folder = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/bt_registry_SLURM",
-    slurm_template = "~/flowengineR/tests/BATCHTOOLS/bt_SLURM_adaptive_output/default.tmpl",
+    registry_folder = "/path/to/shared/bt_registry_slurm",
+    slurm_template = "/path/to/slurm.tmpl",
     seed = 123,
     required_packages = c("caret", "dplyr"),
     resources = list(ncpus = 2, memory = 4096, walltime = 3600)

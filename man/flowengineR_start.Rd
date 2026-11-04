@@ -6,6 +6,23 @@
 \usage{
 flowengineR_start()
 }
+\value{
+Invisibly, a named list with the objects created in the menu:
+\code{results_example} (item 1), \code{engine_list} (item 4) and
+\code{control_example} (item 6). Only items that were chosen are included,
+so the list is empty if none of them was used. Assign the result to
+keep the objects, e.g. \code{start <- flowengineR_start()}.
+}
 \description{
-This function offers an interactive menu to explore flowengineR.
+Offers an interactive console menu to explore flowengineR: run the
+example workflow, open the main vignettes, list the registered engines
+or inspect the structure of the control object. The menu is only
+available in interactive sessions.
+}
+\examples{
+if (interactive()) {
+  start <- flowengineR_start()
+  names(start)
+}
+
 }

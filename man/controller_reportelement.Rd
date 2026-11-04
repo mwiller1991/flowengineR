@@ -49,3 +49,11 @@ control$params$reportelement <- controller_reportelement(
 )
 }\if{html}{\out{</div>}}
 }
+\examples{
+controller_reportelement(
+  params = list(
+    gender_box = list(group_var = "gender.Female", source = "train"),
+    metrics_table = list(metrics = c("mse", "statisticalparity"))
+  )
+)
+}

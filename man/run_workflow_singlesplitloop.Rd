@@ -62,3 +62,25 @@ A named list with standardized results:
 \item This function is typically called internally by execution engines.
 }
 }
+\examples{
+data <- create_dataset_bank(n = 400, seed = 1)
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score"),
+  protected_vars = "gender.Female",
+  target_var = "default",
+  protected_vars_binary = "gender.Female"
+)
+train_rows <- seq_len(300)
+control <- list(
+  settings = list(log = list(log_show = FALSE), output_type = "response"),
+  data = list(vars = vars, train = data[train_rows, ], test = data[-train_rows, ]),
+  engine_select = list(train = "train_glm", evaluation = list("eval_mse")),
+  params = list(
+    train = controller_training(
+      formula = default ~ income + loan_amount + credit_score + gender.Female
+    )
+  )
+)
+single <- run_workflow_singlesplitloop(control)
+single$output_eval$eval_mse$metrics
+}

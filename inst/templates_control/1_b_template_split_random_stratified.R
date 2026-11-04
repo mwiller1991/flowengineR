@@ -20,4 +20,4 @@ control$params$split <- controller_split(
 #
 # Notes:
 # - target_var is required and used for stratification.
-# - This template can be found at: inst/templates_control/template_control_split_random_stratified.R
+# - This template can be found at: inst/templates_control/1_b_template_split_random_stratified.R

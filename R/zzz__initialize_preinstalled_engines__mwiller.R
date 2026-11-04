@@ -19,6 +19,7 @@
 #' **Access pattern:**
 #' - Internal functions may use `flowengineR_env$engines` to retrieve engine wrappers.
 #'
+#' @format An environment, created with `new.env(parent = emptyenv())`.
 #' @keywords internal
 flowengineR_env <- new.env(parent = emptyenv())
 
@@ -45,7 +46,9 @@ flowengineR_env <- new.env(parent = emptyenv())
 #' flowengineR_env$engines[["train_gbm"]]
 #' flowengineR_env$engines[["eval_mse"]](input_data, params)
 #' ```
-#'
+#' 
+#' @return No return value, called for its side effect of filling
+#'   `flowengineR_env$engines`.
 #' @keywords internal
 register_default_engines <- function() {
   flowengineR_env$engines <- list(
@@ -77,7 +80,7 @@ register_default_engines <- function() {
     train_gbm = wrapper_train_gbm,
     
     # Inprocessing
-    inprocessing_fairness_adversialdebiasing = wrapper_inprocessing_fairness_adversialdebiasing,
+    inprocessing_fairness_adversarialdebiasing = wrapper_inprocessing_fairness_adversarialdebiasing,
     
     # Postprocessing
     postprocessing_fairness_genresidual = wrapper_postprocessing_fairness_genresidual,
@@ -114,6 +117,7 @@ register_default_engines <- function() {
 #' @param libname The library path.
 #' @param pkgname The name of the package being loaded.
 #'
+#' @return No return value, called for its side effect.
 #' @keywords internal
 .onLoad <- function(libname, pkgname) {
   register_default_engines()

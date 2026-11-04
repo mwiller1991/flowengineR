@@ -63,7 +63,7 @@ Returned via `initialize_output_preprocessing()`:
 
 | Engine Name           | Function Name                                | Description                                 | Template Path                                                                     | Detail Page                                                |
 | --------------------- | -------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `preprocessing_fairness_resampling` | `engine_preprocessing_fairness_resampling()` | Balances groups via over-/undersampling     | `inst/templates_control/3_a_template_control_preprocessing_fairness_resampling.R` | [📄](detail_engine_preprocessing_fairness_resampling.html) |
+| `preprocessing_fairness_resampling` | `engine_preprocessing_fairness_resampling()` | Balances target classes via over-/undersampling | `inst/templates_control/3_a_template_preprocessing_fairness_resampling.R` | [📄](detail_engine_preprocessing_fairness_resampling.html) |
 
 Use `list_registered_engines("preprocessing")` to view available engines.
 

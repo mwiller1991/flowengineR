@@ -4,10 +4,12 @@
 \alias{controller_publish}
 \title{Controller: Publish Input Specification}
 \usage{
-controller_publish(output_folder = "~/publish_exports", params = list())
+controller_publish(output_folder = tempdir(), params = list())
 }
 \arguments{
-\item{output_folder}{Character string. Global directory path to store all exports.}
+\item{output_folder}{Character string. Global directory path to store all exports.
+Defaults to the session's temporary directory (\code{\link[=tempdir]{tempdir()}}), which is deleted
+when the R session ends. Set a permanent folder to keep the exported files.}
 
 \item{params}{Named list. Engine-specific configuration. Default is empty list. Each name should match a \code{control$engine_select$publish} alias, and contain a list of export parameters (\code{obj_type}, \code{obj_name}, etc.).}
 }
@@ -39,17 +41,25 @@ report formats (e.g., HTML, PDF, JSON) or custom targets (e.g., web endpoints, f
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Alias definitions (mapped to export engines)
 control$engine_select$publish <- list(
-  html_summary = "publish_html",
-  full_json = "publish_json"
+  summary_pdf = "publish_pdf_basis",
+  metrics_excel = "publish_excel_basis"
 )
 
 # Corresponding publishing configuration
 control$params$publish <- controller_publish(
-  output_folder = "results/exports/",
+  output_folder = tempdir(),
   params = list(
-    html_summary = list(obj_type = "report", obj_name = "alias1"),
-    full_json = list(obj_type = "reportelement", obj_name = "alias2")
+    summary_pdf = list(obj_type = "report", obj_name = "modelsummary"),
+    metrics_excel = list(obj_type = "reportelement", obj_name = "split_table")
   )
 )
 }\if{html}{\out{</div>}}
+}
+\examples{
+controller_publish(
+  output_folder = tempdir(),
+  params = list(
+    metrics_excel = list(obj_type = "reportelement", obj_name = "metrics_table")
+  )
+)
 }

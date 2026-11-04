@@ -45,3 +45,24 @@ to complete all post-execution steps such as aggregation, reporting, and publish
 \item Enables full integration of batchtools or SLURM workflows into the modular pipeline
 }
 }
+\examples{
+data <- create_dataset_bank(n = 500, seed = 1)
+vars <- controller_vars(
+  feature_vars = c("income", "loan_amount", "credit_score"),
+  protected_vars = "gender.Female",
+  target_var = "default",
+  protected_vars_binary = "gender.Female"
+)
+control <- list(
+  settings = list(log = list(log_show = FALSE)),
+  data = list(full = data, vars = vars)
+)
+result <- run_workflow(control)
+resume_object <- controller_resume_execution(
+  control = control,
+  split_output = result$split_output,
+  workflow_results = result$execution_output$workflow_results
+)
+final <- resume_workflow(resume_object)
+names(final$aggregated_results)
+}
